@@ -1,0 +1,387 @@
+{
+ "pack": "marinade",
+ "title": "Marinade Finance — control and supply map",
+ "boundary": "Marinade programs, MNDE/mSOL mints, DAO governance and treasuries listed by Marinade's documentation (retrieved 2026-10-05); anything outside is 'outside declared scope'.",
+ "retrievedAt": "2026-10-05T20:12:08Z",
+ "sources": {
+  "docs:contract-addresses": "https://docs.marinade.finance/developers/contract-addresses",
+  "docs:governance": "https://docs.marinade.finance/governance",
+  "docs:the-mnde-token": "https://docs.marinade.finance/the-mnde-token",
+  "docs:fees-and-pricing": "https://docs.marinade.finance/marinade-protocol/protocol-overview/fees-and-pricing",
+  "forum:mip-14-thread-1909": "https://forum.marinade.finance/t/mip-14-burn-5-50-of-mnde-total-supply/1909",
+  "chain:2026-10-05": "public mainnet RPC reads recorded in fixtures"
+ },
+ "programs": [
+  {
+   "id": "liquid-staking",
+   "address": "MarBmsSgKXdrN1egZf5sqe1TMai9K1rChYNDJgjq7aD",
+   "role": "mSOL liquid staking program",
+   "stateAccount": "8szGkuLTAux9XMgZ2vtY39jVSowEcpBfFfD8hXSEqdGC",
+   "claims": [
+    {
+     "text": "mSOL program upgrade authority sits with an ecosystem multisig, not the DAO",
+     "source": "docs:governance"
+    },
+    {
+     "text": "Upgrade authority: Marinade council (3/5) (as listed near this entry)",
+     "source": "docs:contract-addresses",
+     "certainty": "needs re-read of the page layout"
+    }
+   ],
+   "verifiedOnChain": {
+    "upgradeAuthority": "551FBXSXdhcRDDkdcb3ThDRg84Mwe5Zs6YjJ1EEoyzBp",
+    "note": "off-curve, no account; not a DAO governance account; identity unresolved",
+    "slot": 453676353,
+    "source": "chain:2026-10-05"
+   }
+  },
+  {
+   "id": "governance-program",
+   "address": "GovMaiHfpVPw8BAM1mbdzgmSZYDw2tdP32J2fapoQoYs",
+   "role": "Marinade's SPL Governance deployment (v3.1.1)",
+   "claims": [
+    {
+     "text": "Marinade Core Team (team council): main program params, DAO program, fees",
+     "source": "docs:governance"
+    }
+   ],
+   "verifiedOnChain": {
+    "upgradeAuthority": "6egAu2HDLcSgeUYmiBvNLgp7Bd4nPk16gX9MvWuJpeX2",
+    "note": "account owned by the governance program itself (a DAO governance account)",
+    "slot": 453676355,
+    "source": "chain:2026-10-05"
+   }
+  },
+  {
+   "id": "tokadapt",
+   "address": "tokdh9ZbWPxkFzqsKqeAwLDk6J6a8NBZtQanVuuENxa",
+   "role": "token adapter",
+   "claims": [],
+   "verifiedOnChain": null
+  },
+  {
+   "id": "escrow-relocker",
+   "address": "tovt1VkTE2T4caWoeFP6a2xSFoew5mNpd7FWidyyMuk",
+   "role": "escrow relocker (Tribeca plug-in), closed source",
+   "claims": [],
+   "verifiedOnChain": null
+  },
+  {
+   "id": "validator-gauges",
+   "address": "va12L6Z9fa5aGJ7gxtJuQZ928nySAk5UetjcGPve3Nu",
+   "role": "validator gauges, closed source",
+   "claims": [
+    {
+     "text": "DAO holds upgrade authority for gauges",
+     "source": "docs:governance"
+    },
+    {
+     "text": "Marinade council (3/5) listed as upgrade authority",
+     "source": "docs:contract-addresses",
+     "certainty": "needs re-read"
+    }
+   ],
+   "verifiedOnChain": null
+  },
+  {
+   "id": "liquidity-gauges",
+   "address": "LigadctxNRkZied3WuhX525vUhDkuhXNK5DyeijeDnh",
+   "role": "liquidity gauges, closed source",
+   "claims": [
+    {
+     "text": "Upgrade authority: None (as listed near this entry)",
+     "source": "docs:contract-addresses",
+     "certainty": "needs re-read"
+    }
+   ],
+   "verifiedOnChain": null
+  },
+  {
+   "id": "referral",
+   "address": "MR2LqxoSbw831bNy68utpu5n4YqBH3AzDmddkgk9LQv",
+   "role": "liquid staking referral program",
+   "claims": [],
+   "verifiedOnChain": null
+  },
+  {
+   "id": "directed-stake",
+   "address": "dstK1PDHNoKN9MdmftRzsEbXP5T1FTBiQBm1Ee3meVd",
+   "role": "Directed Stake, closed source",
+   "stateAccount": "DrooToPS3MLqgZwBiK2fkAPUTUgKNV3CGb2NqFRAL4Zf",
+   "claims": [],
+   "verifiedOnChain": null
+  },
+  {
+   "id": "vsr",
+   "address": "VoteMBhDCqGLRgYpp9o7DGyq81KNmwjXQRAHStjtJsS",
+   "role": "Voter Stake Registry (veMNDE)",
+   "stateAccount": "5zgEgPbWKsAAnLPjSM56ZsbLPfVM6nUzh3u45tCnm97D",
+   "claims": [
+    {
+     "text": "veMNDE from locked MNDE; 30-day unlock; voting power from remaining lock time up to 30 days",
+     "source": "docs:governance"
+    }
+   ],
+   "verifiedOnChain": null
+  },
+  {
+   "id": "native-staking-proxy",
+   "address": "mnspJQyF1KdDEs5c6YJPocYdY1esBgVQFufM2dY9oDk",
+   "role": "Marinade Native staking proxy",
+   "stateAccount": "4TNsDg9aHCyDt5axK8aDuhgrengnDBGzyHHzKGnTiGtW",
+   "claims": [
+    {
+     "text": "DAO holds upgrade authority for Marinade Native",
+     "source": "docs:governance"
+    },
+    {
+     "text": "Marinade Native charges no deposit or management fee; Marinade holds only the stake authority",
+     "source": "docs:marinade-native"
+    }
+   ],
+   "verifiedOnChain": null
+  }
+ ],
+ "mints": [
+  {
+   "id": "mnde",
+   "address": "MNDEFzGvMt87ueuHvVU9VcTqsAP5b3fTGPsHuuPA5ey",
+   "claims": [
+    {
+     "text": "MNDE has a hard cap of 1 billion tokens and minting is permanently disabled.",
+     "source": "forum:mip-14-thread-1909"
+    },
+    {
+     "text": "Fully issued date: None (distribution based on DAO votes)",
+     "source": "docs:the-mnde-token"
+    }
+   ],
+   "verifiedOnChain": {
+    "mintAuthority": null,
+    "freezeAuthority": null,
+    "supplyRaw": "699997047681352988",
+    "decimals": 9,
+    "slot": 453658037,
+    "source": "chain:2026-10-05"
+   }
+  },
+  {
+   "id": "msol",
+   "address": "mSoLzYCxHdYgdzU16g5QSh3i5K3z3KZK7ytfqcJm7So",
+   "claims": [
+    {
+     "text": "mSOL auth (PDA) 3JLPCS1qM2zRw3Dp6V4hZnYHd4toMNPkNesXdX9tg6KM",
+     "source": "docs:contract-addresses"
+    }
+   ],
+   "verifiedOnChain": null
+  },
+  {
+   "id": "msol-sol-lp",
+   "address": "LPmSozJJ8Jh69ut2WP3XmVohTjL4ipR18yiCzxrUmVj",
+   "claims": [
+    {
+     "text": "Liquidity-Pool mSOL-SOL-LP mint; auth PDA HZsepB79dnpvH6qfVgvMpS738EndHw3qSHo4Gv5WX1KA",
+     "source": "docs:contract-addresses"
+    }
+   ],
+   "verifiedOnChain": null
+  },
+  {
+   "id": "council-mint",
+   "address": "6MGwpuJ5YE1c8jJaF8FKurQdDJeYRf1adX76dovkXxRs",
+   "claims": [
+    {
+     "text": "the DAO's council mint has a supply of exactly 5, at zero decimals",
+     "source": "docs:governance"
+    }
+   ],
+   "verifiedOnChain": null
+  }
+ ],
+ "governance": {
+  "realm": "899YG3yk4F66ZgbNWLHriZHTXSKk9e1kvsKEquW7L6Mo",
+  "realmAuthority": "FsrqQfLGdFVtySSSsyZJUzVBA9bvGZSKyhp7nsJCqgJe",
+  "program": "GovMaiHfpVPw8BAM1mbdzgmSZYDw2tdP32J2fapoQoYs",
+  "councilMint": "6MGwpuJ5YE1c8jJaF8FKurQdDJeYRf1adX76dovkXxRs",
+  "vsrProgram": "VoteMBhDCqGLRgYpp9o7DGyq81KNmwjXQRAHStjtJsS",
+  "vsrRegistrar": "5zgEgPbWKsAAnLPjSM56ZsbLPfVM6nUzh3u45tCnm97D",
+  "knownGovernances": [
+   {
+    "address": "8z6A4qSfL9FFvwX12zqt6HrbzaWthGUqBe4czCn9iXtq",
+    "nativeTreasury": "B56RWQGf9RFw7t8gxPzrRvk5VRmB5DoF94aLoJ25YtvG",
+    "source": "chain:2026-10-05"
+   },
+   {
+    "address": "23xVZXQrHAZ4rm4nWKAM5eTLeUFmstbs42KF21PA4Ayo",
+    "source": "chain:2026-10-05"
+   }
+  ],
+  "claims": [
+   {
+    "text": "Marinade Governance (MNDE token holders + ecosystem council): main program upgrade, MNDE treasury",
+    "source": "docs:governance"
+   },
+   {
+    "text": "Marinade Council - a set of 5 contributors elected internally, holding a 3-of-5 multisig on Realms",
+    "source": "docs:governance"
+   }
+  ]
+ },
+ "accounts": [
+  {
+   "id": "dao-treasury",
+   "address": "B56RWQGf9RFw7t8gxPzrRvk5VRmB5DoF94aLoJ25YtvG",
+   "role": "DAO Treasury (docs); native treasury PDA of governance 8z6A4q… (verified)",
+   "sources": [
+    "docs:the-mnde-token",
+    "chain:2026-10-05"
+   ]
+  },
+  {
+   "id": "dao-treasury-mnde-token-account",
+   "address": "GR1LBT4cU89cJWE74CP6BsJTf2kriQ9TX59tbDsfxgSi",
+   "role": "MNDE token account owned by the DAO treasury PDA; source of the MIP-14 burn",
+   "sources": [
+    "chain:2026-10-05"
+   ]
+  },
+  {
+   "id": "labs-treasury",
+   "address": "J5BEceL5z1EQ7JBqEFu4BfPN4PYCeQaW3GXrzXFfCzhs",
+   "role": "Labs Treasury (docs)",
+   "sources": [
+    "docs:the-mnde-token"
+   ]
+  },
+  {
+   "id": "buyback-accumulation",
+   "address": "BBaQsiRo744NAYaqL3nKRfgeJayoqVicEQsEnLpfsJ6x",
+   "role": "MIP-22 buybacks: the MNDE bought so far accumulates here (docs)",
+   "sources": [
+    "docs:the-mnde-token",
+    "docs:fees-and-pricing"
+   ]
+  },
+  {
+   "id": "treasury-reserve-sol",
+   "address": "Du3Ysj1wKbxPKkuPPnvzQLQh8oMSVifs3jGZjJWXFmHN",
+   "role": "Treasury Reserve SOL account (PDA) of the liquid staking program",
+   "sources": [
+    "docs:contract-addresses"
+   ]
+  },
+  {
+   "id": "treasury-msol-1",
+   "address": "B1aLzaNMeFVAyQ6f3XbbUyKcH2YPHu2fqiEagmiF23VR",
+   "role": "Treasury mSOL account (docs)",
+   "sources": [
+    "docs:contract-addresses"
+   ]
+  },
+  {
+   "id": "treasury-msol-2",
+   "address": "8ZUcztoAEhpAeC2ixWewJKQJsSUGYSGPVAjkhDJYf5Gd",
+   "role": "Treasury mSOL account (docs, second listing)",
+   "sources": [
+    "docs:contract-addresses"
+   ]
+  },
+  {
+   "id": "stake-withdraw-authority",
+   "address": "9eG63CdHjsfhHmobHgLtESGC8GabbmRcaSpHAZrtmhco",
+   "role": "liquid staking stake withdraw authority (PDA)",
+   "sources": [
+    "docs:contract-addresses"
+   ]
+  },
+  {
+   "id": "native-staker-authority-yield",
+   "address": "stWirqFCf2Uts1JBL1Jsd3r6VBWhgnpdPxCTe1MFjrq",
+   "role": "Marinade Native (Yield) staker authority",
+   "sources": [
+    "docs:contract-addresses"
+   ]
+  },
+  {
+   "id": "native-staker-authority-select",
+   "address": "STNi1NHDUi6Hvibvonawgze8fM83PFLeJhuGMEXyGps",
+   "role": "Marinade Select staker authority",
+   "sources": [
+    "docs:contract-addresses"
+   ]
+  },
+  {
+   "id": "native-exit-authority",
+   "address": "ex9CfkBZZd6Nv9XdnoDmmB45ymbu4arXVk7g5pWnt3N",
+   "role": "Native exit authority",
+   "sources": [
+    "docs:contract-addresses"
+   ]
+  },
+  {
+   "id": "native-operator",
+   "address": "opNS8ENpEMWdXcJUgJCsJTDp7arTXayoBEeBUg6UezP",
+   "role": "Native operator",
+   "sources": [
+    "docs:contract-addresses"
+   ]
+  }
+ ],
+ "valueRouteClaims": [
+  {
+   "id": "v1",
+   "text": "On-chain, the stake pool's reward_fee parameter is set to 0 .",
+   "source": "docs:fees-and-pricing",
+   "check": "read reward_fee from state 8szGku… (anchor layout; parse or mark unresolved)"
+  },
+  {
+   "id": "v2",
+   "text": "Native and Liquid (mSOL): Validators bid for stake allocation through the Stake Auction Market (SAM).",
+   "source": "docs:fees-and-pricing",
+   "check": "SAM revenue accounts not in docs addresses; unresolved until found"
+  },
+  {
+   "id": "v3",
+   "text": "Select: Validators pay protocol fees through a bilateral agreement booked against the Select bond: 20 bps to Marinade plus up to 10 bps to the validator, on TVL annually.",
+   "source": "docs:fees-and-pricing"
+  },
+  {
+   "id": "v4",
+   "text": "It is a lending vault, so Marinade takes a 5% performance fee on the net interest earned.",
+   "source": "docs:fees-and-pricing"
+  },
+  {
+   "id": "v5",
+   "text": "Revenue Allocation Under MIP-22 , 10% of protocol revenue is allocated to programmatic open-market MNDE buybacks .",
+   "source": "docs:fees-and-pricing"
+  },
+  {
+   "id": "v6",
+   "text": "The MNDE bought is distributed to eligible MNDE stakers in Marinade Realms through the MNDE Staking Rewards Program.",
+   "source": "docs:fees-and-pricing"
+  },
+  {
+   "id": "v7",
+   "text": "MIP-22 also seeded the MNDE-mSOL pool with 10M MNDE from the DAO treasury.",
+   "source": "docs:fees-and-pricing"
+  },
+  {
+   "id": "v8",
+   "text": "This is a different program from the earlier MIP-11 buybacks, which MIP-17 paused in favour of protocol-owned liquidity, and from MIP-13 Active Staking Rewards, which is closed.",
+   "source": "docs:fees-and-pricing"
+  },
+  {
+   "id": "v9",
+   "text": "Unlocking your tokens to get back your MNDE will start a 30-day unlock process.",
+   "source": "docs:governance"
+  }
+ ],
+ "researchQuestion": "Is there an enforceable path from Marinade's protocol activity to MNDE holders as of slot S, through which mechanism, what offsets it (treasury spending, unlocks), and who can change the route?",
+ "unknownsSeed": [
+  "identity of upgrade authority 551FBX… of the mSOL program (ecosystem multisig claimed)",
+  "SAM revenue collection accounts",
+  "whether 'Marinade council (3/5)' upgrade-authority labels on the contract page apply to which programs (page layout)",
+  "program metaThtk… seen in BonkDAO BIP-76 (unrelated to Marinade; carried from the demo)"
+ ]
+}
