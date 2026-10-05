@@ -13,9 +13,7 @@ test("account creation flags transfer destinations across proposal transactions"
   expect(effects[0]).toEqual({ id: "fx-0-0", type: "accountCreation", basis: "decoded", detail: { account: "destination", owner: "recipient", mint: "mint", payer: "payer", idempotent: true }, flags: ["creates-transfer-destination"], evidenceIds: [] });
   const row = checks(bundle, effects, [], []).find((r) => r.check === "Account creation")!;
   expect(row.needsReview).toBe(true);
-  expect(row.result).toContain("acct destin… (owner recipi…, mint mint…)");
-  expect(row.result).toContain("account destination");
-  expect(row.result).toEndWith("— destination of the treasury transfer in this proposal");
+  expect(row.result).toBe("acct destin… (owner recipi…, mint mint…) — destination of the treasury transfer in this proposal");
   const isolated = effectsFromDecoded([creation], bundle, { nativeTreasury: "treasury" });
   expect(isolated[0].flags).toEqual([]);
   expect(checks(bundle, isolated, [], []).find((r) => r.check === "Account creation")!.needsReview).toBe(false);
