@@ -22,7 +22,7 @@ const opt = (name: string, dflt?: string) => { const i = args.indexOf(`--${name}
 
 async function review(casePath: string) {
   const c = loadCase(casePath);
-  const opts = runOptions({ offline: flag("offline"), record: flag("record"), outDir: opt("out", join("out", c.caseId)) });
+  const opts = runOptions({ offline: flag("offline"), record: flag("record"), refresh: flag("refresh") || undefined, outDir: opt("out", join("out", c.caseId)) });
   const rpc = new RecordingRpc(opts, c.caseId);
   const programId = new PublicKey(c.programId);
   const bundle = await readProposalBundle(rpc, programId, c.programVersion, new PublicKey(c.proposal));
@@ -34,6 +34,7 @@ async function review(casePath: string) {
   writeFileSync(join(opts.outDir, "graph.json"), JSON.stringify(packet.graph, null, 1));
   const evidencePath = rpc.flushEvidence(opts.outDir);
   console.log(`${c.caseId}: ${packet.dimensions.execution_status} · ${sims.map((s) => `${s.kind}=${s.success ? "ok" : "fail"}`).join(" ") || "no simulation"} · ${rpc.evidence.length} evidence → ${join(opts.outDir, "packet.html")} (${evidencePath})`);
+  console.error(`Evidence: ${rpc.counts.live} live, ${rpc.counts.replayed} replayed`);
 }
 
 /** Shared CLI pipeline; tests can provide recorded or in-memory RPC responses. */
@@ -85,7 +86,7 @@ async function pack(packPath: string) {
   const registry: PackRegistry = JSON.parse(readFileSync(config.registry, "utf8"));
   const docsCapture: DocsCapture = JSON.parse(readFileSync(config.docsCapture, "utf8"));
   if (config.pack !== registry.pack) throw new Error("pack: config and registry pack names differ");
-  const opts = runOptions({ offline: flag("offline"), record: flag("record"), outDir: opt("out", join("out", `pack-${config.pack}`)) });
+  const opts = runOptions({ offline: flag("offline"), record: flag("record"), refresh: flag("refresh") || undefined, outDir: opt("out", join("out", `pack-${config.pack}`)) });
   const rpc = new RecordingRpc(opts, `${config.pack}-pack`);
   const packet = await buildPack(rpc, registry, { title: config.title, docsCapture, burns: config.burns, ledger: config.ledger });
   mkdirSync(opts.outDir, { recursive: true });
@@ -96,6 +97,7 @@ async function pack(packPath: string) {
   console.log(coverageLine(packet));
   if (config.ledger?.enabled) console.log(`Ledger: ${packet.ledger.entries.length} entries · ${packet.ledger.proposalsScanned} proposals scanned${packet.ledger.notes.includes("ledger not recorded yet") ? " · ledger not recorded yet" : ""}`);
   console.log(`${config.pack}: ${packet.evidenceCount} evidence → ${join(opts.outDir, "packet.html")}`);
+  console.error(`Evidence: ${rpc.counts.live} live, ${rpc.counts.replayed} replayed`);
 }
 
 async function doctor() {
@@ -113,5 +115,5 @@ if (cmd === "review" && args[1]) await review(args[1]);
 else if (cmd === "pack" && args[1]) await pack(args[1]);
 else if (cmd === "demo") { for (const c of ["cases/mip-14.json", "cases/mip-14-opinion.json", "cases/bonk-bip76.json"]) await review(c); }
 else if (cmd === "doctor") await doctor();
-else { console.log("usage: linchpin review <case.json> [--offline] [--record] [--out dir] | linchpin pack <pack.json> [--record|--offline] [--out dir] | linchpin demo [--offline] | linchpin doctor"); process.exit(cmd ? 1 : 0); }
+else { console.log("usage: linchpin review <case.json> [--offline|--record [--refresh]] [--out dir] | linchpin pack <pack.json> [--offline|--record [--refresh]] [--out dir] | linchpin demo [--offline] | linchpin doctor; modes: --offline (fixtures only), --record (fill missing fixtures), --record --refresh (re-fetch all)"); process.exit(cmd ? 1 : 0); }
 }
