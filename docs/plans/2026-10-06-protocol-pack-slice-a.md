@@ -152,7 +152,16 @@ export type PackPacket = { pack: string; title: string; generatedAt: string; off
 
 Flow legs and the 30-day ledger; the `reward_fee` read from the liquid-staking state (anchor layout) is attempted only if a maintained layout is at hand, otherwise it stays a claim; VSR registrar parsing (record raw; parse later); labelling of unknown recipients; Neo4j/Cypher; LLM extraction.
 
+## Slice B.1 (added 2026-10-05 night, D-2026-10-05-13): DAO treasury ledger from governance
+
+**Why first:** every treasury movement the DAO itself decided is an executed proposal, and the demo pipeline already reads proposals, decodes transfers and burns and finds receipts. No new data source; low-volume accounts (see `packs/marinade/sources/account-volume-2026-10-05.json`).
+
+**Build (Codex, on `protocol-pack`):** `src/pack/ledger.ts` lists every proposal of every governance in the realm (recorded `getProgramAccounts`), runs the governance bundle/decode/receipt path for proposals with payloads, and emits ledger rows (proposal, instruction kind, asset, exact amount, source and destination with owners, receipt, reconciliation, evidence ids) plus a per-asset summary (outflows from DAO native treasuries, inflows, burns, unsupported programs). The pack renders a "DAO treasury ledger (from governance)" section. Offline mode tolerates an unrecorded ledger with a visible note. RPC URLs are stored redacted in evidence and fixtures (key hygiene for the Helius key, D-2026-10-05-14).
+
+**Then:** Claude records the ledger reads (`--record`), reviews sums against receipts, commits. **B.2** (buyback inflows and reward outflows since Dec 2025 against Marinade's reported revenue) and **Slice C** (Neo4j Aura export, MIP-14 before/after replay, memo) follow after Demo Day. **Merge freeze until Thu 8 Oct.**
+
 ## Log
 - 2026-10-05 — Plan written by Claude after the Researcher Pack review and Peter's decisions; registry and docs capture committed to the `protocol-pack` branch. (Claude)
 - 2026-10-05 — A1–A2 done (Codex; 77 tests), fixtures/marinade-pack recorded (59); Native proxy authority corrected to DAO-controlled (native treasury PDA). A3–A5 dispatched. (Claude)
 - 2026-10-05 22:50:50 CEST — **Slice A code complete, two days early** (Codex Tasks A1–A6, 105 tests; Claude recorded 61 fixtures and reviewed every path): offline map of 30 controller paths = 24 verified · 2 contradictions (validator and liquidity gauges: chain says DAO governance account; the contract page says council 3/5 / none) · 4 unresolved (mSOL program upgrade authority `551FBX…`; Native Yield/Select staker authorities and exit authority, all PDAs without an identifying derivation). Program-derived PDAs proven for the mSOL mint authority (`st_mint`), LP mint authority (`liq_mint`), stake withdraw authority (`withdraw`) and treasury reserve (`reserve`). The two docs-listed Treasury mSOL accounts are owned by plain wallets `89Srbj…` and `7Q42pB…` (verified as wallets; operator identity unknown). Buyback wallet's MNDE account holds 201,227 MNDE at capture. Merge into `main` after Demo Day; Slice B gate on Fri 9 Oct. (Claude)
+- 2026-10-05 23:04:24 CEST — Slice B.1 added and dispatched (D-2026-10-05-13); Helius key and Aura Free decided (D-14, D-15). (Claude)

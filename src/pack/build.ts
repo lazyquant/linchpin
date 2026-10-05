@@ -6,6 +6,8 @@ import { associatedTokenAccount, classifyAuthority, listGovernances, readMintSta
 import { supplyStatement, type KnownBurn, type SupplyClaim } from "./supply";
 import type { ControllerPath, PackClaim, PackPacket, Status } from "./model";
 import { deriveLiquidStakingAddresses } from "./derive";
+import { MARINADE_PROGRAM_VERSION } from "../config";
+import { buildTreasuryLedger, emptyTreasuryLedger, listRealmProposals } from "./ledger";
 
 export type RegistryClaim = SupplyClaim & { certainty?: string; retrievedAt?: string };
 type Entry = { id: string; address: string; role?: string; claims?: RegistryClaim[] };
@@ -15,7 +17,7 @@ export type PackRegistry = {
   governance: { program: string; realm: string; councilMint: string; knownGovernances: { address: string }[]; claims: RegistryClaim[] };
   valueRouteClaims: (RegistryClaim & { id: string; check?: string })[]; unknownsSeed: string[];
 };
-export type PackFile = { pack: string; registry: string; docsCapture: string; title: string; burns?: Record<string, KnownBurn[]> };
+export type PackFile = { pack: string; registry: string; docsCapture: string; title: string; burns?: Record<string, KnownBurn[]>; ledger?: { enabled: boolean; maxProposals?: number; programVersion?: number } };
 export type DocsCapture = { retrievedAt: string };
 const unique = (ids: string[]) => [...new Set(ids)];
 
@@ -30,7 +32,7 @@ function expectedController(claim: RegistryClaim): string | null {
 }
 
 export async function buildPack(rpc: RecordingRpc, registry: PackRegistry, options: {
-  title?: string; docsCapture?: DocsCapture; burns?: Record<string, KnownBurn[]>; generatedAt?: string;
+  title?: string; docsCapture?: DocsCapture; burns?: Record<string, KnownBurn[]>; generatedAt?: string; ledger?: PackFile["ledger"];
 } = {}): Promise<PackPacket> {
   const generatedAt = options.generatedAt ?? new Date().toISOString();
   const paths: ControllerPath[] = []; const statements: PackPacket["statements"] = []; const claims: PackClaim[] = [];
@@ -182,11 +184,23 @@ export async function buildPack(rpc: RecordingRpc, registry: PackRegistry, optio
     const firstSeen = rpc.evidence.filter(e => row.evidenceIds.includes(e.id)).map(e => e.retrievedAt).sort()[0] ?? generatedAt;
     unknowns.push({ id: `${row.subject}-${row.authorityType}`, text: `${row.role} (${row.subject}), ${row.authorityType}: ${row.note}`, firstSeen });
   }
+  let ledger = emptyTreasuryLedger("ledger disabled");
+  if (options.ledger?.enabled) {
+    try {
+      const proposals = await listRealmProposals(rpc, ctx.program, new PublicKey(registry.governance.realm));
+      ledger = await buildTreasuryLedger(rpc, ctx.program, options.ledger.programVersion ?? MARINADE_PROGRAM_VERSION, proposals, {
+        maxProposals: options.ledger.maxProposals, nativeTreasuries: discovery.governances.map(g => g.nativeTreasury),
+      });
+    } catch (error) {
+      if (!rpc.opts.offline || !(error instanceof Error) || !error.message.startsWith("offline: fixture missing for ")) throw error;
+      ledger = emptyTreasuryLedger("ledger not recorded yet");
+    }
+  }
   const slots = rpc.evidence.flatMap(e => e.slot == null ? [] : [e.slot]);
   if (!slots.length) throw new Error("pack: no recorded context slots available");
   const coverage = { total: paths.length, verified: 0, claimed: 0, contradiction: 0, unresolved: 0 };
   for (const row of paths) if (row.status !== "outside-scope") coverage[row.status]++;
   return { pack: registry.pack, title: options.title ?? registry.title, generatedAt, offline: rpc.opts.offline,
     asOfSlotRange: [Math.min(...slots), Math.max(...slots)], researchQuestion: registry.researchQuestion, controllerPaths: paths,
-    statements, claims, unknowns, coverage, evidenceCount: rpc.evidence.length };
+    statements, claims, unknowns, coverage, ledger, evidenceCount: rpc.evidence.length };
 }

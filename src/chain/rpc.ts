@@ -6,6 +6,12 @@ import type { RunOptions } from "../config";
 
 type Recorded<T> = { value: T; evidence: Evidence };
 
+/** Persist endpoint identity only; credentials, query strings and fragments are private. */
+function redactedRpcUrl(value: string): string {
+  const url = new URL(value);
+  return `${url.protocol}//${url.host}${url.pathname}`;
+}
+
 export class RecordingRpc {
   readonly connection: Connection;
   readonly evidence: Evidence[] = [];
@@ -22,7 +28,7 @@ export class RecordingRpc {
       if (!existsSync(path)) throw new Error(`offline: fixture missing for ${method} → ${path}`);
       const fx = JSON.parse(readFileSync(path, "utf8"));
       const value = revive(fx.response);
-      const evidence: Evidence = { id: sha256(`${method}${canonical(params)}${fx.responseSha256}`), method, params, slot: fx.slot, retrievedAt: fx.retrievedAt, rpcUrl: fx.rpcUrl, responseSha256: fx.responseSha256, source: "fixture" };
+      const evidence: Evidence = { id: sha256(`${method}${canonical(params)}${fx.responseSha256}`), method, params, slot: fx.slot, retrievedAt: fx.retrievedAt, rpcUrl: redactedRpcUrl(fx.rpcUrl), responseSha256: fx.responseSha256, source: "fixture" };
       this.evidence.push(evidence);
       return { value, evidence };
     }
@@ -30,11 +36,12 @@ export class RecordingRpc {
     const response = serialize(value);
     const responseSha256 = sha256(canonical(response));
     const retrievedAt = new Date().toISOString();
-    const evidence: Evidence = { id: sha256(`${method}${canonical(params)}${responseSha256}`), method, params, slot, retrievedAt, rpcUrl: this.opts.rpcUrl, responseSha256, source: "rpc" };
+    const rpcUrl = redactedRpcUrl(this.opts.rpcUrl);
+    const evidence: Evidence = { id: sha256(`${method}${canonical(params)}${responseSha256}`), method, params, slot, retrievedAt, rpcUrl, responseSha256, source: "rpc" };
     this.evidence.push(evidence);
     if (this.opts.record) {
       mkdirSync(join(this.opts.fixturesDir, this.caseId), { recursive: true });
-      writeFileSync(path, JSON.stringify({ method, params, slot, retrievedAt, rpcUrl: this.opts.rpcUrl, responseSha256, response }, null, 1));
+      writeFileSync(path, JSON.stringify({ method, params, slot, retrievedAt, rpcUrl, responseSha256, response }, null, 1));
     }
     return { value, evidence };
   }

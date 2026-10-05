@@ -87,13 +87,14 @@ async function pack(packPath: string) {
   if (config.pack !== registry.pack) throw new Error("pack: config and registry pack names differ");
   const opts = runOptions({ offline: flag("offline"), record: flag("record"), outDir: opt("out", join("out", `pack-${config.pack}`)) });
   const rpc = new RecordingRpc(opts, `${config.pack}-pack`);
-  const packet = await buildPack(rpc, registry, { title: config.title, docsCapture, burns: config.burns });
+  const packet = await buildPack(rpc, registry, { title: config.title, docsCapture, burns: config.burns, ledger: config.ledger });
   mkdirSync(opts.outDir, { recursive: true });
   writeFileSync(join(opts.outDir, "packet.json"), renderJson(packet));
   writeFileSync(join(opts.outDir, "packet.html"), renderPackHtml(packet, registry.governance.realm));
   // A packet has one evidence log: repeat offline runs replace, rather than append.
   writeFileSync(join(opts.outDir, "evidence.jsonl"), rpc.evidence.map(e => JSON.stringify(e)).join("\n") + "\n");
   console.log(coverageLine(packet));
+  if (config.ledger?.enabled) console.log(`Ledger: ${packet.ledger.entries.length} entries · ${packet.ledger.proposalsScanned} proposals scanned${packet.ledger.notes.includes("ledger not recorded yet") ? " · ledger not recorded yet" : ""}`);
   console.log(`${config.pack}: ${packet.evidenceCount} evidence → ${join(opts.outDir, "packet.html")}`);
 }
 

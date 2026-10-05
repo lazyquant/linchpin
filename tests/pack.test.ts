@@ -69,9 +69,17 @@ test("recorded liquid-staking authorities follow matching candidate seeds", () =
 test.each([
   ["B1aLzaNMeFVAyQ6f3XbbUyKcH2YPHu2fqiEagmiF23VR", "89SrbjbuNyqSqAALKBsKBqMSh463eLvzS4iVWCeArBgB"],
   ["8ZUcztoAEhpAeC2ixWewJKQJsSUGYSGPVAjkhDJYf5Gd", "7Q42pBSxR8bbWJkhSQZLDqpcR9xCv9z3zBSGPc7PdXkt"],
-])("uncaptured treasury token owner stays unresolved for %s", (subject, owner) => {
+])("uncaptured treasury token owner stays unresolved for %s", async (subject, owner) => {
   expect(deriveLiquidStakingAddresses().some(candidate => candidate.address === owner)).toBe(false);
-  const row = packet.controllerPaths.find(p => p.subject === subject)!;
+  // Explicitly exercise missing capture: later recordings may include this owner.
+  const missingOwnerRpc = offlineRpc();
+  const getAccountInfo = missingOwnerRpc.getAccountInfo.bind(missingOwnerRpc);
+  missingOwnerRpc.getAccountInfo = async address => {
+    if (address.toBase58() === owner) throw new Error("offline: fixture missing for getAccountInfo → synthetic missing owner");
+    return getAccountInfo(address);
+  };
+  const missingOwnerPacket = await buildPack(missingOwnerRpc, registry, { ...config, docsCapture, generatedAt });
+  const row = missingOwnerPacket.controllerPaths.find(p => p.subject === subject)!;
   expect(row).toMatchObject({ authority: owner, path: [subject, owner], status: "unresolved", authorityKind: "unclassified-token-owner" });
   expect(row.note).toContain("owner not yet captured");
   expect(row.evidenceIds.length).toBeGreaterThan(0);

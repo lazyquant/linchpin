@@ -16,6 +16,21 @@ function tempDir() {
 afterEach(() => { for (const dir of tempDirs.splice(0)) rmSync(dir, { recursive: true, force: true }); });
 
 describe("RecordingRpc", () => {
+  test("redacts RPC secrets from evidence, fixture files and offline replay", async () => {
+    const fixturesDir = tempDir();
+    const pk = new PublicKey("11111111111111111111111111111111");
+    const recorder = new RecordingRpc(runOptions({ offline: false, record: true, fixturesDir, rpcUrl: "https://user:password@mainnet.helius-rpc.com/?api-key=SECRET#private" }), "redacted");
+    recorder.connection.getBalanceAndContext = async () => ({ context: { slot: 42 }, value: 5 });
+    const live = await recorder.getBalance(pk);
+    expect(live.evidence.rpcUrl).toBe("https://mainnet.helius-rpc.com/");
+    expect(JSON.stringify(recorder.evidence)).not.toContain("SECRET");
+    const fixture = readFileSync(join(fixturesDir, "redacted", `${fixtureKey("getBalance", { pubkey: pk.toBase58() })}.json`), "utf8");
+    for (const secret of ["SECRET", "user", "password", "private"]) expect(fixture).not.toContain(secret);
+    expect(JSON.parse(fixture).rpcUrl).toBe("https://mainnet.helius-rpc.com/");
+    const replayer = new RecordingRpc(runOptions({ offline: true, fixturesDir, rpcUrl: "http://127.0.0.1:1" }), "redacted");
+    const replay = await replayer.getBalance(pk);
+    expect(replay.evidence).toMatchObject({ id: live.evidence.id, rpcUrl: live.evidence.rpcUrl, source: "fixture" });
+  });
   test("records a fixture and replays it offline with the same evidence id", async () => {
     const fixturesDir = tempDir();
     const pk = new PublicKey("GR1LBT4cU89cJWE74CP6BsJTf2kriQ9TX59tbDsfxgSi");
