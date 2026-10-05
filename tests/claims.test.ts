@@ -15,4 +15,10 @@ describe("coverage", () => {
     const c = coverage([], [burn], { decimals: 9, claimedPreSupplyRaw: null });
     expect(c.find((x) => x.claimId === null)?.status).toBe("omitted-from-claims");
   });
+  test("claiming one burn effect covers both effects of the same instruction", () => {
+    const move = { id: "fx-0-move", type: "treasuryMovement" as const, basis: "decoded" as const, flags: [], evidenceIds: [], detail: { amountRaw: "300000000000000000" } };
+    const c = coverage([{ id: "c1", text: "Burn 30% of MNDE Total Supply", source: "on-chain proposal name", sourceRef: "x", retrievedAt: "2026-10-05", kind: "percentOfSupply", percent: 30 }], [burn, move], { decimals: 9, claimedPreSupplyRaw: 1000000000000000000n });
+    expect(c[0]).toMatchObject({ claimId: "c1", effectId: "fx-0-supply", status: "covered-under-assumption" });
+    expect(c.some((x) => x.status === "omitted-from-claims")).toBe(false);
+  });
 });

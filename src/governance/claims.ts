@@ -30,7 +30,8 @@ export function coverage(claims: Claim[], effects: Effect[], ctx: { decimals: nu
     }
     out.push({ claimId: c.id, effectId: e.id, status: "unchecked", note: "free-text or range claim; shown for the reviewer, not machine-checked" });
   }
-  const claimedEffectIds = new Set(out.map((o) => o.effectId).filter(Boolean));
-  for (const e of movements) if (!claimedEffectIds.has(e.id)) out.push({ claimId: null, effectId: e.id, status: "omitted-from-claims", note: "decoded effect not mentioned by any captured claim; review, do not assume intent" });
+  const instructionKey = (id: string) => id.replace(/-(supply|move)$/, "");
+  const claimedEffectIds = new Set(out.flatMap((o) => o.effectId ? [instructionKey(o.effectId)] : []));
+  for (const e of movements) if (!claimedEffectIds.has(instructionKey(e.id))) out.push({ claimId: null, effectId: e.id, status: "omitted-from-claims", note: "decoded effect not mentioned by any captured claim; review, do not assume intent" });
   return out;
 }
