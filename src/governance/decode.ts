@@ -3,7 +3,9 @@ import { TOKEN_PROGRAM, TOKEN_2022_PROGRAM } from "../chain/token-layout";
 import type { RawInstruction } from "./reader";
 
 export const DECODER_VERSION = "spl-token-legacy@1";
+export const ASSOCIATED_TOKEN_PROGRAM = "ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL";
 export type Decoded =
+  | { kind: "createAccount"; program: string; account: string; owner: string; mint: string; payer: string; idempotent: boolean; decoderVersion: string }
   | { kind: "burn"; program: string; amountRaw: bigint; decimals: number | null; source: string; mint: string; authority: string; decoderVersion: string }
   | { kind: "transfer"; program: string; amountRaw: bigint; decimals: number | null; source: string; mint: string | null; destination: string; authority: string; decoderVersion: string }
   | { kind: "mintTo"; program: string; amountRaw: bigint; decimals: number | null; mint: string; destination: string; authority: string; decoderVersion: string }
@@ -18,6 +20,11 @@ export function decodeInstruction(ix: RawInstruction): Decoded {
   const isToken = program === TOKEN_PROGRAM.toBase58() || program === TOKEN_2022_PROGRAM.toBase58();
   const data = Buffer.from(ix.dataHex, "hex");
   const a = (i: number) => ix.accounts[i]?.pubkey ?? "";
+  if (program === ASSOCIATED_TOKEN_PROGRAM) {
+    const create = ix.dataHex === "" || ix.dataHex === "00" || ix.dataHex === "01";
+    if (create && ix.accounts.length >= 6) return { kind: "createAccount", program, account: a(1), owner: a(2), mint: a(3), payer: a(0), idempotent: ix.dataHex === "01", decoderVersion: DECODER_VERSION };
+    return { kind: "unsupported", program, reason: create ? "malformed associated token account creation: requires six accounts" : ix.dataHex === "02" ? "recover nested not supported" : "associated token instruction not supported", dataHex: ix.dataHex, decoderVersion: DECODER_VERSION };
+  }
   if (!isToken) return { kind: "unsupported", program, reason: "program not supported by this decoder", dataHex: ix.dataHex, decoderVersion: DECODER_VERSION };
   if (data.length < 1) return { kind: "unsupported", program, reason: "empty data", dataHex: ix.dataHex, decoderVersion: DECODER_VERSION };
   const tag = data[0];

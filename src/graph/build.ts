@@ -31,6 +31,7 @@ export function buildGraph(b: ProposalBundle, decoded: Decoded[], effects: Effec
       const d = decoded[decodedIndex++];
       const ins = add({ id: `ix:${t.address}:${ii}`, type: "Instruction", label: d.kind === "unsupported" ? `Unsupported (${ix.programId.slice(0, 6)}…)` : d.kind, props: { program: ix.programId } });
       edges.push({ from: tx, to: ins, type: "CONTAINS_INSTRUCTION", basis: "decoded", evidenceIds: [t.evidenceId] });
+      if (d.kind === "createAccount") edges.push({ from: ins, to: add({ id: `ta:${d.account}`, type: "TokenAccount", label: `Token account ${d.account.slice(0, 6)}…` }), type: "CREATES", basis: "decoded", evidenceIds: [t.evidenceId] });
       if (d.kind === "burn" || d.kind === "transfer") edges.push({ from: ins, to: `ta:${d.source}`, type: "DEBITS", basis: "decoded", evidenceIds: [t.evidenceId] });
       if (d.kind === "burn") edges.push({ from: ins, to: `mint:${d.mint}`, type: "BURNS_FROM", basis: "decoded", evidenceIds: [t.evidenceId] });
       if (d.kind === "transfer") edges.push({ from: ins, to: add({ id: `ta:${d.destination}`, type: "TokenAccount", label: `Token account ${d.destination.slice(0, 6)}…` }), type: "CREDITS", basis: "decoded", evidenceIds: [t.evidenceId] });

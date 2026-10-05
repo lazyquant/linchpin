@@ -17,6 +17,24 @@ function receipt(txIndex = 0): Receipt {
   ] };
 }
 
+test("receipts without token movements are not reconcilable; unknowns do not invalidate matching movements", async () => {
+  const { bundle } = await offlineMip14();
+  const ptx = bundle.transactions[0];
+  const unknown = { kind: "unsupported" as const, program: "Other", reason: "unsupported", dataHex: "", decoderVersion: "v" };
+  for (const success of [true, false]) {
+    const rec = reconcileReceipt([unknown], ptx, { ...receipt(), success });
+    expect(rec.status).toBe("not-reconcilable");
+    expect(rec.notes).toContain(`no decoded token movement in this transaction; receipt found, ${success ? "success" : "failed"}`);
+    expect(checks(bundle, [], [], [rec]).find((r) => r.check === "Observed execution")!.needsReview).toBe(false);
+  }
+  expect(reconcileReceipt([transfer, unknown], ptx, receipt()).status).toBe("matched");
+  const mismatch = reconcileReceipt([transfer], ptx, { ...receipt(), success: false });
+  const missing = reconcileReceipt([transfer], { ...ptx, address: "missing-address" }, null);
+  const row = checks(bundle, [], [], [mismatch, missing]).find((r) => r.check === "Observed execution")!;
+  expect(row.needsReview).toBe(true);
+  expect(row.result).toBe(`matched 0/2 token movements; ${ptx.address}: mismatch; missing-address: receipt-not-found`);
+});
+
 test("every source movement reconciles, including multiple debits from one source and net credits", async () => {
   const { bundle } = await offlineMip14();
   const ptx = bundle.transactions[0];
@@ -103,9 +121,9 @@ test("CLI pipeline visits every transaction, leaves unknowns unreconciled, and l
   expect(previews).toBe(2); // Only the historical payload for each transaction.
   expect(packet.simulated.map((s) => s.txIndex)).toEqual([0, 1]);
   expect(packet.observed.receipts.map((r) => r.txIndex)).toEqual([0, 1]);
-  expect(packet.observed.reconciliations.map((r) => r.status)).toEqual(["matched", "mismatch"]);
-  expect(packet.dimensions.execution_status).toBe("observed: 1 of 2 matched");
-  expect(packet.checks.find((c) => c.check === "Observed execution")!.result).toStartWith("matched 1/2");
+  expect(packet.observed.reconciliations.map((r) => r.status)).toEqual(["matched", "not-reconcilable"]);
+  expect(packet.dimensions.execution_status).toBe("observed: all token movements match (1/1); 1 executed transactions not reconcilable");
+  expect(packet.checks.find((c) => c.check === "Observed execution")!.result).toBe("matched 1/1 token movements, 1 executed transactions without token movements (unsupported or non-token instructions)");
   expect(packet.graph.edges.some((e) => e.type === "CONFIRMS" && e.to === "effect:fx-1-0")).toBe(false);
   const html = renderHtml(packet);
   expect(html).toContain("fixture skipped: source balance is 0 at capture");
@@ -123,11 +141,14 @@ test("CLI pipeline visits every transaction, leaves unknowns unreconciled, and l
 test("execution dimensions distinguish all matched, partially matched, missing and unexecuted receipts", async () => {
   const { bundle } = await offlineMip14();
   const base = { account: null, expectedDeltaRaw: null, observedDeltaRaw: null, notes: [] };
-  const status = (statuses: ("matched" | "mismatch" | "receipt-not-found" | "not-executed")[]) => dimensions(bundle, [], [], [], statuses.map((status) => ({ ...base, status }))).execution_status;
-  expect(status(["matched", "matched"])).toBe("observed: all receipts match decoded effects");
-  expect(status(["matched", "receipt-not-found"])).toBe("observed: 1 of 2 matched");
-  expect(status(["mismatch", "mismatch"])).toBe("observed: 0 of 2 matched");
+  const status = (statuses: ("matched" | "mismatch" | "not-reconcilable" | "receipt-not-found" | "not-executed")[]) => dimensions(bundle, [], [], [], statuses.map((status) => ({ ...base, status }))).execution_status;
+  expect(status(["matched", "matched"])).toBe("observed: all token movements match (2/2)");
+  expect(status(["matched", "receipt-not-found"])).toBe("observed: 1 of 2 token movements matched");
+  expect(status(["mismatch", "mismatch"])).toBe("observed: 0 of 2 token movements matched");
   expect(status(["receipt-not-found"])).toBe("receipt-not-found");
+  expect(status(["not-reconcilable"])).toBe("observed: all token movements match (0/0); 1 executed transactions not reconcilable");
+  expect(status(["matched", "not-reconcilable"])).toBe("observed: all token movements match (1/1); 1 executed transactions not reconcilable");
+  expect(status(["matched", "not-reconcilable", "receipt-not-found"])).toBe("observed: 1 of 2 token movements matched");
   bundle.transactions[0].executedAt = null;
   expect(status(["not-executed"])).toBe("not executed");
   bundle.transactions = [];

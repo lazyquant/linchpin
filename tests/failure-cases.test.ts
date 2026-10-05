@@ -90,8 +90,8 @@ describe("governance failure cases", () => {
     const historical = packet.simulated.find((s) => s.kind === "historical-payload");
     expect(historical).toMatchObject({ success: false, mode: "conditional-preview", error: { InstructionError: [0, { Custom: 1 }] } });
     expect(historical?.logs.join("\n")).toContain("insufficient funds");
-    expect(packet.dimensions.simulation_result).toContain("historical-payload: failed");
-    expect(packet.dimensions.execution_status).toBe("observed: all receipts match decoded effects");
+    expect(packet.dimensions.simulation_result).toContain(`${historical!.label}: failed`);
+    expect(packet.dimensions.execution_status).toBe("observed: all token movements match (1/1)");
     expect(packet.observed.reconciliations[0]).toMatchObject({ status: "matched", observedDeltaRaw: "-300000000000000000" });
     expect(packet.simulated.find((s) => s.kind === "fixture")?.success).toBe(true);
     expect(context.rpc.evidence.every((e) => e.source === "fixture")).toBe(true);

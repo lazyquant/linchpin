@@ -30,6 +30,7 @@ const short = (address: string) => `<span title="${esc(address)}">${esc(address.
 function decodedLine(d: Decoded, instructionKey: string, effects: Effect[]): string {
   if (d.kind === "unsupported") return `Unsupported instruction · program ${short(d.program)} · ${esc(d.reason)} <code>${esc(d.dataHex)}</code>`;
   if (d.kind === "setAuthority") return `Set ${esc(d.authorityType)} authority of ${short(d.target)}: ${short(d.currentAuthority)} → ${d.newAuthority == null ? "none" : short(d.newAuthority)}`;
+  if (d.kind === "createAccount") return `Create token account ${short(d.account)} for owner ${short(d.owner)} · mint ${short(d.mint)}${d.idempotent ? " · idempotent" : ""}`;
   const effect = effects.find((e) => e.id === `${instructionKey}-${d.kind === "transfer" ? "move" : "supply"}`);
   const decimals = effect?.detail.decimals ?? (d.kind === "burn" ? null : d.decimals);
   const amount = typeof decimals === "number" ? formatUnits(d.amountRaw, decimals) : `${d.amountRaw} raw`;
@@ -46,7 +47,9 @@ export function renderHtml(p: Packet): string {
   const simulated = (p.simulated.length ? p.simulated.map((s) => `<div class="sim ${s.success ? "ok" : "fail"}"><b>${esc(s.kind)}</b> · ${s.success ? "success" : "failed"} · slot ${s.contextSlot} · ${esc(s.label)}<details><summary>assumptions and logs</summary><ul>${s.assumptions.map((a) => `<li>${esc(a)}</li>`).join("")}</ul><pre>${esc(s.logs.join("\n"))}</pre>${s.error ? `<pre>${esc(JSON.stringify(s.error))}</pre>` : ""}</details></div>`).join("") : "<p>Not simulated.</p>") + p.skippedFixtures.map((s) => `<p>Transaction ${s.txIndex}, instruction ${s.ixIndex}: ${esc(s.reason)}</p>`).join("");
   const observed = p.observed.receipts.map((r) => {
     const rec = p.observed.reconciliations.find((rec) => rec.proposalTransaction === r.proposalTransaction);
-    return `<p><b>${esc(rec?.status ?? "unreconciled")}</b> · proposal transaction <code>${esc(r.proposalTransaction)}</code> · tx <code>${esc(r.signature)}</code> · slot ${r.slot} · ${ts(r.blockTime)}</p><ul>${r.tokenBalances.map((b) => `<li>${esc(b.account.slice(0, 8))}… ${esc(b.preRaw)} → ${esc(b.postRaw)} (Δ ${esc(b.deltaRaw)})</li>`).join("")}</ul>${rec?.notes.length ? `<ul class="notes">${rec.notes.map((n) => `<li>${esc(n)}</li>`).join("")}</ul>` : ""}`;
+    const offset = r.blockTime == null || p.proposal.votingCompletedAt == null ? null : r.blockTime - p.proposal.votingCompletedAt;
+    const timing = offset == null ? "timing unavailable" : `${offset >= 0 ? "+" : ""}${offset} s after voting completed`;
+    return `<p><span title="${esc(r.proposalTransaction)}">tx ${r.txIndex + 1}/${p.observed.reconciliations.length}</span> · ${short(r.signature)} · slot ${r.slot} · ${timing} · <b>${esc(rec?.status ?? "unreconciled")}</b></p><ul>${r.tokenBalances.map((b) => `<li>${esc(b.account.slice(0, 8))}… ${esc(b.preRaw)} → ${esc(b.postRaw)} (Δ ${esc(b.deltaRaw)})</li>`).join("")}</ul>${rec?.notes.length ? `<ul class="notes">${rec.notes.map((n) => `<li>${esc(n)}</li>`).join("")}</ul>` : ""}`;
   }).join("") + p.observed.reconciliations.filter((r) => r.status === "not-executed" || r.status === "receipt-not-found").map((r) => `<p>${esc(r.proposalTransaction)}: ${esc(r.status)}: ${esc(r.notes.join("; "))}</p>`).join("") || "<p>not executed: no proposal transactions</p>";
   const checksHtml = `<table><tr><th>Check</th><th>Result</th><th>Basis</th><th>Review</th></tr>${p.checks.map((c) => `<tr class="${c.needsReview ? "review" : ""}"><td>${esc(c.check)}</td><td>${esc(c.result)}</td><td>${esc(c.basis)}</td><td>${c.needsReview ? "needs review" : "—"}</td></tr>`).join("")}</table>`;
   const dims = `<table>${Object.entries(p.dimensions).map(([k, v]) => `<tr><th>${esc(k)}</th><td>${esc(v)}</td></tr>`).join("")}</table>`;

@@ -1,6 +1,25 @@
 import { describe, expect, test } from "bun:test";
 import type { Receipt } from "../src/governance/receipt";
 import { attachReceiptShares, effectsFromDecoded } from "../src/governance/effects";
+import type { IndexedDecoded } from "../src/governance/effects";
+import { checks } from "../src/review/checks";
+import { offlineMip14 } from "./helpers";
+
+test("account creation flags transfer destinations across proposal transactions", async () => {
+  const { bundle } = await offlineMip14();
+  const creation: IndexedDecoded = { txIndex: 0, ixIndex: 0, decoded: { kind: "createAccount", program: "ATA", account: "destination", owner: "recipient", mint: "mint", payer: "payer", idempotent: true, decoderVersion: "v" } };
+  const transfer: IndexedDecoded = { txIndex: 3, ixIndex: 0, decoded: { kind: "transfer", program: "Token", source: "source", destination: "destination", mint: "mint", authority: "treasury", amountRaw: 1n, decimals: 0, decoderVersion: "v" } };
+  const effects = effectsFromDecoded([creation, transfer], bundle, { nativeTreasury: "treasury" });
+  expect(effects[0]).toEqual({ id: "fx-0-0", type: "accountCreation", basis: "decoded", detail: { account: "destination", owner: "recipient", mint: "mint", payer: "payer", idempotent: true }, flags: ["creates-transfer-destination"], evidenceIds: [] });
+  const row = checks(bundle, effects, [], []).find((r) => r.check === "Account creation")!;
+  expect(row.needsReview).toBe(true);
+  expect(row.result).toContain("acct destin… (owner recipi…, mint mint…)");
+  expect(row.result).toContain("account destination");
+  expect(row.result).toEndWith("— destination of the treasury transfer in this proposal");
+  const isolated = effectsFromDecoded([creation], bundle, { nativeTreasury: "treasury" });
+  expect(isolated[0].flags).toEqual([]);
+  expect(checks(bundle, isolated, [], []).find((r) => r.check === "Account creation")!.needsReview).toBe(false);
+});
 
 describe("effectsFromDecoded", () => {
   const state = { tokenAccounts: { GR: { mint: "MNDE", owner: "B56", amountRaw: 153600023536334850n, slot: 453651973, evidenceId: "e-ta" } }, mints: { MNDE: { supplyRaw: 699997047681352988n, decimals: 9, mintAuthority: null, freezeAuthority: null, slot: 453651973, evidenceId: "e-mint" } } };

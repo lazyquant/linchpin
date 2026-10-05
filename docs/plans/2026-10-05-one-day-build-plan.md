@@ -1409,6 +1409,20 @@ Expected: both packets render; the header says "offline replay". Commit nothing 
 
 Agentic OS tasks (cockpit only), Neo4j, LangGraph, Python core, MIP-21, BONK, voter-weight analysis, a web server, authentication, a hosted demo, the logo (after Demo Day, before the Colosseum submission), Colosseum videos (after Demo Day).
 
+## Addendum 2026-10-05 evening — Task 14: BonkDAO BIP-76 as the second case (D-2026-10-05-9)
+
+**Why now:** the base loop finished on day 0, and Peter asked for the BonkDAO event next. The spec allowed a reconstructed BONK case only after the base loop; that condition is met.
+
+**Verified identities (Claude, public RPC, 2026-10-05):** program `GovER5Lthms3bLBqWub97yVrMmEogzX7xNjdXpPPCVZw` (default Realms program, logs 3.1.4; the SDK reports 1 because no metadata account exists, so the case file pins version 3; versions 2 and 3 derive the same transaction addresses) · realm `84pGFuy1Y27ApK67ApethaPvexeDWA66zNV8gm38TVeQ` "Bonk DAO" · proposal `6wR1jdhhJ31bbdRNXva8MxqsgsNLKTxargcdAyZ7FcRj` "BIP # 76 - Sowellian BonkDAO", one option, four instructions, description on chain names the transfer and the destination · governance `Uq5BRkVfdBpMknZJHw6huS3dunEgJpUDv3M2DG3BfQg`, native treasury `AGkGWK1R669KDT4FCqgDgK7PgahGJPjD4J9xmVjuL9kn`, hold-up 0, voting 5 d + cool-off 1 d, community threshold 1 %, council veto 60 % · proposal transactions `4oZNDZ…` and `6zvWWw…` (program `metaThtkusoWYDvHBFXfvc93Z3d8iBeDZ4DVyq8SYVR`, unsupported), `FMe1f7…` (Associated Token Account program: creates the destination account), `5y9dZT…` (TransferChecked 442610445030596600 raw = 4,426,104,450,305.966 BONK, 5 decimals, from `F8FqZu…` to `28Ayms…`) · execution tx `5tPU1srcRcnmibB7KJi2WQ7cK4zuq5iKTMrSCLjq7hvGjuK4KUTmaHfwicixkJa5jZJmp3y98T7r2qecKV5mWw8P`, slot 431127240, 2026-07-06 08:26:28 UTC; source 442610445030596633 → 33 raw, destination 0 → 442610445030596600 · votes: approve 88238338728379189 raw (1.0028 % of max vote weight 8799471339760304184) against a 1 % YesVotePercentage threshold, deny 71084828877388; executed 38–49 s after voting completed.
+
+**Code changes (Codex, Task 14):** reader exposes max vote weight, vote threshold and execution delay; the pipeline handles all proposal transactions (effects, receipts and reconciliations per transaction; graph edges from the exact instruction); new "Vote outcome" check with `thin-margin` and `no-hold-up` flags; destination pre-balance from the receipt with a `destination-empty-before` flag; generic `fixtureFor` (burn or transfer of min(1 token, balance), skipped at zero balance); case file `cases/bonk-bip76.json` with verbatim report quotes from `cases/sources/bonk-bip76-reports.json`; `demo` runs three cases. **Claude:** records `fixtures/bonk-bip76`, verifies, commits, tags `v0.2-demo`.
+
+**Wording rule for this case:** post-hoc reconstruction; no detection claim; USD values and voter counts are the outlets' claims; "the description matched the payload" is the headline, the flags are facts.
+
 ## Log
 
 - 2026-10-05 — Plan written by Claude from the project memory, two read-only spikes on public RPC and Peter's four decisions. Next: Task 0 dispatched to Codex. (Claude)
+- 2026-10-05 20:25 CEST — Task 0 done by Claude (Codex's sandbox blocked `bun init`: no network, no home-folder writes); scaffold committed `7f31581`. Tasks 1–2 dispatched to Codex. (Claude)
+- 2026-10-05 20:28:36 CEST — Tasks 0–12 complete on day 0 (Mon evening): demo loop works offline, 24 tests green, README + demo script written. Tuesday becomes polish, dry runs and pitch rehearsal instead of a build day. Coverage fix: effects of one instruction are covered together (false 'omission' removed). Polish task 13 (readable decoded lines, receipt-based treasury share, light theme) in progress. (Claude)
+- 2026-10-05 20:32:23 CEST — Task 13 polish done; `v0.1-demo` tagged and pushed; 28 tests; demo verified offline and visually. Plan executed in one evening. (Claude)
+- 2026-10-05 20:46:51 CEST — Addendum for Task 14 (BonkDAO) written; Codex implementing. (Claude)

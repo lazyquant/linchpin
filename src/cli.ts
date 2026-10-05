@@ -4,6 +4,7 @@ import { PublicKey } from "@solana/web3.js";
 import { getGovernanceProgramVersion } from "@solana/spl-governance";
 import { runOptions } from "./config";
 import { RecordingRpc } from "./chain/rpc";
+import { formatUnits } from "./chain/token-layout";
 import { readProposalBundle, type ProposalBundle } from "./governance/reader";
 import { decodeInstruction } from "./governance/decode";
 import { attachReceiptShares, effectsFromDecoded } from "./governance/effects";
@@ -48,7 +49,8 @@ export async function reviewBundle(c: CaseFile, rpc: RecordingRpc, bundle: Propo
     if (!ptx.instructions.length) continue;
     const treasury = new PublicKey(bundle.governance.nativeTreasury);
     const tokenAccounts = Object.keys(bundle.tokenAccounts).map((k) => new PublicKey(k)); const mints = Object.keys(bundle.mints).map((k) => new PublicKey(k));
-    sims.push({ ...await simulateConditionalPreview(rpc, { kind: "historical-payload", label: `${c.caseId} payload against current state`, instructions: ptx.instructions.map(toTransactionInstruction), feePayer: treasury, watch: { tokenAccounts, mints }, assumptions: PREVIEW_ASSUMPTIONS }), txIndex });
+    const payloadKinds = decodedForThatTx.map(({ decoded: d }) => d.kind === "unsupported" ? `${d.program.slice(0, 6)}…` : d.kind).join(", ");
+    sims.push({ ...await simulateConditionalPreview(rpc, { kind: "historical-payload", label: `tx ${txIndex + 1}/${bundle.transactions.length} ${ptx.address.slice(0, 6)}… · ${payloadKinds} payload against current state`, instructions: ptx.instructions.map(toTransactionInstruction), feePayer: treasury, watch: { tokenAccounts, mints }, assumptions: PREVIEW_ASSUMPTIONS }), txIndex });
     if (!(c.fixture.oneToken ?? c.fixture.burnOneToken)) continue;
     for (const { decoded: d, ixIndex } of decodedForThatTx) {
       if (d.kind !== "burn" && d.kind !== "transfer") continue;
@@ -64,7 +66,8 @@ export async function reviewBundle(c: CaseFile, rpc: RecordingRpc, bundle: Propo
         skippedFixtures.push({ txIndex, ixIndex, reason: "fixture skipped: source balance is 0 at capture" });
         continue;
       }
-      sims.push({ ...await simulateConditionalPreview(rpc, { kind: "fixture", label: fixture.label, instructions: [fixture.instruction], feePayer: treasury, watch: { tokenAccounts, mints }, assumptions: [...PREVIEW_ASSUMPTIONS, "amount replaced by at most one whole token, capped at the source balance at capture"] }), txIndex, ixIndex });
+      const amount = fixture.instruction.data.readBigUInt64LE(1);
+      sims.push({ ...await simulateConditionalPreview(rpc, { kind: "fixture", label: `fixture tx ${txIndex + 1}/${bundle.transactions.length}: ${d.kind} ${formatUnits(amount, decimals)} (${amount} raw) — not the historical payload`, instructions: [fixture.instruction], feePayer: treasury, watch: { tokenAccounts, mints }, assumptions: [...PREVIEW_ASSUMPTIONS, "amount replaced by at most one whole token, capped at the source balance at capture"] }), txIndex, ixIndex });
     }
   }
   attachReceiptShares(effects, receipts);

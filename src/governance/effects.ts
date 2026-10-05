@@ -4,7 +4,7 @@ import type { ProposalBundle } from "./reader";
 import type { Receipt } from "./receipt";
 
 export type Basis = "claimed" | "decoded" | "simulated" | "observed" | "unknown";
-export type Effect = { id: string; type: "supplyChange" | "treasuryMovement" | "controlChange" | "mint" | "unknown"; basis: Basis; detail: Record<string, unknown>; flags: string[]; evidenceIds: string[] };
+export type Effect = { id: string; type: "supplyChange" | "treasuryMovement" | "accountCreation" | "controlChange" | "mint" | "unknown"; basis: Basis; detail: Record<string, unknown>; flags: string[]; evidenceIds: string[] };
 
 const pct = (num: bigint, den: bigint) => den === 0n ? "n/a" : `${(Number((num * 1_000_000n) / den) / 10_000).toFixed(4)}%`;
 
@@ -35,6 +35,11 @@ export function effectsFromDecoded(decoded: IndexedDecoded[], state: Pick<Propos
   const out: Effect[] = [];
   decoded.forEach(({ txIndex, ixIndex, decoded: d }) => {
     const id = `fx-${txIndex}-${ixIndex}`;
+    if (d.kind === "createAccount") {
+      const flags = decoded.some(({ decoded: other }) => other.kind === "transfer" && other.destination === d.account) ? ["creates-transfer-destination"] : [];
+      out.push({ id, type: "accountCreation", basis: "decoded", detail: { account: d.account, owner: d.owner, mint: d.mint, payer: d.payer, idempotent: d.idempotent }, flags, evidenceIds: [] });
+      return;
+    }
     if (d.kind === "unsupported") { out.push({ id, type: "unknown", basis: "unknown", detail: { program: d.program, reason: d.reason, dataHex: d.dataHex }, flags: ["unsupported-instruction"], evidenceIds: [] }); return; }
     if (d.kind === "setAuthority") { out.push({ id, type: "controlChange", basis: "decoded", detail: { target: d.target, authorityType: d.authorityType, from: d.currentAuthority, to: d.newAuthority }, flags: ["control-change"], evidenceIds: [] }); return; }
     const mintAddr = d.kind === "transfer" ? (d.mint ?? state.tokenAccounts[d.source]?.mint ?? null) : d.mint;

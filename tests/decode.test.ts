@@ -1,8 +1,17 @@
 import { describe, expect, test } from "bun:test";
-import { decodeInstruction } from "../src/governance/decode";
+import { ASSOCIATED_TOKEN_PROGRAM, decodeInstruction } from "../src/governance/decode";
 const acc = (pubkey: string, isSigner = false, isWritable = true) => ({ pubkey, isSigner, isWritable });
 
 describe("decodeInstruction", () => {
+  test("associated token creates decode all six accounts and distinguish idempotence", () => {
+    const ix = { programId: ASSOCIATED_TOKEN_PROGRAM, accounts: [acc("payer"), acc("account"), acc("owner"), acc("mint"), acc("system"), acc("token")] };
+    for (const dataHex of ["", "00", "01"]) {
+      expect(decodeInstruction({ ...ix, dataHex })).toMatchObject({ kind: "createAccount", program: ASSOCIATED_TOKEN_PROGRAM, account: "account", owner: "owner", mint: "mint", payer: "payer", idempotent: dataHex === "01" });
+    }
+    expect(decodeInstruction({ ...ix, dataHex: "02" })).toMatchObject({ kind: "unsupported", reason: "recover nested not supported" });
+    expect(decodeInstruction({ ...ix, dataHex: "0100" }).kind).toBe("unsupported");
+    expect(decodeInstruction({ ...ix, dataHex: "01", accounts: ix.accounts.slice(0, 5) }).kind).toBe("unsupported");
+  });
   test("MIP-14 burn: discriminator 8, amount 3e17 raw", () => {
     const d = decodeInstruction({ programId: "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA", dataHex: "0800009e1869d02904", accounts: [acc("GR1LBT4cU89cJWE74CP6BsJTf2kriQ9TX59tbDsfxgSi"), acc("MNDEFzGvMt87ueuHvVU9VcTqsAP5b3fTGPsHuuPA5ey"), acc("B56RWQGf9RFw7t8gxPzrRvk5VRmB5DoF94aLoJ25YtvG", true, false)] });
     expect(d.kind).toBe("burn");

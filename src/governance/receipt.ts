@@ -5,7 +5,7 @@ import type { ProposalTx } from "./reader";
 
 export type Receipt = { txIndex: number; proposalTransaction: string; signature: string; slot: number; blockTime: number | null; success: boolean; programsInvoked: string[]; innerPrograms: string[]; governanceExecuteLogged: boolean; tokenBalances: { account: string; mint: string; owner: string | null; preRaw: string; postRaw: string; deltaRaw: string }[]; logs: string[]; evidenceIds: string[] };
 export type AccountReconciliation = { account: string; expectedDeltaRaw: string; observedDeltaRaw: string | null; matched: boolean };
-export type Reconciliation = { proposalTransaction?: string; accounts?: AccountReconciliation[]; status: "matched" | "mismatch" | "not-executed" | "receipt-not-found"; expectedDeltaRaw: string | null; observedDeltaRaw: string | null; account: string | null; notes: string[] };
+export type Reconciliation = { proposalTransaction?: string; accounts?: AccountReconciliation[]; status: "matched" | "mismatch" | "not-reconcilable" | "not-executed" | "receipt-not-found"; expectedDeltaRaw: string | null; observedDeltaRaw: string | null; account: string | null; notes: string[] };
 
 const key = (tx: any, i: number): string => { const k = tx.transaction.message.accountKeys ?? tx.transaction.message.staticAccountKeys; const list = [...(k ?? []).map((x: any) => (typeof x === "string" ? x : x.pubkey ?? x)), ...(tx.meta?.loadedAddresses?.writable ?? []), ...(tx.meta?.loadedAddresses?.readonly ?? [])]; return String(list[i]); };
 
@@ -53,12 +53,12 @@ export function reconcileReceipt(decoded: Decoded[], ptx: ProposalTx, receipt: R
   });
   const notes: string[] = [];
   if (!receipt.success) notes.push("execution transaction failed on chain");
-  if (!accounts.length) notes.push("no decoded token movement to reconcile");
+  if (!accounts.length) notes.push(`no decoded token movement in this transaction; receipt found, ${receipt.success ? "success" : "failed"}`);
   if (decoded.some((d) => d.kind === "unsupported")) notes.push("unsupported instructions remain unreconciled");
   for (const a of accounts) if (!a.matched) notes.push(`${a.account}: expected ${a.expectedDeltaRaw} raw, observed ${a.observedDeltaRaw ?? "no source account balance change"}`);
   const extras = receipt.programsInvoked.filter((p) => p !== "ComputeBudget111111111111111111111111111111" && !decoded.some((d) => d.program === p) && !p.startsWith("GovMaiH") && !p.startsWith("GovER5"));
   if (extras.length) notes.push(`other programs in the same transaction (not economic effects, kept visible): ${extras.join(", ")}`);
   const single = accounts.length === 1 ? accounts[0] : null;
-  return { proposalTransaction: ptx.address, status: accounts.length > 0 && accounts.every((a) => a.matched) && !decoded.some((d) => d.kind === "unsupported") ? "matched" : "mismatch",
+  return { proposalTransaction: ptx.address, status: !accounts.length ? "not-reconcilable" : accounts.every((a) => a.matched) ? "matched" : "mismatch",
     expectedDeltaRaw: single?.expectedDeltaRaw ?? null, observedDeltaRaw: single?.observedDeltaRaw ?? null, account: single?.account ?? null, accounts, notes };
 }

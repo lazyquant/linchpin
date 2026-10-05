@@ -9,18 +9,27 @@ export type Dimension = "description_matches_effects" | "execution_eligible" | "
 export type CheckRow = { check: string; result: string; basis: string; needsReview: boolean; flags?: string[] };
 export type Dimensions = Record<Dimension, string>;
 
+const short = (address: unknown) => `${String(address).slice(0, 6)}…`;
+function reconciliationCounts(reconciliations: Reconciliation[]) {
+  return {
+    matched: reconciliations.filter((r) => r.status === "matched").length,
+    total: reconciliations.filter((r) => r.status !== "not-reconcilable").length,
+    notReconcilable: reconciliations.filter((r) => r.status === "not-reconcilable").length,
+  };
+}
+
 export function dimensions(b: ProposalBundle, effects: Effect[], cov: Coverage[], sims: SimulationRun[], reconciliations: Reconciliation[]): Dimensions {
   const hasPayload = b.transactions.some((t) => t.instructions.length > 0);
   const contradicted = cov.some((c) => c.status === "contradicted"); const omitted = cov.some((c) => c.status === "omitted-from-claims");
   const executed = b.transactions.some((t) => t.executedAt != null);
-  const matched = reconciliations.filter((r) => r.status === "matched").length;
-  const observed = reconciliations.some((r) => r.status === "matched" || r.status === "mismatch");
+  const { matched, total, notReconcilable } = reconciliationCounts(reconciliations);
+  const observed = reconciliations.some((r) => r.status === "matched" || r.status === "mismatch" || r.status === "not-reconcilable");
   const now = Math.floor(Date.now() / 1000);
   return {
     description_matches_effects: !hasPayload ? "no executable payload: signaling only" : contradicted ? "contradiction: review" : omitted ? "omission: effects not mentioned by captured claims" : cov.some((c) => c.status === "covered" || c.status === "covered-under-assumption") ? "covered (see assumptions)" : "unchecked",
     execution_eligible: !hasPayload ? "not applicable" : executed ? "already executed (historical)" : b.proposal.stateName === "Succeeded" ? `eligible after hold-up ${b.transactions[0]?.holdUpTime ?? "?"} s` : `not eligible: state ${b.proposal.stateName} at ${new Date(now * 1000).toISOString()}`,
-    simulation_result: sims.length === 0 ? "not run" : sims.map((s) => `${s.kind}: ${s.success ? "success" : "failed"} (conditional preview @${s.contextSlot})`).join("; "),
-    execution_status: matched > 0 && matched === reconciliations.length ? "observed: all receipts match decoded effects" : observed ? `observed: ${matched} of ${reconciliations.length} matched` : !executed ? "not executed" : "receipt-not-found",
+    simulation_result: sims.length === 0 ? "not run" : sims.map((s) => `${s.label}: ${s.success ? "success" : "failed"} (conditional preview @${s.contextSlot})`).join("; "),
+    execution_status: observed ? (matched === total ? `observed: all token movements match (${matched}/${total})${notReconcilable ? `; ${notReconcilable} executed transactions not reconcilable` : ""}` : `observed: ${matched} of ${total} token movements matched`) : !executed ? "not executed" : "receipt-not-found",
     policy_result: "no policy configured: human review required",
   };
 }
@@ -41,10 +50,14 @@ export function checks(b: ProposalBundle, effects: Effect[], cov: Coverage[], re
   rows.push({ check: "Supply change", result: supply ? `${supply.detail.display} (${supply.detail.shareOfSupplyAtCapture} of supply at slot ${supply.detail.captureSlot})` : "none decoded", basis: supply ? supply.basis : "decoded", needsReview: false });
   rows.push({ check: "Claim coverage", result: cov.length ? cov.map((c) => `${c.claimId ?? "(uncaptured)"}: ${c.status}`).join("; ") : "no claims captured", basis: "claimed vs decoded", needsReview: cov.some((c) => c.status === "contradicted" || c.status === "omitted-from-claims" || c.status === "unchecked") });
   rows.push({ check: "Control change", result: control ? `${control.detail.authorityType} on ${String(control.detail.target).slice(0, 6)}…: ${control.detail.from} → ${control.detail.to}` : "none decoded", basis: "decoded", needsReview: !!control });
+  const creations = effects.filter((e) => e.type === "accountCreation");
+  rows.push({ check: "Account creation", result: creations.length ? creations.map((e) => `acct ${short(e.detail.account)} (owner ${short(e.detail.owner)}, mint ${short(e.detail.mint)}) [account ${e.detail.account}; owner ${e.detail.owner}; mint ${e.detail.mint}]${e.flags.includes("creates-transfer-destination") ? " — destination of the treasury transfer in this proposal" : ""}`).join("; ") : "none decoded", basis: "decoded", needsReview: creations.some((e) => e.flags.includes("creates-transfer-destination")) });
   rows.push({ check: "Unknown / unsupported", result: unknown.length ? unknown.map((u) => `${String(u.detail.program).slice(0, 8)}…: ${u.detail.reason}`).join("; ") : "none", basis: "unknown", needsReview: unknown.length > 0 });
   rows.push({ check: "Execution conditions", result: `state ${b.proposal.stateName}; hold-up ${b.transactions[0]?.holdUpTime ?? "n/a"} s; voting ${b.governance.baseVotingTime} s + cool-off ${b.governance.votingCoolOffTime} s; council veto path not evaluated in this slice`, basis: "observed", needsReview: false });
   rows.push(voteOutcome(b, effects));
-  rows.push({ check: "Observed execution", result: `matched ${reconciliations.filter((r) => r.status === "matched").length}/${reconciliations.length}` + (reconciliations.length ? `; ${reconciliations.map((r) => `${r.proposalTransaction ?? "transaction"}: ${r.status}`).join("; ")}` : "; not executed"), basis: "observed", needsReview: reconciliations.some((r) => r.status === "mismatch" || r.status === "receipt-not-found") });
+  const { matched, total, notReconcilable } = reconciliationCounts(reconciliations);
+  const problems = reconciliations.filter((r) => r.status === "mismatch" || r.status === "receipt-not-found");
+  rows.push({ check: "Observed execution", result: `matched ${matched}/${total} token movements${notReconcilable ? `, ${notReconcilable} executed transactions without token movements (unsupported or non-token instructions)` : ""}` + problems.map((r) => `; ${r.proposalTransaction ?? "transaction"}: ${r.status}`).join("") + (!reconciliations.length || reconciliations.every((r) => r.status === "not-executed") ? "; not executed" : ""), basis: "observed", needsReview: problems.length > 0 });
   rows.push({ check: "Economic consequence", result: supply ? "token supply mechanism affected; mSOL backing is a separate relationship and is not affected by an MNDE burn" : move ? "treasury composition changes; downstream dependencies not mapped in this slice" : "none supported", basis: "research assumption", needsReview: true });
   return rows;
 }
@@ -57,7 +70,7 @@ export function voteOutcome(b: ProposalBundle, effects: Effect[]): CheckRow {
   const weight = winner ? BigInt(winner.voteWeightRaw) : null;
   const threshold = p.voteThreshold;
   const decimals = b.mints[p.governingTokenMint]?.decimals;
-  const units = (raw: bigint) => decimals == null ? `${raw} raw` : `${formatUnits(raw, decimals)} tokens (${p.governingTokenMint})`;
+  const units = (raw: bigint) => decimals == null ? `${raw} raw` : `${formatUnits(raw, decimals)} ${short(p.governingTokenMint)}`;
   const flags: string[] = [];
   const holdUp = b.transactions[0]?.holdUpTime;
   if (holdUp === 0 && effects.some((e) => e.type === "treasuryMovement")) flags.push("no-hold-up");
@@ -79,6 +92,8 @@ export function voteOutcome(b: ProposalBundle, effects: Effect[]): CheckRow {
     result = `winner weight ${weight ?? "unknown"} raw; option weights ${p.options.map((o) => `${o.label}: ${o.voteWeightRaw}`).join(", ")}; max vote weight ${p.maxVoteWeightRaw ?? "unknown"} raw; threshold type ${threshold?.type ?? "unknown"}, value ${threshold?.value ?? "unknown"}; ${threshold?.type !== 0 ? "threshold type not supported" : "vote outcome unavailable (missing winner, maximum or threshold)"}`;
   }
   result += `; deny ${p.denyVoteWeightRaw == null ? "unknown" : units(BigInt(p.denyVoteWeightRaw))}; execution delay ${p.executionDelaySeconds ?? "unknown"} s; hold-up ${holdUp ?? "n/a"} s`;
+  const executionOffsets = p.votingCompletedAt == null ? [] : b.transactions.flatMap((t) => t.executedAt == null ? [] : [t.executedAt - p.votingCompletedAt!]);
+  if (executionOffsets.length) result += `; execution began ${Math.min(...executionOffsets)} s after voting completed, last transaction at ${Math.max(...executionOffsets)} s`;
   if (flags.length) result += `; ${flags.join(", ")}`;
   result += "; voter count and concentration not analysed (vote records not read)";
   return { check: "Vote outcome", result, basis: "observed", needsReview: flags.length > 0, flags };

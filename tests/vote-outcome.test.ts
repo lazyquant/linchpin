@@ -22,12 +22,12 @@ test("BONK vote clears 1% by 0.0028 pp and flags no hold-up", async () => {
   const b = await bonkVote();
   const row = voteOutcome(b, [movement]);
   expect(row.result).toContain("approve share 1.0028%; threshold 1 %; margin 0.0028 pp");
-  const margin = row.result.match(/margin [^()]+\(([\d,.]+) tokens/)![1];
+  const margin = row.result.match(/margin [^()]+\(([\d,.]+) DezXAZ…/)![1];
   expect(Math.abs(Number(margin.replaceAll(",", "")) / 2438674316.63 - 1)).toBeLessThan(0.01);
   expect(margin).toBe("2,436,253,307.76147");
   expect(row.flags).toEqual(["thin-margin", "no-hold-up"]);
   expect(row.needsReview).toBe(true);
-  expect(row.result).toContain("deny 710,848,288.77388 tokens");
+  expect(row.result).toContain("deny 710,848,288.77388 DezXAZ…");
   expect(row.result).toContain("execution delay 38 s; hold-up 0 s");
   expect(row.result).toEndWith("voter count and concentration not analysed (vote records not read)");
 });
@@ -57,4 +57,16 @@ test("thin margin boundary is strictly below half a percentage point", async () 
   expect(voteOutcome(b, [movement])).toMatchObject({ flags: [], needsReview: false });
   b.proposal.options[0].voteWeightRaw = "149";
   expect(voteOutcome(b, []).flags).toEqual(["thin-margin"]);
+});
+
+test("execution window uses earliest and latest executed transactions and omits unknown times", async () => {
+  const b = await bonkVote();
+  b.proposal.votingCompletedAt = 100;
+  b.transactions = [49, null, 38].map((offset) => ({ ...b.transactions[0], executedAt: offset == null ? null : 100 + offset }));
+  expect(voteOutcome(b, []).result).toContain("execution began 38 s after voting completed, last transaction at 49 s");
+  b.transactions.forEach((t) => { t.executedAt = null; });
+  expect(voteOutcome(b, []).result).not.toContain("execution began");
+  b.transactions[0].executedAt = 138;
+  b.proposal.votingCompletedAt = null;
+  expect(voteOutcome(b, []).result).not.toContain("execution began");
 });
