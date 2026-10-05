@@ -66,7 +66,7 @@ The read-only spike scripts that produced these numbers are committed in the rep
 | Wed 7 Oct 09:00–12:00 | Dry runs offline ×3, fixes only, rehearse to 3 minutes | Peter + Claude |
 | Wed 14:00 | Demo Day | Peter |
 
-**Division of labour (added 2026-10-05 20:20 CEST):** Codex's sandbox has no network and cannot write outside the repository, so Claude runs every step that installs packages or records live RPC fixtures (Task 0 setup; the `--record` steps of Tasks 2, 5, 6 and 10) and commits the results; Codex writes code and tests against the committed fixtures.
+**Division of labour (added 2026-10-05 20:20 CEST):** Codex's sandbox has no network and cannot write outside the repository, so Claude runs every step that installs packages or records live RPC fixtures (Task 0 setup; the `--record` steps of Tasks 2, 5, 6 and 10) and commits the results; Codex writes code and tests against the committed fixtures. Codex's sandbox also cannot write to `.git`, so every commit in this plan is made by Claude after verifying Codex's tests (Codex runs `codex exec -C ~/linchpin -s workspace-write`, no network).
 
 **Stop rule:** at 18:00 Tuesday, whatever is green is the demo. Fixtures captured in Task 10 make the demo independent of RPC and Wi-Fi.
 
