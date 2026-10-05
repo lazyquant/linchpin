@@ -1,0 +1,95 @@
+{
+ "method": "simulateTransaction",
+ "params": {
+  "message": "AQABBJWhUuMVCfQZLsi/+/i0wvVK1LDrI5eiGXqnvJUh0oU15QWeAqsSlJyOLk5LOh3fg7x8xxZ/GSTWcCYBAtYhYYcFN5lvJplnT7cIbkaPsztP3hRJ9HqL79izQr9rM8/zcgbd9uHXZaGT2cvhRs7reawctIXtX1s3kTqM9YV+/wCpAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAwMBAgAJCAAAnhhp0CkE",
+  "config": {
+   "sigVerify": false,
+   "replaceRecentBlockhash": true,
+   "commitment": "confirmed",
+   "accounts": {
+    "encoding": "base64",
+    "addresses": [
+     "GR1LBT4cU89cJWE74CP6BsJTf2kriQ9TX59tbDsfxgSi",
+     "MNDEFzGvMt87ueuHvVU9VcTqsAP5b3fTGPsHuuPA5ey"
+    ]
+   }
+  }
+ },
+ "slot": 453658039,
+ "retrievedAt": "2026-10-05T18:21:16.360Z",
+ "rpcUrl": "https://api.mainnet-beta.solana.com",
+ "responseSha256": "c937ded48aa85832ee8f5986e63ac675cc7e3c132e070d1bae7883b3fb2c8a4e",
+ "response": {
+  "accounts": [
+   null,
+   null
+  ],
+  "err": {
+   "InstructionError": [
+    0,
+    {
+     "Custom": 1
+    }
+   ]
+  },
+  "fee": 5000,
+  "innerInstructions": null,
+  "loadedAccountsDataSize": 109248,
+  "loadedAddresses": {
+   "readonly": [],
+   "writable": []
+  },
+  "logs": [
+   "Program TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA invoke [1]",
+   "Program log: Error: insufficient funds",
+   "Program TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA consumed 221 of 200000 compute units",
+   "Program TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA failed: custom program error: 0x1"
+  ],
+  "postBalances": [
+   200046075,
+   2040280,
+   20115615131,
+   200653906
+  ],
+  "postTokenBalances": [
+   {
+    "accountIndex": 1,
+    "mint": "MNDEFzGvMt87ueuHvVU9VcTqsAP5b3fTGPsHuuPA5ey",
+    "owner": "B56RWQGf9RFw7t8gxPzrRvk5VRmB5DoF94aLoJ25YtvG",
+    "programId": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+    "uiTokenAmount": {
+     "amount": "153600023536334850",
+     "decimals": 9,
+     "uiAmount": 153600023.53633484,
+     "uiAmountString": "153600023.53633485"
+    }
+   }
+  ],
+  "preBalances": [
+   200051075,
+   2040280,
+   20115615131,
+   200653906
+  ],
+  "preTokenBalances": [
+   {
+    "accountIndex": 1,
+    "mint": "MNDEFzGvMt87ueuHvVU9VcTqsAP5b3fTGPsHuuPA5ey",
+    "owner": "B56RWQGf9RFw7t8gxPzrRvk5VRmB5DoF94aLoJ25YtvG",
+    "programId": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+    "uiTokenAmount": {
+     "amount": "153600023536334850",
+     "decimals": 9,
+     "uiAmount": 153600023.53633484,
+     "uiAmountString": "153600023.53633485"
+    }
+   }
+  ],
+  "replacementBlockhash": {
+   "blockhash": "6C79UWd1mQNs3RfHbm3Qoc9UhyCiPJL3PFpdjA64AfbP",
+   "lastValidBlockHeight": 431696096
+  },
+  "returnData": null,
+  "unitsConsumed": 221
+ }
+}
