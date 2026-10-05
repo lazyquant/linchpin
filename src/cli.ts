@@ -6,7 +6,7 @@ import { runOptions, MARINADE_GOVERNANCE_PROGRAM, MARINADE_PROGRAM_VERSION } fro
 import { RecordingRpc } from "./chain/rpc";
 import { readProposalBundle } from "./governance/reader";
 import { decodeInstruction } from "./governance/decode";
-import { effectsFromDecoded } from "./governance/effects";
+import { attachReceiptShares, effectsFromDecoded } from "./governance/effects";
 import { findExecutionReceipt, reconcileReceipt } from "./governance/receipt";
 import { fixtureBurn, simulateConditionalPreview, toTransactionInstruction, PREVIEW_ASSUMPTIONS } from "./governance/simulate";
 import { coverage, loadCase } from "./governance/claims";
@@ -24,9 +24,10 @@ async function review(casePath: string) {
   const programId = new PublicKey(c.programId);
   const bundle = await readProposalBundle(rpc, programId, c.programVersion, new PublicKey(c.proposal));
   const decoded = bundle.transactions.flatMap((t) => t.instructions.map(decodeInstruction));
-  const effects = effectsFromDecoded(decoded, bundle, { nativeTreasury: bundle.governance.nativeTreasury });
   const ptx = bundle.transactions[0] ?? null;
   const receipt = ptx ? await findExecutionReceipt(rpc, ptx) : null;
+  const effects = effectsFromDecoded(decoded, bundle, { nativeTreasury: bundle.governance.nativeTreasury });
+  attachReceiptShares(effects, receipt);
   const reconciliation = ptx ? reconcileReceipt(decoded, ptx, receipt) : { status: "not-executed" as const, expectedDeltaRaw: null, observedDeltaRaw: null, account: null, notes: ["no proposal transactions"] };
   const sims = [];
   if (ptx && ptx.instructions.length) {

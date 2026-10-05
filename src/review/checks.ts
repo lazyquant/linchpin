@@ -1,6 +1,7 @@
 import type { ProposalBundle } from "../governance/reader";
 import type { Effect } from "../governance/effects";
-import type { Reconciliation } from "../governance/receipt";
+import type { Receipt, Reconciliation } from "../governance/receipt";
+import { formatUnits } from "../chain/token-layout";
 import type { SimulationRun } from "../governance/simulate";
 import type { Coverage } from "../governance/claims";
 
@@ -22,10 +23,20 @@ export function dimensions(b: ProposalBundle, effects: Effect[], cov: Coverage[]
   };
 }
 
-export function checks(b: ProposalBundle, effects: Effect[], cov: Coverage[], rec: Reconciliation): CheckRow[] {
+export function checks(b: ProposalBundle, effects: Effect[], cov: Coverage[], rec: Reconciliation, receipt: Receipt | null = null): CheckRow[] {
   const rows: CheckRow[] = [];
   const move = effects.find((e) => e.type === "treasuryMovement"); const supply = effects.find((e) => e.type === "supplyChange" || e.type === "mint"); const control = effects.find((e) => e.type === "controlChange"); const unknown = effects.filter((e) => e.type === "unknown");
-  rows.push({ check: "Treasury movement", result: move ? `${move.detail.amountDisplay} ${String(move.detail.asset).slice(0, 6)}… from ${String(move.detail.source).slice(0, 6)}… (${move.detail.sourceIsGovernanceTreasury ? "governance treasury" : "owner " + String(move.detail.sourceOwner).slice(0, 6) + "…"}) to ${move.detail.destination ?? "burn"}; ${move.detail.shareOfSourceBalanceAtCapture} of source balance at slot ${move.detail.captureSlot}` : "none decoded", basis: move ? move.basis : "decoded", needsReview: !!move && (move.flags.length > 0) });
+  const exceedsCapture = move?.flags.includes("exceeds-balance-at-capture") ?? false;
+  let movement = "none decoded";
+  if (move) {
+    const d = move.detail;
+    const balance = d.sourceBalanceAtCaptureRaw == null ? "unknown" : typeof d.decimals === "number" ? formatUnits(BigInt(String(d.sourceBalanceAtCaptureRaw)), d.decimals) : `${d.sourceBalanceAtCaptureRaw} raw`;
+    const share = d.shareOfSourceBalancePreExecution != null
+      ? `${d.shareOfSourceBalancePreExecution} of the source balance at execution (slot ${d.preExecutionSlot}, receipt); today's balance ${balance} at slot ${d.captureSlot}`
+      : `${d.shareOfSourceBalanceAtCapture} of source balance at slot ${d.captureSlot}`;
+    movement = `${d.amountDisplay} ${String(d.asset).slice(0, 6)}… from ${String(d.source).slice(0, 6)}… (${d.sourceIsGovernanceTreasury ? "governance treasury" : "owner " + String(d.sourceOwner).slice(0, 6) + "…"}) to ${d.destination ?? "burn"}; ${share}${exceedsCapture ? " (historical amount exceeds today's balance)" : ""}`;
+  }
+  rows.push({ check: "Treasury movement", result: movement, basis: move ? move.basis : "decoded", needsReview: !receipt && exceedsCapture });
   rows.push({ check: "Supply change", result: supply ? `${supply.detail.display} (${supply.detail.shareOfSupplyAtCapture} of supply at slot ${supply.detail.captureSlot})` : "none decoded", basis: supply ? supply.basis : "decoded", needsReview: false });
   rows.push({ check: "Claim coverage", result: cov.length ? cov.map((c) => `${c.claimId ?? "(uncaptured)"}: ${c.status}`).join("; ") : "no claims captured", basis: "claimed vs decoded", needsReview: cov.some((c) => c.status === "contradicted" || c.status === "omitted-from-claims" || c.status === "unchecked") });
   rows.push({ check: "Control change", result: control ? `${control.detail.authorityType} on ${String(control.detail.target).slice(0, 6)}…: ${control.detail.from} → ${control.detail.to}` : "none decoded", basis: "decoded", needsReview: !!control });
