@@ -28,7 +28,10 @@ const ts = (t: number | null) => (t == null ? "—" : new Date(t * 1000).toISOSt
 const short = (address: string) => `<span title="${esc(address)}">${esc(address.slice(0, 6))}…</span>`;
 
 function decodedLine(d: Decoded, instructionKey: string, effects: Effect[]): string {
-  if (d.kind === "unsupported") return `Unsupported instruction · program ${short(d.program)} · ${esc(d.reason)} <code>${esc(d.dataHex)}</code>`;
+  if (d.kind === "unsupported") {
+    const long = d.dataHex.length > 16;
+    return `Unsupported instruction · program ${short(d.program)} · ${esc(d.reason)} · data <code>${esc(d.dataHex.slice(0, 16))}${long ? "…" : ""}</code>${long ? `<details><summary>full data (${d.dataHex.length / 2} bytes)</summary><code>${esc(d.dataHex)}</code></details>` : ""}`;
+  }
   if (d.kind === "setAuthority") return `Set ${esc(d.authorityType)} authority of ${short(d.target)}: ${short(d.currentAuthority)} → ${d.newAuthority == null ? "none" : short(d.newAuthority)}`;
   if (d.kind === "createAccount") return `Create token account ${short(d.account)} for owner ${short(d.owner)} · mint ${short(d.mint)}${d.idempotent ? " · idempotent" : ""}`;
   const effect = effects.find((e) => e.id === `${instructionKey}-${d.kind === "transfer" ? "move" : "supply"}`);

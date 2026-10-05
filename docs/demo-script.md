@@ -7,7 +7,7 @@ LINCHPIN_RPC_URL=http://127.0.0.1:1 bun run demo
 open out/mip-14/packet.html out/mip-14-opinion/packet.html out/bonk-bip76/packet.html
 ```
 
-The maintainer must record the BonkDAO fixtures before this full demo. Keep all three packets ready. The header should say **offline replay**. Here, “today's state” means the state captured in the committed fixtures, not a fresh read during the presentation.
+All three cases replay from committed fixtures. Keep all three packets ready. The header should say **offline replay**. Here, “today's state” means the state captured in the committed fixtures, not a fresh read during the presentation.
 
 ## 0:00–0:20 — Problem
 
@@ -44,6 +44,8 @@ Switch to `out/mip-14-opinion/packet.html`.
 “This is the MIP-14 opinion vote. Its five options have no instructions. Linchpin says ‘no executable payload: signaling only.’ Execution eligibility is not applicable, and there is no simulation. A governance vote can express intent without carrying an executable action.”
 
 ## 2:40–3:00 — BonkDAO treasury transfer
+
+Say explicitly: this packet is a post-hoc reconstruction; Linchpin makes no claim that it would have detected or prevented the drain.
 
 Switch to `out/bonk-bip76/packet.html` and point to **Treasury movement** and **Vote outcome**.
 

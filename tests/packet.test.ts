@@ -19,6 +19,12 @@ test("BonkDAO offline packet distinguishes account creation, movement reconcilia
   const p = await reviewBundle(c, rpc, b);
   const html = renderHtml(p);
   const text = html.replace(/<[^>]*>/g, "");
+  const longPayload = p.decoded.find((d) => d.kind === "unsupported" && d.dataHex.length === 290);
+  expect(longPayload?.kind).toBe("unsupported");
+  if (!longPayload || longPayload.kind !== "unsupported") throw new Error("missing long unsupported payload");
+  expect(html).toContain(` · data <code>${longPayload.dataHex.slice(0, 16)}…</code><details><summary>full data (145 bytes)</summary><code>${longPayload.dataHex}</code></details>`);
+  const inlineHtml = html.replace(/<details>[\s\S]*?<\/details>/g, "");
+  expect(inlineHtml).not.toMatch(/<code>[0-9a-f]{290}<\/code>/i);
   expect(p.observed.reconciliations.map((r) => r.status)).toEqual(["not-reconcilable", "not-reconcilable", "not-reconcilable", "matched"]);
   expect(p.dimensions.execution_status).toBe("observed: all token movements match (1/1); 3 executed transactions not reconcilable");
   expect(p.checks.find((r) => r.check === "Observed execution")).toMatchObject({ result: "matched 1/1 token movements, 3 executed transactions without token movements (unsupported or non-token instructions)", needsReview: false });
@@ -28,9 +34,8 @@ test("BonkDAO offline packet distinguishes account creation, movement reconcilia
   if (creation.kind !== "createAccount") throw new Error("missing ATA creation");
   const row = p.checks.find((r) => r.check === "Account creation")!;
   expect(row.needsReview).toBe(true);
-  expect(row.result).toContain("acct 28Ayms… (owner 9bxWkN…, mint DezXAZ…)");
-  expect(row.result).toContain(creation.account);
-  expect(row.result).toEndWith("— destination of the treasury transfer in this proposal");
+  expect(row.result).toBe("acct 28Ayms… (owner 9bxWkN…, mint DezXAZ…) — destination of the treasury transfer in this proposal");
+  expect(p.effects.find((e) => e.type === "accountCreation")?.detail).toMatchObject({ account: creation.account, owner: creation.owner, mint: creation.mint });
   expect(text).toContain(`Create token account 28Ayms… for owner 9bxWkN… · mint DezXAZ…${creation.idempotent ? " · idempotent" : ""}`);
   expect(p.graph.nodes.find((n) => n.id === `ta:${creation.account}`)?.type).toBe("TokenAccount");
   const txIndex = p.decoded.indexOf(creation);
@@ -130,10 +135,25 @@ test("decoded sentences cover every instruction, units, address titles, and esca
   ]) expect(sentences).toContain(line);
   expect(html).toContain('<span title="Destination123">Destin…</span>');
   expect(html).toContain('Unsupported instruction · program <span title="Bad&quot;&lt;program&gt;">');
-  expect(html).toContain('unknown &lt;tag&gt; <code>00ab</code>');
+  expect(html).toContain('unknown &lt;tag&gt; · data <code>00ab</code></li>');
   p.effects = [{ id: "fx-0-0-supply", type: "supplyChange", basis: "decoded", detail: { decimals: 2, display: "-123.45" }, flags: [], evidenceIds: [] }];
   expect(text(renderHtml(p))).toContain("Burn 123.45 Mint12…");
   expect(renderHtml(p)).toContain("supplyChange: -123.45");
+});
+
+test("unsupported payloads stay inline through 16 hex characters and expand beyond that", async () => {
+  const p = await packetFor("mip-14", "EyeY8hrThBWw5MMtsAmNrnc7BoJGAtHsfsxVf17cG7E1");
+  for (const dataHex of ["", "00ab", "0123456789abcdef", "0123456789abcdefab"]) {
+    p.decoded = [{ kind: "unsupported", program: "Program123", reason: "unknown instruction", dataHex, decoderVersion: "v" }];
+    const html = renderHtml(p);
+    const prefix = 'Unsupported instruction · program <span title="Program123">Progra…</span> · unknown instruction · data ';
+    if (dataHex.length <= 16) {
+      expect(html).toContain(`${prefix}<code>${dataHex}</code></li>`);
+      expect(html).not.toContain("<summary>full data (");
+    } else {
+      expect(html).toContain(`${prefix}<code>0123456789abcdef…</code><details><summary>full data (9 bytes)</summary><code>${dataHex}</code></details></li>`);
+    }
+  }
 });
 
 test("light theme follows system preference or an explicit URL override", async () => {

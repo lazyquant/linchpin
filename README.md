@@ -32,7 +32,7 @@ bun run demo
 open out/mip-14/packet.html out/mip-14-opinion/packet.html out/bonk-bip76/packet.html
 ```
 
-The BonkDAO fixtures must first be recorded by the maintainer with `bun run linchpin review cases/bonk-bip76.json --record`. Until then, run either MIP-14 case individually with `--offline`.
+All three cases replay from committed fixtures (`fixtures/<case>/`), recorded from public mainnet RPC on 2026-10-05; `--record` refreshes them when network is available.
 
 `bun run demo` uses `--offline` and replays the committed fixtures. To demonstrate that it does not depend on a reachable RPC endpoint:
 
