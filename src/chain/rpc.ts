@@ -1,4 +1,4 @@
-import { Connection, PublicKey, VersionedTransaction, type AccountInfo, type SimulateTransactionConfig, type SimulatedTransactionResponse, type ConfirmedSignatureInfo, type VersionedTransactionResponse } from "@solana/web3.js";
+import { Connection, PublicKey, VersionedTransaction, type AccountInfo, type GetProgramAccountsFilter, type GetProgramAccountsResponse, type SimulateTransactionConfig, type SimulatedTransactionResponse, type ConfirmedSignatureInfo, type VersionedTransactionResponse } from "@solana/web3.js";
 import { existsSync, mkdirSync, readFileSync, writeFileSync, appendFileSync } from "node:fs";
 import { join } from "node:path";
 import { canonical, fixtureKey, sha256, type Evidence } from "./evidence";
@@ -49,6 +49,13 @@ export class RecordingRpc {
   getBalance(pubkey: PublicKey): Promise<Recorded<number>> {
     return this.call("getBalance", { pubkey: pubkey.toBase58() },
       async () => { const r = await this.connection.getBalanceAndContext(pubkey); return { value: r.value, slot: r.context.slot }; }, (v) => v, (j) => j);
+  }
+
+  getProgramAccounts(programId: PublicKey, filters: GetProgramAccountsFilter[] = []): Promise<Recorded<GetProgramAccountsResponse>> {
+    return this.call("getProgramAccounts", { programId: programId.toBase58(), filters },
+      async () => { const r = await this.connection.getProgramAccounts(programId, { filters, withContext: true }); return { value: r.value, slot: r.context.slot }; },
+      (v) => v.map(({ pubkey, account }) => ({ pubkey: pubkey.toBase58(), account: { ...account, owner: account.owner.toBase58(), data: account.data.toString("base64") } })),
+      (j) => j.map((entry: any) => ({ pubkey: new PublicKey(entry.pubkey), account: { ...entry.account, owner: new PublicKey(entry.account.owner), data: Buffer.from(entry.account.data, "base64") } })));
   }
 
   getSignaturesForAddress(pubkey: PublicKey, limit = 50): Promise<Recorded<ConfirmedSignatureInfo[]>> {

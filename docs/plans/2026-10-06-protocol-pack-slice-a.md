@@ -31,6 +31,9 @@ project_role: current
 
 **Further facts from the same pass (slot ~453683420):** council mint supply **5, decimals 0** (docs claim verified) but it has a **mint authority `26Pw2q…`** (to classify: who can mint council seats); mSOL mint authority is the documented PDA `3JLPCS…`, supply 1,600,336.17 mSOL; the buyback accumulation address `BBaQsi…` is a **system-owned wallet**, so the bought MNDE sits in its associated token account (derive the MNDE ATA and read it); Labs Treasury `J5BEce…` is an off-curve system PDA (classify: likely a governance native treasury); the liquid-staking Treasury Reserve PDA holds 36,641.08 SOL; the VSR registrar is an 880-byte account owned by the VSR program.
 
+
+> **Correction (2026-10-05 ~22:50 CEST, Claude):** the recorder's classifier matched the Native proxy's upgrade authority `6YAju4…` to a **native treasury PDA of one of the realm's governances**, so the DAO does hold Native's upgrade authority; the earlier "not a DAO governance account" reading came from an owner-only check. The contradiction to record remains the contract page's "Marinade council (3/5)" labels versus these DAO-controlled authorities, and the mSOL program's `551FBX…` stays unresolved.
+
 **Claims to carry as claims, never as facts:** the governance page's authority list, the contract page's "Marinade council (3/5)" labels (page layout makes their attachment ambiguous), the forum's 1 B cap, and every value-route sentence in the registry.
 
 ## 1. Timeline
@@ -151,3 +154,4 @@ Flow legs and the 30-day ledger; the `reward_fee` read from the liquid-staking s
 
 ## Log
 - 2026-10-05 — Plan written by Claude after the Researcher Pack review and Peter's decisions; registry and docs capture committed to the `protocol-pack` branch. (Claude)
+- 2026-10-05 — A1–A2 done (Codex; 77 tests), fixtures/marinade-pack recorded (59); Native proxy authority corrected to DAO-controlled (native treasury PDA). A3–A5 dispatched. (Claude)
