@@ -1,0 +1,28 @@
+{
+  "caseId": "mip-14-opinion",
+  "title": "Marinade MIP-14 opinion vote: five burn options, no executable payload",
+  "programId": "GovMaiHfpVPw8BAM1mbdzgmSZYDw2tdP32J2fapoQoYs",
+  "programVersion": 3,
+  "proposal": "Cxzr7LNNE2UnfLiZLrCkeKXBzqvdF5DGMQtgoD8GPMUp",
+  "claims": [
+    {
+      "id": "c2",
+      "text": "We propose holding an opinion vote on burning 5–50% of the total MNDE supply , held in the DAO treasury.",
+      "source": "forum",
+      "sourceRef": "https://forum.marinade.finance/t/mip-14-burn-5-50-of-mnde-total-supply/1909",
+      "retrievedAt": "2026-10-05T18:12:50Z",
+      "kind": "range"
+    }
+  ],
+  "fixture": {
+    "burnOneToken": false
+  },
+  "notes": [
+    "Pre-burn total supply is a forum claim (1,000,000,000 MNDE) and is not captured on chain in this slice."
+  ],
+  "claimedPreSupply": {
+    "display": "1,000,000,000",
+    "raw": "1000000000000000000",
+    "sourceClaimId": "c3"
+  }
+}

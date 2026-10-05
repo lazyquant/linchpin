@@ -1,0 +1,59 @@
+{
+  "caseId": "mip-14",
+  "title": "Marinade MIP-14 execution proposal: burn 300,000,000 MNDE",
+  "programId": "GovMaiHfpVPw8BAM1mbdzgmSZYDw2tdP32J2fapoQoYs",
+  "programVersion": 3,
+  "proposal": "EyeY8hrThBWw5MMtsAmNrnc7BoJGAtHsfsxVf17cG7E1",
+  "relatedProposals": [
+    {
+      "role": "signaling (opinion vote)",
+      "address": "Cxzr7LNNE2UnfLiZLrCkeKXBzqvdF5DGMQtgoD8GPMUp"
+    }
+  ],
+  "claims": [
+    {
+      "id": "c1",
+      "text": "MIP-14: Burn 30% of MNDE Total Supply",
+      "source": "on-chain proposal name",
+      "sourceRef": "EyeY8hrThBWw5MMtsAmNrnc7BoJGAtHsfsxVf17cG7E1",
+      "retrievedAt": "2026-10-05",
+      "kind": "percentOfSupply",
+      "percent": 30
+    },
+    {
+      "id": "c2",
+      "text": "We propose holding an opinion vote on burning 5–50% of the total MNDE supply , held in the DAO treasury.",
+      "source": "forum",
+      "sourceRef": "https://forum.marinade.finance/t/mip-14-burn-5-50-of-mnde-total-supply/1909",
+      "retrievedAt": "2026-10-05T18:12:50Z",
+      "kind": "range"
+    },
+    {
+      "id": "c3",
+      "text": "MNDE has a hard cap of 1 billion tokens and minting is permanently disabled.",
+      "source": "forum",
+      "sourceRef": "https://forum.marinade.finance/t/mip-14-burn-5-50-of-mnde-total-supply/1909",
+      "retrievedAt": "2026-10-05T18:12:50Z",
+      "kind": "text"
+    },
+    {
+      "id": "c4",
+      "text": "The DAO treasury holds ~564 million MNDE (≈ 56.4 % of supply), while the circulating supply is ~430 million .",
+      "source": "forum",
+      "sourceRef": "https://forum.marinade.finance/t/mip-14-burn-5-50-of-mnde-total-supply/1909",
+      "retrievedAt": "2026-10-05T18:12:50Z",
+      "kind": "text"
+    }
+  ],
+  "fixture": {
+    "burnOneToken": true
+  },
+  "notes": [
+    "Pre-burn total supply is a forum claim (1,000,000,000 MNDE) and is not captured on chain in this slice."
+  ],
+  "claimedPreSupply": {
+    "display": "1,000,000,000",
+    "raw": "1000000000000000000",
+    "sourceClaimId": "c3"
+  }
+}
