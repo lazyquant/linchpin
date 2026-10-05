@@ -2,7 +2,7 @@
 tags: [project/quantrin-ledger, project/current, product, linchpin, protocol-pack, marinade, mnde, solana, implementation-plan]
 date: 2026-10-05
 updated: 2026-10-05
-status: active
+status: code-complete-pending-merge
 type: implementation-plan
 related: ["[[Researcher Pack — Review and First Protocol Plan, Marinade MNDE (Oct 2026)]]", "[[One-Day Build Plan — Linchpin Governance Review Demo (Oct 2026)]]", "[[Marinade]]"]
 project: "[[Quantrin Project Home]]"
@@ -155,3 +155,4 @@ Flow legs and the 30-day ledger; the `reward_fee` read from the liquid-staking s
 ## Log
 - 2026-10-05 — Plan written by Claude after the Researcher Pack review and Peter's decisions; registry and docs capture committed to the `protocol-pack` branch. (Claude)
 - 2026-10-05 — A1–A2 done (Codex; 77 tests), fixtures/marinade-pack recorded (59); Native proxy authority corrected to DAO-controlled (native treasury PDA). A3–A5 dispatched. (Claude)
+- 2026-10-05 22:50:50 CEST — **Slice A code complete, two days early** (Codex Tasks A1–A6, 105 tests; Claude recorded 61 fixtures and reviewed every path): offline map of 30 controller paths = 24 verified · 2 contradictions (validator and liquidity gauges: chain says DAO governance account; the contract page says council 3/5 / none) · 4 unresolved (mSOL program upgrade authority `551FBX…`; Native Yield/Select staker authorities and exit authority, all PDAs without an identifying derivation). Program-derived PDAs proven for the mSOL mint authority (`st_mint`), LP mint authority (`liq_mint`), stake withdraw authority (`withdraw`) and treasury reserve (`reserve`). The two docs-listed Treasury mSOL accounts are owned by plain wallets `89Srbj…` and `7Q42pB…` (verified as wallets; operator identity unknown). Buyback wallet's MNDE account holds 201,227 MNDE at capture. Merge into `main` after Demo Day; Slice B gate on Fri 9 Oct. (Claude)

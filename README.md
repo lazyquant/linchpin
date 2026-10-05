@@ -85,6 +85,30 @@ The packet includes a `bindingSha256` for the payload. A changed payload changes
 - There is no policy engine or automatic approval. Unsupported programs and instructions need review; this slice does not decode arbitrary instructions or analyze program upgrades.
 - The demo does not yet map downstream dependencies or evaluate voter-weight anomalies. Its checks are separate review dimensions, not a single safety verdict.
 
+## Protocol Pack (Slice A)
+
+The Marinade Protocol Pack answers who can change each program, mint and treasury in its declared registry. Controller paths trace program upgrade authorities, mint and freeze authorities, and treasury token owners through verified governance relationships or matching program-derived addresses. Unidentified controllers stay unresolved. The supply statement separates observed MNDE supply and mint authority from the claimed cap, incorporates the recorded historical burn, and shows the remaining unexplained difference.
+
+Slice A covers control and supply. It does not trace value flows or produce a flow ledger yet; fee and value-route statements remain attributed claims. A verified PDA identifies its deriving program, but does not establish that program's upgrade controller or operator identity.
+
+Run from the repository root with dependencies already installed:
+
+```sh
+bun run linchpin pack packs/marinade/pack.json --offline
+```
+
+The command replays `fixtures/marinade-pack` and writes `packet.json`, `packet.html` and `evidence.jsonl` under `out/pack-marinade/`. Slots and evidence identify the captured state; offline replay does not refresh it. Treasury token owners whose account reads have not been captured remain `unresolved` with the note “owner not yet captured”.
+
+| Status | Meaning |
+| --- | --- |
+| `verified` | The stated relationship or fact is supported by captured chain state or an exact PDA derivation. Read the note for its limits. |
+| `claimed` | An attributed source statement that has not been established by the checks in this slice. |
+| `contradiction` | Observed state conflicts with a checked claim; the packet preserves the claim and the chain result. |
+| `unresolved` | Evidence is missing or insufficient to establish the controller or check the claim. |
+| `outside-scope` | The question is outside the declared analysis boundary. Slice A leaves value-route claims as `claimed` and does not verify flows. |
+
+The coverage line counts controller paths in the declared boundary, separately from statements and claims.
+
 ## Roadmap
 
 Planned work after this demo includes MIP-21, broader destination history, voter concentration checks and the Python core. The next demonstration direction is the MIP-21 treasury exchange, a dependency map to mSOL and protocol fees, and a pilot with one DAO. These are roadmap items, outside the current demo.

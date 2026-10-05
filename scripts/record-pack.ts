@@ -22,7 +22,7 @@ const ctx = { program, governances: [...new Set([
   ...registry.governance.knownGovernances.map(g => g.address),
   ...discovery.governances.map(g => g.address),
 ])].map(address => new PublicKey(address)) };
-const counts = { programs: 0, upgradeAuthorities: 0, mints: 0, mintAuthorities: 0, registryAccounts: 0, tokenAccounts: 0, skippedAccounts: 0, walletAtas: 0, walletAtasFound: 0, governances: discovery.governances.length };
+const counts = { programs: 0, upgradeAuthorities: 0, mints: 0, mintAuthorities: 0, registryAccounts: 0, tokenAccounts: 0, tokenOwners: 0, skippedAccounts: 0, walletAtas: 0, walletAtasFound: 0, governances: discovery.governances.length };
 const programs = [];
 for (const entry of registry.programs) {
   const state = await readProgramAuthority(rpc, new PublicKey(entry.address));
@@ -48,7 +48,9 @@ for (const entry of registry.accounts) {
   counts.registryAccounts++;
   if (classification.kind === "token-account") {
     await readTokenAccount(rpc, address);
+    await classifyAuthority(rpc, new PublicKey(classification.tokenOwner), ctx);
     counts.tokenAccounts++;
+    counts.tokenOwners++;
   } else {
     counts.skippedAccounts++;
   }

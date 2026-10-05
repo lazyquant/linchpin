@@ -1,13 +1,15 @@
 import { expect, test } from "bun:test";
 import { readFileSync } from "node:fs";
-import { PublicKey, type AccountInfo } from "@solana/web3.js";
-import { getAccountTypes, Governance } from "@solana/spl-governance";
+import { PublicKey, SystemProgram, type AccountInfo } from "@solana/web3.js";
+import { getAccountTypes, getNativeTreasuryAddress, Governance } from "@solana/spl-governance";
 import bs58 from "bs58";
 import { RecordingRpc } from "../src/chain/rpc";
 import { UPGRADEABLE_LOADER } from "../src/chain/program-authority";
 import { runOptions } from "../src/config";
 import { buildPack, type PackRegistry, type PackFile } from "../src/pack/build";
 import { coverageLine, renderJson, renderPackHtml } from "../src/pack/packet";
+import { TOKEN_PROGRAM } from "../src/chain/token-layout";
+import { deriveLiquidStakingAddresses, LIQUID_STAKING_PROGRAM } from "../src/pack/derive";
 
 const config: PackFile = JSON.parse(readFileSync("packs/marinade/pack.json", "utf8"));
 const registry: PackRegistry = JSON.parse(readFileSync(config.registry, "utf8"));
@@ -51,6 +53,28 @@ test("unknown authority is unresolved, and every unresolved path and seed has a 
   expect(program("liquid-staking")).toMatchObject({ status: "unresolved", authorityKind: "pda-no-account" });
   for (const seed of registry.unknownsSeed) expect(packet.unknowns.some(u => u.text === seed && !!u.firstSeen)).toBe(true);
   for (const p of packet.controllerPaths.filter(p => p.status === "unresolved")) expect(packet.unknowns.some(u => u.id === `${p.subject}-${p.authorityType}` && !!u.firstSeen)).toBe(true);
+});
+
+test("recorded liquid-staking authorities follow matching candidate seeds", () => {
+  for (const seed of ["st_mint", "liq_mint", "withdraw", "reserve"]) {
+    const derived = deriveLiquidStakingAddresses().find(candidate => candidate.seed === seed)!;
+    const row = packet.controllerPaths.find(p => p.authority === derived.address)!;
+    expect(row).toMatchObject({ status: "verified", path: [row.subject, derived.address, derived.program] });
+    expect(row.note).toContain(`program-derived address: seed '${seed}' of the liquid-staking state`);
+  }
+  const reserve = packet.controllerPaths.find(p => p.authority === "Du3Ysj1wKbxPKkuPPnvzQLQh8oMSVifs3jGZjJWXFmHN")!;
+  expect(reserve.authorityKind).toBe("pda-system");
+});
+
+test.each([
+  ["B1aLzaNMeFVAyQ6f3XbbUyKcH2YPHu2fqiEagmiF23VR", "89SrbjbuNyqSqAALKBsKBqMSh463eLvzS4iVWCeArBgB"],
+  ["8ZUcztoAEhpAeC2ixWewJKQJsSUGYSGPVAjkhDJYf5Gd", "7Q42pBSxR8bbWJkhSQZLDqpcR9xCv9z3zBSGPc7PdXkt"],
+])("uncaptured treasury token owner stays unresolved for %s", (subject, owner) => {
+  expect(deriveLiquidStakingAddresses().some(candidate => candidate.address === owner)).toBe(false);
+  const row = packet.controllerPaths.find(p => p.subject === subject)!;
+  expect(row).toMatchObject({ authority: owner, path: [subject, owner], status: "unresolved", authorityKind: "unclassified-token-owner" });
+  expect(row.note).toContain("owner not yet captured");
+  expect(row.evidenceIds.length).toBeGreaterThan(0);
 });
 
 test("recorded contradictions preserve both texts and identify the agreeing claim", () => {
@@ -117,7 +141,7 @@ function synthetic(kind: "dao" | "squads" | "immutable" | "missing" | "foreign-r
 test("synthetic conflicting claims with DAO authority produce a chain-first contradiction naming the agreeing claim", async () => {
   const { r, input, subject, governance, realm } = synthetic();
   const result = await buildPack(r, input);
-  expect(result.controllerPaths[0]).toMatchObject({ status: "contradiction", path: [subject.toBase58(), governance.toBase58(), governance.toBase58(), realm.toBase58()] });
+  expect(result.controllerPaths[0]).toMatchObject({ status: "contradiction", path: [subject.toBase58(), governance.toBase58(), realm.toBase58()] });
   expect(result.controllerPaths[0].note).toStartWith("Chain:");
   expect(result.controllerPaths[0].note).toContain("Agreeing claim: “DAO holds upgrade authority for synthetic program” (governance-page)");
   expect(result.claims.map(c => c.status)).toEqual(["verified", "contradiction"]);
@@ -136,4 +160,64 @@ test.each(["squads", "immutable", "foreign-realm"] as const)("synthetic %s keeps
     expect(result.controllerPaths[0].status).toBe("unresolved");
     expect(result.controllerPaths[0].path).toHaveLength(2);
   }
+});
+
+async function syntheticTokenOwner(kind: "governance" | "treasury" | "derived-absent" | "derived-system" | "nonmatch" | "unsupported" | "other-program") {
+  const { r, input, subject, governance, realm } = synthetic();
+  input.programs = [];
+  input.accounts = [{ id: "treasury-token", address: subject.toBase58() }];
+  const govProgram = new PublicKey(input.governance.program);
+  const derived = deriveLiquidStakingAddresses()[0];
+  const owner = kind === "governance" ? governance : kind === "treasury" ? await getNativeTreasuryAddress(govProgram, governance)
+    : kind === "nonmatch" || kind === "unsupported" ? PublicKey.findProgramAddressSync([Buffer.from("unmatched")], govProgram)[0] : new PublicKey(derived.address);
+  const tokenData = Buffer.alloc(165);
+  new PublicKey(input.governance.councilMint).toBuffer().copy(tokenData);
+  owner.toBuffer().copy(tokenData, 32);
+  const account = (program: PublicKey, data = Buffer.alloc(0)): AccountInfo<Buffer> => ({ owner: program, data, lamports: 1, executable: false, rentEpoch: 0 });
+  const reads: string[] = [];
+  r.connection.getAccountInfoAndContext = async address => {
+    reads.push(address.toBase58());
+    if (address.equals(subject)) return { context: { slot: 42 }, value: account(TOKEN_PROGRAM, tokenData) };
+    if (!address.equals(owner)) throw new Error(`unexpected read: ${address}`);
+    const value = kind === "derived-absent" ? null : kind === "governance" ? account(govProgram)
+      : kind === "unsupported" ? account(TOKEN_PROGRAM, Buffer.alloc(82)) : kind === "other-program" ? account(LIQUID_STAKING_PROGRAM) : account(SystemProgram.programId);
+    return { context: { slot: 43 }, value };
+  };
+  return { r, input, subject: subject.toBase58(), owner: owner.toBase58(), governance: governance.toBase58(), realm: realm.toBase58(), reads };
+}
+
+test.each(["governance", "treasury"] as const)("token owner read follows %s to its realm with evidence", async kind => {
+  const s = await syntheticTokenOwner(kind);
+  const result = await buildPack(s.r, s.input);
+  const expectedPath = kind === "treasury" ? [s.subject, s.owner, s.governance, s.realm] : [s.subject, s.owner, s.realm];
+  expect(result.controllerPaths[0]).toMatchObject({ status: "verified", path: expectedPath, slot: 42 });
+  expect(s.reads.filter(address => address === s.owner)).toHaveLength(1);
+  const ownerEvidence = s.r.evidence.find(e => e.method === "getAccountInfo" && (e.params as { pubkey: string }).pubkey === s.owner)!;
+  expect(result.controllerPaths[0].evidenceIds).toContain(ownerEvidence.id);
+  expect(result.controllerPaths[0].evidenceIds).toHaveLength(3);
+});
+
+test.each(["derived-absent", "derived-system", "nonmatch", "unsupported", "other-program"] as const)("token owner %s applies derivation only to supported matching PDAs", async kind => {
+  const s = await syntheticTokenOwner(kind);
+  const row = (await buildPack(s.r, s.input)).controllerPaths[0];
+  if (kind.startsWith("derived-")) {
+    expect(row).toMatchObject({ status: "verified", path: [s.subject, s.owner, LIQUID_STAKING_PROGRAM.toBase58()] });
+    expect(row.note).toContain("program-derived address: seed 'st_mint' of the liquid-staking state");
+  } else {
+    expect(row).toMatchObject({ status: "unresolved", path: [s.subject, s.owner] });
+    expect(row.note).not.toContain("program-derived address");
+  }
+});
+
+test.each([false, true])("owner errors other than offline missing fixtures propagate (offline=%s)", async offline => {
+  const s = await syntheticTokenOwner("nonmatch");
+  const getAccountInfo = s.r.getAccountInfo.bind(s.r);
+  // Keep synthetic reads in memory while testing the builder's offline error guard.
+  const list = s.r.getProgramAccounts.bind(s.r);
+  s.r.getProgramAccounts = async (...args) => { s.r.opts.offline = false; const result = await list(...args); s.r.opts.offline = offline; return result; };
+  s.r.getAccountInfo = async address => {
+    if (address.toBase58() === s.owner) throw new Error(offline ? "corrupt fixture" : "offline: fixture missing for getAccountInfo → synthetic");
+    s.r.opts.offline = false; const result = await getAccountInfo(address); s.r.opts.offline = offline; return result;
+  };
+  await expect(buildPack(s.r, s.input)).rejects.toThrow(offline ? "corrupt fixture" : "offline: fixture missing");
 });

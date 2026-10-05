@@ -12,7 +12,7 @@ export type AuthorityContext = { program: PublicKey; governances: PublicKey[] };
 type Provenance = { slot: number | null; evidenceIds: string[] };
 type AuthorityBase = Provenance & { address: string; onCurve: boolean; owner: string | null };
 export type AuthorityClassification = AuthorityBase & (
-  | { kind: "dao-governance-account" | "squads-v4-account" | "squads-v3-account" | "wallet" | "pda-no-account" | "wallet-no-account" | "program-owned" }
+  | { kind: "dao-governance-account" | "squads-v4-account" | "squads-v3-account" | "wallet" | "pda-no-account" | "pda-system" | "wallet-no-account" | "program-owned" | "unsupported-account" }
   | { kind: "native-treasury-pda"; governance: string }
   // `owner` always means the on-chain account owner; tokenOwner is the token authority.
   | { kind: "token-account"; mint: string; tokenOwner: string; amountRaw: bigint }
@@ -35,6 +35,8 @@ export async function classifyAuthority(rpc: RecordingRpc, address: PublicKey, c
     return { ...base, kind: "token-account", mint: token.mint, tokenOwner: token.owner, amountRaw: token.amountRaw };
   }
   if (owner.equals(SystemProgram.programId) && base.onCurve) return { ...base, kind: "wallet" };
+  if (owner.equals(SystemProgram.programId) && data.length === 0) return { ...base, kind: "pda-system" };
+  if (owner.equals(SystemProgram.programId) || owner.equals(TOKEN_PROGRAM)) return { ...base, kind: "unsupported-account" };
   return { ...base, kind: "program-owned" };
 }
 

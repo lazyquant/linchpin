@@ -5,6 +5,7 @@ import { formatUnits } from "../chain/token-layout";
 import { associatedTokenAccount, classifyAuthority, listGovernances, readMintState, readTokenAccount, type AuthorityClassification } from "./classify";
 import { supplyStatement, type KnownBurn, type SupplyClaim } from "./supply";
 import type { ControllerPath, PackClaim, PackPacket, Status } from "./model";
+import { deriveLiquidStakingAddresses } from "./derive";
 
 export type RegistryClaim = SupplyClaim & { certainty?: string; retrievedAt?: string };
 type Entry = { id: string; address: string; role?: string; claims?: RegistryClaim[] };
@@ -37,6 +38,7 @@ export async function buildPack(rpc: RecordingRpc, registry: PackRegistry, optio
   const discovery = await listGovernances(rpc, new PublicKey(registry.governance.program), new PublicKey(registry.governance.realm));
   const ctx = { program: new PublicKey(registry.governance.program), governances: discovery.governances.map(g => new PublicKey(g.address)) };
   const classifications = new Map<string, AuthorityClassification>();
+  const derivedAddresses = deriveLiquidStakingAddresses();
   const classify = async (address: string) => {
     let value = classifications.get(address);
     if (!value) { value = await classifyAuthority(rpc, new PublicKey(address), ctx); classifications.set(address, value); }
@@ -55,11 +57,22 @@ export async function buildPack(rpc: RecordingRpc, registry: PackRegistry, optio
     if (a.kind === "dao-governance-account" || a.kind === "native-treasury-pda") {
       const governance = a.kind === "native-treasury-pda" ? a.governance : a.address;
       const membership = discovery.governances.find(g => g.address === governance && g.realm === registry.governance.realm);
-      if (membership) { path.push(governance, membership.realm); ids = unique([...ids, ...membership.evidenceIds]); }
+      if (membership) {
+        if (path.at(-1) !== governance) path.push(governance);
+        path.push(membership.realm); ids = unique([...ids, ...membership.evidenceIds]);
+      }
       else { status = "unresolved"; note += " Governance membership in the declared realm is unverified."; }
     } else if (a.kind.startsWith("squads-")) note += " multisig members not read";
-    else if (a.kind === "pda-no-account") { status = "unresolved"; note += " authority has no on-chain account; identity unknown"; }
-    else if (a.kind === "program-owned" || a.kind === "token-account") {
+    else if (a.kind === "pda-no-account" || a.kind === "pda-system") {
+      const derived = derivedAddresses.find(candidate => candidate.address === a.address);
+      if (derived) {
+        path.push(derived.program);
+        note += ` program-derived address: seed '${derived.seed}' of the liquid-staking state`;
+      } else {
+        status = "unresolved";
+        note += a.kind === "pda-no-account" ? " authority has no on-chain account; identity unknown" : " system-owned PDA; identity unknown";
+      }
+    } else if (a.kind === "program-owned" || a.kind === "token-account" || a.kind === "unsupported-account") {
       status = "unresolved"; note += ` Account owner ${a.owner}; signing/controller mechanism not established.`;
     } else if (a.kind === "wallet-no-account") { status = "unresolved"; note += " Authority has no on-chain account; identity unknown."; }
     else note += " Wallet address verified; operator identity not established.";
@@ -140,11 +153,16 @@ export async function buildPack(rpc: RecordingRpc, registry: PackRegistry, optio
     let row: ControllerPath;
     if (a.kind === "token-account") {
       const token = await readTokenAccount(rpc, new PublicKey(entry.address));
-      const knownOwner = classifications.get(a.tokenOwner);
-      row = knownOwner ? controller(entry, "account", "owner", knownOwner) : {
-        subject: entry.address, subjectKind: "account", role: entry.role ?? entry.id, authorityType: "owner", authority: a.tokenOwner,
-        authorityKind: "unclassified-token-owner", path: [entry.address, a.tokenOwner], status: "unresolved", claims: [], evidenceIds: [], slot: a.slot,
-        note: `Chain: token authority ${a.tokenOwner}; its controller identity has not been established.` };
+      try {
+        row = controller(entry, "account", "owner", await classify(a.tokenOwner));
+      } catch (error) {
+        if (!rpc.opts.offline || !(error instanceof Error) || !error.message.startsWith("offline: fixture missing for getAccountInfo → ")) throw error;
+        row = {
+          subject: entry.address, subjectKind: "account", role: entry.role ?? entry.id, authorityType: "owner", authority: a.tokenOwner,
+          authorityKind: "unclassified-token-owner", path: [entry.address, a.tokenOwner], status: "unresolved", claims: entry.claims ?? [], evidenceIds: [], slot: a.slot,
+          note: `Chain: token authority ${a.tokenOwner}; owner not yet captured.`,
+        };
+      }
       row.evidenceIds = unique([...a.evidenceIds, ...row.evidenceIds]); row.slot = a.slot;
       row.note += ` Account classification: token-account; account program owner ${a.owner}.`;
       statements.push({ id: `${entry.id}-tokens`, topic: "treasury", text: `${entry.id}: ${token.value!.amountRaw} raw units of mint ${a.mint}; token owner ${a.tokenOwner}. This is one account, not aggregate treasury holdings.`, status: "verified", evidenceIds: token.evidenceIds, slot: token.slot });

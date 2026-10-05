@@ -39,8 +39,9 @@ describe("authority classification", () => {
     ["pda-no-account", pda, null],
     ["wallet-no-account", wallet, null],
     ["program-owned", pda, account(mint)],
-    ["program-owned", pda, account(SystemProgram.programId)],
-    ["program-owned", wallet, account(TOKEN_PROGRAM, Buffer.alloc(82))],
+    ["pda-system", pda, account(SystemProgram.programId)],
+    ["unsupported-account", pda, account(SystemProgram.programId, Buffer.alloc(1))],
+    ["unsupported-account", wallet, account(TOKEN_PROGRAM, Buffer.alloc(82))],
   ] as const)("classifies %s with account owner and evidence", async (kind, address, value) => {
     const rpc = syntheticRpc(value);
     expect(await classifyAuthority(rpc, address, ctx)).toMatchObject({
