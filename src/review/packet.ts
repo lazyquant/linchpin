@@ -4,21 +4,22 @@ import type { ProposalBundle } from "../governance/reader";
 import type { Decoded } from "../governance/decode";
 import type { Effect } from "../governance/effects";
 import type { Receipt, Reconciliation } from "../governance/receipt";
-import type { SimulationRun } from "../governance/simulate";
+import type { SimulationRun, SkippedFixture } from "../governance/simulate";
 import type { Claim, Coverage } from "../governance/claims";
 import type { Graph } from "../graph/model";
 import { mermaid, controlPath } from "../graph/build";
 import { checks, dimensions, type CheckRow, type Dimensions } from "./checks";
 
-export type Packet = { caseId: string; title: string; generatedAt: string; offline: boolean; bindingSha256: string; proposal: ProposalBundle["proposal"]; governance: ProposalBundle["governance"]; realm: ProposalBundle["realm"]; claimed: Claim[]; decoded: Decoded[]; effects: Effect[]; simulated: SimulationRun[]; observed: { receipt: Receipt | null; reconciliation: Reconciliation }; coverage: Coverage[]; checks: CheckRow[]; dimensions: Dimensions; controlPath: string[]; graph: Graph; evidenceCount: number; reviewDecision: { status: "not-recorded"; note: string } };
+export type Packet = { caseId: string; title: string; generatedAt: string; offline: boolean; bindingSha256: string; proposal: ProposalBundle["proposal"]; governance: ProposalBundle["governance"]; realm: ProposalBundle["realm"]; claimed: Claim[]; decoded: Decoded[]; effects: Effect[]; simulated: SimulationRun[]; skippedFixtures: SkippedFixture[]; instructionKeys: string[]; observed: { receipts: Receipt[]; reconciliations: Reconciliation[] }; coverage: Coverage[]; checks: CheckRow[]; dimensions: Dimensions; controlPath: string[]; graph: Graph; evidenceCount: number; reviewDecision: { status: "not-recorded"; note: string } };
 
 export function bindingHash(b: ProposalBundle): string {
   return sha256(JSON.stringify(b.transactions.map((t) => ({ a: t.address, i: t.instructions.map((ix) => [ix.programId, ix.accounts, ix.dataHex]) }))));
 }
 
-export function buildPacket(args: { caseId: string; title: string; offline: boolean; bundle: ProposalBundle; decoded: Decoded[]; effects: Effect[]; sims: SimulationRun[]; receipt: Receipt | null; reconciliation: Reconciliation; claims: Claim[]; coverage: Coverage[]; graph: Graph; evidenceCount: number }): Packet {
-  const b = args.bundle; const firstTa = Object.keys(b.tokenAccounts)[0];
-  return { caseId: args.caseId, title: args.title, generatedAt: new Date().toISOString(), offline: args.offline, bindingSha256: bindingHash(b), proposal: b.proposal, governance: b.governance, realm: b.realm, claimed: args.claims, decoded: args.decoded, effects: args.effects, simulated: args.sims, observed: { receipt: args.receipt, reconciliation: args.reconciliation }, coverage: args.coverage, checks: checks(b, args.effects, args.coverage, args.reconciliation, args.receipt), dimensions: dimensions(b, args.effects, args.coverage, args.sims, args.reconciliation), controlPath: firstTa ? controlPath(args.graph, firstTa) : [], graph: args.graph, evidenceCount: args.evidenceCount, reviewDecision: { status: "not-recorded", note: "a human records approve / reject / needs-work against bindingSha256; a changed payload invalidates it" } };
+export function buildPacket(args: { caseId: string; title: string; offline: boolean; bundle: ProposalBundle; decoded: Decoded[]; effects: Effect[]; sims: SimulationRun[]; skippedFixtures?: SkippedFixture[]; receipts: Receipt[]; reconciliations: Reconciliation[]; claims: Claim[]; coverage: Coverage[]; graph: Graph; evidenceCount: number }): Packet {
+  const b = args.bundle; const firstDebit = args.decoded.find((d) => d.kind === "burn" || d.kind === "transfer");
+  const firstTa = firstDebit && "source" in firstDebit ? firstDebit.source : null;
+  return { caseId: args.caseId, title: args.title, generatedAt: new Date().toISOString(), offline: args.offline, bindingSha256: bindingHash(b), proposal: b.proposal, governance: b.governance, realm: b.realm, claimed: args.claims, decoded: args.decoded, effects: args.effects, simulated: args.sims, skippedFixtures: args.skippedFixtures ?? [], instructionKeys: b.transactions.flatMap((t, ti) => t.instructions.map((_, ii) => `fx-${ti}-${ii}`)), observed: { receipts: args.receipts, reconciliations: args.reconciliations }, coverage: args.coverage, checks: checks(b, args.effects, args.coverage, args.reconciliations, args.receipts), dimensions: dimensions(b, args.effects, args.coverage, args.sims, args.reconciliations), controlPath: firstTa ? controlPath(args.graph, firstTa) : [], graph: args.graph, evidenceCount: args.evidenceCount, reviewDecision: { status: "not-recorded", note: "a human records approve / reject / needs-work against bindingSha256; a changed payload invalidates it" } };
 }
 
 const esc = (s: unknown) => String(s ?? "").replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]!));
@@ -26,10 +27,10 @@ const ts = (t: number | null) => (t == null ? "—" : new Date(t * 1000).toISOSt
 
 const short = (address: string) => `<span title="${esc(address)}">${esc(address.slice(0, 6))}…</span>`;
 
-function decodedLine(d: Decoded, index: number, effects: Effect[]): string {
+function decodedLine(d: Decoded, instructionKey: string, effects: Effect[]): string {
   if (d.kind === "unsupported") return `Unsupported instruction · program ${short(d.program)} · ${esc(d.reason)} <code>${esc(d.dataHex)}</code>`;
   if (d.kind === "setAuthority") return `Set ${esc(d.authorityType)} authority of ${short(d.target)}: ${short(d.currentAuthority)} → ${d.newAuthority == null ? "none" : short(d.newAuthority)}`;
-  const effect = effects.find((e) => e.id === `fx-${index}-${d.kind === "transfer" ? "move" : "supply"}`);
+  const effect = effects.find((e) => e.id === `${instructionKey}-${d.kind === "transfer" ? "move" : "supply"}`);
   const decimals = effect?.detail.decimals ?? (d.kind === "burn" ? null : d.decimals);
   const amount = typeof decimals === "number" ? formatUnits(d.amountRaw, decimals) : `${d.amountRaw} raw`;
   if (d.kind === "burn") return `Burn ${amount} ${short(d.mint)} from ${short(d.source)} · authority ${short(d.authority)} · program ${short(d.program)}`;
@@ -41,10 +42,12 @@ function decodedLine(d: Decoded, index: number, effects: Effect[]): string {
 export function renderHtml(p: Packet): string {
   const col = (title: string, basis: string, body: string) => `<section class="col ${basis}"><h2>${title}<small>${basis}</small></h2>${body}</section>`;
   const claimed = p.claimed.length ? `<ul>${p.claimed.map((c) => `<li>“${esc(c.text)}” <span class="src">${esc(c.source)} · ${esc(c.retrievedAt)}</span></li>`).join("")}</ul>` : "<p>No claims captured.</p>";
-  const decoded = p.decoded.length ? `<ul>\n${p.decoded.map((d, i) => `<li>${decodedLine(d, i, p.effects)}</li>`).join("\n")}\n</ul>` + `<ul>${p.effects.map((e) => `<li>${esc(e.type)}: ${esc(e.detail.display ?? e.detail.amountDisplay ?? e.detail.reason)} ${e.flags.length ? `<em>[${esc(e.flags.join(", "))}]</em>` : ""}</li>`).join("")}</ul>` : "<p>No executable payload: this proposal is signaling only. Execution is unverified by definition.</p>";
-  const simulated = p.simulated.length ? p.simulated.map((s) => `<div class="sim ${s.success ? "ok" : "fail"}"><b>${esc(s.kind)}</b> · ${s.success ? "success" : "failed"} · slot ${s.contextSlot} · ${esc(s.label)}<details><summary>assumptions and logs</summary><ul>${s.assumptions.map((a) => `<li>${esc(a)}</li>`).join("")}</ul><pre>${esc(s.logs.join("\n"))}</pre>${s.error ? `<pre>${esc(JSON.stringify(s.error))}</pre>` : ""}</details></div>`).join("") : "<p>Not simulated.</p>";
-  const r = p.observed.receipt; const rec = p.observed.reconciliation;
-  const observed = r ? `<p><b>${esc(rec.status)}</b> · tx <code>${esc(r.signature)}</code> · slot ${r.slot} · ${ts(r.blockTime)}</p><ul>${r.tokenBalances.map((b) => `<li>${esc(b.account.slice(0, 8))}… ${esc(b.preRaw)} → ${esc(b.postRaw)} (Δ ${esc(b.deltaRaw)})</li>`).join("")}</ul>${rec.notes.length ? `<ul class="notes">${rec.notes.map((n) => `<li>${esc(n)}</li>`).join("")}</ul>` : ""}` : `<p>${esc(rec.status)}: ${esc(rec.notes.join("; "))}</p>`;
+  const decoded = p.decoded.length ? `<ul>\n${p.decoded.map((d, i) => `<li>${decodedLine(d, p.instructionKeys[i] ?? `fx-0-${i}`, p.effects)}</li>`).join("\n")}\n</ul>` + `<ul>${p.effects.map((e) => `<li>${esc(e.type)}: ${esc(e.detail.display ?? e.detail.amountDisplay ?? e.detail.reason)} ${e.flags.length ? `<em>[${esc(e.flags.join(", "))}]</em>` : ""}</li>`).join("")}</ul>` : "<p>No executable payload: this proposal is signaling only. Execution is unverified by definition.</p>";
+  const simulated = (p.simulated.length ? p.simulated.map((s) => `<div class="sim ${s.success ? "ok" : "fail"}"><b>${esc(s.kind)}</b> · ${s.success ? "success" : "failed"} · slot ${s.contextSlot} · ${esc(s.label)}<details><summary>assumptions and logs</summary><ul>${s.assumptions.map((a) => `<li>${esc(a)}</li>`).join("")}</ul><pre>${esc(s.logs.join("\n"))}</pre>${s.error ? `<pre>${esc(JSON.stringify(s.error))}</pre>` : ""}</details></div>`).join("") : "<p>Not simulated.</p>") + p.skippedFixtures.map((s) => `<p>Transaction ${s.txIndex}, instruction ${s.ixIndex}: ${esc(s.reason)}</p>`).join("");
+  const observed = p.observed.receipts.map((r) => {
+    const rec = p.observed.reconciliations.find((rec) => rec.proposalTransaction === r.proposalTransaction);
+    return `<p><b>${esc(rec?.status ?? "unreconciled")}</b> · proposal transaction <code>${esc(r.proposalTransaction)}</code> · tx <code>${esc(r.signature)}</code> · slot ${r.slot} · ${ts(r.blockTime)}</p><ul>${r.tokenBalances.map((b) => `<li>${esc(b.account.slice(0, 8))}… ${esc(b.preRaw)} → ${esc(b.postRaw)} (Δ ${esc(b.deltaRaw)})</li>`).join("")}</ul>${rec?.notes.length ? `<ul class="notes">${rec.notes.map((n) => `<li>${esc(n)}</li>`).join("")}</ul>` : ""}`;
+  }).join("") + p.observed.reconciliations.filter((r) => r.status === "not-executed" || r.status === "receipt-not-found").map((r) => `<p>${esc(r.proposalTransaction)}: ${esc(r.status)}: ${esc(r.notes.join("; "))}</p>`).join("") || "<p>not executed: no proposal transactions</p>";
   const checksHtml = `<table><tr><th>Check</th><th>Result</th><th>Basis</th><th>Review</th></tr>${p.checks.map((c) => `<tr class="${c.needsReview ? "review" : ""}"><td>${esc(c.check)}</td><td>${esc(c.result)}</td><td>${esc(c.basis)}</td><td>${c.needsReview ? "needs review" : "—"}</td></tr>`).join("")}</table>`;
   const dims = `<table>${Object.entries(p.dimensions).map(([k, v]) => `<tr><th>${esc(k)}</th><td>${esc(v)}</td></tr>`).join("")}</table>`;
   const path = p.controlPath.length ? `<ol class="path">${p.controlPath.map((n) => `<li>${esc(p.graph.nodes.find((x) => x.id === n)?.label ?? n)}</li>`).join("")}</ol>` : "<p>No token account in the payload; no control path.</p>";

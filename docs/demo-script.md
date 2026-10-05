@@ -1,13 +1,13 @@
-# Linchpin: three-minute demo
+# Linchpin: three-minute-twenty-second demo
 
 Before the timer, run from the repository root with dependencies already installed:
 
 ```sh
 LINCHPIN_RPC_URL=http://127.0.0.1:1 bun run demo
-open out/mip-14/packet.html out/mip-14-opinion/packet.html
+open out/mip-14/packet.html out/mip-14-opinion/packet.html out/bonk-bip76/packet.html
 ```
 
-Keep both packets ready. The header should say **offline replay**. Here, “today's state” means the state captured in the committed fixtures, not a fresh read during the presentation.
+The maintainer must record the BonkDAO fixtures before this full demo. Keep all three packets ready. The header should say **offline replay**. Here, “today's state” means the state captured in the committed fixtures, not a fresh read during the presentation.
 
 ## 0:00–0:20 — Problem
 
@@ -43,10 +43,16 @@ Switch to `out/mip-14-opinion/packet.html`.
 
 “This is the MIP-14 opinion vote. Its five options have no instructions. Linchpin says ‘no executable payload: signaling only.’ Execution eligibility is not applicable, and there is no simulation. A governance vote can express intent without carrying an executable action.”
 
-## 2:40–3:00 — Next steps
+## 2:40–3:00 — BonkDAO treasury transfer
+
+Switch to `out/bonk-bip76/packet.html` and point to **Treasury movement** and **Vote outcome**.
+
+“BonkDAO's description matched its treasury transfer. The packet flags an effectively full treasury sent to an empty destination, zero hold-up, and a quorum cleared by 0.0028 percentage points. The transfer executed 49 seconds after voting ended. This is a historical review, not a detection claim; voter counts and concentration remain unverified.”
+
+## 3:00–3:20 — Next steps
 
 “Next is the MIP-21 treasury exchange, then a dependency map to mSOL and protocol fees, and a pilot with one DAO. The direction is to make economic dependencies reviewable while keeping claims, decoded mechanisms, conditional previews and observed outcomes distinct.”
 
 ## Rehearsal
 
-Rehearse offline twice with the two generated packets. The third run is the recording for Colosseum later. Keep the flow to three minutes; the planned final dry-run window is for fixing what breaks the script, with no new features.
+Rehearse offline twice with the three generated packets. The third run is the recording for Colosseum later. Keep the flow to three minutes twenty seconds; the planned final dry-run window is for fixing what breaks the script, with no new features.

@@ -1,0 +1,76 @@
+{
+ "method": "simulateTransaction",
+ "params": {
+  "message": "AQADBYnB0ScjSYS/rNQf+CF35MLEq+jj3qBYAI3Eac95LDeDQKe9CZS1zstY+s5VW2OzkmBtfXdz9Wc0+9yx1RN3DzwLcGWpksWK1QdX0XcScuW85pmGTNKnajFYkqSLjTSDJPqZdIaybyeRsYlRbC5HFv4lE+UqedEhQIwS30rTtzErAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAECBQAAAQMESR4jdYbEiywZaPv9zYJLGBiXetGnXQ+n1zP3f5hRLdgnnqIU7t003qkBicHRJyNJhL+s1B/4IXfkwsSr6OPeoFgAjcRpz3ksN4M=",
+  "config": {
+   "sigVerify": false,
+   "replaceRecentBlockhash": true,
+   "commitment": "confirmed",
+   "accounts": {
+    "encoding": "base64",
+    "addresses": [
+     "28AymsqjJ6p312raqaNUNn8DADT4kyRAwT2nJ87scmPy",
+     "F8FqZuUKfoy58aHLW6bfeEhfW9sTtJyqFTqnxVmGZ6dU",
+     "DezXAZ8z7PnrnRJjz3wXBoRgixCa6xjnB7YaB1pPB263"
+    ]
+   }
+  }
+ },
+ "slot": 453664778,
+ "retrievedAt": "2026-10-05T18:51:31.232Z",
+ "rpcUrl": "https://api.mainnet-beta.solana.com",
+ "responseSha256": "79f07f3adc767d3af94ae2534486c6c94d61bca9075c864fc879c12d1bcefe07",
+ "response": {
+  "accounts": [
+   null,
+   null,
+   null
+  ],
+  "err": {
+   "InstructionError": [
+    0,
+    {
+     "Custom": 0
+    }
+   ]
+  },
+  "fee": 5000,
+  "innerInstructions": null,
+  "loadedAccountsDataSize": 371852,
+  "loadedAddresses": {
+   "readonly": [],
+   "writable": []
+  },
+  "logs": [
+   "Program metaThtkusoWYDvHBFXfvc93Z3d8iBeDZ4DVyq8SYVR invoke [1]",
+   "Program log: Instruction: CreateMetadata",
+   "Program 11111111111111111111111111111111 invoke [2]",
+   "Allocate: account Address { address: 5MPSbn2eKtTYa9N151mepiuaNiGZRqFCqAhqa624gM8o, base: None } already in use",
+   "Program 11111111111111111111111111111111 failed: custom program error: 0x0",
+   "Program metaThtkusoWYDvHBFXfvc93Z3d8iBeDZ4DVyq8SYVR consumed 10432 of 200000 compute units",
+   "Program metaThtkusoWYDvHBFXfvc93Z3d8iBeDZ4DVyq8SYVR failed: custom program error: 0x0"
+  ],
+  "postBalances": [
+   2016541219,
+   3180720,
+   1141440,
+   1649520,
+   1
+  ],
+  "postTokenBalances": [],
+  "preBalances": [
+   2016546219,
+   3180720,
+   1141440,
+   1649520,
+   1
+  ],
+  "preTokenBalances": [],
+  "replacementBlockhash": {
+   "blockhash": "69CAhftV87cXdyWUreytWBeeUz352skJ2yR2dYSFf37n",
+   "lastValidBlockHeight": 431702835
+  },
+  "returnData": null,
+  "unitsConsumed": 10432
+ }
+}

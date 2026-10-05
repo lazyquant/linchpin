@@ -1,11 +1,14 @@
 import { PublicKey, TransactionInstruction, TransactionMessage, VersionedTransaction } from "@solana/web3.js";
-import { createBurnInstruction } from "@solana/spl-token";
+import { createBurnInstruction, createTransferCheckedInstruction, createTransferInstruction } from "@solana/spl-token";
 import type { RecordingRpc } from "../chain/rpc";
 import { sha256 } from "../chain/evidence";
-import { parseMint, parseTokenAccount, TOKEN_PROGRAM } from "../chain/token-layout";
+import { formatUnits, parseMint, parseTokenAccount, TOKEN_PROGRAM } from "../chain/token-layout";
+import type { Decoded } from "./decode";
 import type { RawInstruction } from "./reader";
 
+export type SkippedFixture = { txIndex: number; ixIndex: number; reason: string };
 export type SimulationRun = {
+  txIndex?: number; ixIndex?: number;
   id: string; kind: "historical-payload" | "fixture"; mode: "conditional-preview"; label: string;
   assumptions: string[]; feePayer: string; config: { sigVerify: false; replaceRecentBlockhash: true; commitment: "confirmed" };
   messageSha256: string; contextSlot: number | null; success: boolean; error: unknown; unitsConsumed: number | null; logs: string[];
@@ -19,6 +22,19 @@ export function toTransactionInstruction(ix: RawInstruction): TransactionInstruc
 /** A fixture that reuses the proposal's accounts but burns one whole token (10^decimals raw). Always labelled; never confused with the payload. */
 export function fixtureBurn(source: PublicKey, mint: PublicKey, authority: PublicKey, decimals: number): TransactionInstruction {
   return createBurnInstruction(source, mint, authority, 10n ** BigInt(decimals), [], TOKEN_PROGRAM);
+}
+
+/** Same accounts, at most one token, capped at the captured source balance. */
+export function fixtureFor(decoded: Decoded, sourceBalanceRaw: bigint, decimals: number): { instruction: TransactionInstruction; label: string } | null {
+  if (sourceBalanceRaw === 0n || (decoded.kind !== "burn" && decoded.kind !== "transfer")) return null;
+  const amount = sourceBalanceRaw < 10n ** BigInt(decimals) ? sourceBalanceRaw : 10n ** BigInt(decimals);
+  const source = new PublicKey(decoded.source); const authority = new PublicKey(decoded.authority); const program = new PublicKey(decoded.program);
+  const instruction = decoded.kind === "burn"
+    ? createBurnInstruction(source, new PublicKey(decoded.mint), authority, amount, [], program)
+    : decoded.mint
+      ? createTransferCheckedInstruction(source, new PublicKey(decoded.mint), new PublicKey(decoded.destination), authority, amount, decimals, [], program)
+      : createTransferInstruction(source, new PublicKey(decoded.destination), authority, amount, [], program);
+  return { instruction, label: `fixture: ${decoded.kind} ${formatUnits(amount, decimals)} token (${amount} raw) from the same source account (not the historical payload)` };
 }
 
 export async function simulateConditionalPreview(rpc: RecordingRpc, args: { kind: SimulationRun["kind"]; label: string; instructions: TransactionInstruction[]; feePayer: PublicKey; watch: { tokenAccounts: PublicKey[]; mints: PublicKey[] }; assumptions: string[] }): Promise<SimulationRun> {

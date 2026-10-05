@@ -10,6 +10,7 @@ export type ProposalBundle = {
   programId: string; programVersion: number;
   proposal: { address: string; name: string; descriptionLink: string; state: number; stateName: string; governance: string; governingTokenMint: string;
     options: { label: string; voteWeightRaw: string; voteResult: number; instructionsCount: number; instructionsExecutedCount: number }[];
+    maxVoteWeightRaw: string | null; abstainVoteWeightRaw: string | null; voteThreshold: { type: number; value: number | null } | null; executionDelaySeconds: number | null;
     denyVoteWeightRaw: string | null; vetoVoteWeightRaw: string | null; draftAt: number | null; votingAt: number | null; votingCompletedAt: number | null; executingAt: number | null; closedAt: number | null; evidenceId: string };
   governance: { address: string; realm: string; governedAccount: string; nativeTreasury: string; baseVotingTime: number; votingCoolOffTime: number; minInstructionHoldUpTime: number; evidenceId: string };
   realm: { address: string; name: string; communityMint: string; councilMint: string | null; authority: string | null; evidenceId: string };
@@ -69,6 +70,9 @@ export async function readProposalBundle(rpc: RecordingRpc, programId: PublicKey
     programId: programId.toBase58(), programVersion,
     proposal: { address: proposalPk.toBase58(), name: a.name, descriptionLink: a.descriptionLink, state: Number(a.state), stateName: ProposalState[a.state], governance: a.governance.toBase58(), governingTokenMint: a.governingTokenMint.toBase58(),
       options: options.map((o: any) => ({ label: o.label, voteWeightRaw: o.voteWeight.toString(), voteResult: Number(o.voteResult), instructionsCount: Number(o.instructionsCount), instructionsExecutedCount: Number(o.instructionsExecutedCount) })),
+      maxVoteWeightRaw: a.maxVoteWeight?.toString() ?? null, abstainVoteWeightRaw: a.abstainVoteWeight?.toString() ?? null,
+      voteThreshold: a.voteThreshold == null ? null : { type: Number(a.voteThreshold.type), value: num(a.voteThreshold.value) },
+      executionDelaySeconds: a.executingAt != null && a.votingCompletedAt != null ? num(a.executingAt)! - num(a.votingCompletedAt)! : null,
       denyVoteWeightRaw: a.denyVoteWeight?.toString() ?? null, vetoVoteWeightRaw: a.vetoVoteWeight?.toString() ?? null,
       draftAt: num(a.draftAt), votingAt: num(a.votingAt), votingCompletedAt: num(a.votingCompletedAt), executingAt: num(a.executingAt), closedAt: num(a.closedAt), evidenceId: pInfo.evidence.id },
     governance: { address: a.governance.toBase58(), realm: ga.realm.toBase58(), governedAccount: ga.governedAccount.toBase58(), nativeTreasury: nativeTreasury.toBase58(), baseVotingTime: Number(ga.config.baseVotingTime), votingCoolOffTime: Number(ga.config.votingCoolOffTime), minInstructionHoldUpTime: Number(ga.config.minInstructionHoldUpTime), evidenceId: gInfo.evidence.id },

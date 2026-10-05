@@ -3,7 +3,7 @@ import { formatUnits } from "../chain/token-layout";
 import type { Effect } from "./effects";
 
 export type Claim = { id: string; text: string; source: string; sourceRef: string; retrievedAt: string; kind: "percentOfSupply" | "amount" | "range" | "text"; percent?: number; amountDisplay?: string };
-export type CaseFile = { caseId: string; title: string; programId: string; programVersion: number; proposal: string; relatedProposals?: { role: string; address: string }[]; claims: Claim[]; fixture: { burnOneToken: boolean }; notes?: string[]; claimedPreSupply?: { display: string; raw: string; sourceClaimId: string } };
+export type CaseFile = { caseId: string; title: string; programId: string; programVersion: number; proposal: string; relatedProposals?: { role: string; address: string }[]; claims: Claim[]; fixture: { oneToken?: boolean; burnOneToken?: boolean }; notes?: string[]; claimedPreSupply?: { display: string; raw: string; sourceClaimId: string } };
 export type Coverage = { claimId: string | null; effectId: string | null; status: "covered" | "covered-under-assumption" | "contradicted" | "no-executable-effect" | "omitted-from-claims" | "unchecked"; note: string };
 
 export const loadCase = (path: string): CaseFile => JSON.parse(readFileSync(path, "utf8"));

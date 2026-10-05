@@ -5,7 +5,7 @@ import { attachReceiptShares, effectsFromDecoded } from "../src/governance/effec
 describe("effectsFromDecoded", () => {
   const state = { tokenAccounts: { GR: { mint: "MNDE", owner: "B56", amountRaw: 153600023536334850n, slot: 453651973, evidenceId: "e-ta" } }, mints: { MNDE: { supplyRaw: 699997047681352988n, decimals: 9, mintAuthority: null, freezeAuthority: null, slot: 453651973, evidenceId: "e-mint" } } };
   test("burn → supply change and treasury movement with exact units and dated shares", () => {
-    const fx = effectsFromDecoded([{ kind: "burn", program: "Tok", amountRaw: 300000000000000000n, decimals: null, source: "GR", mint: "MNDE", authority: "B56", decoderVersion: "v" }], state, { nativeTreasury: "B56" });
+    const fx = effectsFromDecoded([{ txIndex: 0, ixIndex: 0, decoded: { kind: "burn", program: "Tok", amountRaw: 300000000000000000n, decimals: null, source: "GR", mint: "MNDE", authority: "B56", decoderVersion: "v" } }], state, { nativeTreasury: "B56" });
     const supply = fx.find((e) => e.type === "supplyChange")!; const move = fx.find((e) => e.type === "treasuryMovement")!;
     expect(supply.basis).toBe("decoded");
     expect(supply.detail).toMatchObject({ mint: "MNDE", deltaRaw: "-300000000000000000", display: "-300,000,000", shareOfSupplyAtCapture: "42.8573%" });
@@ -13,13 +13,13 @@ describe("effectsFromDecoded", () => {
     expect(move.flags).toContain("exceeds-balance-at-capture");
   });
   test("attachReceiptShares adds an exact execution share without replacing the capture share", () => {
-    const fx = effectsFromDecoded([{ kind: "burn", program: "Tok", amountRaw: 300000000000000000n, decimals: null, source: "GR", mint: "MNDE", authority: "B56", decoderVersion: "v" }], state, { nativeTreasury: "B56" });
-    const receipt: Receipt = { signature: "synthetic", slot: 123, blockTime: null, success: true, programsInvoked: [], innerPrograms: [], governanceExecuteLogged: true, logs: [], evidenceIds: [], tokenBalances: [{ account: "GR", mint: "MNDE", owner: "B56", preRaw: "438930393329018999", postRaw: "138930393329018999", deltaRaw: "-300000000000000000" }] };
+    const fx = effectsFromDecoded([{ txIndex: 0, ixIndex: 0, decoded: { kind: "burn", program: "Tok", amountRaw: 300000000000000000n, decimals: null, source: "GR", mint: "MNDE", authority: "B56", decoderVersion: "v" } }], state, { nativeTreasury: "B56" });
+    const receipt: Receipt = { txIndex: 0, proposalTransaction: "ptx", signature: "synthetic", slot: 123, blockTime: null, success: true, programsInvoked: [], innerPrograms: [], governanceExecuteLogged: true, logs: [], evidenceIds: [], tokenBalances: [{ account: "GR", mint: "MNDE", owner: "B56", preRaw: "438930393329018999", postRaw: "138930393329018999", deltaRaw: "-300000000000000000" }] };
     const original = structuredClone(fx);
-    attachReceiptShares(fx, null);
-    attachReceiptShares(fx, { ...receipt, tokenBalances: [{ ...receipt.tokenBalances[0], account: "other" }] });
+    attachReceiptShares(fx, []);
+    attachReceiptShares(fx, [{ ...receipt, tokenBalances: [{ ...receipt.tokenBalances[0], account: "other" }] }]);
     expect(fx).toEqual(original);
-    attachReceiptShares(fx, receipt);
+    attachReceiptShares(fx, [receipt]);
     const move = fx.find((e) => e.type === "treasuryMovement")!;
     const share = String(move.detail.shareOfSourceBalancePreExecution);
     expect(parseFloat(share)).toBeGreaterThan(68.3);
@@ -27,11 +27,11 @@ describe("effectsFromDecoded", () => {
     expect(share).toBe("68.3479%");
     expect(move.detail).toMatchObject({ sourceBalancePreExecutionRaw: "438930393329018999", preExecutionSlot: 123, shareOfSourceBalanceAtCapture: "195.3124%" });
     expect(fx[0]).toEqual(original[0]);
-    attachReceiptShares(fx, { ...receipt, tokenBalances: [{ ...receipt.tokenBalances[0], preRaw: "0" }] });
+    attachReceiptShares(fx, [{ ...receipt, tokenBalances: [{ ...receipt.tokenBalances[0], preRaw: "0" }] }]);
     expect(move.detail.shareOfSourceBalancePreExecution).toBe("n/a");
   });
   test("unsupported stays an explicit unknown effect", () => {
-    const fx = effectsFromDecoded([{ kind: "unsupported", program: "X", reason: "r", dataHex: "00", decoderVersion: "v" }], state, { nativeTreasury: "B56" });
+    const fx = effectsFromDecoded([{ txIndex: 0, ixIndex: 0, decoded: { kind: "unsupported", program: "X", reason: "r", dataHex: "00", decoderVersion: "v" } }], state, { nativeTreasury: "B56" });
     expect(fx[0]).toMatchObject({ type: "unknown", basis: "unknown" });
   });
 });

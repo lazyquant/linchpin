@@ -22,8 +22,9 @@ async function offlineMip14() {
 // Synthetic payloads use only the reader fixtures; real execution replays the
 // recorded receipt and both conditional previews through the production modules.
 async function packetFor({ c, rpc, bundle }: Awaited<ReturnType<typeof offlineMip14>>, replayExecution = false) {
-  const decoded = bundle.transactions.flatMap((t) => t.instructions.map(decodeInstruction));
-  const effects = effectsFromDecoded(decoded, bundle, { nativeTreasury: bundle.governance.nativeTreasury });
+  const indexed = bundle.transactions.flatMap((t, txIndex) => t.instructions.map((ix, ixIndex) => ({ txIndex, ixIndex, decoded: decodeInstruction(ix) })));
+  const decoded = indexed.map((i) => i.decoded);
+  const effects = effectsFromDecoded(indexed, bundle, { nativeTreasury: bundle.governance.nativeTreasury });
   const ptx = bundle.transactions[0];
   const receipt = replayExecution ? await findExecutionReceipt(rpc, ptx) : null;
   const reconciliation = reconcileReceipt(decoded, ptx, receipt);
@@ -40,7 +41,7 @@ async function packetFor({ c, rpc, bundle }: Awaited<ReturnType<typeof offlineMi
       watch, assumptions: PREVIEW_ASSUMPTIONS,
     }));
     const d = decoded.find((x) => x.kind === "burn");
-    if (c.fixture.burnOneToken && d && d.kind === "burn") {
+    if ((c.fixture.oneToken ?? c.fixture.burnOneToken) && d && d.kind === "burn") {
       sims.push(await simulateConditionalPreview(rpc, {
         kind: "fixture", label: "fixture: burn 1 whole token from the same treasury account (not the historical payload)",
         instructions: [fixtureBurn(new PublicKey(d.source), new PublicKey(d.mint), new PublicKey(d.authority), bundle.mints[d.mint]?.decimals ?? 9)],
@@ -51,8 +52,8 @@ async function packetFor({ c, rpc, bundle }: Awaited<ReturnType<typeof offlineMi
   }
   const decimals = bundle.mints[bundle.proposal.governingTokenMint]?.decimals ?? 9;
   const cov = coverage(c.claims, effects, { decimals, claimedPreSupplyRaw: c.claimedPreSupply ? BigInt(c.claimedPreSupply.raw) : null });
-  const graph = buildGraph(bundle, decoded, effects, receipt, sims, c.claims);
-  return buildPacket({ caseId: c.caseId, title: c.title, offline: true, bundle, decoded, effects, sims, receipt, reconciliation, claims: c.claims, coverage: cov, graph, evidenceCount: rpc.evidence.length });
+  const graph = buildGraph(bundle, decoded, effects, receipt ? [receipt] : [], sims, c.claims);
+  return buildPacket({ caseId: c.caseId, title: c.title, offline: true, bundle, decoded, effects, sims, receipts: receipt ? [receipt] : [], reconciliations: [reconciliation], claims: c.claims, coverage: cov, graph, evidenceCount: rpc.evidence.length });
 }
 
 describe("governance failure cases", () => {
@@ -90,8 +91,8 @@ describe("governance failure cases", () => {
     expect(historical).toMatchObject({ success: false, mode: "conditional-preview", error: { InstructionError: [0, { Custom: 1 }] } });
     expect(historical?.logs.join("\n")).toContain("insufficient funds");
     expect(packet.dimensions.simulation_result).toContain("historical-payload: failed");
-    expect(packet.dimensions.execution_status).toBe("observed: receipt matches decoded effect");
-    expect(packet.observed.reconciliation).toMatchObject({ status: "matched", observedDeltaRaw: "-300000000000000000" });
+    expect(packet.dimensions.execution_status).toBe("observed: all receipts match decoded effects");
+    expect(packet.observed.reconciliations[0]).toMatchObject({ status: "matched", observedDeltaRaw: "-300000000000000000" });
     expect(packet.simulated.find((s) => s.kind === "fixture")?.success).toBe(true);
     expect(context.rpc.evidence.every((e) => e.source === "fixture")).toBe(true);
   });

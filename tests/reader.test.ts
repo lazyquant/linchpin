@@ -11,6 +11,10 @@ describe("readProposalBundle (offline fixtures)", () => {
     const rpc = new RecordingRpc(runOptions({ offline: true }), "mip-14");
     const b = await readProposalBundle(rpc, MARINADE_GOVERNANCE_PROGRAM, MARINADE_PROGRAM_VERSION, MIP14);
     expect(b.proposal.name).toBe("MIP-14: Burn 30% of MNDE Total Supply");
+    expect(b.proposal.maxVoteWeightRaw).toBe("999998206916761061");
+    expect(b.proposal.abstainVoteWeightRaw).toBeNull();
+    expect(b.proposal.voteThreshold).toEqual({ type: 0, value: 2 });
+    expect(b.proposal.executionDelaySeconds).toBe(194);
     expect(b.proposal.stateName).toBe("Completed");
     expect(b.realm.name).toBe("Marinade DAO");
     expect(b.governance.nativeTreasury).toBe("B56RWQGf9RFw7t8gxPzrRvk5VRmB5DoF94aLoJ25YtvG");

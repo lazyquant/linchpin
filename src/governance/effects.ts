@@ -8,22 +8,33 @@ export type Effect = { id: string; type: "supplyChange" | "treasuryMovement" | "
 
 const pct = (num: bigint, den: bigint) => den === 0n ? "n/a" : `${(Number((num * 1_000_000n) / den) / 10_000).toFixed(4)}%`;
 
-export function attachReceiptShares(effects: Effect[], receipt: Receipt | null): void {
-  if (!receipt) return;
+export type IndexedDecoded = { txIndex: number; ixIndex: number; decoded: Decoded };
+
+export function attachReceiptShares(effects: Effect[], receipts: Receipt[]): void {
   for (const effect of effects) {
     if (effect.type !== "treasuryMovement") continue;
+    const txIndex = Number(effect.id.split("-")[1]);
+    const receipt = receipts.find((r) => r.txIndex === txIndex);
+    if (!receipt) continue;
     const row = receipt.tokenBalances.find((row) => row.account === effect.detail.source);
-    if (!row) continue;
-    effect.detail.sourceBalancePreExecutionRaw = row.preRaw;
-    effect.detail.shareOfSourceBalancePreExecution = pct(BigInt(String(effect.detail.amountRaw)), BigInt(row.preRaw));
-    effect.detail.preExecutionSlot = receipt.slot;
+    if (row) {
+      effect.detail.sourceBalancePreExecutionRaw = row.preRaw;
+      effect.detail.shareOfSourceBalancePreExecution = pct(BigInt(String(effect.detail.amountRaw)), BigInt(row.preRaw));
+      effect.detail.preExecutionSlot = receipt.slot;
+    }
+    const destination = receipt.tokenBalances.find((row) => row.account === effect.detail.destination);
+    if (destination) {
+      effect.detail.destinationPreBalanceRaw = destination.preRaw;
+      effect.detail.destinationPostBalanceRaw = destination.postRaw;
+      if (BigInt(destination.preRaw) === 0n && !effect.flags.includes("destination-empty-before")) effect.flags.push("destination-empty-before");
+    }
   }
 }
 
-export function effectsFromDecoded(decoded: Decoded[], state: Pick<ProposalBundle, "tokenAccounts" | "mints">, ctx: { nativeTreasury: string }): Effect[] {
+export function effectsFromDecoded(decoded: IndexedDecoded[], state: Pick<ProposalBundle, "tokenAccounts" | "mints">, ctx: { nativeTreasury: string }): Effect[] {
   const out: Effect[] = [];
-  decoded.forEach((d, i) => {
-    const id = `fx-${i}`;
+  decoded.forEach(({ txIndex, ixIndex, decoded: d }) => {
+    const id = `fx-${txIndex}-${ixIndex}`;
     if (d.kind === "unsupported") { out.push({ id, type: "unknown", basis: "unknown", detail: { program: d.program, reason: d.reason, dataHex: d.dataHex }, flags: ["unsupported-instruction"], evidenceIds: [] }); return; }
     if (d.kind === "setAuthority") { out.push({ id, type: "controlChange", basis: "decoded", detail: { target: d.target, authorityType: d.authorityType, from: d.currentAuthority, to: d.newAuthority }, flags: ["control-change"], evidenceIds: [] }); return; }
     const mintAddr = d.kind === "transfer" ? (d.mint ?? state.tokenAccounts[d.source]?.mint ?? null) : d.mint;

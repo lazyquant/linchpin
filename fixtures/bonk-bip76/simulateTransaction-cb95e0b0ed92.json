@@ -1,0 +1,82 @@
+{
+ "method": "simulateTransaction",
+ "params": {
+  "message": "AQAHCYnB0ScjSYS/rNQf+CF35MLEq+jj3qBYAI3Eac95LDeDQKe9CZS1zstY+s5VW2OzkmBtfXdz9Wc0+9yx1RN3DzwLcGWpksWK1QdX0XcScuW85pmGTNKnajFYkqSLjTSDJPqZdIaybyeRsYlRbC5HFv4lE+UqedEhQIwS30rTtzErAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABVaP4pa626cQFzSaGdhijWHPFuqu1CA2aoEPPctRbJvacZPaw6qNSNJS41DnRiiOGaom5972rBjGmcgaI6jN8IGdPXvugL0+ai9O+kmHQJik9b4UWszoOKQmon2c0DrSEIwMyOSXne91+kM24swy7mXUOqbz9HSBvCmW99HMkVjgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQIKAAABAwMEBQYHCJMBqIOzCehiPfoEAAAAEQAAAFNvd2VsbGlhbiBCb25rREFPHQAAAFRoZSBhbGwgbmV3IFNvd2VsbGlhbiBCb25rREFPRQAAAGh0dHBzOi8vZ2F0ZXdheS5pcnlzLnh5ei9EY1pxcWFwUTVrM0JlNWFCaXdkS3dwUEhSTm1BRVhnTGZIU0JEZ3VrUzVWTAQAAAB3ZWIz",
+  "config": {
+   "sigVerify": false,
+   "replaceRecentBlockhash": true,
+   "commitment": "confirmed",
+   "accounts": {
+    "encoding": "base64",
+    "addresses": [
+     "28AymsqjJ6p312raqaNUNn8DADT4kyRAwT2nJ87scmPy",
+     "F8FqZuUKfoy58aHLW6bfeEhfW9sTtJyqFTqnxVmGZ6dU",
+     "DezXAZ8z7PnrnRJjz3wXBoRgixCa6xjnB7YaB1pPB263"
+    ]
+   }
+  }
+ },
+ "slot": 453664780,
+ "retrievedAt": "2026-10-05T18:51:31.773Z",
+ "rpcUrl": "https://api.mainnet-beta.solana.com",
+ "responseSha256": "070ae52aa7d113c0b8bc97a9a6b460efd50a5e26198c257f1ba83ef2ab33a0b0",
+ "response": {
+  "accounts": [
+   null,
+   null,
+   null
+  ],
+  "err": {
+   "InstructionError": [
+    0,
+    {
+     "Custom": 6009
+    }
+   ]
+  },
+  "fee": 5000,
+  "innerInstructions": null,
+  "loadedAccountsDataSize": 372667,
+  "loadedAddresses": {
+   "readonly": [],
+   "writable": []
+  },
+  "logs": [
+   "Program metaThtkusoWYDvHBFXfvc93Z3d8iBeDZ4DVyq8SYVR invoke [1]",
+   "Program log: Instruction: AppendMetadataItems",
+   "Program log: AnchorError thrown in programs/mythic_metadata/src/instructions/append/items.rs:72. Error Code: MetadataItemAlreadyExists. Error Number: 6009. Error Message: Metadata item already exists.",
+   "Program metaThtkusoWYDvHBFXfvc93Z3d8iBeDZ4DVyq8SYVR consumed 20059 of 200000 compute units",
+   "Program metaThtkusoWYDvHBFXfvc93Z3d8iBeDZ4DVyq8SYVR failed: custom program error: 0x1779"
+  ],
+  "postBalances": [
+   2016541219,
+   3180720,
+   1141440,
+   1649520,
+   1,
+   1872240,
+   1976640,
+   1809600,
+   1795680
+  ],
+  "postTokenBalances": [],
+  "preBalances": [
+   2016546219,
+   3180720,
+   1141440,
+   1649520,
+   1,
+   1872240,
+   1976640,
+   1809600,
+   1795680
+  ],
+  "preTokenBalances": [],
+  "replacementBlockhash": {
+   "blockhash": "69NEhfYM9cKQcVdcqwhiNCXJgAtnsz4RiupBpMeNMh9w",
+   "lastValidBlockHeight": 431702837
+  },
+  "returnData": null,
+  "unitsConsumed": 20059
+ }
+}
