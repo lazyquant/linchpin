@@ -1,4 +1,6 @@
-import { mkdirSync, writeFileSync, readdirSync } from "node:fs";
+import { buildPack, type PackFile, type PackRegistry, type DocsCapture } from "./pack/build";
+import { renderPackHtml, renderJson, coverageLine } from "./pack/packet";
+import { mkdirSync, writeFileSync, readdirSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import { PublicKey } from "@solana/web3.js";
 import { getGovernanceProgramVersion } from "@solana/spl-governance";
@@ -77,6 +79,24 @@ export async function reviewBundle(c: CaseFile, rpc: RecordingRpc, bundle: Propo
   return buildPacket({ caseId: c.caseId, title: c.title, offline: rpc.opts.offline, bundle, decoded, effects, sims, skippedFixtures, receipts, reconciliations, claims: c.claims, coverage: cov, graph, evidenceCount: rpc.evidence.length });
 }
 
+async function pack(packPath: string) {
+  if (flag("offline") && flag("record")) throw new Error("pack: --record and --offline are mutually exclusive");
+  const config: PackFile = JSON.parse(readFileSync(packPath, "utf8"));
+  const registry: PackRegistry = JSON.parse(readFileSync(config.registry, "utf8"));
+  const docsCapture: DocsCapture = JSON.parse(readFileSync(config.docsCapture, "utf8"));
+  if (config.pack !== registry.pack) throw new Error("pack: config and registry pack names differ");
+  const opts = runOptions({ offline: flag("offline"), record: flag("record"), outDir: opt("out", join("out", `pack-${config.pack}`)) });
+  const rpc = new RecordingRpc(opts, `${config.pack}-pack`);
+  const packet = await buildPack(rpc, registry, { title: config.title, docsCapture, burns: config.burns });
+  mkdirSync(opts.outDir, { recursive: true });
+  writeFileSync(join(opts.outDir, "packet.json"), renderJson(packet));
+  writeFileSync(join(opts.outDir, "packet.html"), renderPackHtml(packet, registry.governance.realm));
+  // A packet has one evidence log: repeat offline runs replace, rather than append.
+  writeFileSync(join(opts.outDir, "evidence.jsonl"), rpc.evidence.map(e => JSON.stringify(e)).join("\n") + "\n");
+  console.log(coverageLine(packet));
+  console.log(`${config.pack}: ${packet.evidenceCount} evidence → ${join(opts.outDir, "packet.html")}`);
+}
+
 async function doctor() {
   const opts = runOptions({}); const rpc = new RecordingRpc(opts, "doctor");
   const cases = readdirSync("cases").filter((path) => path.endsWith(".json")).sort().map((path) => loadCase(join("cases", path)));
@@ -89,7 +109,8 @@ async function doctor() {
 
 if (import.meta.main) {
 if (cmd === "review" && args[1]) await review(args[1]);
+else if (cmd === "pack" && args[1]) await pack(args[1]);
 else if (cmd === "demo") { for (const c of ["cases/mip-14.json", "cases/mip-14-opinion.json", "cases/bonk-bip76.json"]) await review(c); }
 else if (cmd === "doctor") await doctor();
-else { console.log("usage: linchpin review <case.json> [--offline] [--record] [--out dir] | linchpin demo [--offline] | linchpin doctor"); process.exit(cmd ? 1 : 0); }
+else { console.log("usage: linchpin review <case.json> [--offline] [--record] [--out dir] | linchpin pack <pack.json> [--record|--offline] [--out dir] | linchpin demo [--offline] | linchpin doctor"); process.exit(cmd ? 1 : 0); }
 }
