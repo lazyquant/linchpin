@@ -1,0 +1,22 @@
+{
+  "name": "linchpin",
+  "type": "module",
+  "private": true,
+  "devDependencies": {
+    "@types/bun": "^1.4.2",
+    "@types/node": "22"
+  },
+  "dependencies": {
+    "@solana/spl-governance": "0.3.28",
+    "@solana/spl-token": "0.4.15",
+    "@solana/web3.js": "1.99.0",
+    "bs58": "6.0.0"
+  },
+  "version": "0.1.0",
+  "scripts": {
+    "linchpin": "bun run src/cli.ts",
+    "demo": "bun run src/cli.ts demo --offline",
+    "test": "bun test",
+    "typecheck": "tsc --noEmit"
+  }
+}
