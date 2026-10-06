@@ -44,6 +44,13 @@ Start the server with that file:
 bun --env-file="$HOME/.config/linchpin.env" run web
 ```
 
+Shortcut for the demo laptop (same thing, plus a 50 ms read pace that suits a paid endpoint such as Alchemy; the public endpoint should keep the 250 ms default):
+
+```sh
+cd ~/linchpin-pack
+bun run web:live
+```
+
 If `LINCHPIN_RPC_URL` is unset, the server uses the public mainnet endpoint from `src/config.ts` (`https://api.mainnet-beta.solana.com`). The timeout and minimum interval settings apply to live requests, including retries. Public endpoints may rate-limit reads. Only the redacted scheme and host are shown in activity, API responses and evidence; endpoint credentials, paths and query strings are not displayed.
 
 - **Marinade / MNDE:** refreshes program controllers, mint and freeze authorities, mint supplies (including council supply), the governance list, and registry treasury balances, including the buyback wallet's MNDE account and treasury mSOL accounts. The hundreds-of-proposals ledger scan and its historical receipts replay committed fixtures through a separate offline RPC. Ledger source records keep their original capture dates.

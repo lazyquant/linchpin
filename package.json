@@ -19,6 +19,7 @@
     "demo": "bun run src/cli.ts demo --offline",
     "test": "bun test",
     "typecheck": "tsc --noEmit",
-    "web": "bun run src/web/server.ts"
+    "web": "bun run src/web/server.ts",
+    "web:live": "LINCHPIN_RPC_MIN_INTERVAL_MS=50 bun --env-file=$HOME/.config/linchpin.env run src/web/server.ts"
   }
 }
