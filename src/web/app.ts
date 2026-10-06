@@ -1,3 +1,4 @@
+import { TokenomicsWorkspace } from './tokenomics-ui';
 import type { GraphAnswer, CannedResult } from './graph';
 import { graphSummary, graphSource, graphEntityEvidence, graphHeader, graphCell, graphNumeric, canonicalGraphId } from './graph-view';
 import { layoutRealmPaths } from './graph-layout';
@@ -26,6 +27,7 @@ function animate(el: HTMLElement) { el.style.animation = 'none'; void el.offsetW
 function exportUrl(file: string) { return `/api/cases/${active}/export/${file}?source=${selectedSource()}`; }
 function setTab(next: string) { tab = next; document.querySelectorAll<HTMLButtonElement>('[data-tab]').forEach(b => b.setAttribute('aria-selected', String(b.dataset.tab === next))); $('#content').setAttribute('aria-label', next === 'map' ? 'Control map' : next); render(); if (next === 'graph' || next === 'memo') void fetchGraph(); animate($('#content')); }
 async function load(id: CaseId, source = selections.get(id) ?? 'captured') {
+  tokenomics.close();
   selections.set(id, source); const request = ++viewRequest; ++sourceRequest;
   active = id; view = null; pathIndex = 0; filter = 'all', showAll = false; ledgerQuery = ''; run = runs.get(id) ?? null; inspecting = 'activity';
   history.replaceState(null, '', `/#${id}`); renderCases();
@@ -35,7 +37,7 @@ async function load(id: CaseId, source = selections.get(id) ?? 'captured') {
   try { const data = await api<View>(`/api/cases/${id}?source=${source}`); if (active !== id || request !== viewRequest) return; view = data; updateHeader(); render(); activity(); if (tab === 'graph' || tab === 'memo') void fetchGraph(); }
   catch (error) { if (active === id && request === viewRequest) $('#content').innerHTML = `<p class="error">${esc((error as Error).message)}</p>`; }
 }
-function renderCases() { $('#cases').innerHTML = scopes.map(c => `<button class="case-button ${c.id === active ? 'selected' : ''}" data-case="${c.id}" ${c.id === active ? 'aria-current="true"' : ''}>${esc(c.label)}<small>${esc(c.kind)}</small></button>`).join(''); }
+function renderCases() { $('#cases').innerHTML = scopes.map(c => `<button class="case-button ${c.id === active && !tokenomics.active ? 'selected' : ''}" data-case="${c.id}" ${c.id === active && !tokenomics.active ? 'aria-current="true"' : ''}>${esc(c.label)}<small>${esc(c.kind)}</small></button>`).join(''); }
 function updateRun() {
   const current = runs.get(active), busy = current?.status === 'running';
   $('#run').textContent = busy && current?.source !== 'live' ? 'Research running…' : 'Run research ↗';
@@ -52,6 +54,7 @@ function updateHeader() {
   $('#generation').textContent = `Built ${new Date(view.generatedAt).toLocaleTimeString()} · draft`;
 }
 function render() {
+  if (tokenomics.active) return;
   if (!view) return;
   if (tab === 'findings') renderFindings();
   else if (tab === 'map') renderMap();
@@ -195,6 +198,7 @@ function renderMemo() {
   $('#content').innerHTML = `<div class="memo-toolbar"><span class="status">Draft · human review pending</span><a class="secondary" href="${exportUrl('memo.md')}">Export memo ↓</a><button id="print-memo" class="secondary">Print / save PDF</button></div><article class="memo"><h2>${esc(view.title)} — research memo</h2><p>${esc(view.question)}</p><p>${view.freshness.source === 'live' ? esc(liveMemoHeader()) : `Recorded evidence captured ${view.capturedRange.map(day).join(' — ')}. ${view.evidenceCount.toLocaleString()} evidence records. Generated ${esc(view.generatedAt)}.`}</p>${view.freshness.source === 'live' ? `<h3>What changed since capture</h3>${view.changedCount ? `<ul>${view.stateDiff!.filter(r => r.changed).map(r => `<li>${esc(r.label)}: ${esc(r.captured)} → ${esc(r.current)}</li>`).join('')}</ul>` : '<p>Nothing changed since capture</p>'}` : ''}<h3>Findings</h3>${view.findings.map(f => `<section><h4>${esc(f.title)}</h4><p>${esc(f.text)} ${f.sourceIds.map(id => `<button class="citation" data-source="${esc(id)}" aria-label="Inspect citation ${refs.indexOf(id) + 1}">[${refs.indexOf(id) + 1}]</button>`).join('')}</p><p class="source-meta">${esc(f.basis)} · ${esc(f.status)}</p></section>`).join('')}${graphMemoHtml()}<h3>Unknowns & next evidence</h3><ul>${view.unknowns.map(u => `<li>${esc(u)}</li>`).join('')}</ul><h3>Source manifest</h3><p class="sources">${refs.map((id, i) => `[${i + 1}] ${esc(id)}`).join('<br>')}</p><p>Deterministic synthesis from the local checks. No live language model is used. Code references describe the decoder implementation, not a full smart-contract source audit.</p></article>`;
 }
 function activity() {
+  if (tokenomics.active) return;
   inspecting = 'activity'; $('#inspector-title').textContent = 'Research activity';
   const current = runs.get(active);
   const liveIntro = liveActivityIntro(view, current?.status === 'running');
@@ -240,7 +244,7 @@ async function startRun(source: 'captured' | 'live' = 'captured') {
   } catch (e) { notice((e as Error).message); }
 }
 document.addEventListener('click', event => {
-  const target = (event.target as Element).closest<HTMLElement>('button,a,[data-node],[data-graph-entity]'); if (!target) return;
+  const target = (event.target as Element).closest<HTMLElement>('button,a,[data-node],[data-graph-entity]'); if (!target || tokenomics.active && !target.dataset.case) return;
   if (target.dataset.case) void load(target.dataset.case as CaseId);
   else if (target.dataset.tab) setTab(target.dataset.tab);
   else if (target.id === 'load-graph') void loadGraph();
@@ -268,8 +272,9 @@ document.addEventListener('click', event => {
     else { $('#inspector').classList.add('open'); $('#inspector-title').textContent = 'Unverified & next evidence'; inspecting = 'unknowns'; $('#inspector-body').innerHTML = `<p class="activity-note">Limits of this research</p><ul class="unknowns">${view.unknowns.map(u => `<li>${esc(u)}</li>`).join('')}</ul>`; }
   }
 });
-document.addEventListener('keydown', e => { const target = e.target as HTMLElement; if ((e.key === 'Enter' || e.key === ' ') && target.matches('[data-node],g[data-graph-entity]')) { e.preventDefault(); target.dispatchEvent(new MouseEvent('click', {bubbles: true})); } if (target.matches('[role=tab]') && ['ArrowLeft','ArrowRight'].includes(e.key)) { const tabs = [...document.querySelectorAll<HTMLButtonElement>('[role=tab]')]; const next = tabs[(tabs.indexOf(target as HTMLButtonElement) + (e.key === 'ArrowRight' ? 1 : tabs.length - 1)) % tabs.length]; next.focus(); setTab(next.dataset.tab!); } });
+document.addEventListener('keydown', e => { if(tokenomics.active) return; const target = e.target as HTMLElement; if ((e.key === 'Enter' || e.key === ' ') && target.matches('[data-node],g[data-graph-entity]')) { e.preventDefault(); target.dispatchEvent(new MouseEvent('click', {bubbles: true})); } if (target.matches('[role=tab]') && ['ArrowLeft','ArrowRight'].includes(e.key)) { const tabs = [...document.querySelectorAll<HTMLButtonElement>('[role=tab][data-tab]')]; const next = tabs[(tabs.indexOf(target as HTMLButtonElement) + (e.key === 'ArrowRight' ? 1 : tabs.length - 1)) % tabs.length]; next.focus(); setTab(next.dataset.tab!); } });
 document.addEventListener('change', e => { const el = e.target as HTMLSelectElement; if (el.id === 'finding-filter') { filter = el.value; renderFindings(); } if (el.id === 'path-select') { pathIndex = Number(el.value); renderMap(); } });
 let searchTimer: ReturnType<typeof setTimeout>;
 document.addEventListener('input', e => { const el = e.target as HTMLInputElement; if (el.id === 'ledger-search') { ledgerQuery = el.value; const pos = el.selectionStart; renderTimeline(); $('#ledger-search').focus(); ($('#ledger-search') as HTMLInputElement).setSelectionRange(pos,pos); } if (el.id === 'source-search') { sourceQuery = el.value; clearTimeout(searchTimer); searchTimer = setTimeout(() => void browseSources(sourceQuery), 180); } });
-try { scopes = await api<Scope[]>('/api/cases'); const hash = location.hash.slice(1); await load(scopes.some(c => c.id === hash) ? hash as CaseId : 'marinade'); } catch (e) { $('#content').innerHTML = `<p class="error">${esc((e as Error).message)}</p>`; }
+const tokenomics = new TokenomicsWorkspace(() => { ++viewRequest; ++sourceRequest; view = null; renderCases(); }, notice);
+try { scopes = await api<Scope[]>('/api/cases'); renderCases(); const hash = location.hash.slice(1); if (scopes.some(c => c.id === hash)) await load(hash as CaseId); else await tokenomics.open(); } catch (e) { await tokenomics.open(); }
