@@ -8,6 +8,10 @@ export function graphOverviewText(g: GraphOverview): string {
 }
 let summary: GraphOverview | undefined;
 let pending: Promise<void> | undefined;
+export function tokenomicsGraphTotals(nodes: number, relationships: number): string {
+  const n = (v: number) => v.toLocaleString('en-US');
+  return `${n(summary?.byNamespace.tokenomics ?? nodes)} nodes · ${n(summary?.tokenomicsRelationships ?? relationships)} relationships in the tokenomics graph`;
+}
 export const graphBadge = () => `<span class="graph-badge" data-graph-summary>${esc(summary ? graphOverviewText(summary) : 'Reading graph counts…')}</span>`;
 export function refreshGraphOverview(): Promise<void> {
   return pending ??= (async () => {
@@ -16,6 +20,7 @@ export function refreshGraphOverview(): Promise<void> {
       if (!response.ok) throw new Error('Graph counts unavailable');
       summary = await response.json() as GraphOverview;
       document.querySelectorAll<HTMLElement>('[data-graph-summary]').forEach(el => { el.textContent = graphOverviewText(summary!); el.title = summary!.reason ?? `Retrieved ${summary!.retrievedAt}`; });
+      document.querySelectorAll<HTMLElement>('[data-tg-totals]').forEach(el => { el.textContent = tokenomicsGraphTotals(Number(el.dataset.nodes), Number(el.dataset.relationships)); });
     } catch {
       document.querySelectorAll<HTMLElement>('[data-graph-summary]').forEach(el => { el.textContent = 'Graph counts unavailable'; });
     }

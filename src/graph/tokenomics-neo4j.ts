@@ -132,6 +132,15 @@ export function buildTokenomicsGraph(bundle: BundleResponse): TokenomicsGraph {
     rel('LOCKS', lockers, 'mint:mnde', locked, { amountRaw: locked.amount.raw, amount: locked.amount.display, share: locked.amount.shareOfSupply ?? null });
     for (const c of control?.controllers.filter(c => c.type === 'dao-governance' && c.label.includes('through VSR')) ?? []) rel('VOTES_IN', lockers, c.id, locked, { what: 'Registrar voting weight; participation estimate, not a vote execution' });
   }
+  // A path link names the control rows for its outgoing mechanism. Retain
+  // those captured dependencies in TG, so path and control are one graph.
+  for (const link of path?.links ?? []) for (const controlId of link.controlledBy) {
+    const row = control?.rows.find(r => r.id === controlId);
+    const controller = control?.controllers.find(c => c.id === (row?.controllerId ?? controlId));
+    if (!controller || controller.type === 'none') continue;
+    rel('CONTROLLED_BY', `path:${link.from}`, controller.id, row ?? controller,
+      { what: 'Controls an outgoing path mechanism' });
+  }
   const graph = { nodes: [...nodes.values()].sort((a, b) => a.id.localeCompare(b.id)), relationships: [...relationships.values()].sort((a, b) => a.key.localeCompare(b.key)) };
   assertTokenomicsNamespace(graph); return graph;
 }
@@ -197,9 +206,19 @@ export async function runTokenomicsNeo4j(driver: Neo4jDriverLike, id: string, op
     for (const c of q.columns) row[c] = object[c] == null ? null : c === 'share' ? Number(String(object[c])) : String(object[c]); return row; });
   return { ...q, rows: sorted(rows, q.columns) };
 }
+export const TOKENOMICS_NODES_CYPHER = "MATCH (n:TG) RETURN n.id AS id, coalesce(n.label, n.id) AS label, head([l IN labels(n) WHERE l <> 'TG']) AS type ORDER BY id";
+export const TOKENOMICS_EDGES_CYPHER = "MATCH (a:TG)-[r]->(b:TG) RETURN r.key AS id, a.id AS from, b.id AS to, type(r) AS type, head(r.basis) AS basis, coalesce(r.mechanism, r.what, r.instruction, type(r)) AS label ORDER BY id";
+export async function readTokenomicsSubgraph(driver: Neo4jDriverLike, opts: { database: string }): Promise<GraphData['subgraph']> {
+  const config = { database: opts.database, routing: 'READ' as const };
+  const [nodes, edges] = await Promise.all([driver.executeQuery(TOKENOMICS_NODES_CYPHER, {}, config), driver.executeQuery(TOKENOMICS_EDGES_CYPHER, {}, config)]);
+  return {
+    nodes: nodes.records.map(r => { const n = r.toObject(); return { id: String(n.id), label: String(n.label), type: String(n.type) }; }),
+    edges: edges.records.map(r => { const e = r.toObject(); return { id: String(e.id), from: String(e.from), to: String(e.to), type: String(e.type), basis: String(e.basis) as Basis, label: String(e.label) }; }),
+  };
+}
 export function tokenomicsSubgraph(graph: TokenomicsGraph): GraphData['subgraph'] {
-  const selected = graph.relationships.filter(r => !['HOLDS', 'CHECKS'].includes(r.type)), ids = new Set(selected.flatMap(r => [r.source, r.target]));
-  return { nodes: graph.nodes.filter(n => ids.has(n.id)).map(n => ({ id: n.id, type: n.labels[1], label: String(n.props.label) })),
+  const selected = graph.relationships;
+  return { nodes: graph.nodes.map(n => ({ id: n.id, type: n.labels[1], label: String(n.props.label) })),
     edges: selected.map(r => ({ id: r.key, from: r.source, to: r.target, type: r.type, basis: (r.props.basis as Basis[])[0], label: String(r.props.mechanism ?? r.props.what ?? r.props.instruction ?? r.type) })) };
 }
 export function tokenomicsCypherBatches(graph: TokenomicsGraph) {

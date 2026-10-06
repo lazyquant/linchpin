@@ -1,7 +1,7 @@
 import neo4j from 'neo4j-driver';
 import { canonical } from '../chain/evidence';
 import { neo4jConfigFromEnv, redactedNeo4jHost, type Neo4jDriverLike } from '../graph/neo4j';
-import { buildTokenomicsGraph, loadTokenomicsNeo4j, runTokenomicsLocal, runTokenomicsNeo4j, TOKENOMICS_QUERIES, tokenomicsSubgraph } from '../graph/tokenomics-neo4j';
+import { buildTokenomicsGraph, loadTokenomicsNeo4j, runTokenomicsLocal, runTokenomicsNeo4j, TOKENOMICS_QUERIES, tokenomicsSubgraph, readTokenomicsSubgraph } from '../graph/tokenomics-neo4j';
 import { GraphError, type GraphOptions } from '../web/graph';
 import type { BundleResponse, GraphData } from './api';
 class Timeout extends Error { override name = 'TimeoutError'; }
@@ -55,9 +55,12 @@ export class TokenomicsGraphService {
       const driver = this.getDriver(), ms = this.options.queryTimeoutMs ?? 5000;
       const bounded: Neo4jDriverLike = { executeQuery: (cypher, params, config) => deadline(driver.executeQuery(cypher, params, { ...config, transactionConfig: { timeout: ms } } as typeof config), ms) };
       const queries = await Promise.all(TOKENOMICS_QUERIES.map(q => runTokenomicsNeo4j(bounded, q.id, this.config!)));
+      const subgraph = await readTokenomicsSubgraph(bounded, this.config!);
       const local = this.local();
       if (queries.some((q, n) => canonical(q.rows) !== canonical(local.queries[n].rows))) return this.local('Neo4j TG snapshot differs from this captured bundle; reload the tokenomics graph.');
-      return { ...local, source: 'neo4j', host: redactedNeo4jHost(this.config!.uri), reason: null, queries };
+      const normalized = (g: GraphData['subgraph']) => canonical({ nodes: [...g.nodes].sort((a, b) => a.id.localeCompare(b.id)), edges: [...g.edges].sort((a, b) => a.id.localeCompare(b.id)) });
+      if (normalized(subgraph) !== normalized(local.subgraph)) return this.local('Neo4j TG picture differs from this captured bundle; reload the tokenomics graph.');
+      return { ...local, subgraph, source: 'neo4j', host: redactedNeo4jHost(this.config!.uri), reason: null, queries };
     } catch (error) { return this.local(this.scrub(error)); }
   }
   async load() {

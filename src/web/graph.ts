@@ -66,7 +66,7 @@ export class GraphService {
     const work = this.acrossNamespaces(async (driver, database) => {
       const results = await Promise.all(SUMMARY_QUERIES.map(cypher => driver.executeQuery(cypher, {}, { database, routing: 'READ' })));
       const count = (i: number) => graphCount(results[i].records[0]?.toObject().count);
-      return { nodes: count(0), relationships: count(1), byNamespace: { governance: count(2), tokenomics: count(3) },
+      return { nodes: count(0), relationships: count(1), tokenomicsRelationships: count(5), byNamespace: { governance: count(2), tokenomics: count(3) },
         byLabel: Object.fromEntries(results[4].records.map(r => { const row = r.toObject(); return [String(row.l), graphCount(row.count)]; })) };
     }, () => localGraphCounts(this.records, tokenomics)).then(answer => {
       if (this.summaryPending?.work === work) this.summaryCache = { at: Date.now(), graph: tokenomics, answer };

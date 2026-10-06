@@ -2,7 +2,7 @@ import type { GraphRecords } from '../graph/neo4j';
 import type { TokenomicsGraph } from '../graph/tokenomics-neo4j';
 
 export type GraphOrigin = { source: 'neo4j' | 'local'; host: string | null; reason: string | null; retrievedAt: string };
-export type GraphCounts = { nodes: number; relationships: number; byNamespace: { governance: number; tokenomics: number }; byLabel: Record<string, number> };
+export type GraphCounts = { nodes: number; relationships: number; byNamespace: { governance: number; tokenomics: number }; byLabel: Record<string, number>; tokenomicsRelationships?: number };
 export type GraphOverview = GraphOrigin & GraphCounts;
 export type ProposalDependency = { address: string; caseRole: string; caseLabel: string; tokenomicsType: string; tokenomicsLabel: string; links: string[] };
 export type GovernanceTouch = { caseId: string; sharedAccounts: number; examples: string[]; entityLabels: string[] };
@@ -14,6 +14,7 @@ export const SUMMARY_QUERIES = [
   'MATCH (n:Entity) RETURN count(n) AS count',
   'MATCH (n:TG) RETURN count(n) AS count',
   "MATCH (n) UNWIND labels(n) AS l WITH l WHERE l <> 'Entity' AND l <> 'TG' RETURN l, count(*) AS count",
+  'MATCH (:TG)-[r]->(:TG) RETURN count(r) AS count',
 ];
 export const PROPOSAL_BRIDGE_CYPHER = `MATCH (c:Entity) WHERE $case IN c.cases
 MATCH (t:TG {address: c.id})
@@ -30,7 +31,7 @@ export function localGraphCounts(governance: GraphRecords, tokenomics: Tokenomic
   for (const label of [...governance.nodes.map(n => n.label), ...tokenomics.nodes.flatMap(n => n.labels)])
     if (label !== 'Entity' && label !== 'TG') counts.set(label, (counts.get(label) ?? 0) + 1);
   return { nodes: governance.nodes.length + tokenomics.nodes.length,
-    relationships: governance.relationships.length + tokenomics.relationships.length,
+    relationships: governance.relationships.length + tokenomics.relationships.length, tokenomicsRelationships: tokenomics.relationships.length,
     byNamespace: { governance: governance.nodes.length, tokenomics: tokenomics.nodes.length }, byLabel: Object.fromEntries(counts) };
 }
 export function localProposalDependencies(governance: GraphRecords, tokenomics: TokenomicsGraph, caseId: string): ProposalDependency[] {

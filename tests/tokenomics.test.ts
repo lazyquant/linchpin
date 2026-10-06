@@ -1,3 +1,4 @@
+import { TOKENOMICS_NODES_CYPHER, TOKENOMICS_EDGES_CYPHER, tokenomicsSubgraph } from '../src/graph/tokenomics-neo4j';
 import { loadTokenomicsBundle, tokenomicsDigest } from '../src/tokenomics/cache';
 import { sameCouncilMembers } from '../src/tokenomics/councils';
 import { hasGovernanceFixture } from './helpers/governance';
@@ -302,6 +303,7 @@ describe.skipIf(!governanceRecorded)('tokenomics TG graph and service', () => {
     let wrote = false;
     const driver: Neo4jDriverLike = { async executeQuery(cypher, params, config) {
       calls.push({ cypher, params, config });
+      if (cypher === TOKENOMICS_NODES_CYPHER || cypher === TOKENOMICS_EDGES_CYPHER) return { records: tokenomicsSubgraph(graph)[cypher === TOKENOMICS_NODES_CYPHER ? 'nodes' : 'edges'].map(row => ({ toObject: () => row })) };
       const query = TOKENOMICS_QUERIES.find(q => q.cypher === cypher);
       if (query) return { records: runTokenomicsLocal(graph, query.id).rows.map(row => ({ toObject: () => row })) };
       const canned = CANNED_QUERIES.find(q => q.cypher === cypher);
@@ -378,10 +380,21 @@ describe.skipIf(!governanceRecorded)('tokenomics TG graph and service', () => {
     calls.length = 0;
     const service = new TokenomicsGraphService(built.bundle, { config, driverFactory: () => driver });
     const response = await (await tokenomicsRoutes(built, request(`${base}/graph`), service)).json();
-    expect(response.status).toBe('ready'); expect(response.data.source).toBe('neo4j'); expect(response.data.host).toBe('aura.example'); expect(calls).toHaveLength(8);
-    await service.query(); expect(calls).toHaveLength(8);
+    expect(response.status).toBe('ready'); expect(response.data.source).toBe('neo4j'); expect(response.data.host).toBe('aura.example'); expect(calls).toHaveLength(10);
+    await service.query(); expect(calls).toHaveLength(10);
     for (const call of calls) { expect(call.config.routing).toBe('READ'); expect(call.config.transactionConfig.timeout).toBe(5000); }
-    expect(response.data.subgraph.nodes.length).toBeGreaterThan(0);
+    expect(response.data.subgraph).toEqual(service.local().subgraph);
+  });
+  test('a matching query snapshot with stale picture edges falls back instead of claiming Aura provenance', async () => {
+    const { driver } = fake();
+    const service = new TokenomicsGraphService(built.bundle, { config, driverFactory: () => ({ async executeQuery(cypher, params, options) {
+      const response = await driver.executeQuery(cypher, params, options);
+      return cypher === TOKENOMICS_EDGES_CYPHER ? { records: response.records.slice(1) } : response;
+    } }) });
+    const answer = await service.query();
+    expect(answer.source).toBe('local');
+    expect(answer.reason).toContain('picture differs');
+    expect(answer.subgraph).toEqual(service.local().subgraph);
   });
   test('unconfigured and unavailable Neo4j return local API data with scrubbed reasons', async () => {
     let opened = 0;
