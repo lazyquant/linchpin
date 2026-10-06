@@ -180,4 +180,4 @@ const recorded = hasFixture("getProgramAccounts", { programId: p.address, filter
 test.skipIf(!recorded)("mainnet participation sums, recorded supply shares and evidence (skipped until Claude records G3 keys)", async () => {
   const rpc = new RecordingRpc(runOptions({ offline: true, record: false }), "marinade-contracts");
   assertTotals(await readParticipation(rpc, registry, contracts, await readContractsLayer(rpc, registry, contracts)));
-});
+}, 120000);

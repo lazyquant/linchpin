@@ -1,0 +1,103 @@
+{
+ "method": "getTransaction",
+ "params": {
+  "signature": "4juSxtyPNsaYizsLyUPZwHXYNJGVkopsVBjsRbnFhyWvyqPF3z2qvHoM8zSb3gu37aaMBecJU6Y4wUvHbY2SvPSF"
+ },
+ "slot": null,
+ "retrievedAt": "2026-10-06T10:41:57.595Z",
+ "rpcUrl": "https://solana-mainnet.g.alchemy.com",
+ "responseSha256": "f0678f6c2bc973809259e807366450015208079a3dc32ede7971d89619beec48",
+ "response": {
+  "blockTime": 1765825237,
+  "meta": {
+   "computeUnitsConsumed": 6634,
+   "costUnits": 8021,
+   "err": null,
+   "fee": 5000,
+   "innerInstructions": [],
+   "loadedAddresses": {
+    "readonly": [],
+    "writable": []
+   },
+   "logMessages": [
+    "Program Stake11111111111111111111111111111111111111 invoke [1]",
+    "Program log: Instruction: Withdraw",
+    "Program Stake11111111111111111111111111111111111111 consumed 6634 of 200000 compute units",
+    "Program Stake11111111111111111111111111111111111111 success"
+   ],
+   "postBalances": [
+    104748835784,
+    2282880,
+    1141440,
+    1169280,
+    114979200
+   ],
+   "postTokenBalances": [],
+   "preBalances": [
+    9934979,
+    104741188685,
+    1141440,
+    1169280,
+    114979200
+   ],
+   "preTokenBalances": [],
+   "rewards": [],
+   "status": {
+    "Ok": null
+   }
+  },
+  "slot": 386920467,
+  "transaction": {
+   "message": {
+    "header": {
+     "numReadonlySignedAccounts": 0,
+     "numReadonlyUnsignedAccounts": 3,
+     "numRequiredSignatures": 1
+    },
+    "staticAccountKeys": [
+     "BBaQsiRo744NAYaqL3nKRfgeJayoqVicEQsEnLpfsJ6x",
+     "Uc5ioGWnSes4UxWGnTPLHukbr8HspWHqEVn2B1hSamK",
+     "Stake11111111111111111111111111111111111111",
+     "SysvarC1ock11111111111111111111111111111111",
+     "SysvarStakeHistory1111111111111111111111111"
+    ],
+    "recentBlockhash": "8KsKvHP1W3AZBnog7tMBtTTNKwYM2wyf9bCQJhabMMaY",
+    "compiledInstructions": [
+     {
+      "programIdIndex": 2,
+      "accountKeyIndexes": [
+       1,
+       0,
+       3,
+       4,
+       0
+      ],
+      "data": {
+       "type": "Buffer",
+       "data": [
+        4,
+        0,
+        0,
+        0,
+        205,
+        222,
+        236,
+        98,
+        24,
+        0,
+        0,
+        0
+       ]
+      }
+     }
+    ],
+    "addressTableLookups": []
+   },
+   "signatures": [
+    "4juSxtyPNsaYizsLyUPZwHXYNJGVkopsVBjsRbnFhyWvyqPF3z2qvHoM8zSb3gu37aaMBecJU6Y4wUvHbY2SvPSF"
+   ]
+  },
+  "transactionIndex": 0,
+  "version": 0
+ }
+}

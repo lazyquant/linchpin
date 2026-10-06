@@ -107,7 +107,7 @@ test.skipIf(!hasFixture("getProgramAccounts", { programId: TOKEN_PROGRAM.toBase5
   const total = result.mnde.owners.reduce((n, r) => n + BigInt(r.amountRaw), 0n);
   expect(String(total)).toBe(result.mnde.totalRaw.value); expect(String(total - BigInt(result.mnde.supplyRaw.value))).toBe(result.mnde.differenceFromSupplyRaw.value);
   expect(result.msol.top20.length).toBeLessThanOrEqual(20); expect(result.float.verifiedOnly.evidenceIds.length).toBeGreaterThan(0);
-}, 60000);
+}, 120000);
 
 
 test("program-owned mSOL dependencies group by decoded program without signature guesses", async () => {

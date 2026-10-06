@@ -1,0 +1,329 @@
+{
+ "method": "getTransaction",
+ "params": {
+  "signature": "5EaAp8Uxbnkw22YD67ucsSLgHVNUV92Zb8M25HFQxxFUpojZDKrZA6Gse4bfATM4yqCE7h7gdXVWrhCtGLxa7xMX"
+ },
+ "slot": null,
+ "retrievedAt": "2026-10-06T10:41:57.969Z",
+ "rpcUrl": "https://solana-mainnet.g.alchemy.com",
+ "responseSha256": "6112b9f52517b2fb9e22ec9d8148a43ef0063a8773fbb6d80f47f394b797533d",
+ "response": {
+  "blockTime": 1765479679,
+  "meta": {
+   "computeUnitsConsumed": 2850,
+   "costUnits": 9635,
+   "err": null,
+   "fee": 5000,
+   "innerInstructions": [],
+   "loadedAddresses": {
+    "readonly": [],
+    "writable": []
+   },
+   "logMessages": [
+    "Program 11111111111111111111111111111111 invoke [1]",
+    "Program 11111111111111111111111111111111 success",
+    "Program 11111111111111111111111111111111 invoke [1]",
+    "Program 11111111111111111111111111111111 success",
+    "Program 11111111111111111111111111111111 invoke [1]",
+    "Program 11111111111111111111111111111111 success",
+    "Program 11111111111111111111111111111111 invoke [1]",
+    "Program 11111111111111111111111111111111 success",
+    "Program 11111111111111111111111111111111 invoke [1]",
+    "Program 11111111111111111111111111111111 success",
+    "Program 11111111111111111111111111111111 invoke [1]",
+    "Program 11111111111111111111111111111111 success",
+    "Program 11111111111111111111111111111111 invoke [1]",
+    "Program 11111111111111111111111111111111 success",
+    "Program 11111111111111111111111111111111 invoke [1]",
+    "Program 11111111111111111111111111111111 success",
+    "Program 11111111111111111111111111111111 invoke [1]",
+    "Program 11111111111111111111111111111111 success",
+    "Program 11111111111111111111111111111111 invoke [1]",
+    "Program 11111111111111111111111111111111 success",
+    "Program 11111111111111111111111111111111 invoke [1]",
+    "Program 11111111111111111111111111111111 success",
+    "Program 11111111111111111111111111111111 invoke [1]",
+    "Program 11111111111111111111111111111111 success",
+    "Program 11111111111111111111111111111111 invoke [1]",
+    "Program 11111111111111111111111111111111 success",
+    "Program 11111111111111111111111111111111 invoke [1]",
+    "Program 11111111111111111111111111111111 success",
+    "Program 11111111111111111111111111111111 invoke [1]",
+    "Program 11111111111111111111111111111111 success",
+    "Program 11111111111111111111111111111111 invoke [1]",
+    "Program 11111111111111111111111111111111 success",
+    "Program 11111111111111111111111111111111 invoke [1]",
+    "Program 11111111111111111111111111111111 success",
+    "Program 11111111111111111111111111111111 invoke [1]",
+    "Program 11111111111111111111111111111111 success",
+    "Program 11111111111111111111111111111111 invoke [1]",
+    "Program 11111111111111111111111111111111 success"
+   ],
+   "postBalances": [
+    70970202639,
+    15858405,
+    569746987,
+    463825272,
+    6000001,
+    14858292,
+    5986001,
+    300965064,
+    3954221,
+    2983378,
+    53044920,
+    28361433338,
+    6000001,
+    2241404500,
+    291929729,
+    2607567640,
+    1500000000,
+    3954021,
+    890940,
+    5984901,
+    1
+   ],
+   "postTokenBalances": [],
+   "preBalances": [
+    71070207657,
+    15858404,
+    569746986,
+    463825271,
+    6000000,
+    14858291,
+    5986000,
+    300965063,
+    3954220,
+    2983377,
+    53044919,
+    28361433337,
+    6000000,
+    2241404499,
+    291929728,
+    2607567639,
+    1400000000,
+    3954020,
+    890939,
+    5984900,
+    1
+   ],
+   "preTokenBalances": [],
+   "rewards": [],
+   "status": {
+    "Ok": null
+   }
+  },
+  "slot": 386033333,
+  "transaction": {
+   "message": {
+    "header": {
+     "numReadonlySignedAccounts": 0,
+     "numReadonlyUnsignedAccounts": 1,
+     "numRequiredSignatures": 1
+    },
+    "accountKeys": [
+     "FLiPtS5X5N8FxtWQrqYZASv7guoAsjyusLfv4ZbHqrdj",
+     "2M3dPLFr1i25FAXbLUQbFmxLsPnAdW8VWHGPJfa8Xo6p",
+     "57fx5GkyHvGfk2cbPfyCRYy9i8wVDSyuQSVGJfsK3wYK",
+     "5idvrkM3PuSbqovsQWsMPsGdWzqiXoordDRoZCFqxqGZ",
+     "7s1nppQFVpGs886bW4uHrVayfkY7HLozfbDVAY3zXnve",
+     "8hWSm2SuNwrx2SuFTkFuDPGkQzF83wYwYpsg7hZgP8Zo",
+     "95pGAgoqPCCz6uAMqfg7YqXfpfoQiqFbF9ky4mDGTAqT",
+     "9KnwN5v2tKnVdv4WAdJE56ywDG7umHpnMcnTdaH8VLMc",
+     "ADLtdAvHNSdtDud4mLYGzLhr53e4tSkxxkHDqnEKjyE",
+     "BBaQsiRo744NAYaqL3nKRfgeJayoqVicEQsEnLpfsJ6x",
+     "C4CdgG4ECLVUmZu1kEbhdGifwscYw7GXZozhQxunaBYL",
+     "DaUfgWWWpQNuNYyTMrBSDR5Czt6K5qKbJB2GR7q3jSA1",
+     "DGodXssimfBWP7no3maav8SrT9deAZDQk6BzSSuTYeht",
+     "Em1CstXT4dDAMDhHTYpS4qVvzL5cQtKHe17u1ExQRFRZ",
+     "EzEbumbavLuVgYmMhawfRRSdwbrwoi9U2NurghpRFnUy",
+     "F2RodrfiYs1eK4DoAr498vFUJbf8kYQR8WkbBK8YM7Mt",
+     "FLiPgesZ6ZkLgdXgQGaGwoNP2Pjvbma3NabMATa6wUvf",
+     "GnDYdnVb7NUXfZWh5STSzuUwpE9pC5H7F2KffnfDhtxd",
+     "HzxrDKsr78L3aYLy2CwH4BCFvs2Zo9KDsdF1JkPtoEMi",
+     "p6oLw6NbvUGFEXLHeC1o8q84dN2hQ9ch7yaGK6icDoy",
+     "11111111111111111111111111111111"
+    ],
+    "recentBlockhash": "3nSzZvDXE6bduF7BUdkXUfsp9cUBAjiJ4wuxWkzgdk6h",
+    "instructions": [
+     {
+      "accounts": [
+       0,
+       16
+      ],
+      "data": "3Bxs411Dtc7pkFQj",
+      "programIdIndex": 20,
+      "stackHeight": 1
+     },
+     {
+      "accounts": [
+       0,
+       19
+      ],
+      "data": "3Bxs412MvVNQj175",
+      "programIdIndex": 20,
+      "stackHeight": 1
+     },
+     {
+      "accounts": [
+       0,
+       4
+      ],
+      "data": "3Bxs412MvVNQj175",
+      "programIdIndex": 20,
+      "stackHeight": 1
+     },
+     {
+      "accounts": [
+       0,
+       15
+      ],
+      "data": "3Bxs412MvVNQj175",
+      "programIdIndex": 20,
+      "stackHeight": 1
+     },
+     {
+      "accounts": [
+       0,
+       10
+      ],
+      "data": "3Bxs412MvVNQj175",
+      "programIdIndex": 20,
+      "stackHeight": 1
+     },
+     {
+      "accounts": [
+       0,
+       13
+      ],
+      "data": "3Bxs412MvVNQj175",
+      "programIdIndex": 20,
+      "stackHeight": 1
+     },
+     {
+      "accounts": [
+       0,
+       9
+      ],
+      "data": "3Bxs412MvVNQj175",
+      "programIdIndex": 20,
+      "stackHeight": 1
+     },
+     {
+      "accounts": [
+       0,
+       2
+      ],
+      "data": "3Bxs412MvVNQj175",
+      "programIdIndex": 20,
+      "stackHeight": 1
+     },
+     {
+      "accounts": [
+       0,
+       7
+      ],
+      "data": "3Bxs412MvVNQj175",
+      "programIdIndex": 20,
+      "stackHeight": 1
+     },
+     {
+      "accounts": [
+       0,
+       6
+      ],
+      "data": "3Bxs412MvVNQj175",
+      "programIdIndex": 20,
+      "stackHeight": 1
+     },
+     {
+      "accounts": [
+       0,
+       12
+      ],
+      "data": "3Bxs412MvVNQj175",
+      "programIdIndex": 20,
+      "stackHeight": 1
+     },
+     {
+      "accounts": [
+       0,
+       11
+      ],
+      "data": "3Bxs412MvVNQj175",
+      "programIdIndex": 20,
+      "stackHeight": 1
+     },
+     {
+      "accounts": [
+       0,
+       1
+      ],
+      "data": "3Bxs412MvVNQj175",
+      "programIdIndex": 20,
+      "stackHeight": 1
+     },
+     {
+      "accounts": [
+       0,
+       14
+      ],
+      "data": "3Bxs412MvVNQj175",
+      "programIdIndex": 20,
+      "stackHeight": 1
+     },
+     {
+      "accounts": [
+       0,
+       3
+      ],
+      "data": "3Bxs412MvVNQj175",
+      "programIdIndex": 20,
+      "stackHeight": 1
+     },
+     {
+      "accounts": [
+       0,
+       17
+      ],
+      "data": "3Bxs412MvVNQj175",
+      "programIdIndex": 20,
+      "stackHeight": 1
+     },
+     {
+      "accounts": [
+       0,
+       18
+      ],
+      "data": "3Bxs412MvVNQj175",
+      "programIdIndex": 20,
+      "stackHeight": 1
+     },
+     {
+      "accounts": [
+       0,
+       5
+      ],
+      "data": "3Bxs412MvVNQj175",
+      "programIdIndex": 20,
+      "stackHeight": 1
+     },
+     {
+      "accounts": [
+       0,
+       8
+      ],
+      "data": "3Bxs412MvVNQj175",
+      "programIdIndex": 20,
+      "stackHeight": 1
+     }
+    ],
+    "indexToProgramIds": {}
+   },
+   "signatures": [
+    "5EaAp8Uxbnkw22YD67ucsSLgHVNUV92Zb8M25HFQxxFUpojZDKrZA6Gse4bfATM4yqCE7h7gdXVWrhCtGLxa7xMX"
+   ]
+  },
+  "transactionIndex": 0,
+  "version": "legacy"
+ }
+}

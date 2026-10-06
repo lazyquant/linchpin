@@ -1,15 +1,15 @@
 import { describe, expect, test } from "bun:test";
 import { readFileSync } from "node:fs";
 import bs58 from "bs58";
-import { PublicKey } from "@solana/web3.js";
-import { DESTINATION_PATTERNS, snakeCase, instructionDiscriminator, tokenDeltas, tokenTransfers, attributeInstruction, walletCosts, aggregateBuybackMonths, compareRevenueWindows, declaredRoutes, matchFeeStatements, assembleVerdict, readFlows, type BuybackObservation } from "../src/contracts/flows";
+import { PublicKey, SystemProgram } from "@solana/web3.js";
+import { DESTINATION_PATTERNS, snakeCase, instructionDiscriminator, tokenDeltas, tokenTransfers, attributeInstruction, walletCosts, aggregateBuybackMonths, aggregateFunding, fundingCredits, distributorInstructions, aggregateDistributorClaims, readDistributor, compareRevenueWindows, declaredRoutes, matchFeeStatements, assembleVerdict, readFlows, type BuybackObservation } from "../src/contracts/flows";
 import { TOKEN_PROGRAM } from "../src/chain/token-layout";
 import { RecordingRpc } from "../src/chain/rpc";
 import { runOptions } from "../src/config";
 import { readContractsLayer } from "../src/contracts/marinade";
 import { readParticipation, type ContractsLayer } from "../src/contracts/participation";
 import { instructionInventory } from "../src/contracts/inventory";
-import { key, vector, hasFixture } from "./helpers/contracts";
+import { key, vector, hasFixture, accountBytes } from "./helpers/contracts";
 
 const meta = { evidenceIds: ["e"], slot: 100, asOf: "2026-10-06T00:00:00Z", basis: "derived" as const };
 const liquid = vector("liquid-staking"), referral = vector("referral");
@@ -102,14 +102,17 @@ const contracts = JSON.parse(readFileSync(new URL("../packs/marinade/contracts.j
 const docs = JSON.parse(readFileSync(new URL("../packs/marinade/sources/marinade-docs-capture-2026-10-05.json", import.meta.url), "utf8"));
 const buyback = registry.accounts.find((a: any) => a.id === "buyback-accumulation").address;
 import { associatedTokenAccount } from "../src/pack/classify";
+import { deflateSync } from "node:zlib";
+import { idlAddress, type LegacyIdl } from "../src/contracts/idl";
 const ata = associatedTokenAccount(new PublicKey(buyback), new PublicKey(registry.mints.find((m: any) => m.id === "mnde").address));
-test.skipIf(!hasFixture("getSignaturesForAddress", { pubkey: ata.toBase58(), limit: 1000 }))("mainnet flows (skipped until Claude records G5 keys)", async () => {
+test.skipIf(!hasFixture("getSignaturesForAddress", { pubkey: buyback, limit: 1000 }))("mainnet flows (skipped until Claude records G5b keys)", async () => {
   const rpc = new RecordingRpc(runOptions({ offline: true, record: false }), "marinade-contracts");
   const layer = await readContractsLayer(rpc, registry, contracts), participation = await readParticipation(rpc, registry, contracts, layer);
   const result = await readFlows(rpc, registry, layer, participation, null, docs);
   expect(result.routes.length).toBeGreaterThan(0); expect(result.claims).toHaveLength(9); expect(result.treasury.transactionsRequested.value).toBeLessThanOrEqual(1000);
+  expect(result.buybackFunding.wallet).toBe(buyback); expect(Array.isArray(result.distributors)).toBe(true);
   expect(() => JSON.stringify(result)).not.toThrow();
-}, 60000);
+}, 120000);
 
 test("synthetic flow reader keeps missing transactions, treasury windows, purchases and voter payouts evidenced", async () => {
   const mnde = registry.mints.find((m: any) => m.id === "mnde").address, msol = registry.mints.find((m: any) => m.id === "msol").address;
@@ -122,11 +125,12 @@ test("synthetic flow reader keeps missing transactions, treasury windows, purcha
   rpc.connection.getSignaturesForAddress = async (k, opts) => {
     if (k.toBase58() === treasury) { expect(opts?.limit).toBe(1000); return signatures(["revenue", "missing"]); }
     if (k.toBase58() === authority) { expect(opts?.limit).toBe(200); return signatures(["payout"]); }
+    if (k.toBase58() === buyback) { expect(opts?.limit).toBe(1000); return signatures(["purchase", "payout", "labs-funding"]); }
     expect(k.equals(ata)).toBe(true); expect(opts?.limit).toBe(1000); return signatures(["purchase", "distribution", "unknown-out"]);
   };
   const tr = (source: number, dest: number, n: bigint) => { const b = Buffer.alloc(9); b[0] = 3; b.writeBigUInt64LE(n, 1); return { programIdIndex: 4, accounts: [source, dest, 0], data: bs58.encode(b) }; };
   function transaction(owner: string, account: string, recipient: string, before: string, after: string, asset: string) {
-    return { slot: 100, blockTime: 1791244800, transaction: { message: { accountKeys: [owner, account, recipient, program, TOKEN_PROGRAM.toBase58(), costAccount], instructions: [] as any[] } },
+    return { slot: 100, blockTime: 1791244800, transaction: { message: { header: { numRequiredSignatures: 1 }, accountKeys: [owner, account, recipient, program, TOKEN_PROGRAM.toBase58(), costAccount], instructions: [] as any[] } },
       meta: { err: null, fee: 5000, preBalances: [10000], postBalances: [5000], preTokenBalances: [balance(1, before, owner, asset)], postTokenBalances: [balance(1, after, owner, asset)], innerInstructions: [] as any[] } };
   }
   const revenue = transaction(authority, treasury, recipientToken, "0", "1000000000", msol);
@@ -139,6 +143,9 @@ test("synthetic flow reader keeps missing transactions, treasury windows, purcha
   payout.meta.postTokenBalances.push(balance(2, "1000000000", buyback, msol)); payout.transaction.message.instructions = [tr(1, 2, 1000000000n)];
   const unknownOut = transaction(buyback, ata.toBase58(), recipientToken, "1000000000", "0", mnde);
   const transactions: Record<string, any> = { revenue, purchase, distribution, payout, "unknown-out": unknownOut };
+  const labs = registry.accounts.find((a: any) => a.id === "labs-treasury").address;
+  transactions["labs-funding"] = { slot: 100, blockTime: 1791244800, transaction: { message: { header: { numRequiredSignatures: 1 }, accountKeys: [labs, buyback], instructions: [] } },
+    meta: { err: null, fee: 5000, preBalances: [2000005000, 0], postBalances: [0, 2000000000], preTokenBalances: [], postTokenBalances: [] } };
   rpc.connection.getTransaction = async signature => transactions[signature] ?? null;
   const fullLayer = { ...layer, programs: layer.programs.map(p => ({ ...p, evidenceIds: ["e"], idl: { kind: "idl", idl: p.id === "liquid-staking" ? liquid : referral } })), authorities: [{ field: "treasuryMsolAccount", address: treasury }],
     parameters: [parameter("rewardFee", 0, "basis points"), parameter("delayedUnstakeFee", 2000)], claims: [{ id: "v1", status: "verified", note: "Decoded reward fee = 0", ...meta }], evidence: [] } as unknown as ContractsLayer;
@@ -149,6 +156,161 @@ test("synthetic flow reader keeps missing transactions, treasury windows, purcha
   expect(result.buybacks.months[0].mndeBoughtRaw.value).toBe("2000000000"); expect(result.buybacks.months[0].costs[0].averagePricePerMnde).toBe(0.5);
   expect(result.buybacks.months[0].unattributedOutflowRaw.value).toBe("1000000000"); expect(result.buybacks.voterAuthorityShare.value).toBe(0.5);
   expect(result.treasuryAuthority.transfers[0].destinationDetail.category).toBe("buyback wallet");
+  expect(result.buybackFunding.excludedPurchases.value).toBe(1);
+  expect(result.buybackFunding.bySource[0]).toMatchObject({ source: authority, asset: msol, amountRaw: "1000000000" });
+  expect(result.buybackFunding.sources.find(s => s.address === authority)?.roles[0]).toMatchObject({ name: "treasury mSOL account owner", basis: "decoded" });
+  expect(result.claims.find(c => c.id === "v5")?.chainResult).toContain("Observed funding sources:");
+  expect(result.buybackFunding.sources.find(s => s.address === labs)?.roles[0]).toMatchObject({ name: "Labs treasury", basis: "claimed" });
+  expect(result.buybackFunding.months[0]).toMatchObject({ solReceivedRaw: "2000000000", solSpentOnMndeRaw: "0" });
+  expect(result.verdict.operatedByAccounts.some(r => r.link.includes("funding source"))).toBe(true);
   expect(result.claims.find(c => c.id === "v9")?.status).toBe("verified"); expect(result.claims.find(c => c.id === "v5")?.status).toBe("unresolved");
   expect(result.claims.find(c => c.id === "v6")?.status).toBe("partly"); expect(() => JSON.stringify(result)).not.toThrow();
+  // Exercise discovery from an actual buyback outflow, then drive v6 through the distributor.
+  distribution.meta.postTokenBalances[1].owner = distributor;
+  const previousAccountRead = rpc.connection.getAccountInfoAndContext, previousSignatures = rpc.connection.getSignaturesForAddress;
+  const idlKey = await idlAddress(new PublicKey(program)), compressed = deflateSync(Buffer.from(JSON.stringify(distributorIdl))), header = Buffer.alloc(44);
+  header.writeUInt32LE(compressed.length, 40);
+  rpc.connection.getAccountInfoAndContext = async (k, options) => k.toBase58() === distributor || k.equals(idlKey) ? { context: { slot: 500 }, value: {
+    owner: new PublicKey(program), executable: false, lamports: 1, rentEpoch: 0, data: k.equals(idlKey) ? Buffer.concat([header, compressed]) :
+      accountBytes(distributorIdl, "Distributor", { mint: mnde, vault, admin: wallet, clawbackReceiver: wallet }),
+  } } : previousAccountRead(k, options);
+  rpc.connection.getSignaturesForAddress = async (k, options, commitment) => k.toBase58() === distributor ? (expect(options?.limit).toBe(300), signatures(["claim-one", "claim-two"])) :
+    options?.limit === 50 ? [] : previousSignatures(k, options, commitment);
+  transactions["claim-one"] = claimTx(voterAuthority); transactions["claim-two"] = claimTx(dest, "300");
+  for (const t of [transactions["claim-one"], transactions["claim-two"]]) for (const b of [...t.meta.preTokenBalances, ...t.meta.postTokenBalances]) b.mint = mnde;
+  const indirect = await readFlows(rpc, registry, fullLayer, fullParticipation, null, docs);
+  expect(indirect.distributors).toHaveLength(1);
+  expect(indirect.buybacks.voterAuthorityShare.value).toBe(0);
+  expect(indirect.distributorSummary).toMatchObject({ distinctClaimants: 2, voterAuthorityClaimants: 1, claimedAmountShare: 0.25 });
+  expect(indirect.claims.find(c => c.id === "v6")).toMatchObject({ status: "partly" });
+  expect(indirect.claims.find(c => c.id === "v6")?.chainResult).toContain("1 of 2 sampled distributor claimants (25.00 %");
+  expect(indirect.verdict.operatedByAccounts.some(r => r.link.includes("merkle_distributor"))).toBe(true);
+  expect(indirect.verdict.enforcedByCode.some(r => r.link.includes(distributor))).toBe(false);
+  expect(() => JSON.stringify(indirect)).not.toThrow();
+});
+
+const distributorIdl: LegacyIdl = { name: "merkle_distributor", version: "0.1.0", instructions: [
+  { name: "claim", accounts: [{ name: "distributor", isMut: true, isSigner: false }, { name: "actors", accounts: [{ name: "claimant", isMut: true, isSigner: true }] }], args: [] },
+  { name: "claimVested", accounts: [{ name: "distributor", isMut: true, isSigner: false }, { name: "userAuthority", isMut: true, isSigner: true }], args: [] },
+  { name: "initialize", accounts: [], args: [] },
+], accounts: [{ name: "Distributor", type: { kind: "struct", fields: [
+  { name: "root", type: { array: ["u8", 32] } }, { name: "mint", type: "publicKey" }, { name: "vault", type: "publicKey" },
+  { name: "maxTotalClaim", type: "u64" }, { name: "totalAmountClaimed", type: "u64" }, { name: "maxNumNodes", type: "u64" },
+  { name: "admin", type: "publicKey" }, { name: "clawbackReceiver", type: "publicKey" },
+] } }] };
+const distributor = key(50), claimant = key(51), claimantToken = key(52), vault = key(53);
+function claimTx(who = claimant, amount = "100", name = "claim"): any {
+  return { slot: 123, blockTime: 1791244800, transaction: { message: { header: { numRequiredSignatures: 2 },
+    accountKeys: [wallet, who, distributor, claimantToken, vault, program], instructions: [{ programIdIndex: 5, accounts: [2, 1], data: bs58.encode(instructionDiscriminator(name)) }] } },
+    meta: { err: null, preTokenBalances: [balance(4, "1000", distributor)], postTokenBalances: [balance(4, String(1000n - BigInt(amount)), distributor), balance(3, amount, who)],
+      preBalances: [10000, 0, 0, 0, 0, 0], postBalances: [5000, 0, 0, 0, 0, 0], fee: 5000, innerInstructions: [] } };
+}
+describe("distributor claim evidence", () => {
+  test("discriminator names, nested signer roles and weighted current voter overlap", () => {
+    const voters = new Set([claimant]);
+    const a = distributorInstructions(claimTx(), program, distributor, distributorIdl, mint, voters);
+    const b = distributorInstructions(claimTx(dest, "300", "claimVested"), program, distributor, distributorIdl, mint, voters);
+    expect(a.instructions[0]).toMatchObject({ name: "claim", claimant, claimantBasis: "IDL signer role and transaction signer" });
+    expect(a.claims[0]).toMatchObject({ amountRaw: "100", voterAuthority: true });
+    expect(b.instructions[0].name).toBe("claimVested");
+    expect(aggregateDistributorClaims([{ signature: "a", claims: a.claims }, { signature: "b", claims: b.claims }])).toMatchObject({
+      claims: 2, distinctClaimants: 2, voterAuthorityClaimants: 1, totalClaimedRaw: "400", claimantShare: 0.5, claimedAmountShare: 0.25,
+    });
+  });
+  test("non-signing IDL role falls back to fee payer; CPI and loaded keys decode", () => {
+    const t = claimTx(); t.transaction.message.header.numRequiredSignatures = 1;
+    t.meta.postTokenBalances[1].owner = wallet;
+    const instruction = t.transaction.message.instructions.pop();
+    t.meta.innerInstructions = [{ index: 0, instructions: [instruction] }];
+    t.meta.loadedAddresses = { writable: [], readonly: [t.transaction.message.accountKeys.pop()] };
+    const r = distributorInstructions(t, program, distributor, distributorIdl, mint, new Set([wallet]));
+    expect(r.instructions[0]).toMatchObject({ claimant: wallet, claimantBasis: "fee payer fallback", parentIndex: 0 });
+    expect(r.claims[0].amountRaw).toBe("100");
+  });
+  test("failed/unknown calls, missing metadata, repeated claims and ambiguous distributor deltas", () => {
+    const t = claimTx(); t.meta.err = { failed: true };
+    expect(distributorInstructions(t, program, distributor, distributorIdl, mint, new Set()).claims).toEqual([]);
+    t.meta.err = null; t.transaction.message.instructions[0].data = bs58.encode(Buffer.alloc(8));
+    expect(distributorInstructions(t, program, distributor, distributorIdl, mint, new Set()).instructions[0].name).toBeNull();
+    const twice = claimTx(); twice.transaction.message.instructions.push(twice.transaction.message.instructions[0]);
+    const r = distributorInstructions(twice, program, distributor, distributorIdl, mint, new Set());
+    expect(aggregateDistributorClaims([{ signature: "twice", claims: r.claims }])).toMatchObject({ claims: 2, distinctClaimants: 1, totalClaimedRaw: "100" });
+    twice.transaction.message.accountKeys.push(dest);
+    twice.transaction.message.instructions[1] = { ...twice.transaction.message.instructions[0], accounts: [6, 1] };
+    expect(distributorInstructions(twice, program, distributor, distributorIdl, mint, new Set()).claims[0]).toMatchObject({ amountRaw: null, ambiguous: true });
+    delete twice.meta.preTokenBalances;
+    expect(distributorInstructions(twice, program, distributor, distributorIdl, mint, new Set()).claims[0].amountRaw).toBeNull();
+  });
+  test("on-chain synthetic IDL/account, exact fields, vault balance and off-curve G2b resolution", async () => {
+    const rpc = new RecordingRpc(runOptions({ record: false, rpcUrl: "http://127.0.0.1:1", minIntervalMs: 0 }), "synthetic-distributor");
+    const admin = PublicKey.findProgramAddressSync([Buffer.from("admin")], new PublicKey(program))[0];
+    const idlKey = await idlAddress(new PublicKey(program)), compressed = deflateSync(Buffer.from(JSON.stringify(distributorIdl))), header = Buffer.alloc(44);
+    header.writeUInt32LE(compressed.length, 40);
+    const account = accountBytes(distributorIdl, "Distributor", { root: Array(32).fill(7), mint, vault, maxTotalClaim: "90071992547409930", totalAmountClaimed: "400", maxNumNodes: "100", admin: admin.toBase58(), clawbackReceiver: wallet });
+    const vaultData = Buffer.alloc(165); new PublicKey(mint).toBuffer().copy(vaultData); new PublicKey(distributor).toBuffer().copy(vaultData, 32); vaultData.writeBigUInt64LE(900n, 64);
+    let published = true;
+    rpc.connection.getAccountInfoAndContext = async k => ({ context: { slot: 123 }, value: k.equals(idlKey) ? published ? { data: Buffer.concat([header, compressed]), owner: new PublicKey(program), executable: false, lamports: 1, rentEpoch: 0 } : null :
+      k.toBase58() === distributor ? { data: account, owner: new PublicKey(program), executable: false, lamports: 1, rentEpoch: 0 } :
+      k.toBase58() === vault ? { data: vaultData, owner: TOKEN_PROGRAM, executable: false, lamports: 1, rentEpoch: 0 } : null });
+    const resolvedAddresses: string[] = [];
+    rpc.connection.getProgramAccounts = (async () => ({ context: { slot: 123 }, value: [] })) as any;
+    rpc.connection.getSignaturesForAddress = async (k, options) => { expect(options?.limit).toBe(50); resolvedAddresses.push(k.toBase58()); return []; };
+    const sample = async (address: string, limit: number) => { expect(address).toBe(distributor); expect(limit).toBe(300); return { address, limit, evidenceIds: ["history"], window: { oldestBlockTime: 1791244800, newestBlockTime: 1791244800 }, rows: [
+      { ...meta, basis: "observed" as const, signature: "one", tx: claimTx(), blockTime: 1791244800 },
+      { ...meta, basis: "observed" as const, signature: "two", tx: claimTx(dest, "300"), blockTime: 1791244800 },
+      { ...meta, basis: "observed" as const, signature: "missing", tx: null, blockTime: null },
+    ] }; };
+    const p = { evidence: [], vsr: { rows: [{ voterAuthority: claimant, evidenceIds: ["voter"] }] } } as any;
+    const read = () => readDistributor(rpc, registry, { evidence: [] } as any, { program: new PublicKey(registry.governance.program), governances: [] }, distributor, program, mint, p, sample);
+    const result = await read();
+    expect(result).toMatchObject({ status: "decoded", idlName: "merkle_distributor", account: { basis: "decoded", value: { maxTotalClaim: "90071992547409930", root: Array(32).fill(7), totalAmountClaimed: "400", maxNumNodes: "100" } }, summary: { claimedAmountShare: 0.25 } });
+    expect(result.vaults[0]).toMatchObject({ balanceRaw: "900", mintMatches: true, ownerMatches: true, basis: "decoded" });
+    expect(resolvedAddresses).toContain(admin.toBase58());
+    expect(result.authorities.find(a => a.field === "admin")?.resolution?.status).toBe("unresolved");
+    expect(result.transactions[2].unavailable).toBe(true); expect(() => JSON.stringify(result)).not.toThrow();
+    published = false;
+    const missing = await read(); expect(missing).toMatchObject({ status: "unresolved", account: null, idlName: null, summary: { claims: 0 } });
+    expect(missing.transactions[0].observations?.programCalls).toHaveLength(1);
+  });
+});
+function fundingTx(): any {
+  return { slot: 100, transaction: { message: { header: { numRequiredSignatures: 1 }, accountKeys: [dest, wallet, program, SystemProgram.programId.toBase58()], instructions: [] } },
+    meta: { err: null, fee: 5000, preBalances: [2000005000, 0, 0, 0], postBalances: [0, 2000000000, 0, 0], preTokenBalances: [], postTokenBalances: [], innerInstructions: [] } };
+}
+describe("buyback wallet funding", () => {
+  test("SOL credit excludes source fee and monthly totals compare existing purchase spend", () => {
+    const a = fundingCredits(fundingTx(), wallet, mint);
+    expect(a.credits[0]).toMatchObject({ asset: "SOL", sourceAccount: dest, sourceOwner: dest, amountRaw: "2000000000", attribution: "inferred from sole same-asset debit" });
+    const months = aggregateBuybackMonths([{ ...meta, slot: 100, basis: "observed", signature: "purchase", blockTime: 1791244800, mndeDeltaRaw: "100", boughtRaw: "100", recipients: [], costs: [{ asset: "SOL", raw: "1500000000", decimals: 9 }] }]);
+    const totals = aggregateFunding([{ blockTime: 1791244800, credits: a.credits }, { blockTime: null, credits: a.credits }], months);
+    expect(totals.bySource[0].amountRaw).toBe("4000000000");
+    expect(totals.months.find(m => m.month === "2026-10")).toMatchObject({ solReceivedRaw: "2000000000", solSpentOnMndeRaw: "1500000000" });
+    expect(totals.months.find(m => m.month === "unknown")?.solReceivedRaw).toBe("2000000000");
+  });
+  test("multiple SOL sources reconcile decoded transfers; ambiguous candidates stay unallocated", () => {
+    const t = fundingTx(); t.meta.preBalances = [1000005000, 0, 1000000000, 0];
+    let r = fundingCredits(t, wallet, mint); expect(r.credits[0].sourceAccount).toBeNull(); expect(r.credits[0].candidates).toHaveLength(2);
+    const transfer = (source: number) => { const b = Buffer.alloc(12); b.writeUInt32LE(2); b.writeBigUInt64LE(1000000000n, 4); return { programIdIndex: 3, accounts: [source, 1], data: bs58.encode(b) }; };
+    t.transaction.message.instructions = [transfer(0), transfer(2)];
+    r = fundingCredits(t, wallet, mint); expect(r.credits.map(c => [c.sourceAccount, c.amountRaw])).toEqual([[dest, "1000000000"], [program, "1000000000"]]);
+  });
+  test("signed MNDE purchases are excluded even with a SOL credit; unsigned receipts remain", () => {
+    const t = fundingTx(); t.transaction.message.header.numRequiredSignatures = 2;
+    t.transaction.message.accountKeys.push(token, claimantToken);
+    t.meta.preTokenBalances = [balance(5, "100", wallet, usdc)];
+    t.meta.postTokenBalances = [balance(4, "10", wallet), balance(5, "0", wallet, usdc)];
+    expect(fundingCredits(t, wallet, mint)).toMatchObject({ excludedPurchase: true, credits: [] });
+    t.transaction.message.header.numRequiredSignatures = 1;
+    expect(fundingCredits(t, wallet, mint).credits[0].amountRaw).toBe("2000000000");
+    t.meta.err = { failed: true }; expect(fundingCredits(t, wallet, mint).credits).toEqual([]);
+    expect(fundingCredits(null, wallet, mint).unavailable).toBe(true);
+  });
+  test("other mint credits use the debited token account and its observed owner", () => {
+    const t = fundingTx(); t.transaction.message.accountKeys.push(token, claimantToken);
+    t.meta.preTokenBalances = [balance(4, "90071992547409930", dest, usdc, 6)];
+    t.meta.postTokenBalances = [balance(5, "90071992547409930", wallet, usdc, 6)];
+    const r = fundingCredits(t, wallet, mint);
+    expect(r.credits[1]).toMatchObject({ asset: usdc, decimals: 6, sourceAccount: token, sourceOwner: dest, amountRaw: "90071992547409930" });
+    delete t.meta.preTokenBalances; expect(fundingCredits(t, wallet, mint).unavailable).toBe(true);
+  });
 });
