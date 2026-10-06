@@ -1,3 +1,5 @@
+import type { GraphAnswer, CannedResult } from './graph';
+import { graphSummary, graphSource, graphEntityEvidence } from './graph-view';
 import type { View, Source, Finding, Path, CaseId } from './model';
 import type { StateDiff } from './diff';
 import type { Run } from './runner';
@@ -12,11 +14,14 @@ const runs = new Map<CaseId, Run>();
 const selections = new Map<CaseId, 'captured' | 'live'>();
 const selectedSource = () => selections.get(active) ?? 'captured';
 let viewRequest = 0;
+let graph: GraphAnswer | null = null, graphLoading = false, graphError = '', graphLoadBusy = false;
+let graphRequest: Promise<void> | null = null;
+const graphEvents: { at: string; message: string }[] = [];
 async function api<T>(url: string, init?: RequestInit): Promise<T> { const r = await fetch(url, init); if (!r.ok) { const data = await r.json().catch(() => ({})); throw new Error(data.error ?? `Request failed (${r.status}). Check the local server.`); } return r.json(); }
 function notice(message: string) { $('#notice').textContent = message; $('#notice').classList.add('visible'); setTimeout(() => $('#notice').classList.remove('visible'), 4200); }
 function animate(el: HTMLElement) { el.style.animation = 'none'; void el.offsetWidth; el.style.animation = ''; }
 function exportUrl(file: string) { return `/api/cases/${active}/export/${file}?source=${selectedSource()}`; }
-function setTab(next: string) { tab = next; document.querySelectorAll<HTMLButtonElement>('[data-tab]').forEach(b => b.setAttribute('aria-selected', String(b.dataset.tab === next))); $('#content').setAttribute('aria-label', next === 'map' ? 'Control map' : next); render(); animate($('#content')); }
+function setTab(next: string) { tab = next; document.querySelectorAll<HTMLButtonElement>('[data-tab]').forEach(b => b.setAttribute('aria-selected', String(b.dataset.tab === next))); $('#content').setAttribute('aria-label', next === 'map' ? 'Control map' : next); render(); if (next === 'graph' || next === 'memo') void fetchGraph(); animate($('#content')); }
 async function load(id: CaseId, source = selections.get(id) ?? 'captured') {
   selections.set(id, source); const request = ++viewRequest; ++sourceRequest;
   active = id; view = null; pathIndex = 0; filter = 'all', showAll = false; ledgerQuery = ''; run = runs.get(id) ?? null; inspecting = 'activity';
@@ -24,7 +29,7 @@ async function load(id: CaseId, source = selections.get(id) ?? 'captured') {
   const scope = scopes.find(c => c.id === id)!;
   $('#case-title').textContent = scope.label; $('#case-kind').textContent = scope.kind; $('#question').textContent = scope.question;
   $('#content').innerHTML = '<p class="empty">Opening the completed evidence…</p>'; $('#capture').textContent = ''; $('#evidence-count').textContent = ''; activity(); updateRun();
-  try { const data = await api<View>(`/api/cases/${id}?source=${source}`); if (active !== id || request !== viewRequest) return; view = data; updateHeader(); render(); activity(); }
+  try { const data = await api<View>(`/api/cases/${id}?source=${source}`); if (active !== id || request !== viewRequest) return; view = data; updateHeader(); render(); activity(); if (tab === 'graph' || tab === 'memo') void fetchGraph(); }
   catch (error) { if (active === id && request === viewRequest) $('#content').innerHTML = `<p class="error">${esc((error as Error).message)}</p>`; }
 }
 function renderCases() { $('#cases').innerHTML = scopes.map(c => `<button class="case-button ${c.id === active ? 'selected' : ''}" data-case="${c.id}" ${c.id === active ? 'aria-current="true"' : ''}>${esc(c.label)}<small>${esc(c.kind)}</small></button>`).join(''); }
@@ -48,6 +53,7 @@ function render() {
   if (tab === 'findings') renderFindings();
   else if (tab === 'map') renderMap();
   else if (tab === 'timeline') renderTimeline();
+  else if (tab === 'graph') renderGraph();
   else renderMemo();
 }
 function diffPanel() {
@@ -104,15 +110,69 @@ function renderTimeline() {
     $('#content').innerHTML = `<div class="section-intro"><div><h2>Governance treasury ledger</h2><p>${ledger.proposalsScanned} proposals scanned · ${ledger.entries.length} instruction rows · governance executions only</p></div></div><div class="table-wrap"><table><thead><tr><th>Asset mint</th><th>External outflows</th><th>Internal moves</th><th>Burns</th><th>Net DAO change</th></tr></thead><tbody>${ledger.summary.assets.map(a => `<tr><td title="${esc(a.asset)}">${esc(short(a.asset))}<small>${a.decimals ?? '?'} decimals</small></td><td>${esc(a.externalOutflowsDisplay)}</td><td>${esc(a.internalMovesDisplay)}</td><td>${esc(a.burnsDisplay)}</td><td>${esc(a.netChangeOfDaoControlledBalanceDisplay)}</td></tr>`).join('')}</tbody></table></div><p class="map-note">${view.freshness.source === 'live' ? 'This ledger replays committed historical fixtures; its proposals and receipts were not refreshed. ' : ''}Totals include reconciled, observed token flows. Internal moves do not reduce combined DAO holdings. Unsupported instructions remain separate.</p><div class="ledger-controls"><input id="ledger-search" type="search" placeholder="Search proposal, mint, account or receipt status" aria-label="Search ledger" value="${esc(ledgerQuery)}"></div><p class="map-note">Showing ${Math.min(selected.length, 60)} of ${selected.length} matching rows. Full ledger included in <a href="${exportUrl('packet.json')}">packet.json</a>.</p><div id="ledger-rows">${selected.slice(0, 60).map(e => `<article class="ledger-row"><button class="source-button" data-ledger="${ledger.entries.indexOf(e)}">Sources ↗</button><h3>${esc(e.proposalName)}</h3><p>${esc(e.instructionLabel)} · ${esc(e.amountDisplay ?? 'no token amount')}<br>${esc(short(e.asset ?? 'no asset'))} · ${esc(e.sourceControl)} → ${esc(e.destinationControl)}<br>${esc(e.reconciliation)} · ${esc(e.basis)} · slot ${e.receiptSlot ?? e.slot ?? 'unknown'}</p></article>`).join('')}</div>`;
   } else $('#content').innerHTML = `<div class="section-intro"><div><h2>Proposal → execution</h2><p>Historical events from the proposal account and execution receipts.</p></div></div>${view.timeline.map((t, i) => `<article class="timeline-item"><h3>${esc(t.label)}</h3><time>${esc(t.time)}</time><p>${esc(t.detail)}</p><button class="source-button" data-timeline="${i}">Inspect evidence ↗</button></article>`).join('')}`;
 }
+function fetchGraph(): Promise<void> {
+  return graphRequest ??= requestGraph().finally(() => { graphRequest = null; });
+}
+async function requestGraph() {
+  graphLoading = true; graphError = '';
+  if (tab === 'graph') renderGraph();
+  try {
+    graph = await api<GraphAnswer>('/api/graph');
+    if (view) view.crossCaseGraph = graphSummary(graph);
+  } catch (error) { graphError = (error as Error).message; }
+  finally { graphLoading = false; if (tab === 'graph') renderGraph(); else if (tab === 'memo') renderMemo(); }
+}
+function graphTable(query: CannedResult) {
+  return `<table class="graph-table"><thead><tr>${query.columns.map(c => `<th scope="col" title="${esc(c)}">${esc(c)}</th>`).join('')}</tr></thead><tbody>${query.rows.map(row => {
+    const entity = row.entity ?? row.start ?? row.destination;
+    return `<tr${entity ? ` data-graph-entity="${esc(entity)}"` : ''}>${query.columns.map((c, i) => {
+      const value = String(row[c] ?? '—');
+      const display = ['entity', 'start', 'destination'].includes(c) ? short(value) : c === 'path' ? value.split(' → ').map(v => short(v)).join(' → ') : value;
+      return `<td title="${esc(value)}">${entity && i === 0 ? `<button class="source-button graph-entity" data-graph-entity="${esc(entity)}" title="${esc(entity)}">${esc(display)}</button>` : esc(display)}</td>`;
+    }).join('')}</tr>`;
+  }).join('')}</tbody></table>${query.rows.length ? '' : '<p class="map-note">No rows returned.</p>'}`;
+}
+function renderGraph() {
+  const intro = '<div class="section-intro"><div><h2>Cross-case graph</h2><p>Four questions across the captured evidence boundary.</p></div></div>';
+  if (!graph) { $('#content').innerHTML = intro + `<p class="${graphError ? 'error' : 'empty'}">${esc(graphError || 'Reading the graph…')}</p>${graphError ? '<button class="secondary" id="refresh-graph">Retry graph</button>' : ''}`; return; }
+  const inventory = graph.queries.find(q => q.id === 'case-inventory');
+  $('#content').innerHTML = `${intro}<div class="graph-toolbar"><span class="graph-badge">${graph.source === 'neo4j' ? `Neo4j Aura · ${esc(graph.host)}` : `Local graph · Neo4j unavailable: ${esc(graph.reason)}`}</span>${graph.configured ? `<button class="secondary" id="load-graph" ${graphLoadBusy ? 'disabled' : ''}>${graphLoadBusy ? 'Loading into Neo4j…' : 'Load into Neo4j'}</button>` : ''}<button class="source-button" id="refresh-graph" ${graphLoading ? 'disabled' : ''}>Refresh queries</button></div><p class="map-note">Captured graph · retrieved ${esc(graph.retrievedAt)}. Live case refreshes do not change this index. ${graphLoading ? 'Refreshing…' : ''}</p>${graphError ? `<p class="error">${esc(graphError)}</p>` : ''}<div class="graph-inventory" aria-label="Case inventory">${inventory?.rows.map(row => `<div><strong>${esc(scopes.find(c => c.id === row.case)?.label ?? row.case)}</strong><span>${esc(row.nodes)} entities · ${esc(row.relationships)} relations</span><span>${esc(row.evidence)} evidence records</span><small>Slots ${esc(row.slotMin ?? 'unknown')}–${esc(row.slotMax ?? 'unknown')}</small></div>`).join('') ?? ''}</div>${graph.queries.map(q => `<article class="graph-card"><h3>${esc(q.title)}</h3><p>${esc(q.question)}</p>${graphTable(q)}<div class="graph-query-footer"><span>${q.rows.length} ${q.rows.length === 1 ? 'row' : 'rows'}</span><details><summary>Cypher</summary><pre>${esc(q.cypher)}</pre><strong>Parameters</strong><pre>${esc(JSON.stringify(q.params, null, 2))}</pre></details></div></article>`).join('')}`;
+}
+function graphMemoHtml() {
+  const summary = view?.crossCaseGraph;
+  return summary ? `<h3>Cross-case graph</h3><p>${esc(graphSource(summary))} · captured graph · retrieved ${esc(summary.retrievedAt)}.</p><p>Shared controllers · first five rows in entity order.</p>${graphTable(summary.query)}` : '';
+}
+async function loadGraph() {
+  if (graphLoadBusy) return;
+  graphLoadBusy = true; ++sourceRequest;
+  graphEvents.push({ at: new Date().toISOString(), message: 'Loading the captured graph into Neo4j. Batches are being written; the request has a 120-second cap.' });
+  $('#inspector').classList.add('open'); activity(); renderGraph();
+  try {
+    const counts = await api<{ nodes: number; relationships: number; batches: number; host: string }>('/api/graph/load', { method: 'POST' });
+    graphEvents.push({ at: new Date().toISOString(), message: `Loaded ${counts.nodes} nodes and ${counts.relationships} relationships in ${counts.batches} batches · ${counts.host}.` });
+    if (inspecting === 'activity') activity();
+    if (graphRequest) await graphRequest;
+    await fetchGraph();
+  } catch (error) { graphEvents.push({ at: new Date().toISOString(), message: `Graph load failed: ${(error as Error).message}` }); }
+  finally { graphLoadBusy = false; if (inspecting === 'activity') activity(); if (tab === 'graph') renderGraph(); }
+}
+function inspectGraphEntity(entity: string) {
+  if (!view) return;
+  const evidence = graphEntityEvidence(view, entity);
+  if (evidence) { void inspectSources(evidence.node.label, evidence.ids, [], `${evidence.node.type} · ${entity} · ${selectedSource()} case evidence; query uses the captured graph.`); return; }
+  const cases = graph?.entityCases[entity] ?? [];
+  notice(cases.length ? `Outside this case’s displayed graph. Recorded in: ${cases.map(id => scopes.find(c => c.id === id)?.label ?? id).join(', ')}.` : 'This entity is not in the captured case inventory.');
+}
 function renderMemo() {
   if (!view) return;
   const refs = [...new Set(view.findings.flatMap(f => f.sourceIds))];
-  $('#content').innerHTML = `<div class="memo-toolbar"><span class="status">Draft · human review pending</span><a class="secondary" href="${exportUrl('memo.md')}">Export memo ↓</a><button id="print-memo" class="secondary">Print / save PDF</button></div><article class="memo"><h2>${esc(view.title)} — research memo</h2><p>${esc(view.question)}</p><p>${view.freshness.source === 'live' ? esc(liveMemoHeader()) : `Recorded evidence captured ${view.capturedRange.map(day).join(' — ')}. ${view.evidenceCount.toLocaleString()} evidence records. Generated ${esc(view.generatedAt)}.`}</p>${view.freshness.source === 'live' ? `<h3>What changed since capture</h3>${view.changedCount ? `<ul>${view.stateDiff!.filter(r => r.changed).map(r => `<li>${esc(r.label)}: ${esc(r.captured)} → ${esc(r.current)}</li>`).join('')}</ul>` : '<p>Nothing changed since capture</p>'}` : ''}<h3>Findings</h3>${view.findings.map(f => `<section><h4>${esc(f.title)}</h4><p>${esc(f.text)} ${f.sourceIds.map(id => `<button class="citation" data-source="${esc(id)}" aria-label="Inspect citation ${refs.indexOf(id) + 1}">[${refs.indexOf(id) + 1}]</button>`).join('')}</p><p class="source-meta">${esc(f.basis)} · ${esc(f.status)}</p></section>`).join('')}<h3>Unknowns & next evidence</h3><ul>${view.unknowns.map(u => `<li>${esc(u)}</li>`).join('')}</ul><h3>Source manifest</h3><p class="sources">${refs.map((id, i) => `[${i + 1}] ${esc(id)}`).join('<br>')}</p><p>Deterministic synthesis from the local checks. No live language model is used. Code references describe the decoder implementation, not a full smart-contract source audit.</p></article>`;
+  $('#content').innerHTML = `<div class="memo-toolbar"><span class="status">Draft · human review pending</span><a class="secondary" href="${exportUrl('memo.md')}">Export memo ↓</a><button id="print-memo" class="secondary">Print / save PDF</button></div><article class="memo"><h2>${esc(view.title)} — research memo</h2><p>${esc(view.question)}</p><p>${view.freshness.source === 'live' ? esc(liveMemoHeader()) : `Recorded evidence captured ${view.capturedRange.map(day).join(' — ')}. ${view.evidenceCount.toLocaleString()} evidence records. Generated ${esc(view.generatedAt)}.`}</p>${view.freshness.source === 'live' ? `<h3>What changed since capture</h3>${view.changedCount ? `<ul>${view.stateDiff!.filter(r => r.changed).map(r => `<li>${esc(r.label)}: ${esc(r.captured)} → ${esc(r.current)}</li>`).join('')}</ul>` : '<p>Nothing changed since capture</p>'}` : ''}<h3>Findings</h3>${view.findings.map(f => `<section><h4>${esc(f.title)}</h4><p>${esc(f.text)} ${f.sourceIds.map(id => `<button class="citation" data-source="${esc(id)}" aria-label="Inspect citation ${refs.indexOf(id) + 1}">[${refs.indexOf(id) + 1}]</button>`).join('')}</p><p class="source-meta">${esc(f.basis)} · ${esc(f.status)}</p></section>`).join('')}${graphMemoHtml()}<h3>Unknowns & next evidence</h3><ul>${view.unknowns.map(u => `<li>${esc(u)}</li>`).join('')}</ul><h3>Source manifest</h3><p class="sources">${refs.map((id, i) => `[${i + 1}] ${esc(id)}`).join('<br>')}</p><p>Deterministic synthesis from the local checks. No live language model is used. Code references describe the decoder implementation, not a full smart-contract source audit.</p></article>`;
 }
 function activity() {
   inspecting = 'activity'; $('#inspector-title').textContent = 'Research activity';
   const current = runs.get(active);
   $('#inspector-body').innerHTML = current ? `<p class="activity-note">${current.status === 'running' ? current.source === 'live' ? 'Reading current state through the configured endpoint.' : 'Rebuilding the case from recorded evidence.' : current.status === 'completed' ? 'Research complete. Findings and the memo use this run’s results.' : esc(current.error)}<br><strong>${current.source === 'live' ? `Live · ${esc(current.rpcHost ?? 'host unavailable')} · ${current.events.at(-1)?.liveReads ?? current.events.filter(e => e.liveReads != null).at(-1)?.liveReads ?? 0} reads` : 'Offline · deterministic pipeline'}</strong></p><ol class="activity-list">${current.events.map(e => `<li><time>${esc(e.at.slice(11, 23))} UTC${e.evidenceCount != null ? ` · ${e.evidenceCount} records · ${e.liveReads ?? 0} live reads` : ''}</time>${esc(e.message)}</li>`).join('')}</ol>` : `<p class="activity-note">A completed example is open.<br>Run research to rebuild its findings and memo from the recorded inputs.</p><ol class="activity-list"><li>Read documented claims</li><li>Resolve controllers & decode instructions</li><li>Check recorded state & execution</li><li>Assemble cited findings and draft memo</li></ol><p class="activity-note">Data freshness is shown above. Replaying fixtures does not refresh the chain snapshot.</p>`;
+  if (graphEvents.length) $('#inspector-body').insertAdjacentHTML('afterbegin', `<p class="inspector-label">GRAPH ACTIVITY</p><ol class="activity-list" aria-live="polite">${graphEvents.map(e => `<li><time>${esc(e.at.slice(11, 23))} UTC</time>${esc(e.message)}</li>`).join('')}</ol>`);
   animate($('#inspector-body'));
 }
 async function inspectSources(title: string, ids: string[], code: string[] = [], context = '') {
@@ -153,9 +213,12 @@ async function startRun(source: 'captured' | 'live' = 'captured') {
   } catch (e) { notice((e as Error).message); }
 }
 document.addEventListener('click', event => {
-  const target = (event.target as Element).closest<HTMLElement>('button,a,[data-node]'); if (!target) return;
+  const target = (event.target as Element).closest<HTMLElement>('button,a,[data-node],[data-graph-entity]'); if (!target) return;
   if (target.dataset.case) void load(target.dataset.case as CaseId);
   else if (target.dataset.tab) setTab(target.dataset.tab);
+  else if (target.id === 'load-graph') void loadGraph();
+  else if (target.id === 'refresh-graph') void fetchGraph();
+  else if (target.dataset.graphEntity) inspectGraphEntity(target.dataset.graphEntity);
   else if (target.id === 'run') void startRun();
   else if (target.id === 'refresh') void startRun('live');
   else if (target.dataset.viewSource) void load(active, target.dataset.viewSource as 'captured' | 'live');

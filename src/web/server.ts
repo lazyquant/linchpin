@@ -1,17 +1,40 @@
 import index from './index.html';
-import { readFileSync } from 'node:fs';
+import { readFileSync, writeFileSync, existsSync } from 'node:fs';
 import { join, relative } from 'node:path';
+import { buildGraphRecords } from '../graph/neo4j';
+import { GraphService, GraphError, type GraphOptions, type GraphAnswer } from './graph';
+import { graphSummary } from './graph-view';
 import { DEFAULT_RPC_URL } from '../config';
 import { redactedRpcUrl, redactSecrets } from '../chain/rpc';
-import { CASES, present, withBaseline, type CaseId, type Result } from './model';
+import { CASES, present, withBaseline, makeMemo, type CaseId, type Result } from './model';
 import { runPipeline, liveDirectory, saveResult, ROOT, type Run } from './runner';
 
 export class ResearchService {
   results = new Map<CaseId, Result>();
   liveResults = new Map<CaseId, Result>();
   runs = new Map<string, Run>();
-  constructor(private pipeline = runPipeline, private refreshTimeoutMs = 120_000) {}
-  async prepare() { for (const c of CASES) { this.results.set(c.id, await this.pipeline(c.id)); } }
+  private graphService?: GraphService;
+  constructor(private pipeline = runPipeline, private refreshTimeoutMs = 120_000, private graphOptions: GraphOptions = {}) {}
+  get graph() {
+    return this.graphService ??= new GraphService(buildGraphRecords([...this.results].map(([caseId, result]) => ({ caseId, ...result }))), this.graphOptions);
+  }
+  async prepare() {
+    for (const c of CASES) this.results.set(c.id, await this.pipeline(c.id));
+    this.publishGraph(this.graph.local());
+  }
+  private publishGraph(answer: GraphAnswer) {
+    const summary = graphSummary(answer); if (!summary) return;
+    for (const result of [...this.results.values(), ...this.liveResults.values()]) {
+      result.view.crossCaseGraph = summary;
+      result.view.memo = makeMemo(result.view, result.sources);
+      const file = join(ROOT, result.view.freshness.dir ?? `out/web/${result.view.id}`, 'memo.md');
+      if (existsSync(file)) writeFileSync(file, result.view.memo);
+    }
+  }
+  async graphAnswer(id?: string) {
+    const answer = await this.graph.query(id); this.publishGraph(answer); return answer;
+  }
+  async close() { await this.graphService?.close(); }
   start(caseId: CaseId, source: 'captured' | 'live' = 'captured'): Run {
     const existing = [...this.runs.values()].find(r => r.caseId === caseId && r.status === 'running');
     if (existing) return existing;
@@ -43,9 +66,18 @@ export class ResearchService {
       controller.signal.throwIfAborted();
       if (live) {
         const current = withBaseline(present(run.caseId, result.packet, result.evidence, { rpcHost: run.rpcHost!, dir: relative(ROOT, outDir!) }), captured!);
+        if (this.graphService) {
+          current.view.crossCaseGraph = captured!.view.crossCaseGraph;
+          current.view.memo = makeMemo(current.view, current.sources);
+        }
         saveResult(current, outDir!);
         this.liveResults.set(run.caseId, current);
       } else if (!captured) this.results.set(run.caseId, result);
+      else if (captured.view.crossCaseGraph) {
+        // The offline pipeline writes a case-only memo. Keep its web artifact
+        // aligned with the captured view, including the cross-case retrieval.
+        writeFileSync(join(ROOT, 'out/web', run.caseId, 'memo.md'), captured.view.memo);
+      }
       run.status = 'completed';
     } catch (error) {
       run.status = 'failed';
@@ -60,6 +92,15 @@ export function api(service: ResearchService) {
   return async (request: Request): Promise<Response> => {
     const u = new URL(request.url); const parts = u.pathname.split('/').filter(Boolean);
     if (request.method === 'POST' && request.headers.get('origin') && request.headers.get('origin') !== u.origin) return json({ error: 'Same-origin requests only' }, 403);
+    if (parts[0] === 'api' && parts[1] === 'graph') {
+      try {
+        if (request.method === 'GET' && parts.length <= 3) return json(await service.graphAnswer(parts[2]));
+        if (request.method === 'POST' && parts[2] === 'load' && parts.length === 3) return json(await service.graph.load());
+        return json({ error: 'Method not allowed' }, 405);
+      } catch (error) {
+        return json({ error: error instanceof GraphError ? error.message : 'Graph request failed' }, error instanceof GraphError ? error.status : 500);
+      }
+    }
     if (request.method === 'GET' && u.pathname === '/api/cases') return json(CASES.map(({file, ...c}) => ({ ...c, ready: service.results.has(c.id), hasLive: service.liveResults.has(c.id) })));
     if (parts[1] === 'runs' && request.method === 'GET' && parts.length === 3) {
       const run = service.runs.get(parts[2]); return run ? json(run) : json({ error: 'Run not found' }, 404);
@@ -93,6 +134,7 @@ if (import.meta.main) {
   const service = new ResearchService();
   console.log('Preparing four completed examples from recorded fixtures…');
   await service.prepare();
+  process.once('SIGINT', () => { void service.close().catch(() => {}).finally(() => process.exit(0)); });
   const port = Number(process.env.LINCHPIN_WEB_PORT ?? 8875);
   if (!Number.isSafeInteger(port) || port < 1024 || port > 65535) throw new Error('LINCHPIN_WEB_PORT must be an integer from 1024 to 65535');
   const handler = api(service);

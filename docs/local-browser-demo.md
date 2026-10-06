@@ -20,7 +20,7 @@ Open http://127.0.0.1:8875 in the laptop browser. The server binds only to loopb
 5. Switch to BonkDAO BIP-76. Show the treasury movement, control path and receipt timeline as a retrospective reconstruction. Reported voter counts and concentration remain unverified.
 6. Optionally show MIP-14’s burn versus its separate opinion vote. A successful opinion vote has no executable burn payload.
 
-The right pane provides evidence navigation and focused follow-up actions. It is not a live conversational agent. The memo is deterministic synthesis from existing checks, explicitly marked as draft. There is no LLM, vector index or Neo4j connection in this local slice. Code references identify the local decoder/check modules; they do not assert a comprehensive smart-contract audit.
+The right pane provides evidence navigation and focused follow-up actions. It is not a live conversational agent. The memo is deterministic synthesis from existing checks, explicitly marked as draft. There is no LLM or vector index in this local slice. The Graph tab optionally queries Neo4j Aura, with an automatic local fallback. Code references identify the local decoder/check modules; they do not assert a comprehensive smart-contract audit.
 
 Every run writes `out/web/<case>/packet.json`, `graph.json`, `evidence.jsonl` and `memo.md`. Existing CLI output directories are preserved. Captured downloads use the completed in-memory example. Live downloads use the latest successful refresh directory; a failed refresh keeps the captured example selected.
 
@@ -57,3 +57,26 @@ After success, the scope line shows the live read time, slot, redacted host and 
 The live memo includes the captured baseline date range and a **What changed since capture** section. Live downloads come from that refresh's directory and have `-live` before the extension (for example, `linchpin-mip-14-memo-live.md`). The server retains the latest successful live result per case during its process lifetime; restarting opens the captured examples again. **Run research** remains an offline replay.
 
 For API clients, `POST /api/cases/:id/refresh` returns a run to poll at `/api/runs/:runId`. `GET /api/cases/:id` selects captured evidence; add `?source=live` for the latest completed refresh. The same parameter selects `/sources` and `/export/*`; live requests return 404 with an explanation until a refresh succeeds. Every case view includes `freshness` with read counts, capture range, slot range, redacted host and the relative live directory. Live views also include `stateDiff`, exact raw values and `changedCount`.
+
+## Graph
+
+The fifth tab, **Graph**, answers four questions across all four captured cases: shared controllers, control paths to the Marinade realm, reconciled external MNDE destinations, and case inventory. The inventory strip shows entity, relationship and evidence counts with slot ranges. Each query card includes the question, result columns, row count, and expandable **Cypher** with its parameters. Long IDs are shortened with the complete value available on hover. Select an entity row to open the current case’s evidence inspector; if it is outside that case’s displayed graph, a notice names its recorded cases.
+
+The badge always identifies the query source: **Neo4j Aura · <host>** or **Local graph · Neo4j unavailable: <reason>**. Missing configuration, a connection failure, or a query timeout returns all four local answers from the in-memory records. The server builds these records once at startup and labels them **captured graph**. Live case refreshes do not change the index; selecting an entity in a live case opens that case’s live evidence, with the captured-query boundary stated in the inspector.
+
+Configure Aura only in the server environment (for example, the same external `~/.config/linchpin.env` used above):
+
+```sh
+NEO4J_URI=neo4j+s://your-instance.databases.neo4j.io
+NEO4J_USERNAME=neo4j
+NEO4J_PASSWORD=your-password
+NEO4J_DATABASE=neo4j
+```
+
+`NEO4J_URI` and `NEO4J_PASSWORD` enable the connection; username and database default to `neo4j`. Credentials and the full URI never reach the browser. The server lazily creates one driver on the first graph request and closes it on Ctrl-C. Each query uses read routing, the configured database and a five-second deadline. Successful Aura responses are cached for 30 seconds; **Refresh queries** uses that cache while it is fresh.
+
+**Load into Neo4j** appears only when the server is configured. It writes the captured graph to the configured database, reports progress and the returned node, relationship and batch counts in Activity, then refreshes the cards. A successful load invalidates the query cache. Loads have a 120-second cap and run one at a time. A timed-out write may still be settling; the server retains its lock until that call finishes and will not start further batches. Batches commit independently, so retry a failed load before relying on a partial index. Use a dedicated database; the loader merges records and does not delete old data. See [Neo4j schema and loading details](neo4j.md).
+
+The memo and Markdown export include **Cross-case graph**, with up to five shared-controller rows, the graph source and retrieval time. Startup memos use the local captured graph; opening Graph or Memo updates this section from the latest graph response. Retrieval time is the query time, not a new chain capture.
+
+API routes are `GET /api/graph`, `GET /api/graph/:id` (one of the four canned query IDs), and same-origin `POST /api/graph/load`. Query responses include `source`, `configured`, redacted `host`, scrubbed `reason`, captured `stats`, query metadata/parameters/rows, `retrievedAt`, and entity case memberships. The single-query route uses the same envelope with one item in `queries`. Loading without configuration returns 409; a concurrent load returns 409, a failed load 502, and a timed-out load 504.
