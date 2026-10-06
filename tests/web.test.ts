@@ -1,13 +1,40 @@
 import { describe, test, expect, beforeAll } from 'bun:test';
 import { CASES } from '../src/web/model';
-import { runPipeline } from '../src/web/runner';
+import { runPipeline, ROOT } from '../src/web/runner';
 import { ResearchService, api } from '../src/web/server';
+import { readFileSync } from 'node:fs';
+import { liveActivityIntro } from '../src/web/activity-view';
 
 const service = new ResearchService();
 beforeAll(async () => { await service.prepare(); }, 30_000);
 const request = (path: string, init?: RequestInit) => new Request(`http://127.0.0.1:8875${path}`, init);
 
 describe('local research workspace with real recorded evidence', () => {
+  test('the browser bundle resolves the favicon and client modules', async () => {
+    const build = await Bun.build({ entrypoints: [new URL('../src/web/index.html', import.meta.url).pathname], root: ROOT, target: 'browser' });
+    expect(build.success).toBe(true);
+    expect(build.outputs.some(output => output.path.endsWith('.svg'))).toBe(true);
+  });
+  test('favicon serves the existing brand mark with a one-day cache', async () => {
+    const response = await api(service)(request('/favicon.svg'));
+    expect(response.status).toBe(200);
+    expect(response.headers.get('content-type')).toBe('image/svg+xml');
+    expect(response.headers.get('cache-control')).toBe('public, max-age=86400');
+    const svg = await response.text();
+    const html = readFileSync(new URL('../src/web/index.html', import.meta.url), 'utf8');
+    expect(svg).toContain('xmlns="http://www.w3.org/2000/svg"');
+    expect(svg).toContain(html.match(/<path d="[^"]+"/)![0]);
+    expect(html).toContain('<link rel="icon" type="image/svg+xml" href="/favicon.svg">');
+  });
+  test('live activity describes the displayed view, while captured and running intros stay unchanged', () => {
+    const captured = service.results.get('marinade')!.view;
+    const live = { ...captured, baselineRange: ['2026-09-30T12:00:00Z', '2026-10-02T14:00:00Z'],
+      freshness: { ...captured.freshness, source: 'live' as const, retrievedAt: ['2026-10-06T14:00:00Z'], rpcHost: 'https://rpc.example', liveReads: 42 } };
+    expect(liveActivityIntro(live, false)).toBe('Live result open · read 2026-10-06T14:00:00Z via https://rpc.example · 42 live reads. Captured baseline 2026-09-30 — 2026-10-02. Run research replays recorded evidence; Refresh from chain reads current state again.');
+    expect(liveActivityIntro(captured, false)).toBeNull();
+    expect(liveActivityIntro(live, true)).toBeNull();
+    expect(liveActivityIntro(null, false)).toBeNull();
+  });
   test('all four cases replay and each displayed citation resolves', () => {
     for (const c of CASES) {
       const r = service.results.get(c.id)!;

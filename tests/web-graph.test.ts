@@ -6,7 +6,8 @@ import { ResearchService, api } from '../src/web/server';
 import { runPipeline, ROOT } from '../src/web/runner';
 import { CANNED_QUERIES, redactedNeo4jHost, runCannedLocal, MARINADE_REALM, type Neo4jDriverLike } from '../src/graph/neo4j';
 import { type GraphAnswer, type GraphOptions } from '../src/web/graph';
-import { graphEntityEvidence } from '../src/web/graph-view';
+import { graphEntityEvidence, graphHeader, graphCell, graphMemo } from '../src/web/graph-view';
+import { layoutRealmPaths } from '../src/web/graph-layout';
 
 const baseline = new Map<CaseId, Result>();
 const config = { uri: 'neo4j+s://uri-user:uri-password@graph.example:7687/private?token=secret', username: 'private-user', password: 'private-password', database: 'captured-cases' };
@@ -33,6 +34,44 @@ async function get(research: ResearchService, path = ''): Promise<GraphAnswer> {
 }
 
 describe('graph API without network access', () => {
+  test('graph headers and list formatting are shared with the memo without changing query data', () => {
+    const query = service().graph.local().queries[0], before = structuredClone(query);
+    expect(graphHeader('inboundControlEdges')).toBe('Inbound control edges');
+    expect(graphHeader('totalDisplay')).toBe('Total (MNDE)');
+    expect(graphHeader('unknown')).toBe('unknown');
+    expect(graphHeader('toString')).toBe('toString');
+    expect(graphCell('cases', 'marinade,mip-14')).toBe('marinade, mip-14');
+    expect(graphCell('bases', 'observed,decoded,observed')).toBe('observed → decoded → observed');
+    const memo = graphMemo({ source: 'local', host: null, retrievedAt: 'now', query }).join('\n');
+    expect(memo).toContain('| Entity | Type | Label | Cases | Inbound control edges |');
+    expect(memo).toContain('marinade, mip-14');
+    expect(query).toEqual(before);
+  });
+  test('realm layout merges real paths and puts every hop in adjacent columns', () => {
+    const query = service().graph.local().queries.find(q => q.id === 'paths-to-realm')!;
+    const before = structuredClone(query.rows), layout = layoutRealmPaths(query.rows);
+    const ids = new Set(query.rows.flatMap(row => String(row.path).split(' → ')));
+    expect(layout.nodes.length).toBe(ids.size);
+    expect(layout.nodes.filter(n => n.column === layout.lastColumn).map(n => n.id)).toEqual([MARINADE_REALM]);
+    const columns = new Map(layout.nodes.map(n => [n.id, n.column]));
+    for (const edge of layout.edges) expect(columns.get(edge.to)).toBe(columns.get(edge.from)! + 1);
+    const hops = new Set(query.rows.flatMap(row => {
+      const path = String(row.path).split(' → ');
+      return path.slice(1).map((id, i) => JSON.stringify([path[i], id]));
+    }));
+    expect(layout.edges.length).toBe(hops.size);
+    expect(query.rows).toEqual(before);
+  });
+  test('forty paths retain node spacing, merge shared hops, and preserve mixed bases', () => {
+    const rows = Array.from({ length: 40 }, (_, i) => ({ path: `start-${i} → controller → realm`, bases: i ? 'observed,observed' : 'decoded,claimed' }));
+    const layout = layoutRealmPaths(rows);
+    expect(layout.nodes).toHaveLength(42);
+    expect(layout.edges).toHaveLength(41);
+    expect(layout.edges.find(e => e.from === 'controller')!.bases).toEqual(['claimed', 'observed']);
+    const starts = layout.nodes.filter(n => n.column === 0);
+    for (let i = 1; i < starts.length; i++) expect(starts[i].y - starts[i - 1].y).toBeGreaterThan(layout.nodeHeight);
+    expect(layoutRealmPaths([]).nodes).toEqual([]);
+  });
   test('missing configuration returns four populated local queries and refuses loading', async () => {
     const research = service(), answer = await get(research);
     expect(answer).toMatchObject({ source: 'local', configured: false, host: null, scope: 'captured graph' });

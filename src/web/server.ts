@@ -91,6 +91,10 @@ const exports = { 'memo.md': 'text/markdown; charset=utf-8', 'packet.json': 'app
 export function api(service: ResearchService) {
   return async (request: Request): Promise<Response> => {
     const u = new URL(request.url); const parts = u.pathname.split('/').filter(Boolean);
+    if (request.method === 'GET' && u.pathname === '/favicon.svg') return new Response(
+      readFileSync(join(ROOT, 'favicon.svg'), 'utf8'),
+      { headers: { 'Content-Type': 'image/svg+xml', 'Cache-Control': 'public, max-age=86400' } },
+    );
     if (request.method === 'POST' && request.headers.get('origin') && request.headers.get('origin') !== u.origin) return json({ error: 'Same-origin requests only' }, 403);
     if (parts[0] === 'api' && parts[1] === 'graph') {
       try {

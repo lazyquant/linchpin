@@ -1,6 +1,20 @@
 import type { GraphAnswer, CannedResult } from './graph';
 import type { View } from './model';
 
+const GRAPH_HEADERS: Record<string, string> = {
+  entity: 'Entity', type: 'Type', label: 'Label', cases: 'Cases', inboundControlEdges: 'Inbound control edges',
+  start: 'Start', startType: 'Start type', hops: 'Hops', path: 'Path', bases: 'Evidence basis per hop',
+  destination: 'Destination', destinationControl: 'Destination control', proposals: 'Proposals',
+  totalRaw: 'Total (raw)', totalDisplay: 'Total (MNDE)', firstExecutedAt: 'First executed', lastExecutedAt: 'Last executed',
+  case: 'Case', nodes: 'Entities', relationships: 'Relations', evidence: 'Evidence records', slotMin: 'First slot', slotMax: 'Last slot',
+};
+export const graphHeader = (key: string) => Object.hasOwn(GRAPH_HEADERS, key) ? GRAPH_HEADERS[key] : key;
+export const graphNumeric = (key: string) => ['inboundControlEdges', 'hops', 'proposals', 'totalRaw', 'totalDisplay', 'nodes', 'relationships', 'evidence', 'slotMin', 'slotMax'].includes(key);
+export function graphCell(key: string, value: unknown): string {
+  const text = String(value ?? '—');
+  return key === 'cases' || key === 'bases' ? text.split(',').map(s => s.trim()).join(key === 'bases' ? ' → ' : ', ') : text;
+}
+
 export type GraphSummary = { source: 'neo4j' | 'local'; host: string | null; retrievedAt: string; query: CannedResult };
 export function graphSummary(answer: GraphAnswer): GraphSummary | undefined {
   const query = answer.queries.find(q => q.id === 'shared-controllers');
@@ -18,7 +32,7 @@ export function graphMemo(summary?: GraphSummary): string[] {
   const cell = (value: unknown) => String(value ?? '—').replace(/\|/g, '\\|').replace(/[\r\n]/g, ' ');
   return ['', '## Cross-case graph', '', `${graphSource(summary)} · captured graph · retrieved ${summary.retrievedAt}.`, '',
     'Shared controllers · first five rows in entity order.', '',
-    `| ${summary.query.columns.join(' | ')} |`, `| ${summary.query.columns.map(() => '---').join(' | ')} |`,
-    ...summary.query.rows.map(row => `| ${summary.query.columns.map(c => cell(row[c])).join(' | ')} |`),
+    `| ${summary.query.columns.map(graphHeader).join(' | ')} |`, `| ${summary.query.columns.map(c => graphNumeric(c) ? '---:' : '---').join(' | ')} |`,
+    ...summary.query.rows.map(row => `| ${summary.query.columns.map(c => cell(graphCell(c, row[c]))).join(' | ')} |`),
     ...(!summary.query.rows.length ? ['No shared controllers returned.'] : [])];
 }

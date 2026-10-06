@@ -1,5 +1,7 @@
 import type { GraphAnswer, CannedResult } from './graph';
-import { graphSummary, graphSource, graphEntityEvidence } from './graph-view';
+import { graphSummary, graphSource, graphEntityEvidence, graphHeader, graphCell, graphNumeric, canonicalGraphId } from './graph-view';
+import { layoutRealmPaths } from './graph-layout';
+import { liveActivityIntro } from './activity-view';
 import type { View, Source, Finding, Path, CaseId } from './model';
 import type { StateDiff } from './diff';
 import type { Run } from './runner';
@@ -16,6 +18,7 @@ const selectedSource = () => selections.get(active) ?? 'captured';
 let viewRequest = 0;
 let graph: GraphAnswer | null = null, graphLoading = false, graphError = '', graphLoadBusy = false;
 let graphRequest: Promise<void> | null = null;
+let capturedGraphTypes: Map<string, string> | null = null;
 const graphEvents: { at: string; message: string }[] = [];
 async function api<T>(url: string, init?: RequestInit): Promise<T> { const r = await fetch(url, init); if (!r.ok) { const data = await r.json().catch(() => ({})); throw new Error(data.error ?? `Request failed (${r.status}). Check the local server.`); } return r.json(); }
 function notice(message: string) { $('#notice').textContent = message; $('#notice').classList.add('visible'); setTimeout(() => $('#notice').classList.remove('visible'), 4200); }
@@ -118,25 +121,48 @@ async function requestGraph() {
   if (tab === 'graph') renderGraph();
   try {
     graph = await api<GraphAnswer>('/api/graph');
+    // Use captured entity metadata even when a different case or a live view is open.
+    if (!capturedGraphTypes) {
+      const captured = view?.id === 'marinade' && view.freshness.source === 'captured' ? view : await api<View>('/api/cases/marinade?source=captured');
+      capturedGraphTypes = new Map(captured.graph.nodes.map(n => [canonicalGraphId(n.id), n.type]));
+    }
     if (view) view.crossCaseGraph = graphSummary(graph);
   } catch (error) { graphError = (error as Error).message; }
   finally { graphLoading = false; if (tab === 'graph') renderGraph(); else if (tab === 'memo') renderMemo(); }
 }
-function graphTable(query: CannedResult) {
-  return `<table class="graph-table"><thead><tr>${query.columns.map(c => `<th scope="col" title="${esc(c)}">${esc(c)}</th>`).join('')}</tr></thead><tbody>${query.rows.map(row => {
+function graphTable(query: CannedResult, hideRaw = false) {
+  const columns = query.columns.filter(c => !hideRaw || c !== 'totalRaw');
+  return `<table class="graph-table"><thead><tr>${columns.map(c => `<th scope="col" class="${graphNumeric(c) ? 'numeric' : ''}" title="${esc(c)}">${esc(graphHeader(c))}</th>`).join('')}</tr></thead><tbody>${query.rows.map(row => {
     const entity = row.entity ?? row.start ?? row.destination;
-    return `<tr${entity ? ` data-graph-entity="${esc(entity)}"` : ''}>${query.columns.map((c, i) => {
-      const value = String(row[c] ?? '—');
+    return `<tr${entity ? ` data-graph-entity="${esc(entity)}"` : ''}>${columns.map((c, i) => {
+      const value = graphCell(c, row[c]);
       const display = ['entity', 'start', 'destination'].includes(c) ? short(value) : c === 'path' ? value.split(' → ').map(v => short(v)).join(' → ') : value;
-      return `<td title="${esc(value)}">${entity && i === 0 ? `<button class="source-button graph-entity" data-graph-entity="${esc(entity)}" title="${esc(entity)}">${esc(display)}</button>` : esc(display)}</td>`;
+      return `<td class="${graphNumeric(c) ? 'numeric' : ''}" title="${esc(value)}">${entity && i === 0 ? `<button class="source-button graph-entity" data-graph-entity="${esc(entity)}" title="${esc(entity)}">${esc(display)}</button>` : esc(display)}</td>`;
     }).join('')}</tr>`;
   }).join('')}</tbody></table>${query.rows.length ? '' : '<p class="map-note">No rows returned.</p>'}`;
+}
+function realmPicture(query: CannedResult) {
+  if (!query.rows.length) return '';
+  let layout: ReturnType<typeof layoutRealmPaths>;
+  try { layout = layoutRealmPaths(query.rows); }
+  catch { return '<p class="map-note">These paths cannot share a consistent layered layout. See the exact paths below.</p>'; }
+  const types = new Map(capturedGraphTypes);
+  for (const row of query.rows) if (row.start && row.startType) types.set(String(row.start), String(row.startType));
+  types.set(String(query.params.realm), 'Realm');
+  const byId = new Map(layout.nodes.map(n => [n.id, n]));
+  const lines = layout.edges.map(edge => {
+    const a = byId.get(edge.from)!, b = byId.get(edge.to)!;
+    const basis = edge.bases.every(b => b === 'observed') ? 'observed' : 'other';
+    return `<line class="realm-edge ${basis}" x1="${a.x + layout.nodeWidth}" y1="${a.y + layout.nodeHeight / 2}" x2="${b.x - 3}" y2="${b.y + layout.nodeHeight / 2}" marker-end="url(#realm-arrow-${basis})"><title>${esc(edge.bases.join(', '))}</title></line>`;
+  }).join('');
+  const nodes = layout.nodes.map(n => `<g class="graph-node realm-node" role="button" tabindex="0" data-graph-entity="${esc(n.id)}" aria-label="Inspect ${esc(types.get(n.id) ?? 'Entity')} ${esc(n.id)}"><title>${esc(n.id)}</title><rect x="${n.x}" y="${n.y}" width="${layout.nodeWidth}" height="${layout.nodeHeight}" rx="4"/><text class="realm-type" x="${n.x + 10}" y="${n.y + 20}">${esc(types.get(n.id) ?? 'Entity')}</text><text class="realm-id" x="${n.x + 10}" y="${n.y + 38}">${esc(short(n.id))}</text></g>`).join('');
+  return `<figure class="realm-picture"><svg viewBox="0 0 ${layout.width} ${layout.height}" style="max-width:${layout.width}px" aria-label="Paths to Marinade DAO; select an entity to inspect evidence"><defs>${['observed', 'other'].map(basis => `<marker id="realm-arrow-${basis}" class="realm-arrow ${basis}" markerWidth="7" markerHeight="7" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z"/></marker>`).join('')}</defs>${lines}${nodes}</svg><figcaption><span class="observed">Observed hop</span><span class="other">Other evidence basis</span></figcaption></figure>`;
 }
 function renderGraph() {
   const intro = '<div class="section-intro"><div><h2>Cross-case graph</h2><p>Four questions across the captured evidence boundary.</p></div></div>';
   if (!graph) { $('#content').innerHTML = intro + `<p class="${graphError ? 'error' : 'empty'}">${esc(graphError || 'Reading the graph…')}</p>${graphError ? '<button class="secondary" id="refresh-graph">Retry graph</button>' : ''}`; return; }
   const inventory = graph.queries.find(q => q.id === 'case-inventory');
-  $('#content').innerHTML = `${intro}<div class="graph-toolbar"><span class="graph-badge">${graph.source === 'neo4j' ? `Neo4j Aura · ${esc(graph.host)}` : `Local graph · Neo4j unavailable: ${esc(graph.reason)}`}</span>${graph.configured ? `<button class="secondary" id="load-graph" ${graphLoadBusy ? 'disabled' : ''}>${graphLoadBusy ? 'Loading into Neo4j…' : 'Load into Neo4j'}</button>` : ''}<button class="source-button" id="refresh-graph" ${graphLoading ? 'disabled' : ''}>Refresh queries</button></div><p class="map-note">Captured graph · retrieved ${esc(graph.retrievedAt)}. Live case refreshes do not change this index. ${graphLoading ? 'Refreshing…' : ''}</p>${graphError ? `<p class="error">${esc(graphError)}</p>` : ''}<div class="graph-inventory" aria-label="Case inventory">${inventory?.rows.map(row => `<div><strong>${esc(scopes.find(c => c.id === row.case)?.label ?? row.case)}</strong><span>${esc(row.nodes)} entities · ${esc(row.relationships)} relations</span><span>${esc(row.evidence)} evidence records</span><small>Slots ${esc(row.slotMin ?? 'unknown')}–${esc(row.slotMax ?? 'unknown')}</small></div>`).join('') ?? ''}</div>${graph.queries.map(q => `<article class="graph-card"><h3>${esc(q.title)}</h3><p>${esc(q.question)}</p>${graphTable(q)}<div class="graph-query-footer"><span>${q.rows.length} ${q.rows.length === 1 ? 'row' : 'rows'}</span><details><summary>Cypher</summary><pre>${esc(q.cypher)}</pre><strong>Parameters</strong><pre>${esc(JSON.stringify(q.params, null, 2))}</pre></details></div></article>`).join('')}`;
+  $('#content').innerHTML = `${intro}<div class="graph-toolbar"><span class="graph-badge">${graph.source === 'neo4j' ? `Neo4j Aura · ${esc(graph.host)}` : `Local graph · Neo4j unavailable: ${esc(graph.reason)}`}</span>${graph.configured ? `<button class="secondary" id="load-graph" ${graphLoadBusy ? 'disabled' : ''}>${graphLoadBusy ? 'Loading into Neo4j…' : 'Load into Neo4j'}</button>` : ''}<button class="source-button" id="refresh-graph" ${graphLoading ? 'disabled' : ''}>Refresh queries</button></div><p class="map-note">Captured graph · retrieved ${esc(graph.retrievedAt)}. Live case refreshes do not change this index. ${graphLoading ? 'Refreshing…' : ''}</p>${graphError ? `<p class="error">${esc(graphError)}</p>` : ''}<div class="graph-inventory" aria-label="Case inventory">${inventory?.rows.map(row => `<div><strong>${esc(scopes.find(c => c.id === row.case)?.label ?? row.case)}</strong><span>${esc(row.nodes)} entities · ${esc(row.relationships)} relations</span><span>${esc(row.evidence)} evidence records</span><small>Slots ${esc(row.slotMin ?? 'unknown')}–${esc(row.slotMax ?? 'unknown')}</small></div>`).join('') ?? ''}</div>${graph.queries.map(q => `<article class="graph-card"><h3>${esc(q.title)}</h3><p>${esc(q.question)}</p>${q.id === 'paths-to-realm' ? realmPicture(q) : ''}${graphTable(q, true)}<div class="graph-query-footer"><span>${q.rows.length} ${q.rows.length === 1 ? 'row' : 'rows'}</span><details><summary>Cypher</summary><pre>${esc(q.cypher)}</pre><strong>Parameters</strong><pre>${esc(JSON.stringify(q.params, null, 2))}</pre></details></div></article>`).join('')}`;
 }
 function graphMemoHtml() {
   const summary = view?.crossCaseGraph;
@@ -171,7 +197,8 @@ function renderMemo() {
 function activity() {
   inspecting = 'activity'; $('#inspector-title').textContent = 'Research activity';
   const current = runs.get(active);
-  $('#inspector-body').innerHTML = current ? `<p class="activity-note">${current.status === 'running' ? current.source === 'live' ? 'Reading current state through the configured endpoint.' : 'Rebuilding the case from recorded evidence.' : current.status === 'completed' ? 'Research complete. Findings and the memo use this run’s results.' : esc(current.error)}<br><strong>${current.source === 'live' ? `Live · ${esc(current.rpcHost ?? 'host unavailable')} · ${current.events.at(-1)?.liveReads ?? current.events.filter(e => e.liveReads != null).at(-1)?.liveReads ?? 0} reads` : 'Offline · deterministic pipeline'}</strong></p><ol class="activity-list">${current.events.map(e => `<li><time>${esc(e.at.slice(11, 23))} UTC${e.evidenceCount != null ? ` · ${e.evidenceCount} records · ${e.liveReads ?? 0} live reads` : ''}</time>${esc(e.message)}</li>`).join('')}</ol>` : `<p class="activity-note">A completed example is open.<br>Run research to rebuild its findings and memo from the recorded inputs.</p><ol class="activity-list"><li>Read documented claims</li><li>Resolve controllers & decode instructions</li><li>Check recorded state & execution</li><li>Assemble cited findings and draft memo</li></ol><p class="activity-note">Data freshness is shown above. Replaying fixtures does not refresh the chain snapshot.</p>`;
+  const liveIntro = liveActivityIntro(view, current?.status === 'running');
+  $('#inspector-body').innerHTML = current ? `<p class="activity-note">${liveIntro ? esc(liveIntro) : current.status === 'running' ? current.source === 'live' ? 'Reading current state through the configured endpoint.' : 'Rebuilding the case from recorded evidence.' : current.status === 'completed' ? 'Research complete. Findings and the memo use this run’s results.' : esc(current.error)}${liveIntro ? '' : `<br><strong>${current.source === 'live' ? `Live · ${esc(current.rpcHost ?? 'host unavailable')} · ${current.events.at(-1)?.liveReads ?? current.events.filter(e => e.liveReads != null).at(-1)?.liveReads ?? 0} reads` : 'Offline · deterministic pipeline'}</strong>`}</p><ol class="activity-list">${current.events.map(e => `<li><time>${esc(e.at.slice(11, 23))} UTC${e.evidenceCount != null ? ` · ${e.evidenceCount} records · ${e.liveReads ?? 0} live reads` : ''}</time>${esc(e.message)}</li>`).join('')}</ol>` : `<p class="activity-note">${liveIntro ? esc(liveIntro) : 'A completed example is open.<br>Run research to rebuild its findings and memo from the recorded inputs.'}</p><ol class="activity-list"><li>Read documented claims</li><li>Resolve controllers & decode instructions</li><li>Check recorded state & execution</li><li>Assemble cited findings and draft memo</li></ol>${liveIntro ? '' : '<p class="activity-note">Data freshness is shown above. Replaying fixtures does not refresh the chain snapshot.</p>'}`;
   if (graphEvents.length) $('#inspector-body').insertAdjacentHTML('afterbegin', `<p class="inspector-label">GRAPH ACTIVITY</p><ol class="activity-list" aria-live="polite">${graphEvents.map(e => `<li><time>${esc(e.at.slice(11, 23))} UTC</time>${esc(e.message)}</li>`).join('')}</ol>`);
   animate($('#inspector-body'));
 }
@@ -241,7 +268,7 @@ document.addEventListener('click', event => {
     else { $('#inspector').classList.add('open'); $('#inspector-title').textContent = 'Unverified & next evidence'; inspecting = 'unknowns'; $('#inspector-body').innerHTML = `<p class="activity-note">Limits of this research</p><ul class="unknowns">${view.unknowns.map(u => `<li>${esc(u)}</li>`).join('')}</ul>`; }
   }
 });
-document.addEventListener('keydown', e => { const target = e.target as HTMLElement; if ((e.key === 'Enter' || e.key === ' ') && target.hasAttribute('data-node')) { e.preventDefault(); target.dispatchEvent(new MouseEvent('click', {bubbles: true})); } if (target.matches('[role=tab]') && ['ArrowLeft','ArrowRight'].includes(e.key)) { const tabs = [...document.querySelectorAll<HTMLButtonElement>('[role=tab]')]; const next = tabs[(tabs.indexOf(target as HTMLButtonElement) + (e.key === 'ArrowRight' ? 1 : tabs.length - 1)) % tabs.length]; next.focus(); setTab(next.dataset.tab!); } });
+document.addEventListener('keydown', e => { const target = e.target as HTMLElement; if ((e.key === 'Enter' || e.key === ' ') && target.matches('[data-node],g[data-graph-entity]')) { e.preventDefault(); target.dispatchEvent(new MouseEvent('click', {bubbles: true})); } if (target.matches('[role=tab]') && ['ArrowLeft','ArrowRight'].includes(e.key)) { const tabs = [...document.querySelectorAll<HTMLButtonElement>('[role=tab]')]; const next = tabs[(tabs.indexOf(target as HTMLButtonElement) + (e.key === 'ArrowRight' ? 1 : tabs.length - 1)) % tabs.length]; next.focus(); setTab(next.dataset.tab!); } });
 document.addEventListener('change', e => { const el = e.target as HTMLSelectElement; if (el.id === 'finding-filter') { filter = el.value; renderFindings(); } if (el.id === 'path-select') { pathIndex = Number(el.value); renderMap(); } });
 let searchTimer: ReturnType<typeof setTimeout>;
 document.addEventListener('input', e => { const el = e.target as HTMLInputElement; if (el.id === 'ledger-search') { ledgerQuery = el.value; const pos = el.selectionStart; renderTimeline(); $('#ledger-search').focus(); ($('#ledger-search') as HTMLInputElement).setSelectionRange(pos,pos); } if (el.id === 'source-search') { sourceQuery = el.value; clearTimeout(searchTimer); searchTimer = setTimeout(() => void browseSources(sourceQuery), 180); } });
