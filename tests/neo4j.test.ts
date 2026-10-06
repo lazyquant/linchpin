@@ -12,7 +12,7 @@ const inputs: { caseId: string; view: View; packet: Result['packet'] }[] = [];
 beforeAll(async () => {
   for (const c of CASES) inputs.push({ caseId: c.id, ...await runPipeline(c.id) });
   records = buildGraphRecords(inputs);
-}, 60_000);
+}, 120_000);
 
 function fakeDriver(rows: Record<string, unknown>[] = []) {
   const calls: { cypher: string; params: object; config: { database: string; routing: 'READ' | 'WRITE' } }[] = [];

@@ -1,3 +1,5 @@
+import type { TokenomicsGraph } from '../graph/tokenomics-neo4j';
+import { SUMMARY_QUERIES, PROPOSAL_BRIDGE_CYPHER, GOVERNANCE_BRIDGE_CYPHER, localGraphCounts, localProposalDependencies, localGovernanceTouches, graphCount, type GraphOrigin, type GraphOverview, type ProposalBridge, type GovernanceBridge, type ProposalDependency } from './graph-overview';
 import neo4j from 'neo4j-driver';
 import { CANNED_QUERIES, loadNeo4j, neo4jConfigFromEnv, redactedNeo4jHost, runCannedLocal, runCannedNeo4j,
   type GraphRecords, type Neo4jDriverLike, type QueryResult } from '../graph/neo4j';
@@ -43,6 +45,51 @@ export class GraphService {
         connectionAcquisitionTimeout: this.options.queryTimeoutMs ?? 5_000,
         maxTransactionRetryTime: 0,
       });
+  }
+  private summaryCache?: { at: number; graph: TokenomicsGraph; answer: GraphOverview };
+  private summaryPending?: { graph: TokenomicsGraph; work: Promise<GraphOverview> };
+  invalidateSummary() { this.summaryCache = undefined; this.summaryPending = undefined; }
+  private async acrossNamespaces<T extends object>(remote: (driver: Neo4jDriverLike, database: string) => Promise<T>, local: () => T): Promise<T & GraphOrigin> {
+    const origin = (source: GraphOrigin['source'], reason: string | null): GraphOrigin => ({ source, reason,
+      host: source === 'neo4j' ? redactedNeo4jHost(this.config!.uri) : null, retrievedAt: new Date().toISOString() });
+    if (!this.config) return { ...local(), ...origin('local', 'Neo4j is not configured') };
+    try {
+      const driver = this.getDriver(), ms = this.options.queryTimeoutMs ?? 20_000;
+      const bounded: Neo4jDriverLike = { executeQuery: (cypher, params, config) => deadline(driver.executeQuery(cypher, params,
+        { ...config, transactionConfig: { timeout: ms } } as typeof config), ms) };
+      return { ...await deadline(remote(bounded, this.config.database), ms), ...origin('neo4j', null) };
+    } catch (error) { return { ...local(), ...origin('local', this.scrub(error)) }; }
+  }
+  summary(tokenomics: TokenomicsGraph): Promise<GraphOverview> {
+    if (this.summaryCache?.graph === tokenomics && Date.now() - this.summaryCache.at < (this.options.cacheMs ?? 60_000)) return Promise.resolve(this.summaryCache.answer);
+    if (this.summaryPending?.graph === tokenomics) return this.summaryPending.work;
+    const work = this.acrossNamespaces(async (driver, database) => {
+      const results = await Promise.all(SUMMARY_QUERIES.map(cypher => driver.executeQuery(cypher, {}, { database, routing: 'READ' })));
+      const count = (i: number) => graphCount(results[i].records[0]?.toObject().count);
+      return { nodes: count(0), relationships: count(1), byNamespace: { governance: count(2), tokenomics: count(3) },
+        byLabel: Object.fromEntries(results[4].records.map(r => { const row = r.toObject(); return [String(row.l), graphCount(row.count)]; })) };
+    }, () => localGraphCounts(this.records, tokenomics)).then(answer => {
+      if (this.summaryPending?.work === work) this.summaryCache = { at: Date.now(), graph: tokenomics, answer };
+      return answer;
+    }).finally(() => { if (this.summaryPending?.work === work) this.summaryPending = undefined; });
+    this.summaryPending = { graph: tokenomics, work }; return work;
+  }
+  proposalDependencies(tokenomics: TokenomicsGraph, caseId: string): Promise<ProposalBridge> {
+    return this.acrossNamespaces(async (driver, database) => {
+      const result = await driver.executeQuery(PROPOSAL_BRIDGE_CYPHER, { case: caseId }, { database, routing: 'READ' });
+      return { rows: result.records.map(r => {
+        const row = r.toObject();
+        return { address: String(row.address), caseRole: String(row.caseRole ?? ''), caseLabel: String(row.caseLabel ?? ''),
+          tokenomicsType: String(row.tokenomicsType ?? ''), tokenomicsLabel: String(row.tokenomicsLabel ?? ''), links: (row.links as unknown[] ?? []).map(String) } satisfies ProposalDependency;
+      }) };
+    }, () => ({ rows: localProposalDependencies(this.records, tokenomics, caseId) }));
+  }
+  governanceTouches(tokenomics: TokenomicsGraph): Promise<GovernanceBridge> {
+    return this.acrossNamespaces(async (driver, database) => {
+      const result = await driver.executeQuery(GOVERNANCE_BRIDGE_CYPHER, {}, { database, routing: 'READ' });
+      return { rows: result.records.map(r => { const row = r.toObject(); return { caseId: String(row.caseId), sharedAccounts: graphCount(row.sharedAccounts),
+        examples: (row.examples as unknown[] ?? []).map(String), entityLabels: (row.entityLabels as unknown[] ?? []).map(String) }; }) };
+    }, () => ({ rows: localGovernanceTouches(this.records, tokenomics) }));
   }
   async close() { await this.driver?.close?.(); }
   private scrub(error: unknown): string {
@@ -92,7 +139,7 @@ export class GraphService {
     if (!this.config) throw new GraphError('Neo4j is not configured. Set NEO4J_URI and NEO4J_PASSWORD on the server.', 409);
     if (this.loading) throw new GraphError('A Neo4j load is already running', 409);
     this.loading = true;
-    this.generation++; this.cached.clear(); this.pending.clear();
+    this.generation++; this.cached.clear(); this.pending.clear(); this.invalidateSummary();
     let work: Promise<unknown> | undefined;
     try {
       const driver = this.getDriver(), ms = this.options.loadTimeoutMs ?? 120_000, end = Date.now() + ms;
@@ -108,7 +155,7 @@ export class GraphService {
       finally { expired = true; }
     } catch (error) { throw new GraphError(this.scrub(error), error instanceof GraphTimeout ? 504 : 502); }
     finally {
-      const release = () => { this.loading = false; this.generation++; this.cached.clear(); this.pending.clear(); };
+      const release = () => { this.loading = false; this.generation++; this.cached.clear(); this.pending.clear(); this.invalidateSummary(); };
       if (work) void work.then(release, release); else release();
     }
   }

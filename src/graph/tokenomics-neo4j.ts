@@ -1,3 +1,4 @@
+import registry from '../../packs/marinade/registry.json';
 import { sameCouncilMembers } from '../tokenomics/councils';
 import { canonical, sha256 } from '../chain/evidence';
 import type { Basis, BundleResponse, GraphData, GraphQueryResult, Provenance } from '../tokenomics/api';
@@ -72,7 +73,7 @@ export function buildTokenomicsGraph(bundle: BundleResponse): TokenomicsGraph {
     }, { members: new Set(left.members!.map(m => m.address)).size, what: `Same ${left.members!.length} current council member addresses` });
   }
   for (const program of bundle.programs.data?.rows ?? []) node(`program:${program.id}`, 'Program', program.id, { address: program.address }, program);
-  for (const mint of ['MNDE', 'mSOL']) node(`mint:${mint.toLowerCase()}`, 'Mint', mint);
+  for (const mint of ['MNDE', 'mSOL']) node(`mint:${mint.toLowerCase()}`, 'Mint', mint, { address: registry.mints.find(m => m.id === mint.toLowerCase())!.address });
   for (const parameter of bundle.parameters.data?.rows ?? []) node(`parameter:${parameter.id}`, 'Parameter', parameter.label, { field: parameter.field, display: parameter.display, value: parameter.value }, parameter);
   const authority = (address: string, controller: string, p: Provenance) => {
     const id = node(`authority:${address}`, 'Authority', address, { address }, p);
@@ -111,12 +112,17 @@ export function buildTokenomicsGraph(bundle: BundleResponse): TokenomicsGraph {
     const fact = node(`fact:${claim.id}`, 'Metric', claim.chainResult, { result: claim.chainResult }, claim);
     rel('CHECKS', id, fact, claim, { status: claim.status });
   }
-  function holds(id: string, label: string, mint: string, raw: string, display: string, share: number | null | undefined, p: Provenance, note: string | null = null) {
-    node(id, 'HolderGroup', label, { note }, p);
+  function holds(id: string, label: string, mint: string, raw: string, display: string, share: number | null | undefined, p: Provenance, note: string | null = null, address: string | null = null) {
+    node(id, 'HolderGroup', label, { note, address }, p);
     rel('HOLDS', id, `mint:${mint}`, p, { amountRaw: raw, amount: display, share: share ?? null });
   }
   const holders = bundle.holders.data;
-  for (const h of holders?.mnde.top ?? []) holds(`holder:mnde:${h.owner.address}`, h.role ?? h.owner.address, 'mnde', h.amount.raw, h.amount.display, h.amount.shareOfSupply, h);
+  // A single-owner holder group is addressable in both graph namespaces. Float
+  // aggregates remain unaddressed: they must not be mistaken for an account.
+  const daoTreasury = path?.nodes.find(n => n.id === 'dao-treasury-mnde');
+  for (const h of holders?.mnde.top ?? []) holds(`holder:mnde:${h.owner.address}`,
+    h.owner.address === daoTreasury?.address ? daoTreasury.label : h.role ?? h.owner.address,
+    'mnde', h.amount.raw, h.amount.display, h.amount.shareOfSupply, h, null, h.owner.address);
   for (const m of holders?.mnde.float ?? []) if (m.amount) holds(`holder:${m.id}`, m.label, 'mnde', m.amount.raw, m.amount.display, m.amount.shareOfSupply, m, m.note ?? null);
   for (const h of holders?.msol.downstream ?? []) holds(`holder:msol:${h.entity}`, h.label ?? h.entity, 'msol', h.amount.raw, h.amount.display, h.amount.shareOfSupply, h, 'Top-account downstream groups can overlap.');
   for (const metric of [...(bundle.participation.data?.locking ?? []), ...(holders?.mnde.metrics ?? []), ...(holders?.msol.metrics ?? [])]) node(`metric:${metric.id}:${metric.amount?.unit ?? ''}`, 'Metric', metric.label, { value: metric.value }, metric);

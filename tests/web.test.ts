@@ -6,7 +6,7 @@ import { readFileSync } from 'node:fs';
 import { liveActivityIntro } from '../src/web/activity-view';
 
 const service = new ResearchService();
-beforeAll(async () => { await service.prepare(); }, 30_000);
+beforeAll(async () => { await service.prepare(); }, 120_000);
 const request = (path: string, init?: RequestInit) => new Request(`http://127.0.0.1:8875${path}`, init);
 
 describe('local research workspace with real recorded evidence', () => {

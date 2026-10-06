@@ -108,9 +108,21 @@ export function api(service: ResearchService) {
       { headers: { 'Content-Type': 'image/svg+xml', 'Cache-Control': 'public, max-age=86400' } },
     );
     if (request.method === 'POST' && request.headers.get('origin') && request.headers.get('origin') !== u.origin) return json({ error: 'Same-origin requests only' }, 403);
-    if (parts[0] === 'api' && parts[1] === 'tokenomics') return tokenomicsRoutes(service.tokenomics, request, service.tokenomicsGraph);
+    if (parts[0] === 'api' && parts[1] === 'tokenomics') {
+      try { return await tokenomicsRoutes(service.tokenomics, request, service.tokenomicsGraph); }
+      finally { if (request.method === 'POST' && parts[3] === 'graph' && parts[4] === 'load') service.graph.invalidateSummary(); }
+    }
     if (parts[0] === 'api' && parts[1] === 'graph') {
       try {
+        if (request.method === 'GET' && parts.length === 3 && ['summary', 'proposal-dependencies', 'governance-cases'].includes(parts[2])) {
+          const tokenomics = service.tokenomicsGraph?.graph;
+          if (!tokenomics) return json({ error: 'Tokenomics captured build is not ready' }, 503);
+          if (parts[2] === 'summary') return json(await service.graph.summary(tokenomics));
+          if (parts[2] === 'governance-cases') return json(await service.graph.governanceTouches(tokenomics));
+          const caseId = u.searchParams.get('case');
+          if (!CASES.some(c => c.id === caseId)) return json({ error: 'Case not found' }, 404);
+          return json(await service.graph.proposalDependencies(tokenomics, caseId!));
+        }
         if (request.method === 'GET' && parts.length <= 3) return json(await service.graphAnswer(parts[2]));
         if (request.method === 'POST' && parts[2] === 'load' && parts.length === 3) return json(await service.graph.load());
         return json({ error: 'Method not allowed' }, 405);

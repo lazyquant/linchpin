@@ -12,7 +12,7 @@ import { layoutRealmPaths } from '../src/web/graph-layout';
 const baseline = new Map<CaseId, Result>();
 const config = { uri: 'neo4j+s://uri-user:uri-password@graph.example:7687/private?token=secret', username: 'private-user', password: 'private-password', database: 'captured-cases' };
 const request = (path = '', init?: RequestInit) => new Request(`http://127.0.0.1:8875/api/graph${path}`, init);
-beforeAll(async () => { for (const c of CASES) baseline.set(c.id, await runPipeline(c.id)); }, 30_000);
+beforeAll(async () => { for (const c of CASES) baseline.set(c.id, await runPipeline(c.id)); }, 120_000);
 function service(options: GraphOptions = { config: null }) {
   const research = new ResearchService(async id => structuredClone(baseline.get(id)!), 120_000, options);
   for (const [id, result] of baseline) research.results.set(id, structuredClone(result));

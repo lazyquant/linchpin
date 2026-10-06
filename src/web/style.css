@@ -19,3 +19,12 @@
 .tg-answer-heading h2{font-size:16px;overflow-wrap:anywhere}.tg-heading h1{overflow-wrap:anywhere}.tg-controller-record{padding:12px 0;border-bottom:1px solid var(--line)}.tg-controller-record p{font-size:11px;color:var(--muted);line-height:1.7;overflow-wrap:anywhere}.tg-path-modes{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:18px}.tg-path-modes button{font-size:10px;border:1px solid var(--line);border-radius:3px;background:none;padding:7px 9px}.tg-path-modes button[aria-pressed=true]{background:#dfe9de;color:var(--green);border-color:#b3c7ac}.tg-answer .tg-section-date{display:none}.tg-findings-fold{padding-bottom:5px}
 
 @media(min-width:1121px){.tg-inspector-top .tg-close{display:none}}
+
+/* Two entry points into the captured research workspace. */
+.home-mode main>.scope,.home-mode main>.workflow,.home-mode main>.workspace-bar,.home-mode main>#content,.home-mode main>.footer,.home-mode .shell>#inspector,.home-mode #sources-button{display:none}
+.home-mode .shell{grid-template-columns:190px minmax(0,1fr)}
+#home-panel{max-width:1250px;padding:48px 42px;margin:auto}
+.home-heading{max-width:770px;margin-bottom:38px}.home-heading h1{font-size:48px;letter-spacing:-2px;margin:0 0 12px;font-weight:550}.home-heading .home-subtitle{font-size:23px;color:var(--ink);line-height:1.35}.home-heading p{font-size:14px;line-height:1.8;color:var(--muted)}
+.home-cards{display:grid;grid-template-columns:1fr 1fr;gap:25px}.home-card{padding:26px;border:1px solid var(--line);border-radius:4px;background:var(--paper);min-width:0}.home-card .number{font-size:12px;color:var(--green)}.home-card h2{font-size:24px;font-weight:500;margin:12px 0}.home-card>p{font-size:13px;line-height:1.7;color:var(--muted)}.home-card button{display:block;text-align:left;width:100%;margin-top:15px;white-space:normal;line-height:1.6}.home-case small{display:block;font-size:11px;color:var(--muted);margin-top:8px;font-weight:400}.home-graph{margin-top:28px;font-size:11px;line-height:1.8;color:var(--muted)}.graph-badge{white-space:normal;line-height:1.8}.graph-card .table-wrap{max-width:100%}.graph-table td{overflow-wrap:anywhere}.graph-table td small{display:block;color:var(--muted);margin-top:5px}
+@media(max-width:900px){.home-cards{grid-template-columns:1fr}#home-panel{padding:30px 25px}.home-mode .shell{grid-template-columns:170px minmax(0,1fr)}}
+@media(max-width:650px){.home-mode .shell{display:block}#home-panel{padding:25px 20px}.home-heading h1{font-size:38px}.home-heading .home-subtitle{font-size:21px}}

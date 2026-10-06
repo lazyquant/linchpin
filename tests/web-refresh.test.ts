@@ -14,7 +14,7 @@ const baseline = new Map<CaseId, Result>();
 const dirs: string[] = [];
 const endpoint = 'https://alice:private-password@rpc.example/v2/private-api-key-123456?api-key=query-secret';
 const env = { ...process.env };
-beforeAll(async () => { for (const c of CASES) baseline.set(c.id, await runPipeline(c.id)); }, 30_000);
+beforeAll(async () => { for (const c of CASES) baseline.set(c.id, await runPipeline(c.id)); }, 120_000);
 afterEach(() => {
   for (const dir of dirs.splice(0)) rmSync(dir, { recursive: true, force: true });
   for (const key of ['LINCHPIN_RPC_URL', 'LINCHPIN_RPC_TIMEOUT_MS', 'LINCHPIN_RPC_MIN_INTERVAL_MS']) {

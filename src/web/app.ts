@@ -1,3 +1,7 @@
+import { evidenceIds } from '../tokenomics/evidence';
+import type { BundleResponse } from '../tokenomics/api';
+import type { ProposalBridge } from './graph-overview';
+import { graphBadge, refreshGraphOverview, proposalBridgeCard } from './graph-overview-view';
 import { TokenomicsWorkspace } from './tokenomics-ui';
 import type { GraphAnswer, CannedResult } from './graph';
 import { graphSummary, graphSource, graphEntityEvidence, graphHeader, graphCell, graphNumeric, canonicalGraphId } from './graph-view';
@@ -16,7 +20,9 @@ let run: Run | null = null, inspecting = 'activity', ledgerQuery = '', sourceQue
 const runs = new Map<CaseId, Run>();
 const selections = new Map<CaseId, 'captured' | 'live'>();
 const selectedSource = () => selections.get(active) ?? 'captured';
-let viewRequest = 0;
+let viewRequest = 0, homeActive = false;
+let bridge: ProposalBridge | undefined, bridgeCase: CaseId | undefined, bridgeError = '', bridgeRequest = 0;
+const caseOrder: CaseId[] = ['marinade', 'mip-14', 'mip-14-opinion', 'bonk-bip76'];
 let graph: GraphAnswer | null = null, graphLoading = false, graphError = '', graphLoadBusy = false;
 let graphRequest: Promise<void> | null = null;
 let capturedGraphTypes: Map<string, string> | null = null;
@@ -25,19 +31,55 @@ async function api<T>(url: string, init?: RequestInit): Promise<T> { const r = a
 function notice(message: string) { $('#notice').textContent = message; $('#notice').classList.add('visible'); setTimeout(() => $('#notice').classList.remove('visible'), 4200); }
 function animate(el: HTMLElement) { el.style.animation = 'none'; void el.offsetWidth; el.style.animation = ''; }
 function exportUrl(file: string) { return `/api/cases/${active}/export/${file}?source=${selectedSource()}`; }
-function setTab(next: string) { tab = next; document.querySelectorAll<HTMLButtonElement>('[data-tab]').forEach(b => b.setAttribute('aria-selected', String(b.dataset.tab === next))); $('#content').setAttribute('aria-label', next === 'map' ? 'Control map' : next); render(); if (next === 'graph' || next === 'memo') void fetchGraph(); animate($('#content')); }
+function setTab(next: string) { tab = next; document.querySelectorAll<HTMLButtonElement>('[data-tab]').forEach(b => b.setAttribute('aria-selected', String(b.dataset.tab === next))); $('#content').setAttribute('aria-label', next === 'map' ? 'Control map' : next); render(); if (next === 'graph' || next === 'memo') void fetchGraph(); if (next === 'graph') void fetchBridge(); animate($('#content')); }
 async function load(id: CaseId, source = selections.get(id) ?? 'captured') {
-  tokenomics.close();
+  leaveHome(); tokenomics.close();
   selections.set(id, source); const request = ++viewRequest; ++sourceRequest;
   active = id; view = null; pathIndex = 0; filter = 'all', showAll = false; ledgerQuery = ''; run = runs.get(id) ?? null; inspecting = 'activity';
   history.replaceState(null, '', `/#${id}`); renderCases();
   const scope = scopes.find(c => c.id === id)!;
   $('#case-title').textContent = scope.label; $('#case-kind').textContent = scope.kind; $('#question').textContent = scope.question;
   $('#content').innerHTML = '<p class="empty">Opening the completed evidence…</p>'; $('#capture').textContent = ''; $('#evidence-count').textContent = ''; activity(); updateRun();
-  try { const data = await api<View>(`/api/cases/${id}?source=${source}`); if (active !== id || request !== viewRequest) return; view = data; updateHeader(); render(); activity(); if (tab === 'graph' || tab === 'memo') void fetchGraph(); }
+  try { const data = await api<View>(`/api/cases/${id}?source=${source}`); if (active !== id || request !== viewRequest) return; view = data; updateHeader(); render(); activity(); if (tab === 'graph' || tab === 'memo') void fetchGraph(); if (tab === 'graph') void fetchBridge(); }
   catch (error) { if (active === id && request === viewRequest) $('#content').innerHTML = `<p class="error">${esc((error as Error).message)}</p>`; }
 }
-function renderCases() { $('#cases').innerHTML = scopes.map(c => `<button class="case-button ${c.id === active && !tokenomics.active ? 'selected' : ''}" data-case="${c.id}" ${c.id === active && !tokenomics.active ? 'aria-current="true"' : ''}>${esc(c.label)}<small>${esc(c.kind)}</small></button>`).join(''); }
+function renderCases() {
+  const button = (c: Scope) => `<button class="case-button ${c.id === active && !tokenomics.active && !homeActive ? 'selected' : ''}" data-case="${c.id}" ${c.id === active && !tokenomics.active && !homeActive ? 'aria-current="true"' : ''}>${esc(c.label)}<small>${esc(c.kind)}</small></button>`;
+  $('#protocol-cases').innerHTML = scopes.filter(c => c.id === 'marinade').map(button).join('');
+  $('#cases').innerHTML = caseOrder.slice(1).flatMap(id => scopes.filter(c => c.id === id)).map(button).join('');
+  document.querySelectorAll<HTMLButtonElement>('button[data-home]').forEach(b => { b.classList.toggle('selected', homeActive); if (homeActive) b.setAttribute('aria-current', 'true'); else b.removeAttribute('aria-current'); });
+}
+function leaveHome() { homeActive = false; document.body.classList.remove('home-mode'); $('#home-panel').hidden = true; }
+const homeLabels: Record<CaseId, string> = {
+  marinade: 'Marinade / MNDE · control and supply map, DAO treasury ledger',
+  'mip-14': 'Marinade MIP-14 · burn of 300,000,000 MNDE',
+  'mip-14-opinion': 'MIP-14 opinion vote · signaling only',
+  'bonk-bip76': 'BonkDAO BIP-76 · treasury transfer',
+};
+async function openHome() {
+  tokenomics.close(); homeActive = true; ++viewRequest; ++sourceRequest; view = null;
+  document.body.classList.add('home-mode'); $('#home-panel').hidden = false;
+  $('#case-kind').textContent = 'Research workspace'; renderCases();
+  const button = (id: CaseId) => { const c = scopes.find(c => c.id === id); return c ? `<button class="home-case secondary" data-case="${id}" title="${esc(c.label)}">${esc(homeLabels[id])}<small>${esc(c.question)}</small></button>` : ''; };
+  $('#home-panel').innerHTML = `<header class="home-heading"><h1>Linchpin</h1><p class="home-subtitle">The dependency engine for protocol economics</p><p>Reads a protocol's programs, state and transactions from Solana mainnet and keeps what is claimed, what the code allows and what happened side by side.</p></header><div class="home-cards"><article class="home-card"><span class="number">01</span><h2>Protocol research</h2><p>A token, its flows and the protocol's mechanics.</p><button class="primary" data-tg-open>Marinade tokenomics</button>${button('marinade')}<p id="home-research-status" class="map-note">Reading captured research…</p></article><article class="home-card"><span class="number">02</span><h2>Governance review</h2><p>Proposals, their dependencies and their impact on the protocol.</p>${caseOrder.slice(1).map(button).join('')}</article></div><p class="home-graph">Evidence graph · ${graphBadge()}</p>`;
+  void refreshGraphOverview();
+  try { const b = await api<BundleResponse>('/api/tokenomics/marinade'); if (homeActive) $('#home-research-status').textContent = `${b.answer.data?.shortAnswer.status ?? b.answer.status} · ${Object.keys(b).length} sections · ${evidenceIds(b).length.toLocaleString('en-US')} evidence records`; }
+  catch (e) { if (homeActive) $('#home-research-status').textContent = (e as Error).message; }
+}
+async function routeHash() {
+  const hash = location.hash.slice(1);
+  if (hash === 'tokenomics') await tokenomics.open();
+  else if (scopes.some(c => c.id === hash)) await load(hash as CaseId);
+  else await openHome();
+}
+async function fetchBridge() {
+  const id = active, request = ++bridgeRequest; bridgeError = '';
+  if (bridgeCase !== id) bridge = undefined;
+  bridgeCase = id; void refreshGraphOverview();
+  try { const answer = await api<ProposalBridge>(`/api/graph/proposal-dependencies?case=${encodeURIComponent(id)}`); if (request !== bridgeRequest) return; bridge = answer; }
+  catch (e) { if (request !== bridgeRequest) return; bridgeError = (e as Error).message; }
+  if (active === id && tab === 'graph' && !tokenomics.active && !homeActive) renderGraph();
+}
 function updateRun() {
   const current = runs.get(active), busy = current?.status === 'running';
   $('#run').textContent = busy && current?.source !== 'live' ? 'Research running…' : 'Run research ↗';
@@ -54,7 +96,7 @@ function updateHeader() {
   $('#generation').textContent = `Built ${new Date(view.generatedAt).toLocaleTimeString()} · draft`;
 }
 function render() {
-  if (tokenomics.active) return;
+  if (tokenomics.active || homeActive) return;
   if (!view) return;
   if (tab === 'findings') renderFindings();
   else if (tab === 'map') renderMap();
@@ -162,10 +204,11 @@ function realmPicture(query: CannedResult) {
   return `<figure class="realm-picture"><svg viewBox="0 0 ${layout.width} ${layout.height}" style="max-width:${layout.width}px" aria-label="Paths to Marinade DAO; select an entity to inspect evidence"><defs>${['observed', 'other'].map(basis => `<marker id="realm-arrow-${basis}" class="realm-arrow ${basis}" markerWidth="7" markerHeight="7" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z"/></marker>`).join('')}</defs>${lines}${nodes}</svg><figcaption><span class="observed">Observed hop</span><span class="other">Other evidence basis</span></figcaption></figure>`;
 }
 function renderGraph() {
-  const intro = '<div class="section-intro"><div><h2>Cross-case graph</h2><p>Four questions across the captured evidence boundary.</p></div></div>';
+  if (homeActive || tokenomics.active) return;
+  const intro = '<div class="section-intro"><div><h2>Cross-case graph</h2><p>Cross-case questions and protocol dependencies across the captured evidence boundary.</p></div></div>';
   if (!graph) { $('#content').innerHTML = intro + `<p class="${graphError ? 'error' : 'empty'}">${esc(graphError || 'Reading the graph…')}</p>${graphError ? '<button class="secondary" id="refresh-graph">Retry graph</button>' : ''}`; return; }
   const inventory = graph.queries.find(q => q.id === 'case-inventory');
-  $('#content').innerHTML = `${intro}<div class="graph-toolbar"><span class="graph-badge">${graph.source === 'neo4j' ? `Neo4j Aura · ${esc(graph.host)}` : `Local graph · Neo4j unavailable: ${esc(graph.reason)}`}</span>${graph.configured ? `<button class="secondary" id="load-graph" ${graphLoadBusy ? 'disabled' : ''}>${graphLoadBusy ? 'Loading into Neo4j…' : 'Load into Neo4j'}</button>` : ''}<button class="source-button" id="refresh-graph" ${graphLoading ? 'disabled' : ''}>Refresh queries</button></div><p class="map-note">Captured graph · retrieved ${esc(graph.retrievedAt)}. Live case refreshes do not change this index. ${graphLoading ? 'Refreshing…' : ''}</p>${graphError ? `<p class="error">${esc(graphError)}</p>` : ''}<div class="graph-inventory" aria-label="Case inventory">${inventory?.rows.map(row => `<div><strong>${esc(scopes.find(c => c.id === row.case)?.label ?? row.case)}</strong><span>${esc(row.nodes)} entities · ${esc(row.relationships)} relations</span><span>${esc(row.evidence)} evidence records</span><small>Slots ${esc(row.slotMin ?? 'unknown')}–${esc(row.slotMax ?? 'unknown')}</small></div>`).join('') ?? ''}</div>${graph.queries.map(q => `<article class="graph-card"><h3>${esc(q.title)}</h3><p>${esc(q.question)}</p>${q.id === 'paths-to-realm' ? realmPicture(q) : ''}${graphTable(q, true)}<div class="graph-query-footer"><span>${q.rows.length} ${q.rows.length === 1 ? 'row' : 'rows'}</span><details><summary>Cypher</summary><pre>${esc(q.cypher)}</pre><strong>Parameters</strong><pre>${esc(JSON.stringify(q.params, null, 2))}</pre></details></div></article>`).join('')}`;
+  $('#content').innerHTML = `${intro}<div class="graph-toolbar">${graphBadge()}${graph.configured ? `<button class="secondary" id="load-graph" ${graphLoadBusy ? 'disabled' : ''}>${graphLoadBusy ? 'Loading into Neo4j…' : 'Load into Neo4j'}</button>` : ''}<button class="source-button" id="refresh-graph" ${graphLoading ? 'disabled' : ''}>Refresh queries</button></div><p class="map-note">Captured graph queries · ${graph.source === 'neo4j' ? 'Neo4j Aura' : 'Local graph'} · retrieved ${esc(graph.retrievedAt)}.${graph.reason ? ` ${esc(graph.reason)}.` : ''} Live case refreshes do not change this index. ${graphLoading ? 'Refreshing…' : ''}</p>${graphError ? `<p class="error">${esc(graphError)}</p>` : ''}<div class="graph-inventory" aria-label="Case inventory">${inventory?.rows.map(row => `<div><strong>${esc(scopes.find(c => c.id === row.case)?.label ?? row.case)}</strong><span>${esc(row.nodes)} entities · ${esc(row.relationships)} relations</span><span>${esc(row.evidence)} evidence records</span><small>Slots ${esc(row.slotMin ?? 'unknown')}–${esc(row.slotMax ?? 'unknown')}</small></div>`).join('') ?? ''}</div>${proposalBridgeCard(bridgeCase === active ? bridge : undefined, bridgeCase === active ? bridgeError : '', active)}${graph.queries.map(q => `<article class="graph-card"><h3>${esc(q.title)}</h3><p>${esc(q.question)}</p>${q.id === 'paths-to-realm' ? realmPicture(q) : ''}${graphTable(q, true)}<div class="graph-query-footer"><span>${q.rows.length} ${q.rows.length === 1 ? 'row' : 'rows'}</span><details><summary>Cypher</summary><pre>${esc(q.cypher)}</pre><strong>Parameters</strong><pre>${esc(JSON.stringify(q.params, null, 2))}</pre></details></div></article>`).join('')}`;
 }
 function graphMemoHtml() {
   const summary = view?.crossCaseGraph;
@@ -181,7 +224,7 @@ async function loadGraph() {
     graphEvents.push({ at: new Date().toISOString(), message: `Loaded ${counts.nodes} nodes and ${counts.relationships} relationships in ${counts.batches} batches · ${counts.host}.` });
     if (inspecting === 'activity') activity();
     if (graphRequest) await graphRequest;
-    await fetchGraph();
+    await fetchGraph(); await fetchBridge();
   } catch (error) { graphEvents.push({ at: new Date().toISOString(), message: `Graph load failed: ${(error as Error).message}` }); }
   finally { graphLoadBusy = false; if (inspecting === 'activity') activity(); if (tab === 'graph') renderGraph(); }
 }
@@ -198,7 +241,7 @@ function renderMemo() {
   $('#content').innerHTML = `<div class="memo-toolbar"><span class="status">Draft · human review pending</span><a class="secondary" href="${exportUrl('memo.md')}">Export memo ↓</a><button id="print-memo" class="secondary">Print / save PDF</button></div><article class="memo"><h2>${esc(view.title)} — research memo</h2><p>${esc(view.question)}</p><p>${view.freshness.source === 'live' ? esc(liveMemoHeader()) : `Recorded evidence captured ${view.capturedRange.map(day).join(' — ')}. ${view.evidenceCount.toLocaleString()} evidence records. Generated ${esc(view.generatedAt)}.`}</p>${view.freshness.source === 'live' ? `<h3>What changed since capture</h3>${view.changedCount ? `<ul>${view.stateDiff!.filter(r => r.changed).map(r => `<li>${esc(r.label)}: ${esc(r.captured)} → ${esc(r.current)}</li>`).join('')}</ul>` : '<p>Nothing changed since capture</p>'}` : ''}<h3>Findings</h3>${view.findings.map(f => `<section><h4>${esc(f.title)}</h4><p>${esc(f.text)} ${f.sourceIds.map(id => `<button class="citation" data-source="${esc(id)}" aria-label="Inspect citation ${refs.indexOf(id) + 1}">[${refs.indexOf(id) + 1}]</button>`).join('')}</p><p class="source-meta">${esc(f.basis)} · ${esc(f.status)}</p></section>`).join('')}${graphMemoHtml()}<h3>Unknowns & next evidence</h3><ul>${view.unknowns.map(u => `<li>${esc(u)}</li>`).join('')}</ul><h3>Source manifest</h3><p class="sources">${refs.map((id, i) => `[${i + 1}] ${esc(id)}`).join('<br>')}</p><p>Deterministic synthesis from the local checks. No live language model is used. Code references describe the decoder implementation, not a full smart-contract source audit.</p></article>`;
 }
 function activity() {
-  if (tokenomics.active) return;
+  if (tokenomics.active || homeActive) return;
   inspecting = 'activity'; $('#inspector-title').textContent = 'Research activity';
   const current = runs.get(active);
   const liveIntro = liveActivityIntro(view, current?.status === 'running');
@@ -237,18 +280,20 @@ async function startRun(source: 'captured' | 'live' = 'captured') {
         if (next.status === 'running') { setTimeout(poll, 300); return; }
         if (next.status === 'completed') {
           if (next.source === 'live') scopes.find(c => c.id === caseId)!.hasLive = true;
-          if (active === caseId) { await load(caseId, next.source ?? 'captured'); notice(next.source === 'live' ? 'Live evidence captured. Compare current state with the captured example.' : 'Research complete. The captured example is open.'); }
-        } else if (active === caseId) { await load(caseId, 'captured'); activity(); notice(next.error ?? 'Research failed.'); }
+          if (active === caseId && !homeActive && !tokenomics.active) { await load(caseId, next.source ?? 'captured'); notice(next.source === 'live' ? 'Live evidence captured. Compare current state with the captured example.' : 'Research complete. The captured example is open.'); }
+        } else if (active === caseId && !homeActive && !tokenomics.active) { await load(caseId, 'captured'); activity(); notice(next.error ?? 'Research failed.'); }
       } catch (e) { current.status = 'failed'; current.error = 'Connection to the local research server was interrupted.'; runs.set(caseId, current); updateRun(); if (active === caseId) { activity(); notice((e as Error).message); } }
     }; void poll();
   } catch (e) { notice((e as Error).message); }
 }
 document.addEventListener('click', event => {
-  const target = (event.target as Element).closest<HTMLElement>('button,a,[data-node],[data-graph-entity]'); if (!target || tokenomics.active && !target.dataset.case) return;
+  const target = (event.target as Element).closest<HTMLElement>('button,a,[data-node],[data-graph-entity]'); if (!target) return;
+  if (target.hasAttribute('data-home')) { event.preventDefault(); history.replaceState(null, '', '/#home'); void openHome(); return; }
+  if (tokenomics.active && !target.dataset.case) return;
   if (target.dataset.case) void load(target.dataset.case as CaseId);
   else if (target.dataset.tab) setTab(target.dataset.tab);
   else if (target.id === 'load-graph') void loadGraph();
-  else if (target.id === 'refresh-graph') void fetchGraph();
+  else if (target.id === 'refresh-graph') { void fetchGraph(); void fetchBridge(); }
   else if (target.dataset.graphEntity) inspectGraphEntity(target.dataset.graphEntity);
   else if (target.id === 'run') void startRun();
   else if (target.id === 'refresh') void startRun('live');
@@ -276,5 +321,7 @@ document.addEventListener('keydown', e => { if(tokenomics.active) return; const 
 document.addEventListener('change', e => { const el = e.target as HTMLSelectElement; if (el.id === 'finding-filter') { filter = el.value; renderFindings(); } if (el.id === 'path-select') { pathIndex = Number(el.value); renderMap(); } });
 let searchTimer: ReturnType<typeof setTimeout>;
 document.addEventListener('input', e => { const el = e.target as HTMLInputElement; if (el.id === 'ledger-search') { ledgerQuery = el.value; const pos = el.selectionStart; renderTimeline(); $('#ledger-search').focus(); ($('#ledger-search') as HTMLInputElement).setSelectionRange(pos,pos); } if (el.id === 'source-search') { sourceQuery = el.value; clearTimeout(searchTimer); searchTimer = setTimeout(() => void browseSources(sourceQuery), 180); } });
-const tokenomics = new TokenomicsWorkspace(() => { ++viewRequest; ++sourceRequest; view = null; renderCases(); }, notice);
-try { scopes = await api<Scope[]>('/api/cases'); renderCases(); const hash = location.hash.slice(1); if (scopes.some(c => c.id === hash)) await load(hash as CaseId); else await tokenomics.open(); } catch (e) { await tokenomics.open(); }
+const tokenomics = new TokenomicsWorkspace(() => { leaveHome(); ++viewRequest; ++sourceRequest; view = null; renderCases(); }, notice);
+window.addEventListener('hashchange', () => { void routeHash(); });
+try { scopes = await api<Scope[]>('/api/cases'); renderCases(); await routeHash(); }
+catch (e) { await openHome(); notice((e as Error).message); }
