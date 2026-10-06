@@ -7,7 +7,7 @@ import type { RunOptions } from "../config";
 type Recorded<T> = { value: T; evidence: Evidence };
 const RETRY_DELAYS_MS = [1000, 2000, 4000, 8000, 16000, 30000, 30000, 30000];
 const MAX_ATTEMPTS = 8;
-const RETRYABLE = /429|Too Many Requests|503|502|ECONNRESET|ETIMEDOUT|fetch failed/i;
+const RETRYABLE = /429|Too Many Requests|503|502|ECONNRESET|ETIMEDOUT|fetch failed|TimeoutError|AbortError|aborted|timed out/i;
 const sleep = (ms: number) => new Promise<void>(resolve => setTimeout(resolve, ms));
 
 /** Persist endpoint identity only; credentials, query strings and fragments are private. */
@@ -26,7 +26,15 @@ export class RecordingRpc {
   private retryCount = 0;
   get counts() { return { live: this.liveReads, replayed: this.replayedReads, retries: this.retryCount }; }
   constructor(readonly opts: RunOptions, readonly caseId: string) {
-    this.connection = new Connection(opts.rpcUrl, { commitment: "confirmed", disableRetryOnRateLimit: true });
+    this.connection = new Connection(opts.rpcUrl, {
+      commitment: "confirmed",
+      disableRetryOnRateLimit: true,
+      fetch: Object.assign(
+        (input: Parameters<typeof fetch>[0], init?: Parameters<typeof fetch>[1]) =>
+          fetch(input, { ...init, signal: AbortSignal.timeout(opts.requestTimeoutMs) }),
+        { preconnect: fetch.preconnect },
+      ),
+    });
   }
   private fixturePath(key: string) { return join(this.opts.fixturesDir, this.caseId, `${key}.json`); }
 
@@ -47,7 +55,7 @@ export class RecordingRpc {
     for (let attempt = 1; ; attempt++) {
       try { return await this.liveAttempt(live); }
       catch (error) {
-        if (!(error instanceof Error) || !RETRYABLE.test(error.message) || attempt >= MAX_ATTEMPTS) throw error;
+        if (!(error instanceof Error) || !RETRYABLE.test(`${error.name}: ${error.message}`) || attempt >= MAX_ATTEMPTS) throw error;
         const delay = (delays[attempt - 1] ?? RETRY_DELAYS_MS[attempt - 1]) * (0.8 + Math.random() * 0.4);
         this.retryCount++;
         console.error(`[record] ${method} retry: attempt ${attempt + 1}/${MAX_ATTEMPTS} in ${Math.round(delay)} ms`);

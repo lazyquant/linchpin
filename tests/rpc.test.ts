@@ -57,7 +57,7 @@ describe("RecordingRpc", () => {
     expect(await offline.getBalance(pk)).toMatchObject({ value: 9, evidence: { id: live.evidence.id, slot: 43 } });
   });
 
-  test.each(["429 Too Many Requests", "Too Many Requests", "503", "502", "ECONNRESET", "ETIMEDOUT", "fetch failed"])("retries transient error %s twice then records success", async message => {
+  test.each(["429 Too Many Requests", "Too Many Requests", "503", "502", "ECONNRESET", "ETIMEDOUT", "fetch failed", "TimeoutError", "AbortError", "aborted", "The operation was aborted", "timed out"])("retries transient error %s twice then records success", async message => {
     const rpc = recorder();
     let calls = 0;
     rpc.connection.getBalanceAndContext = async () => {
@@ -76,6 +76,59 @@ describe("RecordingRpc", () => {
       expect((await new RecordingRpc({ ...rpc.opts, offline: true }, "resume").getBalance(pk)).value).toBe(5);
     } finally { log.mockRestore(); }
   });
+
+  test.each(["TimeoutError", "AbortError"])("retries errors identified by name %s", async name => {
+    const rpc = recorder({ retryDelaysMs: [0, 0] });
+    let calls = 0;
+    rpc.connection.getBalanceAndContext = async () => {
+      if (++calls === 1) throw Object.assign(new Error("request interrupted"), { name });
+      return { context: { slot: 42 }, value: 5 };
+    };
+    const log = spyOn(console, "error").mockImplementation(() => {});
+    try {
+      expect((await rpc.getBalance(pk)).value).toBe(5);
+      expect(calls).toBe(2);
+      expect(rpc.counts.retries).toBe(1);
+    } finally { log.mockRestore(); }
+  });
+
+  test.each([1, 2])("abandons %s hanging fetch attempts after the timeout and records success", async hangingAttempts => {
+    const rpc = recorder({ requestTimeoutMs: 50, retryDelaysMs: [0, 0] });
+    const signals: AbortSignal[] = [];
+    const elapsed: number[] = [];
+    const fetchStub = spyOn(globalThis, "fetch").mockImplementation(Object.assign(async (_input: Parameters<typeof fetch>[0], init?: Parameters<typeof fetch>[1]) => {
+      const signal = init!.signal!;
+      signals.push(signal);
+      const request = JSON.parse(init!.body as string);
+      expect(request.method).toBe("getBalance");
+      expect(init!.method).toBe("POST");
+      if (signals.length <= hangingAttempts) {
+        const start = performance.now();
+        return new Promise<Response>((_resolve, reject) => {
+          signal.addEventListener("abort", () => {
+            elapsed.push(performance.now() - start);
+            reject(signal.reason);
+          }, { once: true });
+        });
+      }
+      expect(signal.aborted).toBe(false);
+      return new Response(JSON.stringify({ jsonrpc: "2.0", id: request.id, result: { context: { slot: 42 }, value: 5 } }));
+    }, { preconnect: fetch.preconnect }));
+    const log = spyOn(console, "error").mockImplementation(() => {});
+    try {
+      expect(await rpc.getBalance(pk)).toMatchObject({ value: 5, evidence: { slot: 42, source: "rpc" } });
+      expect(fetchStub).toHaveBeenCalledTimes(hangingAttempts + 1);
+      expect(new Set(signals).size).toBe(hangingAttempts + 1);
+      expect(elapsed).toHaveLength(hangingAttempts);
+      for (let i = 0; i < hangingAttempts; i++) {
+        expect(signals[i].aborted).toBe(true);
+        expect(signals[i].reason.name).toBe("TimeoutError");
+        expect(elapsed[i]).toBeGreaterThanOrEqual(40);
+      }
+      expect(rpc.counts).toEqual({ live: 1, replayed: 0, retries: hangingAttempts });
+      expect(rpc.evidence).toHaveLength(1);
+    } finally { fetchStub.mockRestore(); log.mockRestore(); }
+  }, 2000);
 
   test("stops after eight attempts and propagates the original error", async () => {
     const rpc = recorder();
@@ -191,6 +244,24 @@ describe("RecordingRpc", () => {
 });
 
 describe("recording options", () => {
+  test("request timeout defaults, environment overrides, and validation", () => {
+    const timeout = process.env.LINCHPIN_RPC_TIMEOUT_MS;
+    try {
+      delete process.env.LINCHPIN_RPC_TIMEOUT_MS;
+      expect(runOptions().requestTimeoutMs).toBe(30000);
+      process.env.LINCHPIN_RPC_TIMEOUT_MS = "50";
+      expect(runOptions().requestTimeoutMs).toBe(50);
+      expect(runOptions({ requestTimeoutMs: 100 }).requestTimeoutMs).toBe(100);
+      for (const invalid of ["", "0", "-1", "NaN", "Infinity", "1.5", "9007199254740992"]) {
+        process.env.LINCHPIN_RPC_TIMEOUT_MS = invalid;
+        expect(() => runOptions()).toThrow("LINCHPIN_RPC_TIMEOUT_MS");
+        expect(() => runOptions({ requestTimeoutMs: Number(invalid) })).toThrow("LINCHPIN_RPC_TIMEOUT_MS");
+      }
+    } finally {
+      if (timeout === undefined) delete process.env.LINCHPIN_RPC_TIMEOUT_MS; else process.env.LINCHPIN_RPC_TIMEOUT_MS = timeout;
+    }
+  });
+
   test("defaults and environment overrides preserve explicit options", () => {
     const refresh = process.env.LINCHPIN_REFRESH;
     const interval = process.env.LINCHPIN_RPC_MIN_INTERVAL_MS;
