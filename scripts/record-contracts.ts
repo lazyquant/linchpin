@@ -1,3 +1,4 @@
+import { readGovernanceConfig } from '../src/contracts/governance-config';
 // Maintainer capture/replay. Runtime IDLs always come through RecordingRpc, never test vectors.
 import { readFileSync, readdirSync, existsSync, mkdirSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
@@ -26,6 +27,7 @@ try {
   const layer = await readContractsLayer(rpc, registry, contracts);
   const participation = await readParticipation(rpc, registry, contracts, layer);
   const authorities = await readAuthorities(rpc, registry, layer);
+  const governance = await readGovernanceConfig(rpc, registry, layer, authorities);
   const docsCapture = JSON.parse(readFileSync(new URL("../packs/marinade/sources/marinade-docs-capture-2026-10-05.json", import.meta.url), "utf8"));
   // B.1 is a prior recorded artifact, not silently re-recorded as part of this layer.
   const ledgerPath = [join(opts.outDir, "marinade/packet.json"), join(opts.outDir, "web/marinade/packet.json")].find(existsSync);
@@ -43,6 +45,7 @@ try {
   writeFileSync(join(outDir, "authorities.json"), JSON.stringify(toPlain(authorities), null, 2) + "\n");
   writeFileSync(join(outDir, "flows.json"), JSON.stringify(toPlain(flows), null, 2) + "\n");
   writeFileSync(join(outDir, "holders.json"), JSON.stringify(toPlain(holders), null, 2) + "\n");
+  writeFileSync(join(outDir, "governance.json"), JSON.stringify(toPlain(governance), null, 2) + "\n");
   rpc.flushEvidence(outDir);
   const classified = [
     ...layer.authorities.map(a => a.classification),
@@ -64,6 +67,11 @@ try {
       msolSupplyDifferenceRaw: holders.msol.differenceFromSupplyRaw.value, floatVerifiedOnlyRaw: holders.float.verifiedOnly.raw, floatIncludingClaimedRaw: holders.float.includingClaimed.raw },
     flows: { treasuryTransactions: flows.treasury.transactionsRead.value, buybackTransactions: flows.buybacks.transactions.length,
       claims: flows.claims.map(c => ({ id: c.id, status: c.status, chainResult: c.chainResult })) },
+    governance: { output: join(outDir, "governance.json"), realms: governance.realms.map(r => ({ name: r.name, address: r.address,
+      councilMembers: new Set(r.members.map(m => m.owner)).size, councilSupplyRaw: r.councilSupplyRaw,
+      governances: governance.governances.filter(g => g.realm === r.address).length,
+      councilOnly: governance.governances.filter(g => g.realm === r.address && g.votingBody === "council-only").length })),
+      overlaps: governance.overlaps.map(o => ({ realm: o.realm, count: o.count, signerCount: o.signerCount })) },
     authorityResolution: { resolved: authorities.resolved.value, unresolved: authorities.unresolved.value },
     parameters: layer.parameters.length, classifiedAuthorities: new Set(classified.map(a => a.address)).size, claimV1: layer.claims[0], reads: rpc.counts,
     failedChecks: layer.checks.filter(c => c.status !== "verified"), priceSanity: layer.parameters.find(p => p.field === "msolPrice")?.scaling?.sanityCheck }, null, 2));

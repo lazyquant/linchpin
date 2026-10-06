@@ -4,8 +4,8 @@ import { CANNED_QUERIES, runCannedNeo4j, type CannedQuery, type Neo4jDriverLike 
 
 type Value = string | number | boolean | null | string[];
 type Props = Record<string, Value>;
-export const TG_LABELS = ['PathNode', 'Program', 'Parameter', 'Role', 'Authority', 'Controller', 'Member', 'Mint', 'TokenAccount', 'Claim', 'HolderGroup', 'Metric'] as const;
-export const TG_RELATIONS = ['ROUTES_TO', 'SET_BY', 'HELD_BY', 'CONTROLLED_BY', 'MEMBER_OF', 'UPGRADE_AUTHORITY', 'MINT_AUTHORITY', 'FREEZE_AUTHORITY', 'CAN_CHANGE', 'CHECKS', 'HOLDS', 'LOCKS', 'VOTES_IN'] as const;
+export const TG_LABELS = ['Governance', 'PathNode', 'Program', 'Parameter', 'Role', 'Authority', 'Controller', 'Member', 'Mint', 'TokenAccount', 'Claim', 'HolderGroup', 'Metric'] as const;
+export const TG_RELATIONS = ['ROUTES_TO', 'SET_BY', 'HELD_BY', 'CONTROLLED_BY', 'MEMBER_OF', 'UPGRADE_AUTHORITY', 'MINT_AUTHORITY', 'FREEZE_AUTHORITY', 'CAN_CHANGE', 'CHECKS', 'HOLDS', 'LOCKS', 'VOTES_IN', 'VETOES'] as const;
 export type TGNode = { id: string; labels: string[]; props: Props };
 export type TGRelationship = { source: string; target: string; type: string; key: string; props: Props };
 export type TokenomicsGraph = { nodes: TGNode[]; relationships: TGRelationship[] };
@@ -53,7 +53,11 @@ export function buildTokenomicsGraph(bundle: BundleResponse): TokenomicsGraph {
     windowStart: l.observed?.window[0] ?? null, windowEnd: l.observed?.window[1] ?? null, transactions: l.observed?.transactions ?? null, note: l.note }, { linkId: l.id });
   for (const c of control?.controllers ?? []) {
     node(c.id, 'Controller', c.label, { address: c.address, controllerType: c.type, realm: c.realm?.address ?? null, threshold: c.threshold ?? null, detailAddresses: (c.members ?? []).map(m => m.address), note: c.note ?? null }, c);
-    for (const m of c.type === 'multisig' ? c.members ?? [] : []) {
+    for (const g of c.governances ?? []) {
+      const gov = node(`governance:${g.address}`, 'Governance', g.address, { address: g.address, nativeTreasury: g.nativeTreasury, votingBody: g.votingBody }, c);
+      rel(g.canVote ? 'VOTES_IN' : 'VETOES', c.id, gov, c, { side: g.side, thresholds: g.thresholds, canPropose: g.canPropose, canVote: g.canVote, canVeto: g.canVeto });
+    }
+    for (const m of ['multisig', 'council-realm'].includes(c.type) ? c.members ?? [] : []) {
       const member = node(`member:${m.address}`, 'Member', m.label ?? m.address, { address: m.address }, c);
       rel('MEMBER_OF', member, c.id, c, { detailKind: c.type === 'multisig' ? 'multisig member' : 'authority detail' });
     }
@@ -70,10 +74,18 @@ export function buildTokenomicsGraph(bundle: BundleResponse): TokenomicsGraph {
     const role = node(`role:${row.id}`, 'Role', row.role, { role: row.role }, row);
     rel('HELD_BY', role, auth, row);
     const param = bundle.parameters.data?.rows.find(p => p.field === row.target);
-    const target = row.targetKind === 'program-code' ? `program:${row.id.replace('control:program:', '')}` : row.targetKind === 'mint' ? `mint:${row.id.split(':')[1]}` : param ? `parameter:${param.id}`
+    const target = row.targetKind === 'program-code' ? `program:${row.id.replace('control:program:', '')}` : row.targetKind === 'mint' ? `mint:${row.id.startsWith('control:council-mint:') ? row.id.slice('control:'.length) : row.id.split(':')[1]}` : param ? `parameter:${param.id}`
       : node(`target:${row.id}`, row.targetKind === 'treasury' ? 'TokenAccount' : 'Metric', row.target, {}, row);
     if (!nodes.has(target)) node(target, row.targetKind === 'program-code' ? 'Program' : row.targetKind === 'mint' ? 'Mint' : 'Metric', row.target, {}, row);
-    rel('CAN_CHANGE', row.controllerId, target, row, { what: row.canChange, role: row.role, instruction: row.instructions.join(', '), holder: row.holder.address, controlId: row.id }, { controlId: row.id });
+    const actingControllers = (row.controllerIds ?? [row.controllerId]).filter(id => id === row.controllerId || control?.controllers.find(c => c.id === id)?.governances?.some(g => g.address === row.governance && g.canVote));
+    for (const id of actingControllers) {
+      rel('CONTROLLED_BY', auth, id, row);
+      rel('CAN_CHANGE', id, target, row, { what: row.canChange, role: row.role, instruction: row.instructions.join(', '), holder: row.holder.address, controlId: row.id, note: row.note ?? null }, { controlId: row.id });
+    }
+    if (row.governance) {
+      const gov = node(`governance:${row.governance}`, 'Governance', row.governance, { address: row.governance }, row);
+      rel('CAN_CHANGE', gov, target, row, { what: row.canChange, controlId: row.id, thresholds: row.note ?? null }, { controlId: row.id });
+    }
     if (row.targetKind === 'program-code') rel('UPGRADE_AUTHORITY', target, auth, row);
     if (row.targetKind === 'mint') rel(row.role === 'mintAuthority' ? 'MINT_AUTHORITY' : 'FREEZE_AUTHORITY', target, auth, row);
   }
@@ -103,7 +115,7 @@ export function buildTokenomicsGraph(bundle: BundleResponse): TokenomicsGraph {
   if (locked?.amount) {
     const lockers = node('holder:vsr-lockers', 'HolderGroup', 'MNDE lockers in VSR', {}, locked);
     rel('LOCKS', lockers, 'mint:mnde', locked, { amountRaw: locked.amount.raw, amount: locked.amount.display, share: locked.amount.shareOfSupply ?? null });
-    for (const c of control?.controllers.filter(c => c.type === 'dao-governance') ?? []) rel('VOTES_IN', lockers, c.id, locked, { what: 'Registrar voting weight; participation estimate, not a vote execution' });
+    for (const c of control?.controllers.filter(c => c.type === 'dao-governance' && c.label.includes('through VSR')) ?? []) rel('VOTES_IN', lockers, c.id, locked, { what: 'Registrar voting weight; participation estimate, not a vote execution' });
   }
   const graph = { nodes: [...nodes.values()].sort((a, b) => a.id.localeCompare(b.id)), relationships: [...relationships.values()].sort((a, b) => a.key.localeCompare(b.key)) };
   assertTokenomicsNamespace(graph); return graph;
@@ -120,15 +132,15 @@ const definitions: { id: string; title: string; question: string; match: string;
     match: 'MATCH (m:TG:Mint)-[r:MINT_AUTHORITY|FREEZE_AUTHORITY]->(a:TG:Authority)-[:CONTROLLED_BY]->(c:TG:Controller) WHERE m.id IN $mints', fields: { mint: 'm.label', authorityType: 'type(r)', authority: 'a.address', controller: 'c.label' } },
   { id: 'upgrade-control', title: 'Upgrade control', question: 'Who can upgrade each program, with which multisig threshold?',
     match: 'MATCH (p:TG:Program)-[:UPGRADE_AUTHORITY]->(a:TG:Authority)-[:CONTROLLED_BY]->(c:TG:Controller)', fields: { program: 'p.label', authority: 'a.address', controller: 'c.label', threshold: 'c.threshold' } },
-  { id: 'governance-loop', title: 'Governance loop', question: 'How does locking connect governance to admin-controlled parameters?',
-    match: `MATCH (l:TG:HolderGroup)-[:LOCKS]->(:TG:Mint), (l)-[:VOTES_IN]->(c:TG:Controller)<-[:CONTROLLED_BY]-(a:TG:Authority)<-[:HELD_BY]-(role:TG:Role)<-[r:SET_BY]-(p:TG:Parameter)
-WHERE role.role = $role`, fields: { lockers: 'l.label', governance: 'c.label', adminAuthority: 'a.address', parameter: 'p.label', instruction: 'r.instruction' } },
+  { id: 'who-votes-where', title: 'Who votes where', question: 'Which voting body acts through each governance, what does it control, and with which thresholds?',
+    match: 'MATCH (c:TG:Controller)-[v:VOTES_IN|VETOES]->(g:TG:Governance)-[r:CAN_CHANGE]->(t:TG)',
+    fields: { votingBody: 'c.label', governance: 'g.address', classification: 'g.votingBody', target: 't.label', what: 'r.what', thresholds: 'v.thresholds', side: 'v.side' } },
   { id: 'claims-vs-chain', title: 'Claims versus chain', question: 'What does the captured chain evidence establish for each claim?',
     match: 'MATCH (c:TG:Claim)-[r:CHECKS]->(f:TG:Metric)', fields: { claimId: 'c.claimId', claim: 'c.label', status: 'r.status', chainResult: 'f.result' } },
   { id: 'holders-and-float', title: 'Holders and float', question: 'Which groups hold each mint, and what custody exclusions define float?',
     match: 'MATCH (h:TG:HolderGroup)-[r:HOLDS]->(m:TG:Mint)', fields: { group: 'h.label', mint: 'm.label', amount: 'r.amount', amountRaw: 'r.amountRaw', share: 'r.share', note: 'h.note' } },
 ];
-export const TOKENOMICS_QUERIES: CannedQuery[] = definitions.map(d => ({ id: d.id, title: d.title, question: d.question, params: d.id === 'governance-loop' ? { role: 'adminAuthority' } : d.id === 'supply-control' ? { mints: ['mint:mnde', 'mint:msol'] } : {},
+export const TOKENOMICS_QUERIES: CannedQuery[] = definitions.map(d => ({ id: d.id, title: d.title, question: d.question, params: d.id === 'supply-control' ? { mints: ['mint:mnde', 'mint:msol'] } : {},
   columns: Object.keys(d.fields), cypher: `${d.match}\nRETURN ${Object.entries(d.fields).map(([name, expr]) => `${expr} AS ${name}`).join(', ')}\nORDER BY ${Object.keys(d.fields).join(', ')}` }));
 type Row = GraphQueryResult['rows'][number];
 const queryFor = (id: string) => { const q = TOKENOMICS_QUERIES.find(q => q.id === id); if (!q) throw new Error('Unknown tokenomics query'); return q; };
@@ -150,17 +162,17 @@ export function runTokenomicsLocal(graph: TokenomicsGraph, id: string): GraphQue
   for (const r of graph.relationships) {
     const a = nodes.get(r.source)!, b = nodes.get(r.target)!;
     if (id === 'path-to-holders' && r.type === 'ROUTES_TO') add({ a, r, b });
-    if (id === 'who-can-change' && r.type === 'CAN_CHANGE') add({ c: a, r, t: b });
+    if (id === 'who-can-change' && r.type === 'CAN_CHANGE' && a.labels.includes('Controller')) add({ c: a, r, t: b });
     if (id === 'claims-vs-chain' && r.type === 'CHECKS') add({ c: a, r, f: b });
     if (id === 'holders-and-float' && r.type === 'HOLDS') add({ h: a, r, m: b });
     if (id === 'supply-control' && (q.params.mints as string[]).includes(a.id) && ['MINT_AUTHORITY', 'FREEZE_AUTHORITY'].includes(r.type) || id === 'upgrade-control' && r.type === 'UPGRADE_AUTHORITY')
       for (const c of edges(b.id, 'CONTROLLED_BY')) add({ m: a, p: a, r, a: b, c: nodes.get(c.target)! });
-    if (['parameter-control', 'governance-loop'].includes(id) && r.type === 'SET_BY') for (const held of edges(b.id, 'HELD_BY')) for (const controlled of edges(held.target, 'CONTROLLED_BY')) {
-      const bindings = { p: a, r, role: b, a: nodes.get(held.target)!, c: nodes.get(controlled.target)! };
-      if (id === 'parameter-control') add(bindings);
-      else if (b.props.role === q.params.role) for (const vote of graph.relationships.filter(e => e.type === 'VOTES_IN' && e.target === controlled.target))
-        for (const _ of edges(vote.source, 'LOCKS')) add({ ...bindings, l: nodes.get(vote.source)! });
+    if (id === 'who-votes-where' && r.type === 'CAN_CHANGE' && a.labels.includes('Governance')) {
+      for (const v of graph.relationships.filter(e => ['VOTES_IN', 'VETOES'].includes(e.type) && e.target === a.id && nodes.get(e.source)?.labels.includes('Controller')))
+        add({ c: nodes.get(v.source)!, v, g: a, r, t: b });
     }
+    if (id === 'parameter-control' && r.type === 'SET_BY') for (const held of edges(b.id, 'HELD_BY')) for (const controlled of edges(held.target, 'CONTROLLED_BY'))
+      add({ p: a, r, role: b, a: nodes.get(held.target)!, c: nodes.get(controlled.target)! });
   }
   return { ...q, rows: sorted(rows, q.columns) };
 }

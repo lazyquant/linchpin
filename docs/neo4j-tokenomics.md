@@ -6,11 +6,11 @@ The tokenomics graph projects the captured API bundle. It performs no Solana rea
 
 Every node has `:TG` and exactly one type label:
 
-`PathNode`, `Program`, `Parameter`, `Role`, `Authority`, `Controller`, `Member`, `Mint`, `TokenAccount`, `Claim`, `HolderGroup`, `Metric`.
+`Governance`, `PathNode`, `Program`, `Parameter`, `Role`, `Authority`, `Controller`, `Member`, `Mint`, `TokenAccount`, `Claim`, `HolderGroup`, `Metric`.
 
-Relationships are `ROUTES_TO`, `SET_BY`, `HELD_BY`, `CONTROLLED_BY`, `MEMBER_OF`, `UPGRADE_AUTHORITY`, `MINT_AUTHORITY`, `FREEZE_AUTHORITY`, `CAN_CHANGE`, `CHECKS`, `HOLDS`, `LOCKS`, and `VOTES_IN`.
+Relationships are `ROUTES_TO`, `SET_BY`, `HELD_BY`, `CONTROLLED_BY`, `MEMBER_OF`, `UPGRADE_AUTHORITY`, `MINT_AUTHORITY`, `FREEZE_AUTHORITY`, `CAN_CHANGE`, `CHECKS`, `HOLDS`, `LOCKS`, `VOTES_IN`, and `VETOES`.
 
-Every relationship carries `basis` (an array), `evidenceIds`, `slot`, and `key`. Keys are SHA-256 of the type, endpoints and distinguishing fields such as the source link ID or setter instruction. Evidence IDs resolve through the tokenomics evidence endpoint. Raw token amounts remain strings; no floating-point sum is used. `MEMBER_OF` is reserved for multisig members. Realm and unresolved-group addresses remain discoverable through the controller’s `detailAddresses` property.
+Every relationship carries `basis` (an array), `evidenceIds`, `slot`, and `key`. Keys are SHA-256 of the type, endpoints and distinguishing fields such as the source link ID or setter instruction. Evidence IDs resolve through the tokenomics evidence endpoint. Raw token amounts remain strings; no floating-point sum is used. `MEMBER_OF` represents recorded multisig owners and current council owners. Unresolved groups retain address details in `detailAddresses`. `Governance` nodes preserve individual configurations; controllers reach them through `VOTES_IN` or veto-only `VETOES`, carrying per-side permissions and threshold text. Governance `CAN_CHANGE` edges identify the controlled targets.
 
 Static validation rejects any other label or relationship, notably the demo's `:Entity`, `TRANSFER`, and `BURN`. The loader creates:
 
@@ -51,7 +51,7 @@ The server endpoint is `POST /api/tokenomics/marinade/graph/load`. It accepts sa
 | `parameter-control` | Parameter → setter instruction → role → authority → controller. Setter matches remain inferred. |
 | `supply-control` | MNDE/mSOL → mint or freeze authority → controller. Absent authority is represented by the explicit No authority controller. |
 | `upgrade-control` | Program → upgrade authority → controller, including the recorded multisig threshold. |
-| `governance-loop` | VSR lockers → voting → DAO controller ← admin authority ← role ← parameter. This describes control, not an executed vote. |
+| `who-votes-where` | Voting body → exact governance → controlled target, with classification, side and thresholds. The DAO council controls the admin governance; VSR community voting is separate. |
 | `claims-vs-chain` | Claim → checked fact, with G5 status and chain result, plus earlier decoded checks. |
 | `holders-and-float` | Holder group → mint, with exact raw amount, display and supply share. Float components, estimates and top-owner groups overlap; never sum all rows. |
 

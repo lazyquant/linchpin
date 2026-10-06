@@ -1,0 +1,48 @@
+{
+ "method": "getProgramAccounts",
+ "params": {
+  "programId": "GovER5Lthms3bLBqWub97yVrMmEogzX7xNjdXpPPCVZw",
+  "filters": [
+   {
+    "memcmp": {
+     "offset": 0,
+     "bytes": "K"
+    }
+   },
+   {
+    "memcmp": {
+     "offset": 1,
+     "bytes": "kY9p6fzZQuYfRuHQSm3u6aLWA9c4Mid3ALWE9NaKEtW"
+    }
+   }
+  ]
+ },
+ "slot": 453883712,
+ "retrievedAt": "2026-10-06T11:08:28.157Z",
+ "rpcUrl": "https://solana-mainnet.g.alchemy.com",
+ "responseSha256": "85ce86f5c2a06f85b118a7336f07ca4422ba95fb2bad95ddc8da299e9669ca48",
+ "response": [
+  {
+   "pubkey": "AnLvKtpy8Z3GWKgpZsCHuo2kykGKj1VoZBLVfthqfZx3",
+   "account": {
+    "lamports": 1849120,
+    "data": "EgsnMsnJ09sg0nuFknGNOkn4lUqYdT52g2xjZAdh8pv/YfmFQZ4FPusM/+uJfsu8m+XbXTJt4d13SC3FkF1cZrIAAAAAAv//////////AAAAAID0AwACADICAQAAAAAAAAABAgAAAAAFAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=",
+    "owner": "GovER5Lthms3bLBqWub97yVrMmEogzX7xNjdXpPPCVZw",
+    "executable": false,
+    "rentEpoch": 18446744073709552000,
+    "space": 236
+   }
+  },
+  {
+   "pubkey": "HQVWxUnFxFHvovMXGMWNBr4RWj3gVKF8LZQjPoh9RGVN",
+   "account": {
+    "lamports": 1849120,
+    "data": "EgsnMsnJ09sg0nuFknGNOkn4lUqYdT52g2xjZAdh8pv/YbWvDTq4ToYlA18NoFhGKPljEZkI5ZZLEAGqtWH3r4wAAAAAAv//////////AAAAAID0AwACADICAQAAAAAAAAABAgAAAAAFAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=",
+    "owner": "GovER5Lthms3bLBqWub97yVrMmEogzX7xNjdXpPPCVZw",
+    "executable": false,
+    "rentEpoch": 18446744073709552000,
+    "space": 236
+   }
+  }
+ ]
+}

@@ -1,9 +1,10 @@
+import { governanceThresholdText, type GovernanceLayer, type ConfiguredGovernance } from '../contracts/governance-config';
 import { buildTokenomicsGraph, TOKENOMICS_QUERIES, runTokenomicsLocal, tokenomicsSubgraph } from '../graph/tokenomics-neo4j';
 import type * as API from './api';
 import type { readContractsLayer } from '../contracts/marinade';
 import type { readParticipation } from '../contracts/participation';
 import type { readAuthorities } from '../contracts/authorities';
-import type { PackPacket, ControllerPath } from '../pack/model';
+import type { PackPacket } from '../pack/model';
 import type { PackRegistry } from '../pack/build';
 import { deriveLiquidStakingAddresses } from '../pack/derive';
 import { formatUnits } from '../chain/token-layout';
@@ -12,6 +13,7 @@ import type { readHolders } from '../contracts/holders';
 import type { readFlows } from '../contracts/flows';
 
 export type SectionInputs = {
+  governance: GovernanceLayer;
   layer: Awaited<ReturnType<typeof readContractsLayer>>;
   participation: Awaited<ReturnType<typeof readParticipation>>;
   authorities: Awaited<ReturnType<typeof readAuthorities>>;
@@ -30,33 +32,57 @@ const controllerId = (address: string | null) => address === null ? 'controller:
 const paramId = (field: string) => `liquid-staking:${field}`;
 const treasury = (i: SectionInputs) => i.layer.authorities.find(a => a.field === 'treasuryMsolAccount')!;
 
+function daoTreasuryControl(i: SectionInputs, control: API.ControlData) {
+  const address = i.registry.accounts.find(a => a.id === 'dao-treasury')?.address;
+  return control.rows.find(r => r.id === `control:treasury-mnde:${address}`);
+}
+
 export function controlSection(i: SectionInputs): API.ControlData {
   const p = i.evidence.provenance.bind(i.evidence);
   const controllers = new Map<string, API.Controller>();
   const derived = deriveLiquidStakingAddresses();
-  const daoName = i.authorities.authorities.flatMap(a => a.resolutions).find(r => r.status === 'resolved' && 'realm' in r && r.realm === i.registry.governance.realm);
-  const realmName = daoName && 'realmName' in daoName ? daoName.realmName : 'Marinade DAO';
-  function resolve(address: string | null, source: unknown, kind?: string, path?: ControllerPath, name?: string): string {
+  const bodyId = (realm: string, side: string) => `controller:realm:${realm}:${side}`;
+  const configured = (address: string | null) => i.governance.governances.find(g => g.address === address || g.nativeTreasury === address);
+  const actingBodies = (g: ConfiguredGovernance) => (['community', 'council'] as const).filter(side => {
+    const realm = i.governance.realms.find(r => r.address === g.realm)!;
+    return (side !== 'council' || realm.councilMint) && (g.config[side].vote.enabled || g.config[side].veto.enabled);
+  }).map(side => bodyId(g.realm, side));
+  for (const realm of i.governance.realms) for (const side of ['community', 'council'] as const) {
+    if (side === 'council' && !realm.councilMint) continue;
+    const gs = i.governance.governances.filter(g => g.realm === realm.address && (g.config[side].vote.enabled || g.config[side].veto.enabled));
+    if (!gs.length) continue;
+    const members = unique(realm.members.map(m => m.owner)).map(address => ({ address }));
+    const vsr = realm.address === i.registry.governance.realm && realm.addins.community.voterWeight === i.registry.programs.find(p => p.id === 'vsr')?.address;
+    const name = side === 'council' ? `${/council/i.test(realm.name) ? realm.name : `${realm.name} council`} (${members.length} members)`
+      : `${realm.name} community — ${realm.communityMint === i.registry.mints.find(m => m.id === 'mnde')?.address ? 'MNDE' : 'community token'} voters${vsr ? ' through VSR' : ''}`;
+    const governances = gs.map(g => ({ address: g.address, nativeTreasury: g.nativeTreasury, votingBody: g.votingBody, side,
+      canPropose: g.config[side].canPropose, canVote: g.config[side].vote.enabled, canVeto: g.config[side].veto.enabled, thresholds: governanceThresholdText(g, realm) }));
+    controllers.set(bodyId(realm.address, side), { id: bodyId(realm.address, side), type: side === 'council' ? 'council-realm' : 'dao-governance', label: name,
+      address: realm.address, realm: { address: realm.address, name: realm.name }, program: realm.program,
+      members: side === 'council' ? members : undefined, governances, threshold: unique(governances.map(g => g.thresholds)).join(' | '),
+      note: 'Thresholds and proposal permissions apply separately to each governance; veto permission does not confer proposal creation.', ...p([realm, gs], ['decoded', 'derived']) });
+  }
+  function resolve(address: string | null, source: unknown, kind?: string, name?: string): string {
+    const g = configured(address);
+    if (g) {
+      const sides = actingBodies(g);
+      const primary = sides.find(id => id.endsWith(':community') && g.config.community.canPropose) ?? sides.find(id => id.endsWith(':council') && g.config.council.canPropose)
+        ?? sides.find(id => g.config[id.endsWith(':community') ? 'community' : 'council'].vote.enabled);
+      if (primary) return primary;
+    }
     const id = controllerId(address);
     const existing = controllers.get(id);
     if (existing) { Object.assign(existing, p([existing, source], existing.basis)); return id; }
     const observed = i.authorities.authorities.find(a => a.address === address);
     const resolution = observed?.resolutions.find(r => r.status === 'resolved');
     let c: API.Controller = { id, address, type: 'unresolved', label: name ?? `Unresolved authority ${address}`, ...p([source, observed], 'decoded') };
-    if (address === null) c = { ...c, type: 'none', label: 'No authority', note: 'Authority is absent in decoded state.' };
-    else if (resolution?.status === 'resolved' && resolution.realm !== undefined && resolution.realmName !== undefined) {
-      c = { ...c, type: resolution.realm === i.registry.governance.realm ? 'dao-governance' : 'council-realm',
-        label: resolution.realmName, realm: { address: resolution.realm, name: resolution.realmName }, governance: resolution.governance,
-        program: resolution.program, ...p([source, resolution], 'derived') };
-    } else if (resolution?.status === 'resolved' && resolution.threshold !== undefined && resolution.owners !== undefined && resolution.layoutBasis !== undefined) {
+    if (g && !actingBodies(g).length) c = { ...c, type: 'none', label: 'No enabled voting body', note: 'Neither side can create new proposals in this governance.' };
+    else if (address === null) c = { ...c, type: 'none', label: 'No authority', note: 'Authority is absent in decoded state.' };
+    else if (resolution?.status === 'resolved' && resolution.threshold !== undefined && resolution.owners !== undefined && resolution.layoutBasis !== undefined) {
       c = { ...c, type: 'multisig', label: resolution.derivation.kind === 'serum-multisig' ? 'Serum multisig' : 'Squads multisig',
         threshold: resolution.threshold, members: resolution.owners.map(o => ({ address: o.address })), program: resolution.program,
         note: `Controller account ${resolution.multisig}; layout basis: ${resolution.layoutBasis}. Member identities are not established.`,
         ...p([source, resolution], ['derived', 'decoded', resolution.layoutBasis]) };
-    } else if (path?.path.includes(i.registry.governance.realm) || kind === 'dao-governance-account' || kind === 'native-treasury-pda') {
-      const governance = kind === 'dao-governance-account' ? address : path?.path.at(-2);
-      if (governance) c = { ...c, type: 'dao-governance', label: realmName!, realm: { address: i.registry.governance.realm, name: realmName! }, governance,
-        program: i.registry.governance.program, ...p(source, 'derived') };
     } else if (derived.some(d => d.address === address)) {
       const d = derived.find(d => d.address === address)!;
       c = { ...c, type: 'program', label: `Liquid-staking program PDA (${d.seed})`, program: d.program,
@@ -66,10 +92,10 @@ export function controlSection(i: SectionInputs): API.ControlData {
     }
     controllers.set(id, c); return id;
   }
-  for (const path of i.pack.controllerPaths) resolve(path.authority, path, path.authorityKind, path);
+  for (const path of i.pack.controllerPaths) resolve(path.authority, path, path.authorityKind);
   for (const a of i.layer.authorities.filter(a => ['adminAuthority', 'pauseAuthority', 'validatorSystem.managerAuthority', 'operationalSolAccount'].includes(a.field)))
-    resolve(a.address, a, a.classification.kind, undefined, a.field === 'validatorSystem.managerAuthority' ? 'Validator manager wallet' : undefined);
-  for (const a of i.participation.nativeProxy.authorities) resolve(a.address, a, undefined, undefined, `Native ${a.field} authority`);
+    resolve(a.address, a, a.classification.kind, a.field === 'validatorSystem.managerAuthority' ? 'Validator manager wallet' : undefined);
+  for (const a of i.participation.nativeProxy.authorities) resolve(a.address, a, undefined, `Native ${a.field} authority`);
   for (const a of i.authorities.authorities) if (!controllers.has(controllerId(a.address))) resolve(a.address, a);
   const rows: API.ControlRow[] = [];
   // The map is intentionally inferred; it is not a source audit of instruction semantics.
@@ -96,25 +122,30 @@ export function controlSection(i: SectionInputs): API.ControlData {
       targetKind: program ? 'program-code' : mint ? 'mint' : 'treasury', canChange: program ? 'Upgrade program code' : mint ? path.authorityType === 'mint' ? 'Issue tokens' : 'Freeze token accounts' : 'Transfer treasury mSOL',
       instructions: program ? ['Upgrade'] : mint ? [path.authorityType === 'mint' ? 'MintTo' : 'FreezeAccount'] : ['Transfer'],
       role: program ? 'upgradeAuthority' : mint ? `${path.authorityType}Authority` : 'tokenAccountOwner', holder: { address: path.authority ?? 'none' },
-      controllerId: resolve(path.authority, path, path.authorityKind, path), ...p(path, path.authorityKind.startsWith('pda') || path.authorityKind === 'native-treasury-pda' ? 'derived' : 'decoded') });
+      controllerId: resolve(path.authority, path, path.authorityKind), ...p(path, path.authorityKind.startsWith('pda') || path.authorityKind === 'native-treasury-pda' ? 'derived' : 'decoded') });
   }
-  const grouped = new Map<string, API.Controller>();
-  const remap = new Map<string, string>();
-  for (const c of controllers.values()) {
-    const native = i.participation.nativeProxy.authorities.find(a => a.address === c.address && ['operator', 'alternateStaker'].includes(a.field));
-    const id = c.realm ? `controller:realm:${c.realm.address}` : native && c.type === 'unresolved' ? `controller:native:${native.field}` : c.id;
-    remap.set(c.id, id);
-    const detail = c.realm || native ? unique([c.address, c.governance, ...(c.members ?? []).map(m => m.address)].filter((a): a is string => !!a)).map(address => ({ address })) : c.members;
-    const old = grouped.get(id);
-    if (old) {
-      old.members = unique([...(old.members ?? []).map(m => m.address), ...(detail ?? []).map(m => m.address)]).map(address => ({ address }));
-      Object.assign(old, p([old, c], old.basis));
-    } else grouped.set(id, { ...c, id, members: detail, label: c.type === 'dao-governance' ? 'Marinade DAO governance' : c.label });
+  for (const program of i.layer.programs) if (!rows.some(r => r.id === `control:program:${program.id}`)) {
+    const auth = program.upgradeAuthority, address = auth.kind === 'upgradeable' ? auth.upgradeAuthority : null;
+    rows.push({ id: `control:program:${program.id}`, target: `${program.id} program code`, targetKind: 'program-code', canChange: 'Upgrade program code',
+      instructions: ['Upgrade'], role: 'upgradeAuthority', holder: { address: address ?? 'none' }, controllerId: resolve(address, auth, auth.classification?.kind), ...p(auth, 'decoded') });
   }
-  for (const row of rows) row.controllerId = remap.get(row.controllerId)!;
+  for (const realm of i.governance.realms) if (realm.councilMint) rows.push({ id: `control:council-mint:${realm.address}`, target: `${realm.name} council mint supply`, targetKind: 'mint',
+    canChange: 'Issue council tokens', instructions: ['MintTo'], role: 'mintAuthority', holder: { address: realm.councilMintAuthority ?? 'none' },
+    controllerId: resolve(realm.councilMintAuthority, realm), ...p(realm, 'decoded') });
+  for (const owner of i.holders.mnde.owners) {
+    const g = configured(owner.owner);
+    if (!g || g.nativeTreasury !== owner.owner || BigInt(owner.amountRaw) <= 0n) continue;
+    const classification = i.holders.classifications.find(c => c.address === owner.owner);
+    const labels = classification?.roles.map(r => `${r.name} (${r.basis})`).join('; ');
+    rows.push({ id: `control:treasury-mnde:${owner.owner}`, target: `${labels || 'DAO native treasury'} MNDE (${owner.owner})`, targetKind: 'treasury',
+      canChange: 'Transfer treasury MNDE', instructions: ['Transfer'], role: 'tokenAccountOwner', holder: { address: owner.owner },
+      controllerId: resolve(owner.owner, owner), ...p([owner, g, classification], ['decoded', 'derived', ...(classification?.roles.map(r => r.basis) ?? [])]) });
+  }
+  const grouped = new Map(controllers);
+  const remap = new Map([...controllers.keys()].map(id => [id, id]));
   // A key may serve both roles. Keep it discoverable in each role's detail list.
   for (const a of i.participation.nativeProxy.authorities.filter(a => ['operator', 'alternateStaker'].includes(a.field))) {
-    const original = controllers.get(controllerId(a.address))!;
+    const original = controllers.get(resolve(a.address, a))!;
     const id = original.type === 'unresolved' ? `controller:native:${a.field}` : remap.get(original.id)!;
     if (original.type === 'unresolved') {
       const group = grouped.get(id) ?? { ...original, id, address: null, members: [] };
@@ -126,6 +157,23 @@ export function controlSection(i: SectionInputs): API.ControlData {
       role: a.field, holder: { address: a.address }, controllerId: id, ...p(a, ['declared', 'decoded']) });
   }
   for (const c of grouped.values()) if (c.id.startsWith('controller:native:')) { c.address = null; c.label = `Marinade Native ${c.id.endsWith(':operator') ? 'operator' : 'alternate-staker'} authorities (${c.members?.length ?? 0}, unresolved)`; }
+  for (const a of i.participation.nativeProxy.authorities.filter(a => ['operator', 'alternateStaker'].includes(a.field))) {
+    const id = controllerId(a.address);
+    if (grouped.get(id)?.type === 'unresolved' && !rows.some(r => r.controllerId === id)) grouped.delete(id);
+  }
+  for (const row of rows) {
+    const g = configured(row.holder.address);
+    if (g) {
+      row.governance = g.address;
+      row.controllerIds = unique([row.controllerId, ...actingBodies(g)]);
+      row.note = `${g.votingBody === 'council-only' ? 'community voting disabled in this governance; ' : g.votingBody === 'no-proposals' ? 'neither side can create new proposals in this governance; ' : ''}${governanceThresholdText(g, i.governance.realms.find(r => r.address === g.realm)!)}`;
+      Object.assign(row, p([row, g, i.governance.realms.find(r => r.address === g.realm)], ['decoded', 'derived', ...(Array.isArray(row.basis) ? row.basis : [row.basis])]));
+    }
+    if (row.id === 'control:program:liquid-staking') {
+      const overlap = i.governance.overlaps.find(o => o.realm === i.registry.governance.realm);
+      if (overlap) { row.note = `${overlap.count} of ${overlap.signerCount} multisig signers are current Marinade DAO council members.`; Object.assign(row, p([row, overlap], ['decoded', 'derived'])); }
+    }
+  }
   return { rows, controllers: [...grouped.values()] };
 }
 
@@ -139,7 +187,7 @@ export function parametersSection(i: SectionInputs, control: API.ControlData): A
     const links = i.layer.parameterControl.links.filter(l => l.stateField === row.field);
     return { id: paramId(row.field), program: 'liquid-staking', field: row.field, label: label(row.field), value: String(row.raw), unit, display,
       setBy: links.flatMap(l => l.signers.filter(s => s.holder).map(s => ({ instruction: l.instruction, role: s.role, holder: { address: s.holder! },
-        controllerId: control.controllers.find(c => c.address === s.holder || c.members?.some(m => m.address === s.holder))?.id ?? null, basis: 'inferred' as const }))),
+        controllerId: control.rows.find(r => r.holder.address === s.holder && r.instructions.includes(l.instruction))?.controllerId ?? control.rows.find(r => r.holder.address === s.holder)?.controllerId ?? control.controllers.find(c => c.address === s.holder)?.id ?? null, basis: 'inferred' as const }))),
       ...i.evidence.provenance([row, links], links.length ? ['decoded', 'inferred'] : 'decoded') };
   }) };
 }
@@ -242,7 +290,8 @@ export function pathSection(i: SectionInputs, parameters: API.ParametersData, co
     { id: 'buyback-wallet', label: 'MIP-22 buyback wallet', kind: 'account', address: buyback?.address ?? null },
     { id: 'mnde-purchases', label: 'MNDE purchases', kind: 'mechanism' }, { id: 'mnde-stakers', label: 'MNDE stakers', kind: 'holders' },
     { id: 'vsr-locking', label: 'MNDE locked in VSR', kind: 'mechanism', address: i.layer.registrar.address },
-    { id: 'voting-weight', label: 'Voting weight', kind: 'mechanism' }, { id: 'dao-governance', label: 'Marinade DAO governance', kind: 'governance', address: i.registry.governance.realm },
+    { id: 'voting-weight', label: 'MNDE voters (VSR)', kind: 'mechanism' },
+    { id: 'dao-council', label: 'Marinade DAO council', kind: 'governance', address: i.registry.governance.realm },
     { id: 'admin-authority', label: 'Admin authority', kind: 'account', address: i.layer.authorities.find(a => a.field === 'adminAuthority')!.address },
     { id: 'fee-parameters', label: 'Fee parameters', kind: 'mechanism' },
   ];
@@ -270,12 +319,26 @@ export function pathSection(i: SectionInputs, parameters: API.ParametersData, co
   link('revenue-buyback', 'protocol-revenue', 'buyback-wallet', 'MIP-22 revenue allocation', 'claimed-only', [], [], ['v5'], 'The claimed revenue allocation requires matched-window funding evidence.', reference(i.registryId), 'claimed');
   link('buyback-purchases', 'buyback-wallet', 'mnde-purchases', 'Buy MNDE', 'pending', [], [], ['v5'], 'No usable dated purchase observations are available in G5.', reference(i.registryId), 'claimed');
   link('purchases-stakers', 'mnde-purchases', 'mnde-stakers', 'Distribute MNDE to stakers', 'claimed-only', [], [], ['v6'], 'The claimed staker route requires observed recipient and eligibility checks.', reference(i.registryId), 'claimed');
-  const admin = control.controllers.find(c => c.address === nodes.find(n => n.id === 'admin-authority')!.address || c.members?.some(m => m.address === nodes.find(n => n.id === 'admin-authority')!.address))!;
-  const governanceEvidence = [i.layer.registrar, admin];
-  link('lock-vote', 'vsr-locking', 'voting-weight', 'Registrar voting-weight configuration', 'enforced-by-code', [], [], [], 'Decoded registrar configures voting weight; the participation formula remains a derived estimate.', governanceEvidence, ['decoded', 'derived']);
-  link('vote-governance', 'voting-weight', 'dao-governance', 'MNDE governance voting', 'enforced-by-code', [], [], [], 'Registrar binds the MNDE governing mint to the Marinade DAO realm.', governanceEvidence, ['decoded', 'derived']);
-  link('governance-admin', 'dao-governance', 'admin-authority', 'Governance holds admin role', 'enforced-by-code', [], ['changeAuthority'], [], 'Admin authority resolves to the DAO governance through a reproduced PDA derivation.', governanceEvidence, 'derived');
-  link('admin-fees', 'admin-authority', 'fee-parameters', 'Admin configures fees', 'enforced-by-code', ['rewardFee', 'liqPool.treasuryCut', 'delayedUnstakeFee', 'withdrawStakeAccountFee'], ['configMarinade', 'configLp'], [], 'IDL signer declarations and decoded admin role link governance to fee settings.', governanceEvidence, ['declared', 'decoded', 'derived']);
+  const adminRow = control.rows.find(r => r.role === 'adminAuthority' && r.instructions.includes('configMarinade'))!;
+  const admin = control.controllers.find(c => c.id === adminRow.controllerId)!;
+  const governanceEvidence = [i.layer.registrar, admin, adminRow];
+  link('lock-vote', 'vsr-locking', 'voting-weight', 'Registrar voting-weight configuration', 'enforced-by-code', [], [], [], 'Decoded registrar configures voting weight; the participation formula remains a derived estimate.', i.layer.registrar, ['decoded', 'derived']);
+  nodes.find(n => n.id === 'dao-council')!.label = admin.label;
+  link('council-admin', 'dao-council', 'admin-authority', 'Council governance holds admin role', 'enforced-by-code', [], ['changeAuthority'], [], adminRow.note ?? 'Voting configuration unavailable.', governanceEvidence, ['decoded', 'derived']);
+  link('admin-fees', 'admin-authority', 'fee-parameters', 'Admin configures fees', 'enforced-by-code', ['rewardFee', 'liqPool.treasuryCut', 'delayedUnstakeFee', 'withdrawStakeAccountFee'], ['configMarinade', 'configLp'], [], 'IDL signer declarations and decoded admin role link the council governance to fee settings.', governanceEvidence, ['declared', 'decoded', 'derived']);
+  const daoTreasury = daoTreasuryControl(i, control);
+  if (daoTreasury?.governance) {
+    const community = control.controllers.find(c => (daoTreasury.controllerIds ?? []).includes(c.id) && c.type === 'dao-governance');
+    const g = community?.governances?.find(g => g.address === daoTreasury.governance);
+    nodes.push({ id: 'dao-treasury-governance', label: 'DAO treasury governance', kind: 'governance', address: daoTreasury.governance },
+      { id: 'dao-treasury-mnde', label: 'DAO treasury MNDE', kind: 'account', address: daoTreasury.holder.address });
+    if (g?.canVote) {
+      link('vote-treasury', 'voting-weight', 'dao-treasury-governance', 'MNDE community voting', 'enforced-by-code', [], [], [], daoTreasury.note!, [community, daoTreasury, i.layer.registrar], ['decoded', 'derived']);
+      links.at(-1)!.controlledBy = [daoTreasury.id];
+    }
+    link('governance-treasury', 'dao-treasury-governance', 'dao-treasury-mnde', 'Governance controls native treasury', 'enforced-by-code', [], [], [], daoTreasury.note!, daoTreasury, ['decoded', 'derived']);
+    links.at(-1)!.controlledBy = [daoTreasury.id];
+  }
   const path = { nodes, links };
   applyFlowObservations(i, path);
   return path;
@@ -302,7 +365,7 @@ export function offsetsSection(i: SectionInputs, programs: API.ProgramsData): AP
   return { rows };
 }
 
-/** Inspect directed paths, rather than array order or the separate governance loop. */
+/** Inspect directed paths, rather than array order or the separate governance branches. */
 export function answerStatus(path: API.PathData): API.AnswerData['shortAnswer']['status'] {
   if (!path.links.some(l => l.status === 'enforced-by-code')) return 'undetermined';
   const conditional = new Set<API.LinkStatus>(['operated-by-accounts', 'claimed-only', 'pending']);
@@ -315,6 +378,21 @@ export function answerStatus(path: API.PathData): API.AnswerData['shortAnswer'][
   // Evidence of code alone cannot establish an end-to-end entitlement to holders.
   return 'undetermined';
 }
+export function governanceAnswerText(i: SectionInputs, control: API.ControlData) {
+  const fee = control.rows.find(r => r.role === 'adminAuthority' && r.instructions.includes('configMarinade'))!;
+  const body = control.controllers.find(c => c.id === fee.controllerId)!;
+  const g = i.governance.governances.find(g => g.address === fee.governance);
+  const fees = g?.votingBody === 'council-only'
+    ? `Liquid-staking fees, caps, LP parameters, the treasury destination and role reassignment are changed through a governance in which only the ${body.label} votes; MNDE holders ${g.config.community.canPropose ? 'cannot vote there' : 'cannot propose or vote there'}.`
+    : `Liquid-staking configuration is controlled by ${body.label}: ${fee.note ?? 'voting configuration unresolved'}.`;
+  const treasury = daoTreasuryControl(i, control);
+  const tg = i.governance.governances.find(g => g.address === treasury?.governance);
+  const realm = i.governance.realms.find(r => r.address === tg?.realm);
+  const treasuryText = tg && realm ? `MNDE holders ${tg.config.community.vote.enabled ? 'vote' : 'cannot vote'} in the DAO treasury governance (${governanceThresholdText(tg, realm).replace('community tokens', 'MNDE')}).` : null;
+  const overlap = i.governance.overlaps.find(o => o.realm === i.registry.governance.realm);
+  return { fees, treasury: treasuryText, overlap: overlap ? `${overlap.count} of the ${overlap.signerCount} signers of the multisig that can upgrade the mSOL program are current Marinade DAO council members.` : 'Council-member overlap is unresolved.' };
+}
+
 export function answerSection(i: SectionInputs, path: API.PathData, control: API.ControlData, parameters: API.ParametersData, participation: API.ParticipationData, programs: API.ProgramsData): API.AnswerData {
   const p = i.evidence.provenance.bind(i.evidence), field = (name: string) => parameters.rows.find(r => r.field === name)!;
   const feeControl = control.rows.find(r => r.instructions.includes('configMarinade'))!;
@@ -325,11 +403,7 @@ export function answerSection(i: SectionInputs, path: API.PathData, control: API
   const multisig = control.controllers.find(c => c.id === program.upgradeAuthority?.controllerId)!;
   const locked = participation.locking.find(m => m.id === 'locked-mnde')!;
   const deposited = participation.locking.find(m => m.id === 'deposited-mnde')!;
-  const dormant = programs.rows.filter(r => r.activity.dormant);
   const buybacks = path.links.filter(l => ['revenue-buyback', 'buyback-purchases', 'purchases-stakers'].includes(l.id));
-  const onward = path.links.find(l => l.id === 'treasury-onward')!;
-  const treasuryOwner = control.rows.find(r => onward.controlledBy.includes(r.id))!;
-  const routes = path.links.filter(l => l.to === 'treasury-msol' && l.status === 'enforced-by-code' && l.id !== 'rewards-treasury').map(l => l.id === 'lp-treasury' ? 'the LP treasury cut' : 'stake-account withdrawal fees');
   const statement = (id: string, text: string, source: unknown, status: API.AnswerData['statements'][number]['status'] = 'verified') => ({ id, text, status, ...p(source, status === 'claimed-only' ? 'claimed' : 'derived') });
   const purchase = buybacks.find(l => l.id === 'buyback-purchases')!;
   const distribution = buybacks.find(l => l.id === 'purchases-stakers')!;
@@ -341,15 +415,17 @@ export function answerSection(i: SectionInputs, path: API.PathData, control: API
   const costText = [...costs].map(([unit, c]) => `${amount(String(c.raw), unit, c.decimals).display} ${unit}`).join(', ');
   const purchaseText = observation ? `${observation.amount.display} MNDE was bought in ${observation.transactions} observed transactions, with ${costText || 'unavailable'} in recorded wallet spending (${observation.window.join(' – ')}).` : 'Purchase data is unavailable.';
   const distributionText = distribution.observed ? `${distribution.note} Window: ${distribution.observed.window.join(' – ')}.` : distribution.note;
-  return { question: QUESTION, shortAnswer: { status: answerStatus(path), text: `Program code routes ${routes.join(' and ')} to the treasury mSOL account; moving value onward to MNDE holders requires actions by the treasury token-account owner (${treasuryOwner.holder.address}) and buyback operators. ${observation ? `${observation.amount.display} MNDE was bought during ${observation.window.join(' – ')}; ${percent(i.flows.buybacks.voterAuthorityShare.value)} of outgoing MNDE reached current VSR voter authorities directly during ${distribution.observed?.window.join(' – ') ?? 'an unavailable window'}.` : 'The observed buyback window is unavailable.'}` },
+  const governanceAnswer = governanceAnswerText(i, control);
+  return { question: QUESTION, shortAnswer: { status: answerStatus(path), text: `${governanceAnswer.fees} Program code routes fees to the treasury mSOL account; onward value to MNDE holders requires treasury and buyback account actions.` },
     statements: [
-      statement('fee-control', `${dao.realm?.name ?? dao.label} governance can change liquid-staking fees through the admin authority using configMarinade and configLp.`, [feeControl, dao, control.rows.filter(r => r.instructions.includes('configLp'))]),
+      statement('fee-control', governanceAnswer.fees, [feeControl, dao]),
+      ...(governanceAnswer.treasury ? [statement('treasury-voting', governanceAnswer.treasury, [daoTreasuryControl(i, control), i.governance])] : []),
       statement('reward-fee', `The reward fee is ${field('rewardFee').display}; this takes ${field('rewardFee').display} of staking rewards.`, field('rewardFee')),
       statement('lp-cut', `The treasury cut is ${field('liqPool.treasuryCut').display} of the liquid-unstake LP fee.`, field('liqPool.treasuryCut')),
       statement('locked-mnde', `${deposited.amount!.display} MNDE is deposited in VSR (${percent(i.participation.vsr.shareOfSupply.value)} of supply); ${locked.amount!.display} MNDE (${percent(locked.amount!.shareOfSupply ?? null)}) is under an active time lock`, [deposited, locked, participation.locking.find(m => m.id === 'locked-share-of-supply')]),
-      statement('msol-upgrade', `The mSOL program can be upgraded by a ${multisig.threshold}-of-${multisig.members?.length} ${multisig.label}, with ${multisig.members?.length} recorded members.`, [multisig, program]),
-      statement('pause-control', `${pause.label} controls pause and resume through the pause authority.`, [pause, pauseControl]),
-      statement('dormant-programs', dormant.length ? `No transactions in the 30 days before capture: ${dormant.map(r => r.id).join(', ')} (newest: ${dormant.map(r => `${r.id}: ${r.activity.newest}`).join('; ')})` : 'No measured program is dormant for more than 30 days before capture.', dormant),
+      statement('msol-upgrade', `The mSOL program can be upgraded by a ${multisig.threshold}-of-${multisig.members?.length} ${multisig.label}. ${governanceAnswer.overlap}`, [multisig, program, i.governance.overlaps]),
+      statement('pause-control', `${pause.label} can pause and resume the liquid-staking program through the pause authority.`, [pause, pauseControl]),
+
       statement('buyback-route', `${purchaseText} ${distributionText} ${path.links.filter(l => l.id.startsWith('buyback-recipient:')).map(l => `${path.nodes.find(n => n.id === l.to)!.label}: ${l.observed!.amount.display} MNDE (${l.observed!.window.join(' – ')}).`).join(' ')}`, [buybacks, path.links.filter(l => l.id.startsWith('buyback-recipient:'))], purchase.status),
     ], unknowns: [
       ...control.controllers.filter(c => c.type === 'unresolved').map(c => ({ id: `authority:${c.id}`, text: `${c.label}: signing controller remains unresolved.`, ...p(c, c.basis) })),
@@ -361,7 +437,7 @@ export function buildSections(i: SectionInputs): API.BundleResponse {
   const control = controlSection(i), parameters = parametersSection(i, control), programs = programsSection(i, control);
   const participation = participationSection(i), claims = claimsSection(i), path = pathSection(i, parameters, control, claims), offsets = offsetsSection(i, programs);
   const answer = answerSection(i, path, control, parameters, participation, programs);
-  const assumptions = unique([...i.layer.assumptions, ...i.participation.assumptions, ...i.authorities.assumptions, ...i.pack.ledger.notes]);
+  const assumptions = unique([...i.layer.assumptions, ...i.participation.assumptions, ...i.authorities.assumptions, ...i.governance.assumptions, ...i.pack.ledger.notes]);
   const envelope = <K extends API.SectionId>(section: K, title: string, data: API.SectionData[K] | null, notes: string[] = [], extra: unknown = null): API.SectionEnvelope<API.SectionData[K]> => ({
     protocol: 'marinade', section, status: data === null ? 'pending' : 'ready', title, data, notes,
     assumptions: unique([...assumptions, ...i.holders.assumptions, ...i.flows.assumptions]),

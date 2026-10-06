@@ -1,3 +1,4 @@
+import { readGovernanceConfig } from '../contracts/governance-config';
 import { existsSync, readFileSync, readdirSync } from 'node:fs';
 import { join } from 'node:path';
 import { RecordingRpc } from '../chain/rpc';
@@ -35,6 +36,7 @@ export async function buildTokenomics({ root, packResult }: { root: string; pack
   const layer = await readContractsLayer(rpc, registry, contracts);
   const participation = await readParticipation(rpc, registry, contracts, layer);
   const authorities = await readAuthorities(rpc, registry, layer);
+  const governance = await readGovernanceConfig(rpc, registry, layer, authorities);
   const docs = json<DocsCapture>(packFile.docsCapture);
   const labelsDir = 'packs/marinade/sources/labels';
   const labelFiles = existsSync(join(root, labelsDir)) ? readdirSync(join(root, labelsDir)).filter(f => f.endsWith('.json')).sort().map(f => `${labelsDir}/${f}`) : [];
@@ -71,7 +73,7 @@ export async function buildTokenomics({ root, packResult }: { root: string; pack
   labels.forEach((file, n) => aliases.set(`labels:${sha256(canonical(file))}`, [document(labelFiles[n], file.retrievedAt)]));
   const evidence = new EvidenceIndex(records, aliases);
   const inputs: SectionInputs = { layer, participation, authorities, pack, registry, evidence, docs, docsId, registryId,
-    holders, flows, configured: !!neo4jConfigFromEnv() };
+    holders, flows, governance, configured: !!neo4jConfigFromEnv() };
   const bundle = buildSections(inputs);
   return { bundle, evidence, buildMs: performance.now() - started, reads: rpc.counts };
 }

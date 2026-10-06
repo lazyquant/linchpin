@@ -64,10 +64,12 @@ export type Controller = Provenance & {
   id: string; type: ControllerType; label: string; address: string | null; program?: string | null;
   realm?: { address: string; name: string } | null; governance?: string | null;
   threshold?: string | null; members?: Address[]; note?: string;
+  governances?: { address: string; nativeTreasury: string; votingBody: 'council-only' | 'community-only' | 'community-and-council' | 'no-proposals';
+    side: 'community' | 'council'; canPropose: boolean; canVote: boolean; canVeto: boolean; thresholds: string }[];
 };
 export type ControlRow = Provenance & {
   id: string; target: string; targetKind: 'parameter' | 'program-code' | 'mint' | 'treasury' | 'role' | 'operations';
-  canChange: string; instructions: string[]; role: string; holder: Address; controllerId: string;
+  canChange: string; instructions: string[]; role: string; holder: Address; controllerId: string; controllerIds?: string[]; governance?: string; note?: string;
 };
 export type ControlData = { rows: ControlRow[]; controllers: Controller[] };
 

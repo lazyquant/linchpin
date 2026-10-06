@@ -202,3 +202,23 @@ Downstream groups cover those top 20 mSOL accounts. A program-owned owner points
 Every figure or containing observation row carries basis, slot, asOf and evidence IDs. Source hashes for registry and labels are separate from RPC records. `asOf` comes from recorded evidence, not replay wall time; separate or resumed reads can span slots and capture dates. The shared provenance index avoids repeated full evidence scans during large voter/holder aggregation and preserves the existing provenance fields.
 
 Capture all layers with `bun run scripts/record-contracts.ts --record`; replay with `bun run scripts/record-contracts.ts --offline`. For a new snapshot use `--record --refresh`. No holder or flow mainnet results were generated during this offline implementation. The G4 fixture test skips until the exact new MNDE owner-slice fixture exists, then requires a complete capture. Synthetic reader tests cover query slices, supply disagreement, float components, labels and inner-instruction downstream attribution without network calls or fixture writes.
+
+## Governance configuration and council membership
+
+`readGovernanceConfig(rpc, registry, layer, authorities)` writes `out/contracts-marinade/governance.json` through `scripts/record-contracts.ts`. It reads the registry's DAO realm and every realm found in authority resolution, including the Emergency Council's default Realms deployment. All reads use `RecordingRpc` under `marinade-contracts`; the reader never accesses a live SDK connection.
+
+Realm accounts and their SDK-derived realm-config PDAs supply names, community/council mints and both voter-weight and maximum-voter-weight add-ins. Mint accounts supply community decimals, council decimals, supply and mint authority. Governance enumeration issues the same account-type queries as `getGovernanceAccounts`, then uses `GovernanceAccountParser`. Every governance retains its native treasury PDA, community and council vote/veto threshold types and values, exact proposal minima, base voting time, cooling-off time, instruction hold-up and vote tipping.
+
+Council token-owner-record enumeration filters by account type, realm and governing token mint. Filter offsets come from the installed SDK's schemas across all supported account versions and fail if those versions disagree; spike byte offsets are not used. Each record retains its owner, raw deposit and optional delegate. Current council membership means a positive deposit, not merely holding council tokens in a wallet. Council supply and deposits remain separate measurements. Overlaps are distinct member addresses intersected with the recorded Serum multisig owners controlling the mSOL upgrade authority; they establish shared addresses, not human identities.
+
+Voting classifications are `council-only`, `community-only`, `community-and-council`, and `no-proposals`. `Disabled` turns off the corresponding vote or veto; `u64::MAX` prohibits proposal creation. Proposal creation also requires an enabled vote threshold and, for council proposals, a council mint. `no-proposals` takes precedence when neither side can create a proposal; vote/veto settings remain visible because existing proposals can still matter. Veto permission is independent of proposal creation.
+
+The mapping covers tracked state authorities, every program upgrade authority, council mint authorities, and all native treasuries in all discovered realms. The API joins that complete treasury index to every MNDE owner in the holders layer, including the DAO treasury and the treasury called “Labs Treasury” by documentation. The latter identity remains claimed even when governance ownership is derived. This join does not rely on top-holder rank.
+
+Capture the new reads with the exact command:
+
+```sh
+bun run scripts/record-contracts.ts --record
+```
+
+Then replay with `bun run scripts/record-contracts.ts --offline`. Existing fixtures are reused by the record command; a coherent new snapshot can be captured separately with `--refresh`. The B1d implementation was performed offline and did not record mainnet council membership. The governance and tokenomics fixture-backed tests skip until the new council record query fixture exists, then require the capture to be complete. Heavy fixture tests use a 120-second timeout. SDK-schema synthetic tests exercise all classifications, both token-owner-record versions, proposal prohibitions, membership, delegates, add-ins, authority/treasury mappings, council overlap, API paths and the graph query.
