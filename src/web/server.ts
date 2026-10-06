@@ -8,11 +8,14 @@ import { DEFAULT_RPC_URL } from '../config';
 import { redactedRpcUrl, redactSecrets } from '../chain/rpc';
 import { CASES, present, withBaseline, makeMemo, type CaseId, type Result } from './model';
 import { runPipeline, liveDirectory, saveResult, ROOT, type Run } from './runner';
+import { buildTokenomics, type TokenomicsBuild } from '../tokenomics/build';
+import { tokenomicsRoutes } from './tokenomics-routes';
 
 export class ResearchService {
   results = new Map<CaseId, Result>();
   liveResults = new Map<CaseId, Result>();
   runs = new Map<string, Run>();
+  tokenomics?: TokenomicsBuild;
   private graphService?: GraphService;
   constructor(private pipeline = runPipeline, private refreshTimeoutMs = 120_000, private graphOptions: GraphOptions = {}) {}
   get graph() {
@@ -98,6 +101,7 @@ export function api(service: ResearchService) {
       { headers: { 'Content-Type': 'image/svg+xml', 'Cache-Control': 'public, max-age=86400' } },
     );
     if (request.method === 'POST' && request.headers.get('origin') && request.headers.get('origin') !== u.origin) return json({ error: 'Same-origin requests only' }, 403);
+    if (parts[0] === 'api' && parts[1] === 'tokenomics') return tokenomicsRoutes(service.tokenomics, request);
     if (parts[0] === 'api' && parts[1] === 'graph') {
       try {
         if (request.method === 'GET' && parts.length <= 3) return json(await service.graphAnswer(parts[2]));
@@ -140,6 +144,8 @@ if (import.meta.main) {
   const service = new ResearchService();
   console.log('Preparing four completed examples from recorded fixtures…');
   await service.prepare();
+  service.tokenomics = await buildTokenomics({ root: ROOT, packResult: service.results.get('marinade')! });
+  console.log(`Tokenomics captured build: ${service.tokenomics.buildMs.toFixed(0)} ms · ${service.tokenomics.reads.replayed} fixture reads · ${service.tokenomics.reads.live} live reads`);
   process.once('SIGINT', () => { void service.close().catch(() => {}).finally(() => process.exit(0)); });
   const port = Number(process.env.LINCHPIN_WEB_PORT ?? 8875);
   if (!Number.isSafeInteger(port) || port < 1024 || port > 65535) throw new Error('LINCHPIN_WEB_PORT must be an integer from 1024 to 65535');
