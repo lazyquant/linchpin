@@ -189,7 +189,7 @@ export async function buildPack(rpc: RecordingRpc, registry: PackRegistry, optio
     try {
       const proposals = await listRealmProposals(rpc, ctx.program, new PublicKey(registry.governance.realm));
       ledger = await buildTreasuryLedger(rpc, ctx.program, options.ledger.programVersion ?? MARINADE_PROGRAM_VERSION, proposals, {
-        maxProposals: options.ledger.maxProposals, nativeTreasuries: discovery.governances.map(g => g.nativeTreasury),
+        maxProposals: options.ledger.maxProposals, nativeTreasuries: discovery.governances.map(g => g.nativeTreasury), governances: discovery.governances.map(g => g.address),
       });
     } catch (error) {
       if (!rpc.opts.offline || !(error instanceof Error) || !error.message.startsWith("offline: fixture missing for ")) throw error;
@@ -197,10 +197,9 @@ export async function buildPack(rpc: RecordingRpc, registry: PackRegistry, optio
     }
   }
   const slots = rpc.evidence.flatMap(e => e.slot == null ? [] : [e.slot]);
-  if (!slots.length) throw new Error("pack: no recorded context slots available");
   const coverage = { total: paths.length, verified: 0, claimed: 0, contradiction: 0, unresolved: 0 };
   for (const row of paths) if (row.status !== "outside-scope") coverage[row.status]++;
   return { pack: registry.pack, title: options.title ?? registry.title, generatedAt, offline: rpc.opts.offline,
-    asOfSlotRange: [Math.min(...slots), Math.max(...slots)], researchQuestion: registry.researchQuestion, controllerPaths: paths,
+    asOfSlotRange: slots.length ? [Math.min(...slots), Math.max(...slots)] : [null, null], researchQuestion: registry.researchQuestion, controllerPaths: paths,
     statements, claims, unknowns, coverage, ledger, evidenceCount: rpc.evidence.length };
 }

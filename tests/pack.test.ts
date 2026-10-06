@@ -22,10 +22,12 @@ function offlineRpc() {
 }
 const generatedAt = "2026-10-06T12:00:00Z";
 const rpc = offlineRpc();
-const packet = await buildPack(rpc, registry, { ...config, docsCapture, generatedAt });
+const packet = await buildPack(rpc, registry, { ...config, ledger: { enabled: false }, docsCapture, generatedAt });
 const program = (id: string) => packet.controllerPaths.find(p => p.subject === registry.programs.find(e => e.id === id)!.address)!;
 
-test("offline pack covers the declared boundary with evidence and recorded context slots", () => {
+test("offline pack covers the declared boundary with evidence and recorded context slots", async () => {
+  const rpc = offlineRpc();
+  const packet = await buildPack(rpc, registry, { ...config, docsCapture, generatedAt });
   expect(packet.controllerPaths).toHaveLength(registry.programs.length + registry.mints.length * 2 + registry.accounts.length);
   expect(packet.offline).toBe(true);
   expect(packet.evidenceCount).toBe(rpc.evidence.length);
@@ -38,7 +40,18 @@ test("offline pack covers the declared boundary with evidence and recorded conte
   }
   const { total, verified, claimed, contradiction, unresolved } = packet.coverage;
   expect(total).toBe(verified + claimed + contradiction + unresolved);
-  expect(packet.asOfSlotRange).toEqual([Math.min(...rpc.evidence.map(e => e.slot!)), Math.max(...rpc.evidence.map(e => e.slot!))]);
+  const slots = rpc.evidence.flatMap(e => e.slot == null ? [] : [e.slot]);
+  expect(packet.asOfSlotRange).toEqual(slots.length ? [Math.min(...slots), Math.max(...slots)] : [null, null]);
+  expect(packet.ledger.entries.length).toBeGreaterThan(0);
+  for (const row of packet.ledger.entries) {
+    expect(row.proposal).toBeTruthy(); expect(row.kind).toBeTruthy();
+    expect(row.evidenceIds.length).toBeGreaterThan(0);
+    expect(row.evidenceIds.every(id => ids.has(id))).toBe(true);
+    expect(row.receiptSignature || row.reconciliation).toBeTruthy();
+    expect(row.slot).toBe(row.receiptSlot);
+  }
+  expect(Object.values(packet.ledger.summary.countsByKind).reduce((a, b) => a + b, 0)).toBe(packet.ledger.entries.length);
+  expect(Object.values(packet.ledger.summary.countsByReconciliation).reduce((a, b) => a + b, 0)).toBe(packet.ledger.entries.length);
 });
 
 test("recorded Native and council controllers follow derived treasury PDAs to the realm", () => {
@@ -78,7 +91,7 @@ test.each([
     if (address.toBase58() === owner) throw new Error("offline: fixture missing for getAccountInfo → synthetic missing owner");
     return getAccountInfo(address);
   };
-  const missingOwnerPacket = await buildPack(missingOwnerRpc, registry, { ...config, docsCapture, generatedAt });
+  const missingOwnerPacket = await buildPack(missingOwnerRpc, registry, { ...config, ledger: { enabled: false }, docsCapture, generatedAt });
   const row = missingOwnerPacket.controllerPaths.find(p => p.subject === subject)!;
   expect(row).toMatchObject({ authority: owner, path: [subject, owner], status: "unresolved", authorityKind: "unclassified-token-owner" });
   expect(row.note).toContain("owner not yet captured");
@@ -228,4 +241,13 @@ test.each([false, true])("owner errors other than offline missing fixtures propa
     s.r.opts.offline = false; const result = await getAccountInfo(address); s.r.opts.offline = offline; return result;
   };
   await expect(buildPack(s.r, s.input)).rejects.toThrow(offline ? "corrupt fixture" : "offline: fixture missing");
+});
+
+
+test("pack with exclusively null evidence slots reports an unknown range", async () => {
+  const { r, input } = synthetic();
+  const accountRead = r.getAccountInfo.bind(r), programRead = r.getProgramAccounts.bind(r);
+  r.getAccountInfo = async (...args) => { const result = await accountRead(...args); result.evidence.slot = null; return result; };
+  r.getProgramAccounts = async (...args) => { const result = await programRead(...args); result.evidence.slot = null; return result; };
+  expect((await buildPack(r, input)).asOfSlotRange).toEqual([null, null]);
 });
