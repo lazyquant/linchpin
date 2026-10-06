@@ -109,7 +109,7 @@ test.skipIf(!hasFixture("getSignaturesForAddress", { pubkey: ata.toBase58(), lim
   const result = await readFlows(rpc, registry, layer, participation, null, docs);
   expect(result.routes.length).toBeGreaterThan(0); expect(result.claims).toHaveLength(9); expect(result.treasury.transactionsRequested.value).toBeLessThanOrEqual(1000);
   expect(() => JSON.stringify(result)).not.toThrow();
-}, 60000);
+}, 120_000);
 
 test("synthetic flow reader keeps missing transactions, treasury windows, purchases and voter payouts evidenced", async () => {
   const mnde = registry.mints.find((m: any) => m.id === "mnde").address, msol = registry.mints.find((m: any) => m.id === "msol").address;

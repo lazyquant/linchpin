@@ -16,7 +16,7 @@ export function evidenceIds(value: unknown): string[] {
 }
 export class EvidenceIndex {
   readonly records: Map<string, EvidenceRecord>;
-  constructor(records: EvidenceRecord[]) { this.records = new Map(records.map(r => [r.id, r])); }
+  constructor(records: EvidenceRecord[], private aliases = new Map<string, string[]>()) { this.records = new Map(records.map(r => [r.id, r])); }
   lookup(ids: string[]) {
     return { items: unique(ids).flatMap(id => this.records.has(id) ? [this.records.get(id)!] : []), missing: unique(ids).filter(id => !this.records.has(id)) };
   }
@@ -28,7 +28,7 @@ export class EvidenceIndex {
       slotRange: slots.length ? [Math.min(...slots), Math.max(...slots)] as [number, number] : null, evidenceCount: items.length };
   }
   provenance(value: unknown, basis: Basis | Basis[] = 'derived'): Provenance {
-    const ids = evidenceIds(value), meta = this.metadata(ids);
+    const ids = unique(evidenceIds(value).flatMap(id => this.aliases.get(id) ?? [id])), meta = this.metadata(ids);
     return { basis, evidenceIds: ids, slot: meta.slotRange?.[1] ?? null, asOf: meta.asOf };
   }
 }

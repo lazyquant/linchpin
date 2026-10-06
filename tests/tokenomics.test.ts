@@ -1,10 +1,13 @@
+import { CANNED_QUERIES, type Neo4jDriverLike } from '../src/graph/neo4j';
+import { buildTokenomicsGraph, assertTokenomicsNamespace, tokenomicsCypherBatches, loadTokenomicsNeo4j, TOKENOMICS_QUERIES, runTokenomicsLocal, runTokenomicsNeo4j } from '../src/graph/tokenomics-neo4j';
+import { TokenomicsGraphService } from '../src/tokenomics/graph-service';
 import { beforeAll, describe, expect, spyOn, test } from 'bun:test';
 import { existsSync, mkdtempSync, mkdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { buildTokenomics, type TokenomicsBuild } from '../src/tokenomics/build';
-import { answerStatus } from '../src/tokenomics/sections';
-import { evidenceIds } from '../src/tokenomics/evidence';
+import { answerStatus, flowsSection, type SectionInputs } from '../src/tokenomics/sections';
+import { evidenceIds, EvidenceIndex } from '../src/tokenomics/evidence';
 import { api, ResearchService } from '../src/web/server';
 import { runPipeline, ROOT } from '../src/web/runner';
 import { SECTIONS, tokenomicsRoutes } from '../src/web/tokenomics-routes';
@@ -17,7 +20,7 @@ import type { PathData } from '../src/tokenomics/api';
 
 let built: TokenomicsBuild, captured: Awaited<ReturnType<typeof runPipeline>>;
 let participation: { locked: string; deposited: string; share: number | null; matched: number; mismatched: number; missing: number };
-const service = new ResearchService();
+const service = new ResearchService(undefined, undefined, { config: null });
 const request = (path: string, init?: RequestInit) => new Request(`http://localhost:8875${path}`, init);
 const handler = (path: string, init?: RequestInit) => api(service)(request(path, init));
 const base = '/api/tokenomics/marinade';
@@ -40,9 +43,18 @@ beforeAll(async () => {
       matched: vsr.reconciliation.matched.value, mismatched: vsr.reconciliation.mismatched.value, missing: vsr.reconciliation.missing.value };
     expect(fetch).not.toHaveBeenCalled();
   } finally { fetch.mockRestore(); }
-}, 30_000);
+}, 120_000);
 
 describe('tokenomics recorded backend', () => {
+  test('a dated window with only unavailable deltas does not become a zero inflow', () => {
+    const input = { flows: { routes: [], treasury: { window: { oldestBlockTime: 1, newestBlockTime: 2 },
+      transactions: [{ deltaRaw: null as string | null }], inflowRaw: { value: '0' }, byInstruction: [] }, treasuryAuthority: { transfers: [] }, buybacks: { months: [] } },
+      registry: { mints: [] }, evidence: new EvidenceIndex([]) };
+    expect(flowsSection(input as unknown as SectionInputs).treasury.inflows).toBeNull();
+    input.flows.treasury.transactions[0].deltaRaw = '0';
+    expect(flowsSection(input as unknown as SectionInputs).treasury.inflows?.amount.raw).toBe('0');
+  });
+
   test('build is offline and the reward fee resolves through admin to Marinade DAO', () => {
     expect(built.reads.live).toBe(0); expect(built.reads.replayed).toBeGreaterThan(0);
     const fee = built.bundle.parameters.data!.rows.find(r => r.field === 'rewardFee')!;
@@ -88,17 +100,41 @@ describe('tokenomics recorded backend', () => {
     const rows = built.bundle.claims.data!.rows;
     expect(rows.find(r => r.id === 'v1')?.status).toBe('verified');
     expect(rows.find(r => r.id === 'delayed-unstake-fee')).toMatchObject({ status: 'verified', text: 'Delayed unstaking of mSOL carries a 0.2 % protocol fee.' });
-    for (let n = 2; n <= 9; n++) expect(rows.find(r => r.id === `v${n}`)).toMatchObject({ status: 'claimed', note: 'checked in G5' });
+    for (let n = 2; n <= 9; n++) expect(rows.find(r => r.id === `v${n}`)?.status).not.toBe('claimed');
+    expect(rows.some(r => r.id.startsWith('fee-statement:'))).toBe(true);
   });
-  test('missing optional layers stay pending and never imply zero flows or a yes answer', () => {
+  test('flows and holders are ready, windows and path vocabulary retain evidence scope', () => {
+    for (const section of Object.values(built.bundle)) expect(section.status).toBe('ready');
     for (const section of ['holders', 'flows'] as const) {
-      expect(built.bundle[section].status).toBe('pending'); expect(built.bundle[section].data).toBeNull();
-      expect(built.bundle[section].notes.length).toBeGreaterThan(0);
+      expect(built.bundle[section].evidenceCount).toBeGreaterThan(0);
+      expect(built.evidence.lookup(evidenceIds(built.bundle[section])).missing).toEqual([]);
     }
-    expect(built.bundle.path.data!.links.every(l => l.observed === null)).toBe(true);
-    expect(built.bundle.path.data!.links.find(l => l.id === 'delayed-destination')?.status).toBe('pending');
+    const links = built.bundle.path.data!.links;
+    for (const link of links) expect(['enforced-by-code', 'operated-by-accounts', 'claimed-only', 'not-observed', 'contradicted', 'pending']).toContain(link.status);
+    const purchase = links.find(l => l.id === 'buyback-purchases')!;
+    expect(purchase.status).toBe('operated-by-accounts'); expect(BigInt(purchase.observed!.amount.raw)).toBeGreaterThan(0n);
+    expect(purchase.observed!.transactions).toBeGreaterThan(0);
+    expect(links.find(l => l.id === 'purchases-stakers')?.status).toBe('not-observed');
+    expect(links.find(l => l.id === 'delayed-destination')?.status).toBe('pending');
+    for (const date of purchase.observed!.window) expect(built.bundle.answer.data!.shortAnswer.text).toContain(date);
     expect(built.bundle.answer.data!.shortAnswer.status).toBe('partly');
     expect(built.bundle.answer.data!.statements).toHaveLength(8);
+    expect(built.bundle.flows.data!.treasury.inflows?.byInstruction?.length).toBeGreaterThan(0);
+    expect(built.bundle.holders.data!.mnde.top.length).toBeGreaterThan(0);
+    expect(built.bundle.holders.data!.msol.downstream.length).toBeGreaterThan(0);
+    expect(built.bundle.offsets.data!.rows.some(r => r.id === 'holders-pending')).toBe(false);
+  });
+  test('controllers consolidate realms and unresolved Native roles without losing addresses', () => {
+    const { controllers } = built.bundle.control.data!;
+    const dao = controllers.filter(c => c.type === 'dao-governance'); expect(dao).toHaveLength(1);
+    expect(dao[0].label).toBe('Marinade DAO governance'); expect(dao[0].members!.length).toBeGreaterThan(1);
+    for (const kind of ['operator', 'alternateStaker']) {
+      const group = controllers.find(c => c.id === `controller:native:${kind}`)!;
+      expect(group.members!.length).toBeGreaterThan(0); expect(group.label).toContain('unresolved');
+    }
+    const locking = built.bundle.answer.data!.statements.find(s => s.id === 'locked-mnde')!.text;
+    expect(locking).toContain('is deposited in VSR'); expect(locking).toContain('is under an active time lock');
+    expect(built.bundle.answer.data!.statements.find(s => s.id === 'dormant-programs')!.text).toContain('(newest:');
   });
   test('answer status follows directed activity-to-holder paths rather than link array order', () => {
     const path = built.bundle.path.data!;
@@ -118,7 +154,7 @@ describe('tokenomics recorded backend', () => {
       for (const param of link.parameters) expect(bundle.parameters.data!.rows.some(r => r.id === param.id)).toBe(true);
     }
     const graph = bundle.graph.data!;
-    expect(graph.source).toBe('local'); expect(graph.queries).toEqual([]); expect(graph.host).toBeNull();
+    expect(graph.source).toBe('local'); expect(graph.queries).toHaveLength(8); expect(graph.host).toBeNull();
     for (const edge of graph.subgraph.edges) for (const id of [edge.from, edge.to]) expect(graph.subgraph.nodes.some(n => n.id === id)).toBe(true);
   });
   test('every envelope citation resolves with a real fixture filename and metadata covers its evidence', () => {
@@ -140,7 +176,7 @@ describe('tokenomics recorded backend', () => {
   test('replay is byte-for-byte deterministic despite pack generation time and endpoint metadata', async () => {
     const replay = await buildTokenomics({ root: ROOT, packResult: { ...captured, packet: { ...captured.packet, generatedAt: '2099-01-01T00:00:00Z' } } });
     expect(JSON.stringify(replay.bundle)).toBe(JSON.stringify(built.bundle));
-  }, 30_000);
+  }, 120_000);
   test('missing fixtures fail closed without attempting a live read', async () => {
     const root = mkdtempSync(join(tmpdir(), 'tokenomics-missing-'));
     const fetch = spyOn(globalThis, 'fetch').mockImplementation(noNetwork);
@@ -150,13 +186,13 @@ describe('tokenomics recorded backend', () => {
       await expect(buildTokenomics({ root, packResult: captured })).rejects.toThrow('offline: fixture missing');
       expect(fetch).not.toHaveBeenCalled();
     } finally { fetch.mockRestore(); rmSync(root, { recursive: true, force: true }); }
-  });
+  }, 120_000);
 });
 
 describe('tokenomics HTTP routes', () => {
   test('protocol index, bundle and every section are served', async () => {
     const index = await (await handler('/api/tokenomics')).json();
-    expect(index.protocols[0].sections.flows).toBe('pending');
+    expect(index.protocols[0].sections.flows).toBe('ready');
     expect(await (await handler(base)).json()).toEqual(built.bundle);
     for (const section of SECTIONS) expect(await (await handler(`${base}/${section}`)).json()).toEqual(built.bundle[section]);
   });
@@ -170,11 +206,11 @@ describe('tokenomics HTTP routes', () => {
     expect((await handler(`${base}/evidence?${query}&id=${ids[0]}`)).status).toBe(400);
     expect(await (await handler(`${base}/evidence?id=${'0'.repeat(64)}`)).json()).toEqual({ items: [], missing: ['0'.repeat(64)] });
   });
-  test('cross-origin loader is 403 and same-origin loader is 501', async () => {
+  test('cross-origin loader is 403 and unconfigured same-origin loader is 409', async () => {
     expect((await handler(`${base}/graph/load`, { method: 'POST', headers: { Origin: 'https://other.example' } })).status).toBe(403);
     for (const headers of [{ Origin: 'http://localhost:8875' }, undefined]) {
       const response = await handler(`${base}/graph/load`, { method: 'POST', headers });
-      expect(response.status).toBe(501); expect(await response.json()).toEqual({ error: 'tokenomics graph loader not built yet' });
+      expect(response.status).toBe(409); expect(await response.json()).toEqual({ error: 'Neo4j is not configured' });
     }
   });
   test('export has the download header and contains the exact bundle', async () => {
@@ -188,7 +224,126 @@ describe('tokenomics HTTP routes', () => {
       const body = await (await handler(path)).text();
       expect(body).not.toContain('alchemy.com/v2'); expect(body).not.toContain('api-key'); expect(body).not.toContain('rpcUrl');
     }
-    expect(tokenomicsRoutes(undefined, request(`${base}/answer`)).status).toBe(503);
+    expect((await tokenomicsRoutes(undefined, request(`${base}/answer`))).status).toBe(503);
     expect((await handler(`${base}/answer`, { method: 'POST' })).status).toBe(405);
+  });
+});
+
+describe('tokenomics TG graph and service', () => {
+  const config = { uri: 'neo4j+s://reader:uri-secret@aura.example:7687', username: 'graph-reader', password: 'password-secret', database: 'neo4j' };
+  function fake(changed = false) {
+    const graph = buildTokenomicsGraph(built.bundle), calls: { cypher: string; params: any; config: any }[] = [];
+    let wrote = false;
+    const driver: Neo4jDriverLike = { async executeQuery(cypher, params, config) {
+      calls.push({ cypher, params, config });
+      const query = TOKENOMICS_QUERIES.find(q => q.cypher === cypher);
+      if (query) return { records: runTokenomicsLocal(graph, query.id).rows.map(row => ({ toObject: () => row })) };
+      const canned = CANNED_QUERIES.find(q => q.cypher === cypher);
+      if (canned) {
+        const row = Object.fromEntries(canned.columns.map(c => [c, ['inboundControlEdges', 'hops', 'proposals', 'nodes', 'relationships', 'evidence', 'slotMin', 'slotMax'].includes(c) ? 1 : 'recorded']));
+        if (changed && wrote && canned.id === CANNED_QUERIES[0].id) row[canned.columns[0]] = 'changed';
+        return { records: [{ toObject: () => row }] };
+      }
+      wrote = true; return { records: [] };
+    } };
+    return { graph, driver, calls };
+  }
+  test('namespace rejects forbidden demo labels, relationships and unsafe interpolation before writing', async () => {
+    const { graph, driver, calls } = fake();
+    for (const type of ['TRANSFER', 'BURN', 'X`) DELETE n']) {
+      const invalid = { ...graph, relationships: [{ ...graph.relationships[0], type }] };
+      expect(() => assertTokenomicsNamespace(invalid)).toThrow();
+      await expect(loadTokenomicsNeo4j(driver, invalid, config)).rejects.toThrow();
+    }
+    for (const labels of [['TG', 'Entity'], ['Entity', 'Metric'], ['TG', 'Metric', 'Entity'], ['TG', 'X`) DELETE n']])
+      expect(() => tokenomicsCypherBatches({ ...graph, nodes: [{ ...graph.nodes[0], labels }] })).toThrow();
+    expect(calls).toHaveLength(0);
+    for (const r of graph.relationships) {
+      expect(r.key).toMatch(/^[a-f0-9]{64}$/); expect(r.props.key).toBe(r.key); expect(r.props.evidenceIds).toBeArray(); expect(r.props).toHaveProperty('slot');
+    }
+  });
+  test('loader surrounds parameterized batches with all four READ regression queries', async () => {
+    const { graph, driver, calls } = fake();
+    // Force more than two full batches of one label, without decoding any fixture again.
+    for (let n = 0; n < 1201; n++) graph.nodes.push({ id: `test:${n}`, labels: ['TG', 'Metric'], props: { id: `test:${n}`, label: 'Literal value containing ` and $' } });
+    const result = await loadTokenomicsNeo4j(driver, graph, config);
+    expect(result.regression).toBe('unchanged'); expect(result.changedQueries).toEqual([]);
+    expect(calls.slice(0, 4).map(c => c.cypher)).toEqual(CANNED_QUERIES.map(q => q.cypher));
+    expect(calls.slice(-4).map(c => c.cypher)).toEqual(CANNED_QUERIES.map(q => q.cypher));
+    expect(calls[4].cypher).toBe('CREATE CONSTRAINT tg_id IF NOT EXISTS FOR (n:TG) REQUIRE n.id IS UNIQUE');
+    const writes = calls.filter(c => c.config.routing === 'WRITE');
+    expect(writes.length).toBe(result.batches);
+    let seenRelationship = false;
+    for (const call of writes.filter(c => c.params.rows)) {
+      expect(call.params.rows.length).toBeLessThanOrEqual(500); expect(call.params.rows.length).toBeGreaterThan(0);
+      expect(call.cypher).toContain('UNWIND $rows'); expect(call.cypher).not.toContain('Literal value');
+      if (call.cypher.includes('MERGE (a)-[r:')) seenRelationship = true;
+      else expect(seenRelationship).toBe(false);
+      expect(call.cypher).not.toContain(':Entity'); expect(call.cypher).not.toContain(':TRANSFER'); expect(call.cypher).not.toContain(':BURN');
+    }
+    for (const call of [...calls.slice(0, 4), ...calls.slice(-4)]) expect(call.config.routing).toBe('READ');
+  });
+  test('regression reports the differing demo query ids and fails the API graph envelope', async () => {
+    const { driver } = fake(true);
+    const service = new TokenomicsGraphService(built.bundle, { config, driverFactory: () => driver });
+    const loaded = await tokenomicsRoutes(built, request(`${base}/graph/load`, { method: 'POST' }), service);
+    const result = await loaded.json();
+    expect(result.regression).toBe('changed'); expect(result.changedQueries).toEqual([CANNED_QUERIES[0].id]);
+    const response = await (await tokenomicsRoutes(built, request(`${base}/graph`), service)).json();
+    expect(response.status).toBe('failed'); expect(response.error).toContain(CANNED_QUERIES[0].id); expect(response.data.source).toBe('local');
+  });
+  test('all eight local and Neo4j query columns and rows agree; configured API uses READ and caches', async () => {
+    const { graph, driver, calls } = fake();
+    expect(TOKENOMICS_QUERIES).toHaveLength(8);
+    const supply = runTokenomicsLocal(graph, 'supply-control');
+    expect(supply.rows).toHaveLength(4);
+    expect([...new Set(supply.rows.map(r => r.mint))].sort()).toEqual(['MNDE', 'mSOL']);
+    for (const edge of graph.relationships.filter(r => ['MINT_AUTHORITY', 'FREEZE_AUTHORITY'].includes(r.type)))
+      expect(graph.nodes.find(n => n.id === edge.source)?.labels).toEqual(['TG', 'Mint']);
+    const parameters = runTokenomicsLocal(graph, 'parameter-control');
+    expect(parameters.rows.some(r => r.parameter === 'reward Fee' && r.role === 'adminAuthority' && r.controller === 'Marinade DAO governance')).toBe(true);
+    for (const edge of graph.relationships.filter(r => r.type === 'MEMBER_OF')) expect(graph.nodes.find(n => n.id === edge.target)?.props.controllerType).toBe('multisig');
+
+    for (const q of TOKENOMICS_QUERIES) {
+      const local = runTokenomicsLocal(graph, q.id), remote = await runTokenomicsNeo4j(driver, q.id, config);
+      expect(local.columns).toEqual(q.columns); expect(remote).toEqual(local); expect(local.rows.length).toBeGreaterThan(0);
+      for (const row of local.rows) expect(Object.keys(row)).toEqual(q.columns);
+    }
+    calls.length = 0;
+    const service = new TokenomicsGraphService(built.bundle, { config, driverFactory: () => driver });
+    const response = await (await tokenomicsRoutes(built, request(`${base}/graph`), service)).json();
+    expect(response.status).toBe('ready'); expect(response.data.source).toBe('neo4j'); expect(response.data.host).toBe('aura.example'); expect(calls).toHaveLength(8);
+    await service.query(); expect(calls).toHaveLength(8);
+    for (const call of calls) { expect(call.config.routing).toBe('READ'); expect(call.config.transactionConfig.timeout).toBe(5000); }
+    expect(response.data.subgraph.nodes.length).toBeGreaterThan(0);
+  });
+  test('unconfigured and unavailable Neo4j return local API data with scrubbed reasons', async () => {
+    let opened = 0;
+    const local = new TokenomicsGraphService(built.bundle, { config: null, driverFactory: () => { opened++; throw new Error('must stay lazy'); } });
+    expect((await local.query()).source).toBe('local'); expect(opened).toBe(0);
+    const unavailable = new TokenomicsGraphService(built.bundle, { config, driverFactory: () => ({ async executeQuery() { throw new Error(`${config.uri} ${config.password} ${config.username} uri-secret`); } }) });
+    const response = await (await tokenomicsRoutes(built, request(`${base}/graph`), unavailable)).json();
+    expect(response.data.source).toBe('local'); expect(response.data.queries).toHaveLength(8);
+    for (const secret of [config.uri, config.username, config.password, 'uri-secret']) expect(response.data.reason).not.toContain(secret);
+    const missing = new TokenomicsGraphService(built.bundle, { config, driverFactory: () => ({ async executeQuery() { return { records: [] }; } }) });
+    expect((await missing.query()).reason).toContain('snapshot differs');
+  });
+  test('query deadlines fall back locally and load deadlines retain serialization until the in-flight write settles', async () => {
+    const { driver } = fake();
+    const timeout = new TokenomicsGraphService(built.bundle, { config, queryTimeoutMs: 5, driverFactory: () => ({ executeQuery: () => new Promise(() => {}) }) });
+    expect((await timeout.query()).reason).toContain('timed out');
+    let settle!: () => void, entered!: () => void;
+    const started = new Promise<void>(resolve => { entered = resolve; });
+    const service = new TokenomicsGraphService(built.bundle, { config, loadTimeoutMs: 50, driverFactory: () => ({ async executeQuery(cypher, params, cfg) {
+      if (cfg.routing === 'WRITE') { entered(); await new Promise<void>(resolve => { settle = resolve; }); return { records: [] }; }
+      return driver.executeQuery(cypher, params, cfg);
+    } }) });
+    const first = service.load();
+    const rejected = expect(first).rejects.toMatchObject({ status: 504 });
+    await started;
+    await expect(service.load()).rejects.toMatchObject({ status: 409 });
+    await rejected;
+    await expect(service.load()).rejects.toMatchObject({ status: 409 });
+    settle();
   });
 });

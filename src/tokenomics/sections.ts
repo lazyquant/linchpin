@@ -1,3 +1,4 @@
+import { buildTokenomicsGraph, TOKENOMICS_QUERIES, runTokenomicsLocal, tokenomicsSubgraph } from '../graph/tokenomics-neo4j';
 import type * as API from './api';
 import type { readContractsLayer } from '../contracts/marinade';
 import type { readParticipation } from '../contracts/participation';
@@ -7,7 +8,8 @@ import type { PackRegistry } from '../pack/build';
 import { deriveLiquidStakingAddresses } from '../pack/derive';
 import { formatUnits } from '../chain/token-layout';
 import { EvidenceIndex, evidenceIds, unique } from './evidence';
-import type { OptionalLayer } from './build';
+import type { readHolders } from '../contracts/holders';
+import type { readFlows } from '../contracts/flows';
 
 export type SectionInputs = {
   layer: Awaited<ReturnType<typeof readContractsLayer>>;
@@ -15,7 +17,8 @@ export type SectionInputs = {
   authorities: Awaited<ReturnType<typeof readAuthorities>>;
   pack: PackPacket; registry: PackRegistry; evidence: EvidenceIndex;
   docs: unknown; docsId: string; registryId: string; configured: boolean;
-  optional: { holders: OptionalLayer<'holders'> | null; flows: OptionalLayer<'flows'> | null };
+  holders: Awaited<ReturnType<typeof readHolders>>;
+  flows: Awaited<ReturnType<typeof readFlows>>;
 };
 export const QUESTION = "Is there an enforceable path from Marinade's activity to MNDE holders, what offsets it, and who can change it?";
 const amount = (raw: string, unit = 'MNDE', decimals = 9): API.Amount => ({ raw, decimals, display: formatUnits(BigInt(raw), decimals), unit });
@@ -95,7 +98,35 @@ export function controlSection(i: SectionInputs): API.ControlData {
       role: program ? 'upgradeAuthority' : mint ? `${path.authorityType}Authority` : 'tokenAccountOwner', holder: { address: path.authority ?? 'none' },
       controllerId: resolve(path.authority, path, path.authorityKind, path), ...p(path, path.authorityKind.startsWith('pda') || path.authorityKind === 'native-treasury-pda' ? 'derived' : 'decoded') });
   }
-  return { rows, controllers: [...controllers.values()] };
+  const grouped = new Map<string, API.Controller>();
+  const remap = new Map<string, string>();
+  for (const c of controllers.values()) {
+    const native = i.participation.nativeProxy.authorities.find(a => a.address === c.address && ['operator', 'alternateStaker'].includes(a.field));
+    const id = c.realm ? `controller:realm:${c.realm.address}` : native && c.type === 'unresolved' ? `controller:native:${native.field}` : c.id;
+    remap.set(c.id, id);
+    const detail = c.realm || native ? unique([c.address, c.governance, ...(c.members ?? []).map(m => m.address)].filter((a): a is string => !!a)).map(address => ({ address })) : c.members;
+    const old = grouped.get(id);
+    if (old) {
+      old.members = unique([...(old.members ?? []).map(m => m.address), ...(detail ?? []).map(m => m.address)]).map(address => ({ address }));
+      Object.assign(old, p([old, c], old.basis));
+    } else grouped.set(id, { ...c, id, members: detail, label: c.type === 'dao-governance' ? 'Marinade DAO governance' : c.label });
+  }
+  for (const row of rows) row.controllerId = remap.get(row.controllerId)!;
+  // A key may serve both roles. Keep it discoverable in each role's detail list.
+  for (const a of i.participation.nativeProxy.authorities.filter(a => ['operator', 'alternateStaker'].includes(a.field))) {
+    const original = controllers.get(controllerId(a.address))!;
+    const id = original.type === 'unresolved' ? `controller:native:${a.field}` : remap.get(original.id)!;
+    if (original.type === 'unresolved') {
+      const group = grouped.get(id) ?? { ...original, id, address: null, members: [] };
+      group.members = unique([...(group.members ?? []).map(m => m.address), a.address]).map(address => ({ address }));
+      Object.assign(group, p([group, a], 'decoded')); grouped.set(id, group);
+    }
+    rows.push({ id: `control:native:${a.field}:${a.address}`, target: `Native/Select roots: ${a.roots.join(', ')}`, targetKind: 'operations',
+      canChange: `Exercise the declared ${a.field} role`, instructions: i.layer.programs.find(p => p.id === 'native-staking-proxy')?.inventory.instructions.filter(ix => ix.signerRoles.some(r => r === a.field)).map(ix => ix.name) ?? [],
+      role: a.field, holder: { address: a.address }, controllerId: id, ...p(a, ['declared', 'decoded']) });
+  }
+  for (const c of grouped.values()) if (c.id.startsWith('controller:native:')) { c.address = null; c.label = `Marinade Native ${c.id.endsWith(':operator') ? 'operator' : 'alternate-staker'} authorities (${c.members?.length ?? 0}, unresolved)`; }
+  return { rows, controllers: [...grouped.values()] };
 }
 
 export function parametersSection(i: SectionInputs, control: API.ControlData): API.ParametersData {
@@ -108,7 +139,7 @@ export function parametersSection(i: SectionInputs, control: API.ControlData): A
     const links = i.layer.parameterControl.links.filter(l => l.stateField === row.field);
     return { id: paramId(row.field), program: 'liquid-staking', field: row.field, label: label(row.field), value: String(row.raw), unit, display,
       setBy: links.flatMap(l => l.signers.filter(s => s.holder).map(s => ({ instruction: l.instruction, role: s.role, holder: { address: s.holder! },
-        controllerId: control.controllers.find(c => c.id === controllerId(s.holder))?.id ?? null, basis: 'inferred' as const }))),
+        controllerId: control.controllers.find(c => c.address === s.holder || c.members?.some(m => m.address === s.holder))?.id ?? null, basis: 'inferred' as const }))),
       ...i.evidence.provenance([row, links], links.length ? ['decoded', 'inferred'] : 'decoded') };
   }) };
 }
@@ -188,8 +219,12 @@ export function claimsSection(i: SectionInputs): API.ClaimsData {
     rows.push({ id: `pack:${claim.id}`, text: claim.text, source: claim.source, status: claim.status === 'outside-scope' ? 'unresolved' : claim.status,
       chainResult: claim.note, note: 'Pack documentation check; original status retained.', ...p([docs, registry, related, statements], ['claimed', ...(related.length || statements.length ? ['decoded' as const] : [])]) });
   }
-  for (const c of i.registry.valueRouteClaims.filter(c => c.id !== 'v1')) rows.push({ id: c.id, text: c.text, source: i.registry.sources[c.source] ?? c.source,
-    status: 'claimed', chainResult: 'Flow verification is not available.', note: 'checked in G5', ...p([registry, docs], 'claimed') });
+  for (const c of [...i.flows.claims, ...(i.flows.feeClaims ?? []).map((c, n) => ({ ...c, id: `fee-statement:${n}` }))]) {
+    const status = (['verified', 'contradiction', 'unresolved', 'partly', 'claimed'] as const).find(s => s === c.status) ?? 'unresolved';
+    const row: API.ClaimRow = { id: c.id, text: c.text, source: c.source, status, chainResult: c.chainResult, note: 'G5 check within recorded scope.', ...p(c, ['claimed', 'derived']) };
+    const index = rows.findIndex(r => r.id === c.id);
+    if (index < 0) rows.push(row); else rows[index] = row;
+  }
   return { rows };
 }
 
@@ -232,16 +267,18 @@ export function pathSection(i: SectionInputs, parameters: API.ParametersData, co
   const treasuryControl = control.rows.find(r => r.id === 'control:treasury-msol')!;
   link('treasury-onward', 'treasury-msol', 'protocol-revenue', 'Onward transfers', 'operated-by-accounts', [], [], [], 'Moving funds requires the treasury token-account owner’s signature; onward movements are not yet measured.', treasuryControl, 'decoded');
   links.at(-1)!.controlledBy = [treasuryControl.id];
-  link('revenue-buyback', 'protocol-revenue', 'buyback-wallet', 'MIP-22 revenue allocation', 'claimed-only', [], [], ['v5'], 'MIP-22 buyback funding is a documentation claim until G5.', reference(i.registryId), 'claimed');
-  link('buyback-purchases', 'buyback-wallet', 'mnde-purchases', 'Buy MNDE', 'pending', [], [], ['v5'], 'MNDE purchases have not been reconstructed; G5 is pending.', reference(i.registryId), 'claimed');
-  link('purchases-stakers', 'mnde-purchases', 'mnde-stakers', 'Distribute MNDE to stakers', 'claimed-only', [], [], ['v6'], 'Distribution to MNDE stakers is a documentation claim until G5.', reference(i.registryId), 'claimed');
-  const admin = control.controllers.find(c => c.id === controllerId(nodes.find(n => n.id === 'admin-authority')!.address!))!;
+  link('revenue-buyback', 'protocol-revenue', 'buyback-wallet', 'MIP-22 revenue allocation', 'claimed-only', [], [], ['v5'], 'The claimed revenue allocation requires matched-window funding evidence.', reference(i.registryId), 'claimed');
+  link('buyback-purchases', 'buyback-wallet', 'mnde-purchases', 'Buy MNDE', 'pending', [], [], ['v5'], 'No usable dated purchase observations are available in G5.', reference(i.registryId), 'claimed');
+  link('purchases-stakers', 'mnde-purchases', 'mnde-stakers', 'Distribute MNDE to stakers', 'claimed-only', [], [], ['v6'], 'The claimed staker route requires observed recipient and eligibility checks.', reference(i.registryId), 'claimed');
+  const admin = control.controllers.find(c => c.address === nodes.find(n => n.id === 'admin-authority')!.address || c.members?.some(m => m.address === nodes.find(n => n.id === 'admin-authority')!.address))!;
   const governanceEvidence = [i.layer.registrar, admin];
   link('lock-vote', 'vsr-locking', 'voting-weight', 'Registrar voting-weight configuration', 'enforced-by-code', [], [], [], 'Decoded registrar configures voting weight; the participation formula remains a derived estimate.', governanceEvidence, ['decoded', 'derived']);
   link('vote-governance', 'voting-weight', 'dao-governance', 'MNDE governance voting', 'enforced-by-code', [], [], [], 'Registrar binds the MNDE governing mint to the Marinade DAO realm.', governanceEvidence, ['decoded', 'derived']);
   link('governance-admin', 'dao-governance', 'admin-authority', 'Governance holds admin role', 'enforced-by-code', [], ['changeAuthority'], [], 'Admin authority resolves to the DAO governance through a reproduced PDA derivation.', governanceEvidence, 'derived');
   link('admin-fees', 'admin-authority', 'fee-parameters', 'Admin configures fees', 'enforced-by-code', ['rewardFee', 'liqPool.treasuryCut', 'delayedUnstakeFee', 'withdrawStakeAccountFee'], ['configMarinade', 'configLp'], [], 'IDL signer declarations and decoded admin role link governance to fee settings.', governanceEvidence, ['declared', 'decoded', 'derived']);
-  return { nodes, links };
+  const path = { nodes, links };
+  applyFlowObservations(i, path);
+  return path;
 }
 
 export function offsetsSection(i: SectionInputs, programs: API.ProgramsData): API.OffsetsData {
@@ -261,7 +298,7 @@ export function offsetsSection(i: SectionInputs, programs: API.ProgramsData): AP
     amount: amount(bucket.raw), window: [i.participation.asOf, i.participation.asOf], note: 'Derived remaining-duration bucket; does not imply withdrawal or selling. Constant lockups use end minus start.', ...p(bucket, 'derived') });
   for (const program of programs.rows.filter(r => ['validator-gauges', 'liquidity-gauges', 'directed-stake'].includes(r.id) && r.activity.dormant)) rows.push({ id: `dormant:${program.id}`, label: `${program.id}: no transactions for over 30 days`, amount: null,
     window: program.activity.newest ? [program.activity.newest, i.participation.asOf] : null, note: 'Newest recorded address transaction is over 30 days before participation capture; this is not proof the program is disabled.', ...p(i.participation.activity.find(a => a.program === program.id), 'observed') });
-  rows.push({ id: 'holders-pending', label: 'Holder concentration and liquid float', amount: null, window: null, note: 'Pending G4 holder classification; no holder-based offset is quantified.', ...p(null, 'derived') });
+  for (const m of holdersSection(i).mnde.float.filter(m => /DAO|Labs|verifiedOnly|includingClaimed/.test(m.id))) rows.push({ id: `holders:${m.id}`, label: m.label, amount: m.amount ?? null, window: m.asOf ? [m.asOf, m.asOf] : null, note: m.note ?? 'Captured holder balance; the Labs identity remains claimed. Custody remainder is not market liquidity.', ...p(m, m.basis) });
   return { rows };
 }
 
@@ -287,60 +324,159 @@ export function answerSection(i: SectionInputs, path: API.PathData, control: API
   const program = programs.rows.find(r => r.id === 'liquid-staking')!;
   const multisig = control.controllers.find(c => c.id === program.upgradeAuthority?.controllerId)!;
   const locked = participation.locking.find(m => m.id === 'locked-mnde')!;
+  const deposited = participation.locking.find(m => m.id === 'deposited-mnde')!;
   const dormant = programs.rows.filter(r => r.activity.dormant);
   const buybacks = path.links.filter(l => ['revenue-buyback', 'buyback-purchases', 'purchases-stakers'].includes(l.id));
   const onward = path.links.find(l => l.id === 'treasury-onward')!;
   const treasuryOwner = control.rows.find(r => onward.controlledBy.includes(r.id))!;
   const routes = path.links.filter(l => l.to === 'treasury-msol' && l.status === 'enforced-by-code' && l.id !== 'rewards-treasury').map(l => l.id === 'lp-treasury' ? 'the LP treasury cut' : 'stake-account withdrawal fees');
   const statement = (id: string, text: string, source: unknown, status: API.AnswerData['statements'][number]['status'] = 'verified') => ({ id, text, status, ...p(source, status === 'claimed-only' ? 'claimed' : 'derived') });
-  return { question: QUESTION, shortAnswer: { status: answerStatus(path), text: `Program code routes ${routes.join(' and ')} to the treasury mSOL account; moving value onward to MNDE holders requires actions by the treasury token-account owner (${treasuryOwner.holder.address}) and buyback operators.` },
+  const purchase = buybacks.find(l => l.id === 'buyback-purchases')!;
+  const distribution = buybacks.find(l => l.id === 'purchases-stakers')!;
+  const observation = purchase.observed;
+  const costs = new Map<string, { raw: bigint; decimals: number }>();
+  for (const tx of i.flows.buybacks.transactions.filter(t => BigInt(t.boughtRaw) > 0n)) for (const c of tx.costs) {
+    const old = costs.get(c.asset); costs.set(c.asset, { raw: (old?.raw ?? 0n) + BigInt(c.raw), decimals: c.decimals });
+  }
+  const costText = [...costs].map(([unit, c]) => `${amount(String(c.raw), unit, c.decimals).display} ${unit}`).join(', ');
+  const purchaseText = observation ? `${observation.amount.display} MNDE was bought in ${observation.transactions} observed transactions, with ${costText || 'unavailable'} in recorded wallet spending (${observation.window.join(' – ')}).` : 'Purchase data is unavailable.';
+  const distributionText = distribution.observed ? `${distribution.note} Window: ${distribution.observed.window.join(' – ')}.` : distribution.note;
+  return { question: QUESTION, shortAnswer: { status: answerStatus(path), text: `Program code routes ${routes.join(' and ')} to the treasury mSOL account; moving value onward to MNDE holders requires actions by the treasury token-account owner (${treasuryOwner.holder.address}) and buyback operators. ${observation ? `${observation.amount.display} MNDE was bought during ${observation.window.join(' – ')}; ${percent(i.flows.buybacks.voterAuthorityShare.value)} of outgoing MNDE reached current VSR voter authorities directly during ${distribution.observed?.window.join(' – ') ?? 'an unavailable window'}.` : 'The observed buyback window is unavailable.'}` },
     statements: [
       statement('fee-control', `${dao.realm?.name ?? dao.label} governance can change liquid-staking fees through the admin authority using configMarinade and configLp.`, [feeControl, dao, control.rows.filter(r => r.instructions.includes('configLp'))]),
       statement('reward-fee', `The reward fee is ${field('rewardFee').display}; this takes ${field('rewardFee').display} of staking rewards.`, field('rewardFee')),
       statement('lp-cut', `The treasury cut is ${field('liqPool.treasuryCut').display} of the liquid-unstake LP fee.`, field('liqPool.treasuryCut')),
-      statement('locked-mnde', `${locked.amount!.display} MNDE is time-locked in VSR, representing ${percent(locked.amount!.shareOfSupply ?? null)} of the recorded supply.`, [locked, participation.locking.find(m => m.id === 'locked-share-of-supply')]),
+      statement('locked-mnde', `${deposited.amount!.display} MNDE is deposited in VSR (${percent(i.participation.vsr.shareOfSupply.value)} of supply); ${locked.amount!.display} MNDE (${percent(locked.amount!.shareOfSupply ?? null)}) is under an active time lock`, [deposited, locked, participation.locking.find(m => m.id === 'locked-share-of-supply')]),
       statement('msol-upgrade', `The mSOL program can be upgraded by a ${multisig.threshold}-of-${multisig.members?.length} ${multisig.label}, with ${multisig.members?.length} recorded members.`, [multisig, program]),
       statement('pause-control', `${pause.label} controls pause and resume through the pause authority.`, [pause, pauseControl]),
-      statement('dormant-programs', dormant.length ? `${dormant.map(r => r.id).join(', ')} have no recorded address transactions for more than 30 days before capture.` : 'No measured program is dormant for more than 30 days before capture.', dormant),
-      statement('buyback-route', 'The MIP-22 revenue-to-buyback and MNDE-to-staker routes remain claimed-only; MNDE purchases are pending G5 verification.', buybacks, 'claimed-only'),
+      statement('dormant-programs', dormant.length ? `No transactions in the 30 days before capture: ${dormant.map(r => r.id).join(', ')} (newest: ${dormant.map(r => `${r.id}: ${r.activity.newest}`).join('; ')})` : 'No measured program is dormant for more than 30 days before capture.', dormant),
+      statement('buyback-route', `${purchaseText} ${distributionText} ${path.links.filter(l => l.id.startsWith('buyback-recipient:')).map(l => `${path.nodes.find(n => n.id === l.to)!.label}: ${l.observed!.amount.display} MNDE (${l.observed!.window.join(' – ')}).`).join(' ')}`, [buybacks, path.links.filter(l => l.id.startsWith('buyback-recipient:'))], purchase.status),
     ], unknowns: [
       ...control.controllers.filter(c => c.type === 'unresolved').map(c => ({ id: `authority:${c.id}`, text: `${c.label}: signing controller remains unresolved.`, ...p(c, c.basis) })),
       ...path.links.filter(l => l.status === 'pending').map(l => ({ id: `path:${l.id}`, text: l.note, ...p(l, l.basis) })),
     ] };
 }
 
-export function graphSection(path: API.PathData, control: API.ControlData, configured: boolean): API.GraphData {
-  const nodes: API.GraphData['subgraph']['nodes'] = path.nodes.map(n => ({ id: n.id, label: n.label, type: n.kind }));
-  const edges: API.GraphData['subgraph']['edges'] = path.links.map(l => ({ id: l.id, from: l.from, to: l.to, type: 'FEEDS', basis: Array.isArray(l.basis) ? l.basis[0] : l.basis, label: `${l.mechanism}: ${l.status}` }));
-  nodes.push(...control.controllers.map(c => ({ id: c.id, label: c.label, type: c.type })));
-  for (const row of control.rows) {
-    nodes.push({ id: row.id, label: row.target, type: row.targetKind });
-    edges.push({ id: `controls:${row.id}`, from: row.controllerId, to: row.id, type: row.targetKind === 'program-code' ? 'UPGRADE_AUTHORITY' : 'CONTROLS', basis: Array.isArray(row.basis) ? row.basis[0] : row.basis, label: row.canChange });
-  }
-  for (const link of path.links) for (const row of link.controlledBy) edges.push({ id: `path-control:${link.id}:${row}`, from: row, to: link.to, type: 'SETS', basis: 'inferred', label: 'Control of route' });
-  for (const c of control.controllers.filter(c => c.type === 'program')) {
-    const program = control.rows.find(r => r.targetKind === 'program-code' && r.id === 'control:program:liquid-staking');
-    if (program) edges.push({ id: `pda-code:${c.id}`, from: program.id, to: c.id, type: 'DERIVES', basis: 'derived', label: 'Program derives authority PDA' });
-  }
-  return { source: 'local', host: null, reason: 'Tokenomics Neo4j namespace and loader are not built yet.', configured, queries: [], subgraph: { nodes, edges } };
-}
-
 export function buildSections(i: SectionInputs): API.BundleResponse {
   const control = controlSection(i), parameters = parametersSection(i, control), programs = programsSection(i, control);
   const participation = participationSection(i), claims = claimsSection(i), path = pathSection(i, parameters, control, claims), offsets = offsetsSection(i, programs);
-  const answer = answerSection(i, path, control, parameters, participation, programs), graph = graphSection(path, control, i.configured);
+  const answer = answerSection(i, path, control, parameters, participation, programs);
   const assumptions = unique([...i.layer.assumptions, ...i.participation.assumptions, ...i.authorities.assumptions, ...i.pack.ledger.notes]);
   const envelope = <K extends API.SectionId>(section: K, title: string, data: API.SectionData[K] | null, notes: string[] = [], extra: unknown = null): API.SectionEnvelope<API.SectionData[K]> => ({
     protocol: 'marinade', section, status: data === null ? 'pending' : 'ready', title, data, notes,
-    assumptions: unique([...assumptions, ...(section === 'holders' ? i.optional.holders?.assumptions ?? [] : section === 'flows' ? i.optional.flows?.assumptions ?? [] : [])]),
+    assumptions: unique([...assumptions, ...i.holders.assumptions, ...i.flows.assumptions]),
     ...i.evidence.metadata(evidenceIds([data, extra])) });
-  return {
+  const bundle: API.BundleResponse = {
     answer: envelope('answer', 'Activity to MNDE holders', answer, [], path), path: envelope('path', 'Value path', path, ['Code-route statuses describe IDL declarations and decoded parameters under the carried assumptions; observed flows remain separate.']),
     control: envelope('control', 'Who can change it', control), offsets: envelope('offsets', 'Offsets', offsets), parameters: envelope('parameters', 'Liquid-staking parameters', parameters),
     programs: envelope('programs', 'Programs and activity', programs, ['Activity is the recorded newest-25 signature window, including failures. Upgrades include only successful observed upgrades in the authority layer’s bounded window; an empty list is not proof of no upgrades.']),
     participation: envelope('participation', 'MNDE participation', participation, ['Top lockers rank deposited MNDE, including unlocked deposits; time-locked totals are reported separately.']),
-    claims: envelope('claims', 'Claims versus chain', claims), graph: envelope('graph', 'Tokenomics graph', graph, [], [path, control]),
-    holders: envelope('holders', 'Holders and float', i.optional.holders?.data ?? null, i.optional.holders?.notes ?? ['Pending G4: optional holders layer is absent.']),
-    flows: envelope('flows', 'Observed value flows', i.optional.flows?.data ?? null, i.optional.flows?.notes ?? ['Pending G5: optional flows layer is absent.']),
+    claims: envelope('claims', 'Claims versus chain', claims), graph: envelope('graph', 'Tokenomics graph', null, [], [path, control, claims, holdersSection(i), participation]),
+    holders: envelope('holders', 'Holders and float', holdersSection(i), i.holders.float.notes),
+    flows: envelope('flows', 'Observed value flows', flowsSection(i), ['Bounded address samples; unavailable deltas are not zero.']),
   };
+  const graph = buildTokenomicsGraph(bundle);
+  bundle.graph.status = 'ready';
+  bundle.graph.data = { source: 'local', configured: i.configured, host: null, reason: i.configured ? 'Neo4j has not been queried yet' : 'Neo4j is not configured',
+    queries: TOKENOMICS_QUERIES.map(q => runTokenomicsLocal(graph, q.id)), subgraph: tokenomicsSubgraph(graph) };
+  return bundle;
+}
+
+function windowOf(w: { oldestBlockTime: number | null; newestBlockTime: number | null }): [string, string] | null {
+  return w.oldestBlockTime === null || w.newestBlockTime === null ? null : [iso(w.oldestBlockTime)!, iso(w.newestBlockTime)!];
+}
+export function flowsSection(i: SectionInputs): API.FlowsData {
+  const f = i.flows, p = i.evidence.provenance.bind(i.evidence), window = windowOf(f.treasury.window);
+  const positive = f.treasury.transactions.filter(t => t.deltaRaw !== null && BigInt(t.deltaRaw) > 0n);
+  return {
+    declaredRoutes: f.routes.flatMap(r => r.destinations.length ? r.destinations.flatMap(d => (d.resolutions.length ? d.resolutions : [null]).map((s, n) => ({
+      id: `${r.program}:${r.instruction}:${d.account}:${n}`, program: r.program, instruction: r.instruction, account: d.account, address: s?.address ?? null,
+      note: r.note, ...p([r, d, s], s ? ['declared', 'decoded'] : 'declared'),
+    }))) : [{ id: `${r.program}:${r.instruction}:none`, program: r.program, instruction: r.instruction, account: 'No destination account declared', address: null, note: r.note, ...p(r, 'declared') }]),
+    treasury: { inflows: window && f.treasury.transactions.some(t => t.deltaRaw !== null) ? { window, transactions: positive.length, amount: amount(f.treasury.inflowRaw.value, 'mSOL'),
+      byInstruction: f.treasury.byInstruction.map(r => ({ instruction: r.instruction, amount: amount(r.inflowRaw, 'mSOL'),
+        transactions: positive.filter(t => t.attribution.instruction === r.instruction).length })), ...p(f.treasury, 'observed') } : null,
+      outflows: f.treasuryAuthority.transfers.filter(t => t.blockTime !== null).map(t => ({ time: iso(t.blockTime)!, to: { address: t.destination, label: t.destinationDetail.category, labelBasis: (['declared', 'decoded', 'observed', 'derived', 'claimed', 'reported', 'inferred'] as API.Basis[]).find(b => b === t.destinationDetail.categoryBasis) ?? 'observed' },
+        amount: amount(t.amountRaw, i.registry.mints.find(m => m.address === t.mint)?.id === 'msol' ? 'mSOL' : i.registry.mints.find(m => m.address === t.mint)?.id === 'mnde' ? 'MNDE' : t.mint ?? 'unknown', t.decimals ?? 9),
+        signature: t.signature, ...p(t, 'observed') })) },
+    buybacks: { months: (f.buybacks.months ?? []).map(m => ({ month: m.month, mndeBought: amount(m.mndeBoughtRaw.value), mndeSent: amount(m.mndeSentOutRaw.value),
+      cost: m.costs.map(c => amount(c.raw, c.asset, c.decimals ?? 9)), recipients: m.recipients.length, shareToLockers: m.voterAuthorityShare.value, ...p(m, 'observed') })) },
+  };
+}
+export function holdersSection(i: SectionInputs): API.HoldersData {
+  const h = i.holders, p = i.evidence.provenance.bind(i.evidence);
+  function metrics(stats: typeof h.mnde | typeof h.msol, unit: string): API.Metric[] {
+    const rows: API.Metric[] = Object.entries(stats).flatMap(([id, v]) => v && typeof v === 'object' && 'value' in v && 'evidenceIds' in v ? [{
+      id, label: label(id), value: v.value === null ? 'unknown' : String(v.value), ...p(v, 'derived'),
+      ...(/Raw$/.test(id) && typeof v.value === 'string' ? { amount: amount(v.value, unit) } : {}),
+    }] : []);
+    rows.push(...stats.topShares.map(s => ({ id: `top-${s.n}`, label: `Top ${s.n} share of supply`, value: String(s.share ?? 'unknown'),
+      amount: { ...amount(s.amountRaw, unit), shareOfSupply: s.share }, ...p(s, 'derived') })));
+    return rows;
+  }
+  const supply = BigInt(h.mnde.supplyRaw.value);
+  const float = [...h.float.components.map(c => ({ id: `float:${c.name}`, label: c.name, value: c.raw,
+    amount: { ...amount(c.raw), shareOfSupply: supply ? Number(BigInt(c.raw) * 1000000000000n / supply) / 1e12 : null }, ...p(c, c.basis) })),
+    ...(['verifiedOnly', 'includingClaimed'] as const).map(id => ({ id: `float:${id}`, label: id === 'verifiedOnly' ? 'Float excluding verified custody' : 'Float also excluding claimed Labs treasury',
+      value: h.float[id].raw, amount: { ...amount(h.float[id].raw), shareOfSupply: supply ? Number(BigInt(h.float[id].raw) * 1000000000000n / supply) / 1e12 : null }, note: h.float.notes.join(' '), ...p(h.float[id], 'derived') }))];
+  return { mnde: { metrics: metrics(h.mnde, 'MNDE'), float, top: h.mnde.topOwners.map((r, n) => ({ rank: n + 1,
+    owner: { address: r.owner, kind: r.classification.kind, label: r.classification.roleName, labelBasis: r.classification.roles[0]?.basis ?? null },
+    role: r.classification.roles.map(role => `${role.name} (${role.basis})`).join('; ') || null,
+    amount: { ...amount(r.amountRaw), shareOfSupply: r.shareOfSupply }, ...p([r, r.classification], ['decoded', ...r.classification.roles.map(role => role.basis)]) })) },
+    msol: { metrics: metrics(h.msol, 'mSOL'), top: h.msol.top20.map((r, n) => ({ rank: n + 1, owner: { address: r.owner ?? r.address, kind: r.classification?.kind ?? 'unknown',
+      label: r.roles[0]?.name ?? r.classification?.roleName ?? null, labelBasis: r.roles[0]?.basis ?? r.classification?.roles[0]?.basis ?? null },
+      amount: { ...amount(r.amountRaw, 'mSOL'), shareOfSupply: r.shareOfSupply }, program: r.classification?.kind === 'program-owned' ? r.classification.ownerProgram : null,
+      label: r.roles[0]?.name ?? r.classification?.roleName ?? null, ...p([r, r.classification], ['derived', ...r.roles.map(role => role.basis), ...(r.classification?.roles ?? []).map(role => role.basis)]) })),
+      downstream: h.downstream.map(r => ({ entity: r.entity, label: r.label?.name ?? null, amount: { ...amount(r.msolHeldRaw, 'mSOL'), shareOfSupply: r.shareOfSupply }, accounts: r.accounts.length, ...p([r, r.label], r.label ? [r.basis, r.label.basis] : r.basis) })) } };
+}
+
+function applyFlowObservations(i: SectionInputs, path: API.PathData) {
+  const f = i.flows, p = i.evidence.provenance.bind(i.evidence), treasury = flowsSection(i).treasury.inflows;
+  for (const [id, instructions] of Object.entries({ 'rewards-treasury': ['updateActive', 'updateDeactivated'], 'lp-treasury': ['liquidUnstake'], 'withdraw-treasury': ['withdrawStakeAccount'] })) {
+    const link = path.links.find(l => l.id === id)!;
+    if (treasury) {
+      const byInstruction = treasury.byInstruction!.filter(r => instructions.includes(r.instruction));
+      link.observed = { ...treasury, byInstruction, amount: amount(byInstruction.reduce((s, r) => s + BigInt(r.amount.raw), 0n).toString(), 'mSOL'), transactions: byInstruction.reduce((s, r) => s + r.transactions, 0) };
+      Object.assign(link, p([link, link.observed], ['declared', 'decoded', 'observed']));
+    }
+  }
+  const window = windowOf(f.buybacks.window), purchases = f.buybacks.transactions.filter(t => BigInt(t.boughtRaw) > 0n);
+  const bought = purchases.reduce((s, t) => s + BigInt(t.boughtRaw), 0n);
+  const purchase = path.links.find(l => l.id === 'buyback-purchases')!;
+  if (window && f.buybacks.transactions.some(t => t.mndeDeltaRaw !== null)) {
+    const purchaseTimes = purchases.flatMap(t => t.blockTime === null ? [] : [t.blockTime]);
+    const purchaseWindow: [string, string] = purchaseTimes.length === purchases.length && purchaseTimes.length ? [iso(Math.min(...purchaseTimes))!, iso(Math.max(...purchaseTimes))!] : window;
+    purchase.observed = { window: purchaseWindow, transactions: purchases.length, amount: amount(String(bought)), ...p(purchases.length ? purchases : f.buybacks, 'observed') };
+    purchase.status = bought > 0n ? 'operated-by-accounts' : 'not-observed';
+    purchase.note = 'Positive MNDE credits with same-transaction wallet spend in the recorded window; purchase intent follows the G5 qualification.';
+    Object.assign(purchase, p([purchase.observed], 'observed'));
+    const distribution = path.links.find(l => l.id === 'purchases-stakers')!;
+    const direct = f.buybacks.transactions.flatMap(t => t.recipients.filter(r => r.voterAuthority));
+    distribution.observed = { window, transactions: f.buybacks.transactions.filter(t => t.recipients.some(r => r.voterAuthority)).length,
+      amount: amount(String(direct.reduce((s, r) => s + BigInt(r.amountRaw), 0n))), ...p(f.buybacks, 'observed') };
+    distribution.status = direct.length ? 'operated-by-accounts' : 'not-observed';
+    distribution.note = `${percent(f.buybacks.voterAuthorityShare.value)} of observed outgoing MNDE reached current VSR voter authorities directly; indirect payouts and historical eligibility remain unresolved.`;
+    Object.assign(distribution, p(f.buybacks, 'observed'));
+    // Keep actual recipients distinct from the claimed staker destination.
+    const recipients = new Map<string, typeof f.buybacks.transactions>();
+    for (const tx of f.buybacks.transactions) for (const r of tx.recipients) {
+      const key = r.owner ?? r.destination; const rows = recipients.get(key) ?? [];
+      if (!rows.includes(tx)) rows.push(tx); recipients.set(key, rows);
+    }
+    for (const [address, txs] of recipients) {
+      const rows = txs.flatMap(t => t.recipients.filter(r => (r.owner ?? r.destination) === address)), first = rows[0];
+      const program = first.classification?.owner;
+      const node = `buyback-recipient:${address}`;
+      path.nodes.push({ id: node, label: first.category === 'DAO native treasury' ? 'DAO native treasury' : program ? `Account owned by program ${program}` : 'Observed recipient', kind: 'account', address });
+      const times = txs.flatMap(t => t.blockTime === null ? [] : [t.blockTime]);
+      path.links.push({ id: node, from: 'buyback-wallet', to: node, mechanism: 'Observed MNDE sent from buyback wallet', status: 'operated-by-accounts', parameters: [], claims: ['v6'], controlledBy: [],
+        observed: { window: times.length === txs.length ? [iso(Math.min(...times))!, iso(Math.max(...times))!] : window, transactions: txs.length,
+          amount: amount(String(rows.reduce((s, r) => s + BigInt(r.amountRaw), 0n))), ...p(txs, 'observed') }, note: 'Recipient ownership and category follow G5; no purpose is assigned to an unknown program.', ...p(txs, 'observed') });
+    }
+  }
+  const onward = path.links.find(l => l.id === 'treasury-onward')!;
+  if (treasury) onward.observed = { ...treasury, amount: amount(f.treasury.outflowRaw.value, 'mSOL'), transactions: f.treasury.transactions.filter(t => t.deltaRaw !== null && BigInt(t.deltaRaw) < 0n).length, byInstruction: undefined };
+  onward.note = 'Observed treasury mSOL debits in its captured window; onward transfers require account operation.';
+  Object.assign(onward, p([onward, onward.observed], ['decoded', 'observed']));
+  path.links.find(l => l.id === 'revenue-buyback')!.note = f.claims.find(c => c.id === 'v5')?.chainResult ?? 'Revenue allocation remains unresolved.';
 }

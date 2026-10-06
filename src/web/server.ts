@@ -9,6 +9,7 @@ import { redactedRpcUrl, redactSecrets } from '../chain/rpc';
 import { CASES, present, withBaseline, makeMemo, type CaseId, type Result } from './model';
 import { runPipeline, liveDirectory, saveResult, ROOT, type Run } from './runner';
 import { buildTokenomics, type TokenomicsBuild } from '../tokenomics/build';
+import { TokenomicsGraphService } from '../tokenomics/graph-service';
 import { tokenomicsRoutes } from './tokenomics-routes';
 
 export class ResearchService {
@@ -17,6 +18,11 @@ export class ResearchService {
   runs = new Map<string, Run>();
   tokenomics?: TokenomicsBuild;
   private graphService?: GraphService;
+  private tokenomicsGraphService?: TokenomicsGraphService;
+  get tokenomicsGraph() {
+    if (!this.tokenomics) return undefined;
+    return this.tokenomicsGraphService ??= new TokenomicsGraphService(this.tokenomics.bundle, this.graphOptions);
+  }
   constructor(private pipeline = runPipeline, private refreshTimeoutMs = 120_000, private graphOptions: GraphOptions = {}) {}
   get graph() {
     return this.graphService ??= new GraphService(buildGraphRecords([...this.results].map(([caseId, result]) => ({ caseId, ...result }))), this.graphOptions);
@@ -37,7 +43,7 @@ export class ResearchService {
   async graphAnswer(id?: string) {
     const answer = await this.graph.query(id); this.publishGraph(answer); return answer;
   }
-  async close() { await this.graphService?.close(); }
+  async close() { await this.graphService?.close(); await this.tokenomicsGraphService?.close(); }
   start(caseId: CaseId, source: 'captured' | 'live' = 'captured'): Run {
     const existing = [...this.runs.values()].find(r => r.caseId === caseId && r.status === 'running');
     if (existing) return existing;
@@ -101,7 +107,7 @@ export function api(service: ResearchService) {
       { headers: { 'Content-Type': 'image/svg+xml', 'Cache-Control': 'public, max-age=86400' } },
     );
     if (request.method === 'POST' && request.headers.get('origin') && request.headers.get('origin') !== u.origin) return json({ error: 'Same-origin requests only' }, 403);
-    if (parts[0] === 'api' && parts[1] === 'tokenomics') return tokenomicsRoutes(service.tokenomics, request);
+    if (parts[0] === 'api' && parts[1] === 'tokenomics') return tokenomicsRoutes(service.tokenomics, request, service.tokenomicsGraph);
     if (parts[0] === 'api' && parts[1] === 'graph') {
       try {
         if (request.method === 'GET' && parts.length <= 3) return json(await service.graphAnswer(parts[2]));
