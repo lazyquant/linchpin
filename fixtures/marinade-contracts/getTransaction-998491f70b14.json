@@ -1,0 +1,94 @@
+{
+ "method": "getTransaction",
+ "params": {
+  "signature": "2i5T7Jw5Kx6pXGxqjfRFVqY5q7hpG7QZjocdW5KjYWSxdAVnc5EvLvy41LxBESNJZ3v5kDsdCdmQWjMHWAigtfq1"
+ },
+ "slot": null,
+ "retrievedAt": "2026-10-06T09:52:41.814Z",
+ "rpcUrl": "https://solana-mainnet.g.alchemy.com",
+ "responseSha256": "83a6bd9b47cea2fed2cb4312c66c2993229b585e0b85453072fffd2b7ea93db1",
+ "response": {
+  "blockTime": 1683714688,
+  "meta": {
+   "err": null,
+   "fee": 6600,
+   "innerInstructions": [],
+   "loadedAddresses": {
+    "readonly": [],
+    "writable": []
+   },
+   "logMessages": [
+    "Program 11111111111111111111111111111111 invoke [1]",
+    "Program 11111111111111111111111111111111 success",
+    "Program ComputeBudget111111111111111111111111111111 invoke [1]",
+    "Program ComputeBudget111111111111111111111111111111 success",
+    "Program ComputeBudget111111111111111111111111111111 invoke [1]",
+    "Program ComputeBudget111111111111111111111111111111 success"
+   ],
+   "postBalances": [
+    20565527280,
+    250000000,
+    1,
+    1
+   ],
+   "postTokenBalances": [],
+   "preBalances": [
+    20765533880,
+    50000000,
+    1,
+    1
+   ],
+   "preTokenBalances": [],
+   "rewards": [],
+   "status": {
+    "Ok": null
+   }
+  },
+  "slot": 193141220,
+  "transaction": {
+   "message": {
+    "header": {
+     "numReadonlySignedAccounts": 0,
+     "numReadonlyUnsignedAccounts": 2,
+     "numRequiredSignatures": 1
+    },
+    "accountKeys": [
+     "chMavQVSWyZKSGkofRbwdqFkw5DQttMJM5XYXuBUjHK",
+     "42VJbDihcS81YJPbuhHnHgvo1ehu42j8VK9sNwrnAarR",
+     "11111111111111111111111111111111",
+     "ComputeBudget111111111111111111111111111111"
+    ],
+    "recentBlockhash": "F3qruq7rr55jdYPrr5aP4FirXLCUeLhZtER53zy2yPwf",
+    "instructions": [
+     {
+      "accounts": [
+       0,
+       1
+      ],
+      "data": "3Bxs3zz3fjzUYuEP",
+      "programIdIndex": 2,
+      "stackHeight": 1
+     },
+     {
+      "accounts": [],
+      "data": "3QBcnUb9zKM9",
+      "programIdIndex": 3,
+      "stackHeight": 1
+     },
+     {
+      "accounts": [],
+      "data": "Fj2Eoy",
+      "programIdIndex": 3,
+      "stackHeight": 1
+     }
+    ],
+    "indexToProgramIds": {}
+   },
+   "signatures": [
+    "2i5T7Jw5Kx6pXGxqjfRFVqY5q7hpG7QZjocdW5KjYWSxdAVnc5EvLvy41LxBESNJZ3v5kDsdCdmQWjMHWAigtfq1"
+   ]
+  },
+  "transactionIndex": 0,
+  "version": "legacy"
+ }
+}

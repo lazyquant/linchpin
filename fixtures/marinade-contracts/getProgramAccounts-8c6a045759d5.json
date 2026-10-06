@@ -1,0 +1,31 @@
+{
+ "method": "getProgramAccounts",
+ "params": {
+  "programId": "MR2LqxoSbw831bNy68utpu5n4YqBH3AzDmddkgk9LQv",
+  "filters": [
+   {
+    "memcmp": {
+     "offset": 0,
+     "bytes": "UJ4PYxGNvxZ"
+    }
+   }
+  ]
+ },
+ "slot": 453862902,
+ "retrievedAt": "2026-10-06T09:35:58.197Z",
+ "rpcUrl": "https://solana-mainnet.g.alchemy.com",
+ "responseSha256": "feda6da19bedb7dbb3081a29f480d69df464197d5f919cf40a17a50a36943fca",
+ "response": [
+  {
+   "pubkey": "MRSh4rUNrpn7mjAq9ENHV4rvwwPKMij113ScZq3twp2",
+   "account": {
+    "lamports": 2519520,
+    "data": "oy5KqNh7hWKXsXz23E58eG1ZRotbrZoIV0t3xnv/W7UIWO1dkZQTIwtiugdPciydQRTy2PcKAMZgAjN7m/kMhzZXptIB20yABTw0OU3VdscjInpEDc7yztndhZzyV5gADd3xmPT/xMZ85LpKgnYkYF8h5JlOmarNYHV/QHUbUw4+etwWpqVzXApaAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+    "owner": "MR2LqxoSbw831bNy68utpu5n4YqBH3AzDmddkgk9LQv",
+    "executable": false,
+    "rentEpoch": 18446744073709552000,
+    "space": 234
+   }
+  }
+ ]
+}

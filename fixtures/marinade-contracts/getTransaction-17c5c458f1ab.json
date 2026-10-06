@@ -1,0 +1,81 @@
+{
+ "method": "getTransaction",
+ "params": {
+  "signature": "d25dCuVJG3KqLF2eDAAhViNeZY6qQhxNBXtwhcBCLgLyv64wa6jZygjcA5i7v6TSYBbr1hRRkjsgk7sxwGvRkCA"
+ },
+ "slot": null,
+ "retrievedAt": "2026-10-06T09:52:48.187Z",
+ "rpcUrl": "https://solana-mainnet.g.alchemy.com",
+ "responseSha256": "a936507251ef51959c15efdaaf2834e2f3c3dc8ea0b11cb0ae56c25addbcdc30",
+ "response": {
+  "blockTime": 1718179562,
+  "meta": {
+   "computeUnitsConsumed": 2370,
+   "err": null,
+   "fee": 5000,
+   "innerInstructions": [],
+   "loadedAddresses": {
+    "readonly": [],
+    "writable": []
+   },
+   "logMessages": [
+    "Program BPFLoaderUpgradeab1e11111111111111111111111 invoke [1]",
+    "New authority Some(6YAju4nd4t7kyuHV6NvVpMepMk11DgWyYjKVJUak2EEm)",
+    "Program BPFLoaderUpgradeab1e11111111111111111111111 success"
+   ],
+   "postBalances": [
+    4663644053,
+    6557802480,
+    1,
+    890880
+   ],
+   "postTokenBalances": [],
+   "preBalances": [
+    4663649053,
+    6557802480,
+    1,
+    890880
+   ],
+   "preTokenBalances": [],
+   "rewards": [],
+   "status": {
+    "Ok": null
+   }
+  },
+  "slot": 271367208,
+  "transaction": {
+   "message": {
+    "header": {
+     "numReadonlySignedAccounts": 0,
+     "numReadonlyUnsignedAccounts": 2,
+     "numRequiredSignatures": 1
+    },
+    "accountKeys": [
+     "chMavQVSWyZKSGkofRbwdqFkw5DQttMJM5XYXuBUjHK",
+     "D2FRjrTcTuq8bJ5oNJN8xes9XP4AvGxN9XejDvdgPrjP",
+     "BPFLoaderUpgradeab1e11111111111111111111111",
+     "6YAju4nd4t7kyuHV6NvVpMepMk11DgWyYjKVJUak2EEm"
+    ],
+    "recentBlockhash": "EMcGCcJUMtDkyruKN6ob4VN7sMXctQTkDGt4qhmBok6d",
+    "instructions": [
+     {
+      "accounts": [
+       1,
+       0,
+       3
+      ],
+      "data": "6vx8P",
+      "programIdIndex": 2,
+      "stackHeight": 1
+     }
+    ],
+    "indexToProgramIds": {}
+   },
+   "signatures": [
+    "d25dCuVJG3KqLF2eDAAhViNeZY6qQhxNBXtwhcBCLgLyv64wa6jZygjcA5i7v6TSYBbr1hRRkjsgk7sxwGvRkCA"
+   ]
+  },
+  "transactionIndex": 0,
+  "version": "legacy"
+ }
+}

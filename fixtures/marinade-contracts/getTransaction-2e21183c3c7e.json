@@ -1,0 +1,643 @@
+{
+ "method": "getTransaction",
+ "params": {
+  "signature": "3yv1oqzsjDaH28PRGggPWV5tztkF55nfcBcLubhFxgnNKm1NbQoLyJfErjMeAM5xFXG2TQ6RrB6EAH8Gs66XuteX"
+ },
+ "slot": null,
+ "retrievedAt": "2026-10-06T09:52:54.228Z",
+ "rpcUrl": "https://solana-mainnet.g.alchemy.com",
+ "responseSha256": "e9b6af7029e9e1a926b9fc6b2e5601c4227a8be4cf441d9a94fee7e7d0d19722",
+ "response": {
+  "blockTime": 1791209082,
+  "meta": {
+   "computeUnitsConsumed": 244646,
+   "costUnits": 248690,
+   "err": null,
+   "fee": 6400,
+   "innerInstructions": [
+    {
+     "index": 2,
+     "instructions": [
+      {
+       "accounts": [
+        6,
+        3,
+        13,
+        14,
+        15
+       ],
+       "data": "BNuyR",
+       "programIdIndex": 12,
+       "stackHeight": 2
+      }
+     ]
+    },
+    {
+     "index": 3,
+     "instructions": [
+      {
+       "accounts": [
+        6,
+        2,
+        13,
+        14,
+        15
+       ],
+       "data": "BNuyR",
+       "programIdIndex": 12,
+       "stackHeight": 2
+      }
+     ]
+    },
+    {
+     "index": 4,
+     "instructions": [
+      {
+       "accounts": [
+        6,
+        8,
+        13,
+        14,
+        15
+       ],
+       "data": "BNuyR",
+       "programIdIndex": 12,
+       "stackHeight": 2
+      }
+     ]
+    },
+    {
+     "index": 5,
+     "instructions": [
+      {
+       "accounts": [
+        6,
+        9,
+        13,
+        14,
+        15
+       ],
+       "data": "BNuyR",
+       "programIdIndex": 12,
+       "stackHeight": 2
+      }
+     ]
+    },
+    {
+     "index": 6,
+     "instructions": [
+      {
+       "accounts": [
+        1,
+        4,
+        13,
+        14,
+        15
+       ],
+       "data": "BNuyR",
+       "programIdIndex": 12,
+       "stackHeight": 2
+      }
+     ]
+    },
+    {
+     "index": 7,
+     "instructions": [
+      {
+       "accounts": [
+        1,
+        5,
+        13,
+        14,
+        15
+       ],
+       "data": "BNuyR",
+       "programIdIndex": 12,
+       "stackHeight": 2
+      }
+     ]
+    },
+    {
+     "index": 8,
+     "instructions": [
+      {
+       "accounts": [
+        1,
+        7,
+        13,
+        14,
+        15
+       ],
+       "data": "BNuyR",
+       "programIdIndex": 12,
+       "stackHeight": 2
+      }
+     ]
+    }
+   ],
+   "loadedAddresses": {
+    "readonly": [],
+    "writable": []
+   },
+   "logMessages": [
+    "Program ComputeBudget111111111111111111111111111111 invoke [1]",
+    "Program ComputeBudget111111111111111111111111111111 success",
+    "Program MemoSq4gqABAXKb96qnH8TysNcWxMyWCqXgDLGmfcHr invoke [1]",
+    "Program log: Memo (len 113): \"{\\\"otx\\\":{\\\"m\\\":[{\\\"id\\\":\\\"order_merge_wJnLSc7UXhaHKM8z\\\",\\\"u\\\":\\\"GZmS5oWR7Mk99JLKCFLfRKtjsi5G8ndmCHJbT1RSG6bs\\\",\\\"t\\\":\\\"sm\\\"}]}}\"",
+    "Program MemoSq4gqABAXKb96qnH8TysNcWxMyWCqXgDLGmfcHr consumed 41306 of 1399850 compute units",
+    "Program MemoSq4gqABAXKb96qnH8TysNcWxMyWCqXgDLGmfcHr success",
+    "Program mnspJQyF1KdDEs5c6YJPocYdY1esBgVQFufM2dY9oDk invoke [1]",
+    "Program log: Instruction: Merge",
+    "Program Stake11111111111111111111111111111111111111 invoke [2]",
+    "Program log: Instruction: Merge",
+    "Program log: Checking if destination stake is mergeable",
+    "Program log: Checking if source stake is mergeable",
+    "Program log: Merging stake accounts",
+    "Program Stake11111111111111111111111111111111111111 consumed 15660 of 1344450 compute units",
+    "Program Stake11111111111111111111111111111111111111 success",
+    "Program data: GR4dKWyLZwQSe7FL76TjFl9LqVH08GeZe7CFRV760NnLbvEsoy5uI8BIEmoDDbr0Fbst9Ou+k34f6yjSAGxHGgx1K3T+FIDVAeoghLHfvm6c0/Vognj7H8MlJuDPHJLp9aScMhiX+Xp5zmoaeAAAAAATBAAAAAAAABkEAAAAAAAAdrqEzN2008Z1IUjJNfuHLE9Kadw9a5UAucDfqHwQUHYBAT7qWLVNafd2K0FlUH7rVE+YmRae8ol5M9XsDFRQCpwZQP1nAAAAAKkDAAAAAAAAGQQAAAAAAAA=",
+    "Program mnspJQyF1KdDEs5c6YJPocYdY1esBgVQFufM2dY9oDk consumed 30798 of 1358544 compute units",
+    "Program mnspJQyF1KdDEs5c6YJPocYdY1esBgVQFufM2dY9oDk success",
+    "Program mnspJQyF1KdDEs5c6YJPocYdY1esBgVQFufM2dY9oDk invoke [1]",
+    "Program log: Instruction: Merge",
+    "Program Stake11111111111111111111111111111111111111 invoke [2]",
+    "Program log: Instruction: Merge",
+    "Program log: Checking if destination stake is mergeable",
+    "Program log: Checking if source stake is mergeable",
+    "Program log: Merging stake accounts",
+    "Program Stake11111111111111111111111111111111111111 consumed 15698 of 1313652 compute units",
+    "Program Stake11111111111111111111111111111111111111 success",
+    "Program data: GR4dKWyLZwQSe7FL76TjFl9LqVH08GeZe7CFRV760NnLbvEsoy5uI8BIEmoDDbr0Fbst9Ou+k34f6yjSAGxHGgx1K3T+FIDVAeoghLHfvm6c0/Vognj7H8MlJuDPHJLp9aScMhiX+Xp5zmoaeAAAAAATBAAAAAAAABkEAAAAAAAAdJP4GRiHrHjmZaHjdZfQsx1W/P/vybGp45H4TErsCCEB8eoqdkhPgmBq45K4eTHWkiUNAIC6S7IG5Wxr79u1uC6vyTtLAAAAANoDAAAAAAAAGQQAAAAAAAA=",
+    "Program mnspJQyF1KdDEs5c6YJPocYdY1esBgVQFufM2dY9oDk consumed 30836 of 1327746 compute units",
+    "Program mnspJQyF1KdDEs5c6YJPocYdY1esBgVQFufM2dY9oDk success",
+    "Program mnspJQyF1KdDEs5c6YJPocYdY1esBgVQFufM2dY9oDk invoke [1]",
+    "Program log: Instruction: Merge",
+    "Program Stake11111111111111111111111111111111111111 invoke [2]",
+    "Program log: Instruction: Merge",
+    "Program log: Checking if destination stake is mergeable",
+    "Program log: Checking if source stake is mergeable",
+    "Program log: Merging stake accounts",
+    "Program Stake11111111111111111111111111111111111111 consumed 15661 of 1282816 compute units",
+    "Program Stake11111111111111111111111111111111111111 success",
+    "Program data: GR4dKWyLZwQSe7FL76TjFl9LqVH08GeZe7CFRV760NnLbvEsoy5uI8BIEmoDDbr0Fbst9Ou+k34f6yjSAGxHGgx1K3T+FIDVAeoghLHfvm6c0/Vognj7H8MlJuDPHJLp9aScMhiX+Xp5zmoaeAAAAAATBAAAAAAAABkEAAAAAAAA3//crzZ2SQIOCIZxo1HymQup3cj4Y/wkWUebJtF+UUQBAEPoOrXq4LhwNAQlwTHnzNV4aVg/7CR6iD6tdYz3N9Z5xUY8AAAAAPIDAAAAAAAAGQQAAAAAAAA=",
+    "Program mnspJQyF1KdDEs5c6YJPocYdY1esBgVQFufM2dY9oDk consumed 30799 of 1296910 compute units",
+    "Program mnspJQyF1KdDEs5c6YJPocYdY1esBgVQFufM2dY9oDk success",
+    "Program mnspJQyF1KdDEs5c6YJPocYdY1esBgVQFufM2dY9oDk invoke [1]",
+    "Program log: Instruction: Merge",
+    "Program Stake11111111111111111111111111111111111111 invoke [2]",
+    "Program log: Instruction: Merge",
+    "Program log: Checking if destination stake is mergeable",
+    "Program log: Checking if source stake is mergeable",
+    "Program log: Merging stake accounts",
+    "Program Stake11111111111111111111111111111111111111 consumed 15443 of 1252017 compute units",
+    "Program Stake11111111111111111111111111111111111111 success",
+    "Program data: GR4dKWyLZwQSe7FL76TjFl9LqVH08GeZe7CFRV760NnLbvEsoy5uI8BIEmoDDbr0Fbst9Ou+k34f6yjSAGxHGgx1K3T+FIDVAeoghLHfvm6c0/Vognj7H8MlJuDPHJLp9aScMhiX+Xp5zmoaeAAAAAATBAAAAAAAABkEAAAAAAAA/0lDSiZFsMcFEHdOrhZH2b9n470mvBLdOUPTgsi0R0QBSxavo1Sl1uU5b1mWxQL8MxhPe3Ew9FsRe+CuP7uUScKT200KAAAAANkDAAAAAAAAGQQAAAAAAAA=",
+    "Program mnspJQyF1KdDEs5c6YJPocYdY1esBgVQFufM2dY9oDk consumed 30581 of 1266111 compute units",
+    "Program mnspJQyF1KdDEs5c6YJPocYdY1esBgVQFufM2dY9oDk success",
+    "Program mnspJQyF1KdDEs5c6YJPocYdY1esBgVQFufM2dY9oDk invoke [1]",
+    "Program log: Instruction: Merge",
+    "Program Stake11111111111111111111111111111111111111 invoke [2]",
+    "Program log: Instruction: Merge",
+    "Program log: Checking if destination stake is mergeable",
+    "Program log: Checking if source stake is mergeable",
+    "Program log: Merging stake accounts",
+    "Program Stake11111111111111111111111111111111111111 consumed 12359 of 1221966 compute units",
+    "Program Stake11111111111111111111111111111111111111 success",
+    "Program data: GR4dKWyLZwQSe7FL76TjFl9LqVH08GeZe7CFRV760NnLbvEsoy5uIzk0eTTRsbBRpnEE2W45fVjuWoJnsurXl0BVSIoCBN+5AI8vkhd12EMnqf5uEbE3mi7Qet19qI4WqTxRaS3/ZOuYAcoj3N+di8kJMRS+STDhC3BTqCrEogssrK8tfyZ19EA+8xVcCwAAAACxAwAAAAAAABkEAAAAAAAA",
+    "Program mnspJQyF1KdDEs5c6YJPocYdY1esBgVQFufM2dY9oDk consumed 26851 of 1235530 compute units",
+    "Program mnspJQyF1KdDEs5c6YJPocYdY1esBgVQFufM2dY9oDk success",
+    "Program mnspJQyF1KdDEs5c6YJPocYdY1esBgVQFufM2dY9oDk invoke [1]",
+    "Program log: Instruction: Merge",
+    "Program Stake11111111111111111111111111111111111111 invoke [2]",
+    "Program log: Instruction: Merge",
+    "Program log: Checking if destination stake is mergeable",
+    "Program log: Checking if source stake is mergeable",
+    "Program log: Merging stake accounts",
+    "Program Stake11111111111111111111111111111111111111 consumed 12170 of 1195115 compute units",
+    "Program Stake11111111111111111111111111111111111111 success",
+    "Program data: GR4dKWyLZwQSe7FL76TjFl9LqVH08GeZe7CFRV760NnLbvEsoy5uIzk0eTTRsbBRpnEE2W45fVjuWoJnsurXl0BVSIoCBN+5AKx3bDsD8SinMjgLWV8+VKGW4hJa1PE1CTXcAr0TBwEmAT4JiMctU9PHB76MCWjv0LclnVntNz+buMlvyzqjIWrUqCSiAQAAAADVAwAAAAAAABkEAAAAAAAA",
+    "Program mnspJQyF1KdDEs5c6YJPocYdY1esBgVQFufM2dY9oDk consumed 26662 of 1208679 compute units",
+    "Program mnspJQyF1KdDEs5c6YJPocYdY1esBgVQFufM2dY9oDk success",
+    "Program mnspJQyF1KdDEs5c6YJPocYdY1esBgVQFufM2dY9oDk invoke [1]",
+    "Program log: Instruction: Merge",
+    "Program Stake11111111111111111111111111111111111111 invoke [2]",
+    "Program log: Instruction: Merge",
+    "Program log: Checking if destination stake is mergeable",
+    "Program log: Checking if source stake is mergeable",
+    "Program log: Merging stake accounts",
+    "Program Stake11111111111111111111111111111111111111 consumed 12171 of 1168453 compute units",
+    "Program Stake11111111111111111111111111111111111111 success",
+    "Program data: GR4dKWyLZwQSe7FL76TjFl9LqVH08GeZe7CFRV760NnLbvEsoy5uIzk0eTTRsbBRpnEE2W45fVjuWoJnsurXl0BVSIoCBN+5AMrVS18UR0rMcvzQWZqOIcunE0PczhZw9XD0rdtL42ITAUh/OkIJzG8Yj6j+mS9xU2Kcfh/x9IECyTDl6OyIVv2ajBcZAAAAAADVAwAAAAAAABkEAAAAAAAA",
+    "Program mnspJQyF1KdDEs5c6YJPocYdY1esBgVQFufM2dY9oDk consumed 26663 of 1182017 compute units",
+    "Program mnspJQyF1KdDEs5c6YJPocYdY1esBgVQFufM2dY9oDk success"
+   ],
+   "postBalances": [
+    859556028,
+    2234991037,
+    0,
+    0,
+    0,
+    0,
+    20854533830,
+    0,
+    0,
+    0,
+    1,
+    523015235,
+    1141440,
+    1169280,
+    114979200,
+    3131617,
+    1141440,
+    1621680
+   ],
+   "postTokenBalances": [],
+   "preBalances": [
+    859562428,
+    2008510230,
+    1264492335,
+    1746946985,
+    192867187,
+    29686312,
+    16654376649,
+    3927308,
+    1013553913,
+    175163948,
+    1,
+    523015235,
+    1141440,
+    1169280,
+    114979200,
+    3131617,
+    1141440,
+    1621680
+   ],
+   "preTokenBalances": [],
+   "rewards": [],
+   "status": {
+    "Ok": null
+   }
+  },
+  "slot": 453600925,
+  "transaction": {
+   "message": {
+    "header": {
+     "numReadonlySignedAccounts": 0,
+     "numReadonlyUnsignedAccounts": 8,
+     "numRequiredSignatures": 1
+    },
+    "staticAccountKeys": [
+     "opNS8ENpEMWdXcJUgJCsJTDp7arTXayoBEeBUg6UezP",
+     "4rJeW4FR9iccswWBCas7oPtywwg9UXKQbSZvJxNmtFje",
+     "8r5A991W4ew1FxD5kTfedbb5fi41NaCTyTcxKY5mBiX2",
+     "8zU4rb57QEmovrkDzcfRF5ELdnV9tH7kNvbCodxkwDdX",
+     "AdwNcAWWn8Ydg1jiQct1cyZHznzpqJq2QEq99Cibyqxb",
+     "CcEk3W6qo9VxcAM8Sm9gL4QexSjTLG2vcm8bhabw9Un9",
+     "Dwb265T6ZhdCMMQX2vmN5qwR5Fv8LxLz3wsPtQBuFeHJ",
+     "EemzdWxKET6uPYAGd5jKYR3Eo7EBihRMu2sKcq88B6C2",
+     "G5QCjWu5ipP4jP4nfqpxY98FXGnhduS3Ak58tDQKqDmV",
+     "JBXkuRzqjwG7xis3uNpRUKczntSRvi5C3kzFC2t76ozT",
+     "ComputeBudget111111111111111111111111111111",
+     "MemoSq4gqABAXKb96qnH8TysNcWxMyWCqXgDLGmfcHr",
+     "Stake11111111111111111111111111111111111111",
+     "SysvarC1ock11111111111111111111111111111111",
+     "SysvarStakeHistory1111111111111111111111111",
+     "ex9CfkBZZd6Nv9XdnoDmmB45ymbu4arXVk7g5pWnt3N",
+     "mnspJQyF1KdDEs5c6YJPocYdY1esBgVQFufM2dY9oDk",
+     "2F9jWSs8zVFLXZx4DFLRJY5rpVSZoK7veU4n1VoUbvqG"
+    ],
+    "recentBlockhash": "HZVk1nKai4QDChWLSAhBozDoucwUs1FB4tH62iuTP3gi",
+    "compiledInstructions": [
+     {
+      "programIdIndex": 10,
+      "accountKeyIndexes": [],
+      "data": {
+       "type": "Buffer",
+       "data": [
+        3,
+        232,
+        3,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+       ]
+      }
+     },
+     {
+      "programIdIndex": 11,
+      "accountKeyIndexes": [],
+      "data": {
+       "type": "Buffer",
+       "data": [
+        123,
+        34,
+        111,
+        116,
+        120,
+        34,
+        58,
+        123,
+        34,
+        109,
+        34,
+        58,
+        91,
+        123,
+        34,
+        105,
+        100,
+        34,
+        58,
+        34,
+        111,
+        114,
+        100,
+        101,
+        114,
+        95,
+        109,
+        101,
+        114,
+        103,
+        101,
+        95,
+        119,
+        74,
+        110,
+        76,
+        83,
+        99,
+        55,
+        85,
+        88,
+        104,
+        97,
+        72,
+        75,
+        77,
+        56,
+        122,
+        34,
+        44,
+        34,
+        117,
+        34,
+        58,
+        34,
+        71,
+        90,
+        109,
+        83,
+        53,
+        111,
+        87,
+        82,
+        55,
+        77,
+        107,
+        57,
+        57,
+        74,
+        76,
+        75,
+        67,
+        70,
+        76,
+        102,
+        82,
+        75,
+        116,
+        106,
+        115,
+        105,
+        53,
+        71,
+        56,
+        110,
+        100,
+        109,
+        67,
+        72,
+        74,
+        98,
+        84,
+        49,
+        82,
+        83,
+        71,
+        54,
+        98,
+        115,
+        34,
+        44,
+        34,
+        116,
+        34,
+        58,
+        34,
+        115,
+        109,
+        34,
+        125,
+        93,
+        125,
+        125
+       ]
+      }
+     },
+     {
+      "programIdIndex": 16,
+      "accountKeyIndexes": [
+       17,
+       0,
+       6,
+       3,
+       15,
+       14,
+       13,
+       12
+      ],
+      "data": {
+       "type": "Buffer",
+       "data": [
+        148,
+        141,
+        236,
+        47,
+        174,
+        126,
+        69,
+        111
+       ]
+      }
+     },
+     {
+      "programIdIndex": 16,
+      "accountKeyIndexes": [
+       17,
+       0,
+       6,
+       2,
+       15,
+       14,
+       13,
+       12
+      ],
+      "data": {
+       "type": "Buffer",
+       "data": [
+        148,
+        141,
+        236,
+        47,
+        174,
+        126,
+        69,
+        111
+       ]
+      }
+     },
+     {
+      "programIdIndex": 16,
+      "accountKeyIndexes": [
+       17,
+       0,
+       6,
+       8,
+       15,
+       14,
+       13,
+       12
+      ],
+      "data": {
+       "type": "Buffer",
+       "data": [
+        148,
+        141,
+        236,
+        47,
+        174,
+        126,
+        69,
+        111
+       ]
+      }
+     },
+     {
+      "programIdIndex": 16,
+      "accountKeyIndexes": [
+       17,
+       0,
+       6,
+       9,
+       15,
+       14,
+       13,
+       12
+      ],
+      "data": {
+       "type": "Buffer",
+       "data": [
+        148,
+        141,
+        236,
+        47,
+        174,
+        126,
+        69,
+        111
+       ]
+      }
+     },
+     {
+      "programIdIndex": 16,
+      "accountKeyIndexes": [
+       17,
+       0,
+       1,
+       4,
+       15,
+       14,
+       13,
+       12
+      ],
+      "data": {
+       "type": "Buffer",
+       "data": [
+        148,
+        141,
+        236,
+        47,
+        174,
+        126,
+        69,
+        111
+       ]
+      }
+     },
+     {
+      "programIdIndex": 16,
+      "accountKeyIndexes": [
+       17,
+       0,
+       1,
+       5,
+       15,
+       14,
+       13,
+       12
+      ],
+      "data": {
+       "type": "Buffer",
+       "data": [
+        148,
+        141,
+        236,
+        47,
+        174,
+        126,
+        69,
+        111
+       ]
+      }
+     },
+     {
+      "programIdIndex": 16,
+      "accountKeyIndexes": [
+       17,
+       0,
+       1,
+       7,
+       15,
+       14,
+       13,
+       12
+      ],
+      "data": {
+       "type": "Buffer",
+       "data": [
+        148,
+        141,
+        236,
+        47,
+        174,
+        126,
+        69,
+        111
+       ]
+      }
+     }
+    ],
+    "addressTableLookups": []
+   },
+   "signatures": [
+    "3yv1oqzsjDaH28PRGggPWV5tztkF55nfcBcLubhFxgnNKm1NbQoLyJfErjMeAM5xFXG2TQ6RrB6EAH8Gs66XuteX"
+   ]
+  },
+  "transactionIndex": 673,
+  "version": 0
+ }
+}

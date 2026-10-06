@@ -1,0 +1,159 @@
+{
+ "method": "getTransaction",
+ "params": {
+  "signature": "5JSHfTx7U1e3fepYEUmsh14hGGfpW7kvp2ysCDZ82ptMD97nVCRd2uRwcd5KrxqVAnQEeK4hPQRYhQVcdjKptAh9"
+ },
+ "slot": null,
+ "retrievedAt": "2026-10-06T09:52:40.216Z",
+ "rpcUrl": "https://solana-mainnet.g.alchemy.com",
+ "responseSha256": "19434d466c52ddf169f3e31f8d457dc4a8cf2c75d526eb9e045c49eb92a671b3",
+ "response": {
+  "blockTime": 1784538962,
+  "meta": {
+   "computeUnitsConsumed": 26518,
+   "costUnits": 29557,
+   "err": {
+    "InstructionError": [
+     2,
+     {
+      "Custom": 2506
+     }
+    ]
+   },
+   "fee": 192500,
+   "innerInstructions": [
+    {
+     "index": 2,
+     "instructions": [
+      {
+       "accounts": [
+        3,
+        2,
+        5
+       ],
+       "data": "pxNa8qvd4Ae6",
+       "programIdIndex": 9,
+       "stackHeight": 2
+      }
+     ]
+    }
+   ],
+   "loadedAddresses": {
+    "readonly": [],
+    "writable": []
+   },
+   "logMessages": [
+    "Program ComputeBudget111111111111111111111111111111 invoke [1]",
+    "Program ComputeBudget111111111111111111111111111111 success",
+    "Program ComputeBudget111111111111111111111111111111 invoke [1]",
+    "Program ComputeBudget111111111111111111111111111111 success",
+    "Program GovMaiHfpVPw8BAM1mbdzgmSZYDw2tdP32J2fapoQoYs invoke [1]",
+    "Program log: VERSION:\"3.1.1\"",
+    "Program log: GOVERNANCE-INSTRUCTION: ExecuteTransaction",
+    "Program MarBmsSgKXdrN1egZf5sqe1TMai9K1rChYNDJgjq7aD invoke [2]",
+    "Program log: Instruction: IdlSetBuffer",
+    "Program log: AnchorError thrown in programs/marinade-finance/src/lib.rs:47. Error Code: RequireGteViolated. Error Number: 2506. Error Message: A require_gte expression was violated.",
+    "Program log: Left: 5828",
+    "Program log: Right: 6199",
+    "Program MarBmsSgKXdrN1egZf5sqe1TMai9K1rChYNDJgjq7aD consumed 8564 of 982046 compute units",
+    "Program MarBmsSgKXdrN1egZf5sqe1TMai9K1rChYNDJgjq7aD failed: custom program error: 0x9ca",
+    "Program GovMaiHfpVPw8BAM1mbdzgmSZYDw2tdP32J2fapoQoYs consumed 26218 of 999700 compute units",
+    "Program GovMaiHfpVPw8BAM1mbdzgmSZYDw2tdP32J2fapoQoYs failed: custom program error: 0x9ca"
+   ],
+   "postBalances": [
+    3312993028,
+    2373360,
+    41760000,
+    44342160,
+    4503120,
+    228243040,
+    1,
+    1141440,
+    2533440,
+    21141464
+   ],
+   "postTokenBalances": [],
+   "preBalances": [
+    3313185528,
+    2373360,
+    41760000,
+    44342160,
+    4503120,
+    228243040,
+    1,
+    1141440,
+    2533440,
+    21141464
+   ],
+   "preTokenBalances": [],
+   "rewards": [],
+   "status": {
+    "Err": {
+     "InstructionError": [
+      2,
+      {
+       "Custom": 2506
+      }
+     ]
+    }
+   }
+  },
+  "slot": 434072062,
+  "transaction": {
+   "message": {
+    "header": {
+     "numReadonlySignedAccounts": 0,
+     "numReadonlyUnsignedAccounts": 5,
+     "numRequiredSignatures": 1
+    },
+    "accountKeys": [
+     "MSHRissZyf4nS2E7MShYrK4q5ucsPSqPv3ndw4ZcW4m",
+     "48oLbxUVdn6rEG2qA7K6zwTPxFy8JtkXcyjw8313ozUc",
+     "9jWC3EixD3D7ChMrrSRw3opnGHQ8YxZGJqGkzcup3tAn",
+     "CFdW9JnKR1iFLf329T8TLY5RbGUFeDHfSJbmKLRSTeoY",
+     "vZYEPzbmSB1MQPECyfGWmmhKGoyjoJtgX3mHNN1Cg4k",
+     "42VJbDihcS81YJPbuhHnHgvo1ehu42j8VK9sNwrnAarR",
+     "ComputeBudget111111111111111111111111111111",
+     "GovMaiHfpVPw8BAM1mbdzgmSZYDw2tdP32J2fapoQoYs",
+     "M5Fg6GipNvPzWgXNr5wj1EDcp8GB9J53cgyE7YGYLbL",
+     "MarBmsSgKXdrN1egZf5sqe1TMai9K1rChYNDJgjq7aD"
+    ],
+    "recentBlockhash": "GxQw4Rm3yqR65pzDm9Xe4JARkD5UH1tmwUTwBPnUAeqk",
+    "instructions": [
+     {
+      "accounts": [],
+      "data": "3XfdouNCzGAb",
+      "programIdIndex": 6,
+      "stackHeight": 1
+     },
+     {
+      "accounts": [],
+      "data": "FjL4FH",
+      "programIdIndex": 6,
+      "stackHeight": 1
+     },
+     {
+      "accounts": [
+       8,
+       4,
+       1,
+       9,
+       3,
+       2,
+       5
+      ],
+      "data": "H",
+      "programIdIndex": 7,
+      "stackHeight": 1
+     }
+    ],
+    "indexToProgramIds": {}
+   },
+   "signatures": [
+    "5JSHfTx7U1e3fepYEUmsh14hGGfpW7kvp2ysCDZ82ptMD97nVCRd2uRwcd5KrxqVAnQEeK4hPQRYhQVcdjKptAh9"
+   ]
+  },
+  "transactionIndex": 375,
+  "version": "legacy"
+ }
+}

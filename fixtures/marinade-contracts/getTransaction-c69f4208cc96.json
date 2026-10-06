@@ -1,0 +1,113 @@
+{
+ "method": "getTransaction",
+ "params": {
+  "signature": "2DbCBmSd3W1QfJCBLWgnNRkYMmkHp2zSGp93sEkDL5V76T3fjyZUhofBbBxUrduu37EqMxfHnwJiow2WcQXExv1j"
+ },
+ "slot": null,
+ "retrievedAt": "2026-10-06T09:52:45.425Z",
+ "rpcUrl": "https://solana-mainnet.g.alchemy.com",
+ "responseSha256": "0fe9e21b7831935fb913c5fc24ff6572ce8f16a1b961f8e93a692ce2b40bbbad",
+ "response": {
+  "blockTime": 1631827504,
+  "meta": {
+   "err": null,
+   "fee": 5000,
+   "innerInstructions": [
+    {
+     "index": 0,
+     "instructions": [
+      {
+       "accounts": [
+        2,
+        4,
+        5
+       ],
+       "data": "6vx8P",
+       "programIdIndex": 6,
+       "stackHeight": null
+      }
+     ]
+    }
+   ],
+   "loadedAddresses": {
+    "readonly": [],
+    "writable": []
+   },
+   "logMessages": [
+    "Program H88LfRBiJLZ7wYkHGuwkKTaijfQxexq8JvzUndu7fyjL invoke [1]",
+    "New authority Some(551FBXSXdhcRDDkdcb3ThDRg84Mwe5Zs6YjJ1EEoyzBp)",
+    "Program H88LfRBiJLZ7wYkHGuwkKTaijfQxexq8JvzUndu7fyjL consumed 23898 of 200000 compute units",
+    "Program H88LfRBiJLZ7wYkHGuwkKTaijfQxexq8JvzUndu7fyjL success"
+   ],
+   "postBalances": [
+    989990000,
+    2296800,
+    13986196560,
+    3340800,
+    0,
+    0,
+    1,
+    1141440
+   ],
+   "postTokenBalances": [],
+   "preBalances": [
+    989995000,
+    2296800,
+    13986196560,
+    3340800,
+    0,
+    0,
+    1,
+    1141440
+   ],
+   "preTokenBalances": [],
+   "rewards": [],
+   "status": {
+    "Ok": null
+   }
+  },
+  "slot": 96841980,
+  "transaction": {
+   "message": {
+    "header": {
+     "numReadonlySignedAccounts": 0,
+     "numReadonlyUnsignedAccounts": 5,
+     "numRequiredSignatures": 1
+    },
+    "accountKeys": [
+     "6PVyHxZjUDEDB36Cz6uGTPBAKSx4gzuyvCE9xeGqdWVS",
+     "AXmQppgSikdewLvjxFGAFw5tEWYUyCkc9mxDqMF3vkj5",
+     "4PQH9YmfuKrVyZaibkLYpJZPv2FPaybhq2GAuBcWMSBf",
+     "6FhtU8Q9bbuhKeRDFL7H7NeMxa1EqL5KP7HU9XRGSyRy",
+     "2ik2NeXavpTCMpeYePtLkEBZ4zLi9fPG5PggqHhL9gRe",
+     "551FBXSXdhcRDDkdcb3ThDRg84Mwe5Zs6YjJ1EEoyzBp",
+     "BPFLoaderUpgradeab1e11111111111111111111111",
+     "H88LfRBiJLZ7wYkHGuwkKTaijfQxexq8JvzUndu7fyjL"
+    ],
+    "recentBlockhash": "9hmu8LavQYFfnBwG8y1Xfj3bxEH4GHH72kSVsEqsojaW",
+    "instructions": [
+     {
+      "accounts": [
+       3,
+       4,
+       1,
+       2,
+       4,
+       5,
+       6
+      ],
+      "data": "fkZ3ve9Zt9x",
+      "programIdIndex": 7,
+      "stackHeight": 1
+     }
+    ],
+    "indexToProgramIds": {}
+   },
+   "signatures": [
+    "2DbCBmSd3W1QfJCBLWgnNRkYMmkHp2zSGp93sEkDL5V76T3fjyZUhofBbBxUrduu37EqMxfHnwJiow2WcQXExv1j"
+   ]
+  },
+  "transactionIndex": 0,
+  "version": "legacy"
+ }
+}

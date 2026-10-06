@@ -1,0 +1,350 @@
+{
+ "method": "getTransaction",
+ "params": {
+  "signature": "VAx4gxdtve7VkRQbPomHWuzBRYZE1cVE8amvsw7X8intto9S9AxMeyBQGTGpw4qk1ovLaiog9jeGaHjs2CCCHFH"
+ },
+ "slot": null,
+ "retrievedAt": "2026-10-06T09:52:55.515Z",
+ "rpcUrl": "https://solana-mainnet.g.alchemy.com",
+ "responseSha256": "6e3c9cf6d8e86fd515f81a3551dc9daa78b85ea9a32fae94248d0feb7a131a83",
+ "response": {
+  "blockTime": 1791093460,
+  "meta": {
+   "computeUnitsConsumed": 102286,
+   "costUnits": 104520,
+   "err": null,
+   "fee": 5603,
+   "innerInstructions": [
+    {
+     "index": 2,
+     "instructions": [
+      {
+       "accounts": [
+        2,
+        3,
+        7,
+        8,
+        9
+       ],
+       "data": "BNuyR",
+       "programIdIndex": 6,
+       "stackHeight": 2
+      }
+     ]
+    },
+    {
+     "index": 3,
+     "instructions": [
+      {
+       "accounts": [
+        2,
+        1,
+        7,
+        8,
+        9
+       ],
+       "data": "BNuyR",
+       "programIdIndex": 6,
+       "stackHeight": 2
+      }
+     ]
+    }
+   ],
+   "loadedAddresses": {
+    "readonly": [],
+    "writable": []
+   },
+   "logMessages": [
+    "Program ComputeBudget111111111111111111111111111111 invoke [1]",
+    "Program ComputeBudget111111111111111111111111111111 success",
+    "Program MemoSq4gqABAXKb96qnH8TysNcWxMyWCqXgDLGmfcHr invoke [1]",
+    "Program log: Memo (len 113): \"{\\\"otx\\\":{\\\"m\\\":[{\\\"id\\\":\\\"order_merge_BeSUt6SLEwpfov3s\\\",\\\"u\\\":\\\"FBL5tqjnbgn9hu4BBHSzJWgy2JubmaiJ3wHZyU6SVS6s\\\",\\\"t\\\":\\\"sm\\\"}]}}\"",
+    "Program MemoSq4gqABAXKb96qnH8TysNcWxMyWCqXgDLGmfcHr consumed 41306 of 602850 compute units",
+    "Program MemoSq4gqABAXKb96qnH8TysNcWxMyWCqXgDLGmfcHr success",
+    "Program mnspJQyF1KdDEs5c6YJPocYdY1esBgVQFufM2dY9oDk invoke [1]",
+    "Program log: Instruction: Merge",
+    "Program Stake11111111111111111111111111111111111111 invoke [2]",
+    "Program log: Instruction: Merge",
+    "Program log: Checking if destination stake is mergeable",
+    "Program log: Checking if source stake is mergeable",
+    "Program log: Merging stake accounts",
+    "Program Stake11111111111111111111111111111111111111 consumed 15313 of 547450 compute units",
+    "Program Stake11111111111111111111111111111111111111 success",
+    "Program data: GR4dKWyLZwQSe7FL76TjFl9LqVH08GeZe7CFRV760NnLbvEsoy5uI3qcp+hyctAqlMV1EEHwBSzetuXdEXOoYL/mGyGHPZ+7AZdltFReKM+25HHrqqhZWsSCvIxmFgd1p0fuphwFjSmCgveGSQAAAAAXBAAAAAAAABgEAAAAAAAAgZi+INxtWqk0lFuyZDs1M+7GJjaR7p1joYpkP0aB86IBAT7qWLVNafd2K0FlUH7rVE+YmRae8ol5M9XsDFRQCpztiW0LAAAAALcDAAAAAAAAGAQAAAAAAAA=",
+    "Program mnspJQyF1KdDEs5c6YJPocYdY1esBgVQFufM2dY9oDk consumed 30451 of 561544 compute units",
+    "Program mnspJQyF1KdDEs5c6YJPocYdY1esBgVQFufM2dY9oDk success",
+    "Program mnspJQyF1KdDEs5c6YJPocYdY1esBgVQFufM2dY9oDk invoke [1]",
+    "Program log: Instruction: Merge",
+    "Program Stake11111111111111111111111111111111111111 invoke [2]",
+    "Program log: Instruction: Merge",
+    "Program log: Checking if destination stake is mergeable",
+    "Program log: Checking if source stake is mergeable",
+    "Program log: Merging stake accounts",
+    "Program Stake11111111111111111111111111111111111111 consumed 15241 of 516999 compute units",
+    "Program Stake11111111111111111111111111111111111111 success",
+    "Program data: GR4dKWyLZwQSe7FL76TjFl9LqVH08GeZe7CFRV760NnLbvEsoy5uI3qcp+hyctAqlMV1EEHwBSzetuXdEXOoYL/mGyGHPZ+7AZdltFReKM+25HHrqqhZWsSCvIxmFgd1p0fuphwFjSmCgveGSQAAAAAXBAAAAAAAABgEAAAAAAAAav53jfYOzuzBDavfRH3xTbC7FtPOFG9c1n5t1QD6ksQBPrUuTGr94CYa3Kelhj26NQgrfSTL5N4AE0iUW//NFE/BwDsBAAAAANYDAAAAAAAAGAQAAAAAAAA=",
+    "Program mnspJQyF1KdDEs5c6YJPocYdY1esBgVQFufM2dY9oDk consumed 30379 of 531093 compute units",
+    "Program mnspJQyF1KdDEs5c6YJPocYdY1esBgVQFufM2dY9oDk success"
+   ],
+   "postBalances": [
+    905894576,
+    0,
+    2010732088,
+    0,
+    1,
+    523015235,
+    1141440,
+    1169280,
+    114979200,
+    3131617,
+    1141440,
+    1621680
+   ],
+   "postTokenBalances": [],
+   "preBalances": [
+    905900179,
+    22976065,
+    1793742656,
+    194013367,
+    1,
+    523015235,
+    1141440,
+    1169280,
+    114979200,
+    3131617,
+    1141440,
+    1621680
+   ],
+   "preTokenBalances": [],
+   "rewards": [],
+   "status": {
+    "Ok": null
+   }
+  },
+  "slot": 453168786,
+  "transaction": {
+   "message": {
+    "header": {
+     "numReadonlySignedAccounts": 0,
+     "numReadonlyUnsignedAccounts": 8,
+     "numRequiredSignatures": 1
+    },
+    "staticAccountKeys": [
+     "opNS8ENpEMWdXcJUgJCsJTDp7arTXayoBEeBUg6UezP",
+     "8CfGY8sRqY1Jg8qEunF9PaEztUSPyGBcxLPiKvrTnYkb",
+     "9FdHcRFwu2QxPcAunE1FdHbWsHckZYKEiSgCzZLzqF6r",
+     "9itgQZv6kSPkwVS9NDU4UqtaEZskxSZeDPJ3HUtcEcXK",
+     "ComputeBudget111111111111111111111111111111",
+     "MemoSq4gqABAXKb96qnH8TysNcWxMyWCqXgDLGmfcHr",
+     "Stake11111111111111111111111111111111111111",
+     "SysvarC1ock11111111111111111111111111111111",
+     "SysvarStakeHistory1111111111111111111111111",
+     "ex9CfkBZZd6Nv9XdnoDmmB45ymbu4arXVk7g5pWnt3N",
+     "mnspJQyF1KdDEs5c6YJPocYdY1esBgVQFufM2dY9oDk",
+     "2F9jWSs8zVFLXZx4DFLRJY5rpVSZoK7veU4n1VoUbvqG"
+    ],
+    "recentBlockhash": "5hWXLGcs3X275m2pLzQj6wDoVRh2Nrr3xjAsTgXXPKSQ",
+    "compiledInstructions": [
+     {
+      "programIdIndex": 4,
+      "accountKeyIndexes": [],
+      "data": {
+       "type": "Buffer",
+       "data": [
+        3,
+        232,
+        3,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+       ]
+      }
+     },
+     {
+      "programIdIndex": 5,
+      "accountKeyIndexes": [],
+      "data": {
+       "type": "Buffer",
+       "data": [
+        123,
+        34,
+        111,
+        116,
+        120,
+        34,
+        58,
+        123,
+        34,
+        109,
+        34,
+        58,
+        91,
+        123,
+        34,
+        105,
+        100,
+        34,
+        58,
+        34,
+        111,
+        114,
+        100,
+        101,
+        114,
+        95,
+        109,
+        101,
+        114,
+        103,
+        101,
+        95,
+        66,
+        101,
+        83,
+        85,
+        116,
+        54,
+        83,
+        76,
+        69,
+        119,
+        112,
+        102,
+        111,
+        118,
+        51,
+        115,
+        34,
+        44,
+        34,
+        117,
+        34,
+        58,
+        34,
+        70,
+        66,
+        76,
+        53,
+        116,
+        113,
+        106,
+        110,
+        98,
+        103,
+        110,
+        57,
+        104,
+        117,
+        52,
+        66,
+        66,
+        72,
+        83,
+        122,
+        74,
+        87,
+        103,
+        121,
+        50,
+        74,
+        117,
+        98,
+        109,
+        97,
+        105,
+        74,
+        51,
+        119,
+        72,
+        90,
+        121,
+        85,
+        54,
+        83,
+        86,
+        83,
+        54,
+        115,
+        34,
+        44,
+        34,
+        116,
+        34,
+        58,
+        34,
+        115,
+        109,
+        34,
+        125,
+        93,
+        125,
+        125
+       ]
+      }
+     },
+     {
+      "programIdIndex": 10,
+      "accountKeyIndexes": [
+       11,
+       0,
+       2,
+       3,
+       9,
+       8,
+       7,
+       6
+      ],
+      "data": {
+       "type": "Buffer",
+       "data": [
+        148,
+        141,
+        236,
+        47,
+        174,
+        126,
+        69,
+        111
+       ]
+      }
+     },
+     {
+      "programIdIndex": 10,
+      "accountKeyIndexes": [
+       11,
+       0,
+       2,
+       1,
+       9,
+       8,
+       7,
+       6
+      ],
+      "data": {
+       "type": "Buffer",
+       "data": [
+        148,
+        141,
+        236,
+        47,
+        174,
+        126,
+        69,
+        111
+       ]
+      }
+     }
+    ],
+    "addressTableLookups": []
+   },
+   "signatures": [
+    "VAx4gxdtve7VkRQbPomHWuzBRYZE1cVE8amvsw7X8intto9S9AxMeyBQGTGpw4qk1ovLaiog9jeGaHjs2CCCHFH"
+   ]
+  },
+  "transactionIndex": 144,
+  "version": 0
+ }
+}

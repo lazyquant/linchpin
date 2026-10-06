@@ -1,0 +1,82 @@
+{
+ "method": "getTransaction",
+ "params": {
+  "signature": "zHraJJmk6zCcNCTGRjfg2Q4pteT31PYiGRhyFXrfGmnzzMzh7zxmpd9BAzGs1UJRa5aUc3GumnAedUuq2pDWfyQ"
+ },
+ "slot": null,
+ "retrievedAt": "2026-10-06T09:52:45.646Z",
+ "rpcUrl": "https://solana-mainnet.g.alchemy.com",
+ "responseSha256": "7d7fc9b5890620ffa0a57e44f05bcab21a7f380b64553c7b4767dc575828b5e4",
+ "response": {
+  "blockTime": 1775573162,
+  "meta": {
+   "computeUnitsConsumed": 2370,
+   "costUnits": 3779,
+   "err": null,
+   "fee": 5000,
+   "innerInstructions": [],
+   "loadedAddresses": {
+    "readonly": [],
+    "writable": []
+   },
+   "logMessages": [
+    "Program BPFLoaderUpgradeab1e11111111111111111111111 invoke [1]",
+    "New authority Some(6YAju4nd4t7kyuHV6NvVpMepMk11DgWyYjKVJUak2EEm)",
+    "Program BPFLoaderUpgradeab1e11111111111111111111111 success"
+   ],
+   "postBalances": [
+    106832846,
+    2379074160,
+    1,
+    100890880
+   ],
+   "postTokenBalances": [],
+   "preBalances": [
+    106837846,
+    2379074160,
+    1,
+    100890880
+   ],
+   "preTokenBalances": [],
+   "rewards": [],
+   "status": {
+    "Ok": null
+   }
+  },
+  "slot": 411652014,
+  "transaction": {
+   "message": {
+    "header": {
+     "numReadonlySignedAccounts": 0,
+     "numReadonlyUnsignedAccounts": 2,
+     "numRequiredSignatures": 1
+    },
+    "accountKeys": [
+     "J9nDb6aTfkLwxzue5VdfQbtNqAQysmT3z4ojAPkaqHev",
+     "HAq32VG7vSx1jadcZTicxeiA2ZGa7BQPXmLGcVyzMfHN",
+     "BPFLoaderUpgradeab1e11111111111111111111111",
+     "6YAju4nd4t7kyuHV6NvVpMepMk11DgWyYjKVJUak2EEm"
+    ],
+    "recentBlockhash": "DFwT7ypJXy8K2bBCna7VPGc5NS7FDTvuxCBqzaJLmL2A",
+    "instructions": [
+     {
+      "accounts": [
+       1,
+       0,
+       3
+      ],
+      "data": "6vx8P",
+      "programIdIndex": 2,
+      "stackHeight": 1
+     }
+    ],
+    "indexToProgramIds": {}
+   },
+   "signatures": [
+    "zHraJJmk6zCcNCTGRjfg2Q4pteT31PYiGRhyFXrfGmnzzMzh7zxmpd9BAzGs1UJRa5aUc3GumnAedUuq2pDWfyQ"
+   ]
+  },
+  "transactionIndex": 0,
+  "version": "legacy"
+ }
+}

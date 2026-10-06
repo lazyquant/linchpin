@@ -1,0 +1,174 @@
+{
+ "method": "getTransaction",
+ "params": {
+  "signature": "3XzX6kRVJStFZ3QCY3cqwK8D6FX4CUuXhnZhAMSXNJA3EZCLp7oBNsYzooLCbTK6Lv7MJY2MvMBF1qAhRWc95PpF"
+ },
+ "slot": null,
+ "retrievedAt": "2026-10-06T09:52:49.222Z",
+ "rpcUrl": "https://solana-mainnet.g.alchemy.com",
+ "responseSha256": "b3c0249585992e6574d19ee3f7fada547f2a5d0d6437d9c92c0cfcb05e904ce1",
+ "response": {
+  "blockTime": 1713093847,
+  "meta": {
+   "computeUnitsConsumed": 22345,
+   "err": {
+    "InsufficientFundsForRent": {
+     "account_index": 0
+    }
+   },
+   "fee": 14000,
+   "innerInstructions": [
+    {
+     "index": 0,
+     "instructions": [
+      {
+       "accounts": [
+        5
+       ],
+       "data": "84eT",
+       "programIdIndex": 8,
+       "stackHeight": 2
+      },
+      {
+       "accounts": [
+        0,
+        1
+       ],
+       "data": "11119os1e9qSs2u7TsThXqkBSRVFxhmYaFKFZ1waB2X7armDmvK3p5GmLdUxYdg3h7QSrL",
+       "programIdIndex": 2,
+       "stackHeight": 2
+      },
+      {
+       "accounts": [
+        1
+       ],
+       "data": "P",
+       "programIdIndex": 8,
+       "stackHeight": 2
+      },
+      {
+       "accounts": [
+        1,
+        5
+       ],
+       "data": "6SfsQqGKRMjPbFPP1BY7qJL6CrdapdRngFeVLo4GZKNfj",
+       "programIdIndex": 8,
+       "stackHeight": 2
+      }
+     ]
+    }
+   ],
+   "loadedAddresses": {
+    "readonly": [],
+    "writable": []
+   },
+   "logMessages": [
+    "Program ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL invoke [1]",
+    "Program log: Create",
+    "Program TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA invoke [2]",
+    "Program log: Instruction: GetAccountDataSize",
+    "Program TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA consumed 1622 of 192908 compute units",
+    "Program return: TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA pQAAAAAAAAA=",
+    "Program TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA success",
+    "Program 11111111111111111111111111111111 invoke [2]",
+    "Program 11111111111111111111111111111111 success",
+    "Program log: Initialize the associated token account",
+    "Program TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA invoke [2]",
+    "Program log: Instruction: InitializeImmutableOwner",
+    "Program log: Please upgrade to SPL Token 2022 for immutable owner support",
+    "Program TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA consumed 1405 of 186268 compute units",
+    "Program TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA success",
+    "Program TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA invoke [2]",
+    "Program log: Instruction: InitializeAccount3",
+    "Program TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA consumed 4241 of 182384 compute units",
+    "Program TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA success",
+    "Program ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL consumed 22195 of 200000 compute units",
+    "Program ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL success",
+    "Program ComputeBudget111111111111111111111111111111 invoke [1]",
+    "Program ComputeBudget111111111111111111111111111111 success"
+   ],
+   "postBalances": [
+    2391161,
+    0,
+    1,
+    890880,
+    731913600,
+    1461600,
+    1,
+    1009200,
+    934087680
+   ],
+   "postTokenBalances": [],
+   "preBalances": [
+    2405161,
+    0,
+    1,
+    890880,
+    731913600,
+    1461600,
+    1,
+    1009200,
+    934087680
+   ],
+   "preTokenBalances": [],
+   "rewards": [],
+   "status": {
+    "Err": {
+     "InsufficientFundsForRent": {
+      "account_index": 0
+     }
+    }
+   }
+  },
+  "slot": 260071653,
+  "transaction": {
+   "message": {
+    "header": {
+     "numReadonlySignedAccounts": 0,
+     "numReadonlyUnsignedAccounts": 7,
+     "numRequiredSignatures": 1
+    },
+    "accountKeys": [
+     "2SLLhNxtkDGnVEWhhkqvN1cYmQJFUdX4CgvoegJpQTNk",
+     "A63dJ8wZzygSVxkQHENZkpPwgyEPHHyaj4c8KUSiNQ32",
+     "11111111111111111111111111111111",
+     "6YAju4nd4t7kyuHV6NvVpMepMk11DgWyYjKVJUak2EEm",
+     "ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL",
+     "Chk3LHL9sdKibmNsSCGBB6ZER1YqQoPapzz3EfQtc1WW",
+     "ComputeBudget111111111111111111111111111111",
+     "SysvarRent111111111111111111111111111111111",
+     "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
+    ],
+    "recentBlockhash": "DbfMKmUXftXKm6bCZKVSq3CELHDU89iLLcXGuFc5M4fQ",
+    "instructions": [
+     {
+      "accounts": [
+       0,
+       1,
+       3,
+       5,
+       2,
+       8,
+       7
+      ],
+      "data": "",
+      "programIdIndex": 4,
+      "stackHeight": 1
+     },
+     {
+      "accounts": [],
+      "data": "3o2SmZhc2ypb",
+      "programIdIndex": 6,
+      "stackHeight": 1
+     }
+    ],
+    "indexToProgramIds": {}
+   },
+   "signatures": [
+    "3XzX6kRVJStFZ3QCY3cqwK8D6FX4CUuXhnZhAMSXNJA3EZCLp7oBNsYzooLCbTK6Lv7MJY2MvMBF1qAhRWc95PpF"
+   ]
+  },
+  "transactionIndex": 0,
+  "version": "legacy"
+ }
+}

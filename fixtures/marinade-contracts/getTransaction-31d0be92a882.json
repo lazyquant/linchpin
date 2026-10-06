@@ -1,0 +1,77 @@
+{
+ "method": "getTransaction",
+ "params": {
+  "signature": "2uvKaud2L7Ffo5z8TMoQFEuxuCdvwWwuSVwh2wnBPpY3SJ7XSTDNG6WmGNckQPTePS7LUeMUioVVQ7SHRxwTj9Q1"
+ },
+ "slot": null,
+ "retrievedAt": "2026-10-06T09:52:45.879Z",
+ "rpcUrl": "https://solana-mainnet.g.alchemy.com",
+ "responseSha256": "dfc490e993fe5f8e9882f0ffdbbab3619d515bce9479c87cb4955d744611c53e",
+ "response": {
+  "blockTime": 1775552744,
+  "meta": {
+   "computeUnitsConsumed": 150,
+   "costUnits": 1481,
+   "err": null,
+   "fee": 5000,
+   "innerInstructions": [],
+   "loadedAddresses": {
+    "readonly": [],
+    "writable": []
+   },
+   "logMessages": [
+    "Program 11111111111111111111111111111111 invoke [1]",
+    "Program 11111111111111111111111111111111 success"
+   ],
+   "postBalances": [
+    7933017715,
+    100890880,
+    1
+   ],
+   "postTokenBalances": [],
+   "preBalances": [
+    8033022715,
+    890880,
+    1
+   ],
+   "preTokenBalances": [],
+   "rewards": [],
+   "status": {
+    "Ok": null
+   }
+  },
+  "slot": 411600011,
+  "transaction": {
+   "message": {
+    "header": {
+     "numReadonlySignedAccounts": 0,
+     "numReadonlyUnsignedAccounts": 1,
+     "numRequiredSignatures": 1
+    },
+    "accountKeys": [
+     "chMavQVSWyZKSGkofRbwdqFkw5DQttMJM5XYXuBUjHK",
+     "6YAju4nd4t7kyuHV6NvVpMepMk11DgWyYjKVJUak2EEm",
+     "11111111111111111111111111111111"
+    ],
+    "recentBlockhash": "DAPeFcoaHpWYuVbjrY35pxE16vRn6fCdgBB9D44omYGb",
+    "instructions": [
+     {
+      "accounts": [
+       0,
+       1
+      ],
+      "data": "3Bxs411Dtc7pkFQj",
+      "programIdIndex": 2,
+      "stackHeight": 1
+     }
+    ],
+    "indexToProgramIds": {}
+   },
+   "signatures": [
+    "2uvKaud2L7Ffo5z8TMoQFEuxuCdvwWwuSVwh2wnBPpY3SJ7XSTDNG6WmGNckQPTePS7LUeMUioVVQ7SHRxwTj9Q1"
+   ]
+  },
+  "transactionIndex": 0,
+  "version": "legacy"
+ }
+}

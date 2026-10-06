@@ -1,0 +1,82 @@
+{
+ "method": "getTransaction",
+ "params": {
+  "signature": "5Ww8TzcMAEFBQPefcKoUfrqzyoDW9ZDmX8CZCVydqWbXWtGTidon6iPQgmj8X8o7ga3fdgKRtJvDXFngNTsUnsJh"
+ },
+ "slot": null,
+ "retrievedAt": "2026-10-06T09:52:43.040Z",
+ "rpcUrl": "https://solana-mainnet.g.alchemy.com",
+ "responseSha256": "d505d0c045004a2314e316ff45583bae8f29ab67c9308e102d93e3aac99d9a88",
+ "response": {
+  "blockTime": 1782216466,
+  "meta": {
+   "computeUnitsConsumed": 2370,
+   "costUnits": 4003,
+   "err": null,
+   "fee": 5000,
+   "innerInstructions": [],
+   "loadedAddresses": {
+    "readonly": [],
+    "writable": []
+   },
+   "logMessages": [
+    "Program BPFLoaderUpgradeab1e11111111111111111111111 invoke [1]",
+    "New authority Some(551FBXSXdhcRDDkdcb3ThDRg84Mwe5Zs6YjJ1EEoyzBp)",
+    "Program BPFLoaderUpgradeab1e11111111111111111111111 success"
+   ],
+   "postBalances": [
+    3376585168,
+    8736004081,
+    1,
+    0
+   ],
+   "postTokenBalances": [],
+   "preBalances": [
+    3376590168,
+    8736004081,
+    1,
+    0
+   ],
+   "preTokenBalances": [],
+   "rewards": [],
+   "status": {
+    "Ok": null
+   }
+  },
+  "slot": 428371852,
+  "transaction": {
+   "message": {
+    "header": {
+     "numReadonlySignedAccounts": 0,
+     "numReadonlyUnsignedAccounts": 2,
+     "numRequiredSignatures": 1
+    },
+    "accountKeys": [
+     "MSHRissZyf4nS2E7MShYrK4q5ucsPSqPv3ndw4ZcW4m",
+     "CmXrmxgrnHAYSGWcLWDXYnRKEQB2jcw5t3RRM1hRo7at",
+     "BPFLoaderUpgradeab1e11111111111111111111111",
+     "551FBXSXdhcRDDkdcb3ThDRg84Mwe5Zs6YjJ1EEoyzBp"
+    ],
+    "recentBlockhash": "8hTGQ6gX3XWd3wnFkd6pJYU4Wr4zjMDfwN8K7wv8VLVp",
+    "instructions": [
+     {
+      "accounts": [
+       1,
+       0,
+       3
+      ],
+      "data": "6vx8P",
+      "programIdIndex": 2,
+      "stackHeight": 1
+     }
+    ],
+    "indexToProgramIds": {}
+   },
+   "signatures": [
+    "5Ww8TzcMAEFBQPefcKoUfrqzyoDW9ZDmX8CZCVydqWbXWtGTidon6iPQgmj8X8o7ga3fdgKRtJvDXFngNTsUnsJh"
+   ]
+  },
+  "transactionIndex": 0,
+  "version": "legacy"
+ }
+}

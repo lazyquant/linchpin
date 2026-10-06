@@ -1,5 +1,6 @@
 import { Connection, PublicKey, VersionedTransaction, type AccountInfo, type GetProgramAccountsFilter, type GetProgramAccountsResponse, type SimulateTransactionConfig, type SimulatedTransactionResponse, type ConfirmedSignatureInfo, type VersionedTransactionResponse } from "@solana/web3.js";
-import { existsSync, mkdirSync, readFileSync, writeFileSync, appendFileSync } from "node:fs";
+import { existsSync, mkdirSync, readFileSync, writeFileSync, appendFileSync, unlinkSync } from "node:fs";
+import { gzipSync, gunzipSync } from "node:zlib";
 import { join } from "node:path";
 import { canonical, fixtureKey, sha256, type Evidence } from "./evidence";
 import type { RunOptions } from "../config";
@@ -100,9 +101,11 @@ export class RecordingRpc {
     this.control.signal?.throwIfAborted();
     const key = fixtureKey(method, params);
     const path = this.fixturePath(key);
-    if (this.opts.offline || (this.opts.record && !this.opts.refresh && existsSync(path))) {
-      if (!existsSync(path)) throw new Error(`offline: fixture missing for ${method} → ${path}`);
-      const fx = JSON.parse(readFileSync(path, "utf8"));
+    const replayPath = existsSync(path) ? path : `${path}.gz`;
+    if (this.opts.offline || (this.opts.record && !this.opts.refresh && existsSync(replayPath))) {
+      if (!existsSync(replayPath)) throw new Error(`offline: fixture missing for ${method} → ${path} (or .json.gz)`);
+      const bytes = readFileSync(replayPath);
+      const fx = JSON.parse((replayPath.endsWith(".gz") ? gunzipSync(bytes) : bytes).toString("utf8"));
       const value = revive(fx.response);
       const evidence: Evidence = { id: sha256(`${method}${canonical(params)}${fx.responseSha256}`), method, params, slot: fx.slot, retrievedAt: fx.retrievedAt, rpcUrl: redactedRpcUrl(fx.rpcUrl), responseSha256: fx.responseSha256, source: "fixture" };
       this.evidence.push(evidence);
@@ -120,7 +123,12 @@ export class RecordingRpc {
     this.evidence.push(evidence);
     if (this.opts.record) {
       mkdirSync(join(this.opts.fixturesDir, this.caseId), { recursive: true });
-      writeFileSync(path, JSON.stringify({ method, params, slot, retrievedAt, rpcUrl, responseSha256, response }, null, 1));
+      const serialized = Buffer.from(JSON.stringify({ method, params, slot, retrievedAt, rpcUrl, responseSha256, response }, null, 1));
+      const compressed = serialized.length > 1_000_000;
+      writeFileSync(compressed ? `${path}.gz` : path, compressed ? gzipSync(serialized) : serialized);
+      // A refresh can cross the size boundary; never replay the stale alternate.
+      const alternate = compressed ? path : `${path}.gz`;
+      if (existsSync(alternate)) unlinkSync(alternate);
     }
     this.liveReads++;
     this.control.onRead?.(evidence);

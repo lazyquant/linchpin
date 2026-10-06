@@ -1,0 +1,82 @@
+{
+ "method": "getTransaction",
+ "params": {
+  "signature": "39EM85JvLZWgjo2GH2FYaYpMTpcTygfcDvbyp2jdZWBgbbeSvzhEngH8yM1ntZB275ucESwtM1fSAm951GmVHGVK"
+ },
+ "slot": null,
+ "retrievedAt": "2026-10-06T09:52:46.412Z",
+ "rpcUrl": "https://solana-mainnet.g.alchemy.com",
+ "responseSha256": "5f2d52f7436c05e2f553189435bfaf0c71f6dd34a7cea634923ec22af4b22920",
+ "response": {
+  "blockTime": 1765272406,
+  "meta": {
+   "computeUnitsConsumed": 2370,
+   "costUnits": 3963,
+   "err": null,
+   "fee": 5000,
+   "innerInstructions": [],
+   "loadedAddresses": {
+    "readonly": [],
+    "writable": []
+   },
+   "logMessages": [
+    "Program BPFLoaderUpgradeab1e11111111111111111111111 invoke [1]",
+    "New authority Some(6YAju4nd4t7kyuHV6NvVpMepMk11DgWyYjKVJUak2EEm)",
+    "Program BPFLoaderUpgradeab1e11111111111111111111111 success"
+   ],
+   "postBalances": [
+    357058380,
+    7752583920,
+    1,
+    890880
+   ],
+   "postTokenBalances": [],
+   "preBalances": [
+    357063380,
+    7752583920,
+    1,
+    890880
+   ],
+   "preTokenBalances": [],
+   "rewards": [],
+   "status": {
+    "Ok": null
+   }
+  },
+  "slot": 385502212,
+  "transaction": {
+   "message": {
+    "header": {
+     "numReadonlySignedAccounts": 0,
+     "numReadonlyUnsignedAccounts": 2,
+     "numRequiredSignatures": 1
+    },
+    "accountKeys": [
+     "chMavQVSWyZKSGkofRbwdqFkw5DQttMJM5XYXuBUjHK",
+     "4F1TTFJ7jYJN71Y7Dyjs2fFG88RdgAS5fEzzfiDWKAbR",
+     "BPFLoaderUpgradeab1e11111111111111111111111",
+     "6YAju4nd4t7kyuHV6NvVpMepMk11DgWyYjKVJUak2EEm"
+    ],
+    "recentBlockhash": "A4sUZ6zduuYAwZrGmUHY79pZpiHPcGWzGNNrKbc5q2p1",
+    "instructions": [
+     {
+      "accounts": [
+       1,
+       0,
+       3
+      ],
+      "data": "6vx8P",
+      "programIdIndex": 2,
+      "stackHeight": 1
+     }
+    ],
+    "indexToProgramIds": {}
+   },
+   "signatures": [
+    "39EM85JvLZWgjo2GH2FYaYpMTpcTygfcDvbyp2jdZWBgbbeSvzhEngH8yM1ntZB275ucESwtM1fSAm951GmVHGVK"
+   ]
+  },
+  "transactionIndex": 0,
+  "version": "legacy"
+ }
+}

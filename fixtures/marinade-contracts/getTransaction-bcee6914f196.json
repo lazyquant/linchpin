@@ -1,0 +1,259 @@
+{
+ "method": "getTransaction",
+ "params": {
+  "signature": "3utfnniGtWAFgv9VB1YiEGbnw6rE1iv1sMUVfmckJF33E8aqEQFKiZP66wUPfyGu1GoS1xtSb8GYoAgC45rLpJgf"
+ },
+ "slot": null,
+ "retrievedAt": "2026-10-06T09:53:02.342Z",
+ "rpcUrl": "https://solana-mainnet.g.alchemy.com",
+ "responseSha256": "d63a7687f0baf7108b28a3b99e9a50f89cdeca4d60155291f601f87d119df4af",
+ "response": {
+  "blockTime": 1791280176,
+  "meta": {
+   "computeUnitsConsumed": 5766,
+   "costUnits": 7176,
+   "err": null,
+   "fee": 5206,
+   "innerInstructions": [],
+   "loadedAddresses": {
+    "readonly": [],
+    "writable": []
+   },
+   "logMessages": [
+    "Program ComputeBudget111111111111111111111111111111 invoke [1]",
+    "Program ComputeBudget111111111111111111111111111111 success",
+    "Program 11111111111111111111111111111111 invoke [1]",
+    "Program 11111111111111111111111111111111 success",
+    "Program Stake11111111111111111111111111111111111111 invoke [1]",
+    "Program log: Instruction: InitializeChecked",
+    "Program Stake11111111111111111111111111111111111111 consumed 5466 of 205700 compute units",
+    "Program Stake11111111111111111111111111111111111111 success"
+   ],
+   "postBalances": [
+    723401246,
+    22000000000,
+    1,
+    1,
+    1141440,
+    1009200,
+    0
+   ],
+   "postTokenBalances": [],
+   "preBalances": [
+    22723406452,
+    0,
+    1,
+    1,
+    1141440,
+    1009200,
+    0
+   ],
+   "preTokenBalances": [],
+   "rewards": [],
+   "status": {
+    "Ok": null
+   }
+  },
+  "slot": 453865959,
+  "transaction": {
+   "message": {
+    "header": {
+     "numReadonlySignedAccounts": 0,
+     "numReadonlyUnsignedAccounts": 5,
+     "numRequiredSignatures": 1
+    },
+    "staticAccountKeys": [
+     "DrUB4XVGYqgyEoBYhpTcBi4o4nJxfrfxUGtFyh6yirE",
+     "AtRvc4bKhhXieDDrPZuZXA6HjQPDqqVT7iCB24JuW2Gw",
+     "11111111111111111111111111111111",
+     "ComputeBudget111111111111111111111111111111",
+     "Stake11111111111111111111111111111111111111",
+     "SysvarRent111111111111111111111111111111111",
+     "stWirqFCf2Uts1JBL1Jsd3r6VBWhgnpdPxCTe1MFjrq"
+    ],
+    "recentBlockhash": "nf3bDf3MW3qjpTnjShzrE88bk9wZzTayJQiRXk3UAvQ",
+    "compiledInstructions": [
+     {
+      "programIdIndex": 3,
+      "accountKeyIndexes": [],
+      "data": {
+       "type": "Buffer",
+       "data": [
+        3,
+        232,
+        3,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+       ]
+      }
+     },
+     {
+      "programIdIndex": 2,
+      "accountKeyIndexes": [
+       0,
+       1,
+       0
+      ],
+      "data": {
+       "type": "Buffer",
+       "data": [
+        3,
+        0,
+        0,
+        0,
+        3,
+        74,
+        231,
+        103,
+        231,
+        5,
+        187,
+        28,
+        29,
+        251,
+        252,
+        97,
+        6,
+        29,
+        220,
+        31,
+        128,
+        239,
+        135,
+        15,
+        115,
+        179,
+        41,
+        14,
+        202,
+        141,
+        83,
+        109,
+        217,
+        205,
+        110,
+        251,
+        32,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        55,
+        48,
+        56,
+        49,
+        67,
+        54,
+        67,
+        69,
+        53,
+        65,
+        68,
+        67,
+        52,
+        56,
+        55,
+        65,
+        66,
+        57,
+        68,
+        55,
+        54,
+        57,
+        56,
+        65,
+        51,
+        68,
+        68,
+        68,
+        53,
+        54,
+        48,
+        67,
+        0,
+        92,
+        77,
+        31,
+        5,
+        0,
+        0,
+        0,
+        200,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        6,
+        161,
+        216,
+        23,
+        145,
+        55,
+        84,
+        42,
+        152,
+        52,
+        55,
+        189,
+        254,
+        42,
+        122,
+        178,
+        85,
+        127,
+        83,
+        92,
+        138,
+        120,
+        114,
+        43,
+        104,
+        164,
+        157,
+        192,
+        0,
+        0,
+        0,
+        0
+       ]
+      }
+     },
+     {
+      "programIdIndex": 4,
+      "accountKeyIndexes": [
+       1,
+       5,
+       6,
+       0
+      ],
+      "data": {
+       "type": "Buffer",
+       "data": [
+        9,
+        0,
+        0,
+        0
+       ]
+      }
+     }
+    ],
+    "addressTableLookups": []
+   },
+   "signatures": [
+    "3utfnniGtWAFgv9VB1YiEGbnw6rE1iv1sMUVfmckJF33E8aqEQFKiZP66wUPfyGu1GoS1xtSb8GYoAgC45rLpJgf"
+   ]
+  },
+  "transactionIndex": 354,
+  "version": 0
+ }
+}
