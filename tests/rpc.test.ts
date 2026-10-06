@@ -2,7 +2,7 @@ import { afterEach, describe, expect, spyOn, test } from "bun:test";
 import { mkdtempSync, readFileSync, rmSync } from "node:fs";
 import { join } from "node:path";
 import { PublicKey } from "@solana/web3.js";
-import { RecordingRpc } from "../src/chain/rpc";
+import { RecordingRpc, redactedRpcUrl, redactSecrets } from "../src/chain/rpc";
 import { runOptions } from "../src/config";
 import { parseMint, parseTokenAccount, formatUnits } from "../src/chain/token-layout";
 import { fixtureKey } from "../src/chain/evidence";
@@ -14,6 +14,25 @@ function tempDir() {
   return dir;
 }
 afterEach(() => { for (const dir of tempDirs.splice(0)) rmSync(dir, { recursive: true, force: true }); });
+
+describe("RPC redaction", () => {
+  test.each([
+    ["https://user:password@solana-mainnet.g.alchemy.com/v2/long-private-api-key-123456#private", "https://solana-mainnet.g.alchemy.com"],
+    ["https://mainnet.helius-rpc.com/?api-key=SECRET", "https://mainnet.helius-rpc.com"],
+    ["http://user:password@localhost:8899/private?api-key=SECRET#private", "http://localhost:8899"],
+  ])("keeps only the scheme and host of %s", (url, host) => {
+    expect(redactedRpcUrl(url)).toBe(host);
+  });
+
+  test("scrubs every full URL, query string and long path segment literally", () => {
+    const key = "private.key+with[regex]-123456";
+    const url = `https://rpc.example/v2/${key}/another-long-key-12345?api-key=SECRET`;
+    expect(redactSecrets(`${url} ${url} ${key} ${key} another-long-key-12345 ?api-key=SECRET api-key=SECRET`, url))
+      .toBe(Array(7).fill("[redacted]").join(" "));
+    expect(redactSecrets("unchanged", url)).toBe("unchanged");
+    expect(redactSecrets("invalid endpoint: bad-url", "bad-url")).toBe("invalid endpoint: [redacted]");
+  });
+});
 
 describe("RecordingRpc", () => {
   const pk = new PublicKey("11111111111111111111111111111111");
@@ -189,14 +208,48 @@ describe("RecordingRpc", () => {
     const recorder = new RecordingRpc(runOptions({ offline: false, record: true, fixturesDir, rpcUrl: "https://user:password@mainnet.helius-rpc.com/?api-key=SECRET#private" }), "redacted");
     recorder.connection.getBalanceAndContext = async () => ({ context: { slot: 42 }, value: 5 });
     const live = await recorder.getBalance(pk);
-    expect(live.evidence.rpcUrl).toBe("https://mainnet.helius-rpc.com/");
+    expect(live.evidence.rpcUrl).toBe("https://mainnet.helius-rpc.com");
     expect(JSON.stringify(recorder.evidence)).not.toContain("SECRET");
     const fixture = readFileSync(join(fixturesDir, "redacted", `${fixtureKey("getBalance", { pubkey: pk.toBase58() })}.json`), "utf8");
     for (const secret of ["SECRET", "user", "password", "private"]) expect(fixture).not.toContain(secret);
-    expect(JSON.parse(fixture).rpcUrl).toBe("https://mainnet.helius-rpc.com/");
+    expect(JSON.parse(fixture).rpcUrl).toBe("https://mainnet.helius-rpc.com");
     const replayer = new RecordingRpc(runOptions({ offline: true, fixturesDir, rpcUrl: "http://127.0.0.1:1" }), "redacted");
     const replay = await replayer.getBalance(pk);
     expect(replay.evidence).toMatchObject({ id: live.evidence.id, rpcUrl: live.evidence.rpcUrl, source: "fixture" });
+  });
+
+  test("path keys never reach recorded fixtures or flushed evidence and do not affect ids", async () => {
+    const key = "private-alchemy-key-123456789";
+    const rpc = recorder({ rpcUrl: `https://solana-mainnet.g.alchemy.com/v2/${key}` });
+    rpc.connection.getBalanceAndContext = async () => ({ context: { slot: 42 }, value: 5 });
+    const live = await rpc.getBalance(pk);
+    expect(live.evidence.rpcUrl).toBe("https://solana-mainnet.g.alchemy.com");
+    const evidence = readFileSync(rpc.flushEvidence(tempDir()), "utf8");
+    const fixture = readFileSync(join(rpc.opts.fixturesDir, "resume", `${fixtureKey("getBalance", { pubkey: pk.toBase58() })}.json`), "utf8");
+    for (const text of [evidence, fixture]) expect(text).not.toContain(key);
+    const publicRpc = recorder();
+    publicRpc.connection.getBalanceAndContext = rpc.connection.getBalanceAndContext;
+    expect((await publicRpc.getBalance(pk)).evidence.id).toBe(live.evidence.id);
+    expect((await new RecordingRpc({ ...rpc.opts, offline: true }, "resume").getBalance(pk)).evidence.id).toBe(live.evidence.id);
+  });
+
+  test.each(["invalid account", "429 Too Many Requests"])("scrubs thrown errors and logs while preserving error class: %s", async message => {
+    const key = "private-alchemy-key-123456789";
+    const rpc = recorder({ rpcUrl: `https://rpc.example/v2/${key}?api-key=SECRET` });
+    const error = new TypeError(`${message}: ${rpc.opts.rpcUrl} ${key} ?api-key=SECRET`);
+    rpc.connection.getBalanceAndContext = async () => { throw error; };
+    const log = spyOn(console, "error").mockImplementation(() => {});
+    try {
+      const caught = await rpc.getBalance(pk).catch(e => e);
+      expect(caught).toBeInstanceOf(TypeError);
+      expect(caught.name).toBe("TypeError");
+      expect(caught.message).toBe(`${message}: [redacted] [redacted] [redacted]`);
+      expect(caught).not.toBe(error);
+      for (const text of [caught.stack, JSON.stringify(log.mock.calls)]) {
+        expect(text).not.toContain(key);
+        expect(text).not.toContain("SECRET");
+      }
+    } finally { log.mockRestore(); }
   });
   test("records a fixture and replays it offline with the same evidence id", async () => {
     const fixturesDir = tempDir();

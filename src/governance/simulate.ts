@@ -37,11 +37,20 @@ export function fixtureFor(decoded: Decoded, sourceBalanceRaw: bigint, decimals:
   return { instruction, label: `fixture: ${decoded.kind} ${formatUnits(amount, decimals)} token (${amount} raw) from the same source account (not the historical payload)` };
 }
 
-export async function simulateConditionalPreview(rpc: RecordingRpc, args: { kind: SimulationRun["kind"]; label: string; instructions: TransactionInstruction[]; feePayer: PublicKey; watch: { tokenAccounts: PublicKey[]; mints: PublicKey[] }; assumptions: string[] }): Promise<SimulationRun> {
+type PreviewArgs = { kind: SimulationRun["kind"]; label: string; instructions: TransactionInstruction[]; feePayer: PublicKey; watch: { tokenAccounts: PublicKey[]; mints: PublicKey[] }; assumptions: string[] };
+
+/** Shared request builder for recorded previews and the raw provider probe. */
+export function conditionalPreviewRequest(args: PreviewArgs) {
   const message = new TransactionMessage({ payerKey: args.feePayer, recentBlockhash: PublicKey.default.toBase58(), instructions: args.instructions }).compileToLegacyMessage();
   const tx = new VersionedTransaction(message);
   const addresses = [...args.watch.tokenAccounts, ...args.watch.mints].map((p) => p.toBase58());
   const config = { sigVerify: false as const, replaceRecentBlockhash: true as const, commitment: "confirmed" as const, accounts: { encoding: "base64" as const, addresses } };
+  return { tx, config };
+}
+
+export async function simulateConditionalPreview(rpc: RecordingRpc, args: PreviewArgs): Promise<SimulationRun> {
+  const { tx, config } = conditionalPreviewRequest(args);
+  const addresses = config.accounts.addresses;
   const res = await rpc.simulate(tx, config);
   const v: any = res.value;
   const postState = { tokenAccounts: {} as Record<string, string>, mintSupplies: {} as Record<string, string> };
@@ -51,7 +60,7 @@ export async function simulateConditionalPreview(rpc: RecordingRpc, args: { kind
     if (i < args.watch.tokenAccounts.length) postState.tokenAccounts[addr] = parseTokenAccount(data).amountRaw.toString();
     else postState.mintSupplies[addr] = parseMint(data).supplyRaw.toString();
   });
-  const messageSha256 = sha256(Buffer.from(message.serialize()));
+  const messageSha256 = sha256(Buffer.from(tx.message.serialize()));
   return { id: `sim-${messageSha256.slice(0, 12)}`, kind: args.kind, mode: "conditional-preview", label: args.label, assumptions: args.assumptions, feePayer: args.feePayer.toBase58(), config: { sigVerify: false, replaceRecentBlockhash: true, commitment: "confirmed" }, messageSha256, contextSlot: res.evidence.slot, success: v.err == null, error: v.err ?? null, unitsConsumed: v.unitsConsumed ?? null, logs: v.logs ?? [], postState, evidenceIds: [res.evidence.id] };
 }
 

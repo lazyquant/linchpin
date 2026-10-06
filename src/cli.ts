@@ -2,16 +2,17 @@ import { buildPack, type PackFile, type PackRegistry, type DocsCapture } from ".
 import { renderPackHtml, renderJson, coverageLine } from "./pack/packet";
 import { mkdirSync, writeFileSync, readdirSync, readFileSync } from "node:fs";
 import { join } from "node:path";
-import { PublicKey } from "@solana/web3.js";
-import { getGovernanceProgramVersion } from "@solana/spl-governance";
-import { runOptions } from "./config";
-import { RecordingRpc } from "./chain/rpc";
+import { Connection, PublicKey } from "@solana/web3.js";
+import { getGovernanceAccounts, getGovernanceProgramVersion, Governance, pubkeyFilter } from "@solana/spl-governance";
+import { DEFAULT_RPC_URL, runOptions } from "./config";
+import { RecordingRpc, redactedRpcUrl, redactSecrets } from "./chain/rpc";
+import { associatedTokenAccount } from "./pack/classify";
 import { formatUnits } from "./chain/token-layout";
 import { readProposalBundle, type ProposalBundle } from "./governance/reader";
 import { decodeInstruction } from "./governance/decode";
 import { attachReceiptShares, effectsFromDecoded } from "./governance/effects";
 import { findExecutionReceipt, reconcileReceipt, type Receipt, type Reconciliation } from "./governance/receipt";
-import { fixtureFor, simulateConditionalPreview, toTransactionInstruction, PREVIEW_ASSUMPTIONS, type SimulationRun, type SkippedFixture } from "./governance/simulate";
+import { conditionalPreviewRequest, fixtureBurn, fixtureFor, simulateConditionalPreview, toTransactionInstruction, PREVIEW_ASSUMPTIONS, type SimulationRun, type SkippedFixture } from "./governance/simulate";
 import { coverage, loadCase, type CaseFile } from "./governance/claims";
 import { buildGraph } from "./graph/build";
 import { buildPacket, renderHtml } from "./review/packet";
@@ -19,6 +20,7 @@ import { buildPacket, renderHtml } from "./review/packet";
 const args = process.argv.slice(2); const cmd = args[0];
 const flag = (name: string) => args.includes(`--${name}`);
 const opt = (name: string, dflt?: string) => { const i = args.indexOf(`--${name}`); return i >= 0 ? args[i + 1] : dflt; };
+const safeOutput = (text: string) => redactSecrets(text, process.env.LINCHPIN_RPC_URL ?? DEFAULT_RPC_URL);
 
 async function review(casePath: string) {
   const c = loadCase(casePath);
@@ -33,8 +35,8 @@ async function review(casePath: string) {
   writeFileSync(join(opts.outDir, "packet.html"), renderHtml(packet));
   writeFileSync(join(opts.outDir, "graph.json"), JSON.stringify(packet.graph, null, 1));
   const evidencePath = rpc.flushEvidence(opts.outDir);
-  console.log(`${c.caseId}: ${packet.dimensions.execution_status} · ${sims.map((s) => `${s.kind}=${s.success ? "ok" : "fail"}`).join(" ") || "no simulation"} · ${rpc.evidence.length} evidence → ${join(opts.outDir, "packet.html")} (${evidencePath})`);
-  console.error(`Evidence: ${rpc.counts.live} live, ${rpc.counts.replayed} replayed`);
+  console.log(safeOutput(`${c.caseId}: ${packet.dimensions.execution_status} · ${sims.map((s) => `${s.kind}=${s.success ? "ok" : "fail"}`).join(" ") || "no simulation"} · ${rpc.evidence.length} evidence → ${join(opts.outDir, "packet.html")} (${evidencePath})`));
+  console.error(safeOutput(`Evidence: ${rpc.counts.live} live, ${rpc.counts.replayed} replayed`));
 }
 
 /** Shared CLI pipeline; tests can provide recorded or in-memory RPC responses. */
@@ -94,26 +96,109 @@ async function pack(packPath: string) {
   writeFileSync(join(opts.outDir, "packet.html"), renderPackHtml(packet, registry.governance.realm));
   // A packet has one evidence log: repeat offline runs replace, rather than append.
   writeFileSync(join(opts.outDir, "evidence.jsonl"), rpc.evidence.map(e => JSON.stringify(e)).join("\n") + "\n");
-  console.log(coverageLine(packet));
-  if (config.ledger?.enabled) console.log(`Ledger: ${packet.ledger.entries.length} entries · ${packet.ledger.proposalsScanned} proposals scanned${packet.ledger.notes.includes("ledger not recorded yet") ? " · ledger not recorded yet" : ""}`);
-  console.log(`${config.pack}: ${packet.evidenceCount} evidence → ${join(opts.outDir, "packet.html")}`);
-  console.error(`Evidence: ${rpc.counts.live} live, ${rpc.counts.replayed} replayed`);
+  console.log(safeOutput(coverageLine(packet)));
+  if (config.ledger?.enabled) console.log(safeOutput(`Ledger: ${packet.ledger.entries.length} entries · ${packet.ledger.proposalsScanned} proposals scanned${packet.ledger.notes.includes("ledger not recorded yet") ? " · ledger not recorded yet" : ""}`));
+  console.log(safeOutput(`${config.pack}: ${packet.evidenceCount} evidence → ${join(opts.outDir, "packet.html")}`));
+  console.error(safeOutput(`Evidence: ${rpc.counts.live} live, ${rpc.counts.replayed} replayed`));
 }
 
-async function doctor() {
-  const opts = runOptions({}); const rpc = new RecordingRpc(opts, "doctor");
+function doctorConnection(rpcUrl: string, signal: AbortSignal) {
+  return new Connection(rpcUrl, {
+    commitment: "confirmed", disableRetryOnRateLimit: true,
+    fetch: Object.assign((input: Parameters<typeof fetch>[0], init?: Parameters<typeof fetch>[1]) => {
+      signal.throwIfAborted();
+      return fetch(input, { ...init, signal });
+    }, { preconnect: fetch.preconnect }),
+  });
+}
+
+export async function doctor() {
+  const opts = runOptions({});
+  const errorText = (error: unknown) => redactSecrets(error instanceof Error ? `${error.name}: ${error.message}` : String(error), opts.rpcUrl).slice(0, 200);
   const cases = readdirSync("cases").filter((path) => path.endsWith(".json")).sort().map((path) => loadCase(join("cases", path)));
-  const versions = new Map<string, number>();
+  const versions = new Map<string, { sdkMetadataVersion: number | null; error?: string }>();
   for (const c of cases) {
-    if (!versions.has(c.programId)) versions.set(c.programId, await getGovernanceProgramVersion(rpc.connection, new PublicKey(c.programId)));
-    console.log(JSON.stringify({ caseId: c.caseId, program: c.programId, sdkMetadataVersion: versions.get(c.programId), programVersionPinned: c.programVersion }));
+    if (!versions.has(c.programId)) {
+      // The SDK logs caught errors itself. Keep only our scrubbed, per-case JSON lines.
+      const log = console.log;
+      console.log = () => {};
+      try {
+        const connection = doctorConnection(opts.rpcUrl, AbortSignal.timeout(15000));
+        versions.set(c.programId, { sdkMetadataVersion: await getGovernanceProgramVersion(connection, new PublicKey(c.programId)) });
+      } catch (error) { versions.set(c.programId, { sdkMetadataVersion: null, error: errorText(error) }); }
+      finally { console.log = log; }
+    }
+    console.log(JSON.stringify({ caseId: c.caseId, program: c.programId, ...versions.get(c.programId), programVersionPinned: c.programVersion }));
   }
+
+  // The case identifies the proposal; its source account and receipt are in the committed evidence.
+  // Resolve them offline so provider failures cannot prevent unrelated probes from running.
+  const c = loadCase("cases/mip-14.json");
+  const recorded = new RecordingRpc({ ...opts, offline: true, record: false }, c.caseId);
+  const bundle = await readProposalBundle(recorded, new PublicKey(c.programId), c.programVersion, new PublicKey(c.proposal));
+  const burn = bundle.transactions.flatMap(t => t.instructions.map(decodeInstruction)).find(d => d.kind === "burn");
+  if (!burn || burn.kind !== "burn") throw new Error("doctor: MIP-14 burn missing from recorded proposal");
+  const registry: PackRegistry = JSON.parse(readFileSync("packs/marinade/registry.json", "utf8"));
+  const buyback = registry.accounts.find(a => a.id === "buyback-accumulation");
+  const mnde = registry.mints.find(m => m.id === "mnde");
+  if (!buyback || !mnde) throw new Error("doctor: buyback wallet or MNDE mint missing from registry");
+  let ok = 0; let failed = 0;
+  type Details = { slot?: number; count?: number; result?: "succeeded" | "failed" };
+  const probe = async (name: string, call: (connection: Connection) => Promise<Details>) => {
+    const start = performance.now();
+    const controller = new AbortController();
+    let timer: ReturnType<typeof setTimeout> | undefined;
+    try {
+      const timeout = new Promise<never>((_resolve, reject) => {
+        timer = setTimeout(() => { const error = new Error("RPC probe timed out after 15000 ms"); controller.abort(error); reject(error); }, 15000);
+      });
+      const details = await Promise.race([call(doctorConnection(opts.rpcUrl, controller.signal)), timeout]);
+      ok++;
+      console.log(JSON.stringify({ probe: name, ok: true, ms: Math.round(performance.now() - start), ...details }));
+    } catch (error) {
+      failed++;
+      console.log(JSON.stringify({ probe: name, ok: false, ms: Math.round(performance.now() - start), error: errorText(error) }));
+    } finally { clearTimeout(timer); }
+  };
+  await probe("getSlot", async connection => ({ slot: await connection.getSlot() }));
+  await probe("getAccountInfo", async connection => {
+    const response = await connection.getAccountInfoAndContext(new PublicKey(burn.source));
+    return { slot: response.context.slot };
+  });
+  await probe("getProgramAccounts", async connection => {
+    // Same SDK path and realm filter as src/pack/classify.ts:listGovernances.
+    const accounts = await getGovernanceAccounts(connection, new PublicKey(registry.governance.program), Governance, [pubkeyFilter(1, new PublicKey(registry.governance.realm))!]);
+    return { count: accounts.length };
+  });
+  await probe("getTransaction", async connection => {
+    const ptx = bundle.transactions.find(t => t.executedAt != null);
+    const receipt = ptx && await findExecutionReceipt(recorded, ptx);
+    if (!receipt) throw new Error("doctor: MIP-14 execution receipt missing from recorded evidence");
+    const tx = await connection.getTransaction(receipt.signature, { maxSupportedTransactionVersion: 0 });
+    return tx ? { slot: tx.slot } : {};
+  });
+  await probe("simulateTransaction", async connection => {
+    const source = new PublicKey(burn.source); const mint = new PublicKey(burn.mint); const treasury = new PublicKey(bundle.governance.nativeTreasury);
+    const { tx, config } = conditionalPreviewRequest({ kind: "fixture", label: "fixture: burn 1 MNDE from the same treasury account", instructions: [fixtureBurn(source, mint, new PublicKey(burn.authority), bundle.mints[burn.mint].decimals)], feePayer: treasury, watch: { tokenAccounts: [source], mints: [mint] }, assumptions: PREVIEW_ASSUMPTIONS });
+    const response = await connection.simulateTransaction(tx, config);
+    return { slot: response.context.slot, result: response.value.err == null ? "succeeded" : "failed" };
+  });
+  await probe("getSignaturesForAddress", async connection => {
+    const account = associatedTokenAccount(new PublicKey(buyback.address), new PublicKey(mnde.address));
+    return { count: (await connection.getSignaturesForAddress(account, { limit: 5 })).length };
+  });
+  console.log(JSON.stringify({ host: redactedRpcUrl(opts.rpcUrl), ok, failed }));
 }
 
 if (import.meta.main) {
+try {
 if (cmd === "review" && args[1]) await review(args[1]);
 else if (cmd === "pack" && args[1]) await pack(args[1]);
 else if (cmd === "demo") { for (const c of ["cases/mip-14.json", "cases/mip-14-opinion.json", "cases/bonk-bip76.json"]) await review(c); }
 else if (cmd === "doctor") await doctor();
-else { console.log("usage: linchpin review <case.json> [--offline|--record [--refresh]] [--out dir] | linchpin pack <pack.json> [--offline|--record [--refresh]] [--out dir] | linchpin demo [--offline] | linchpin doctor; modes: --offline (fixtures only), --record (fill missing fixtures), --record --refresh (re-fetch all)"); process.exit(cmd ? 1 : 0); }
+else { console.log(safeOutput("usage: linchpin review <case.json> [--offline|--record [--refresh]] [--out dir] | linchpin pack <pack.json> [--offline|--record [--refresh]] [--out dir] | linchpin demo [--offline] | linchpin doctor; modes: --offline (fixtures only), --record (fill missing fixtures), --record --refresh (re-fetch all)")); process.exit(cmd ? 1 : 0); }
+} catch (error) {
+  console.error(safeOutput(error instanceof Error ? `${error.name}: ${error.message}` : String(error)));
+  process.exitCode = 1;
+}
 }

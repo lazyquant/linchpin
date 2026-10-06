@@ -10,10 +10,34 @@ const MAX_ATTEMPTS = 8;
 const RETRYABLE = /429|Too Many Requests|503|502|ECONNRESET|ETIMEDOUT|fetch failed|TimeoutError|AbortError|aborted|timed out/i;
 const sleep = (ms: number) => new Promise<void>(resolve => setTimeout(resolve, ms));
 
-/** Persist endpoint identity only; credentials, query strings and fragments are private. */
-function redactedRpcUrl(value: string): string {
+/** Persist endpoint identity only; credentials, paths, query strings and fragments are private. */
+export function redactedRpcUrl(value: string): string {
   const url = new URL(value);
-  return `${url.protocol}//${url.host}${url.pathname}`;
+  return `${url.protocol}//${url.host}`;
+}
+
+export function redactSecrets(text: string, rpcUrl: string): string {
+  const secrets = [rpcUrl];
+  try {
+    const url = new URL(rpcUrl);
+    secrets.push(url.search, url.search.slice(1), ...url.pathname.split("/").filter(segment => segment.length > 16));
+  } catch {} // Even an invalid endpoint must be scrubbed from configuration errors.
+  const pattern = [...new Set(secrets)].filter(Boolean).sort((a, b) => b.length - a.length)
+    .map(secret => secret.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")).join("|");
+  return pattern ? text.replace(new RegExp(pattern, "g"), "[redacted]") : text;
+}
+
+function redactedError(error: unknown, rpcUrl: string): unknown {
+  if (!(error instanceof Error)) return new Error(redactSecrets(String(error), rpcUrl));
+  const message = redactSecrets(error.message, rpcUrl);
+  const name = redactSecrets(error.name, rpcUrl);
+  const stack = error.stack && redactSecrets(error.stack, rpcUrl);
+  if (message === error.message && name === error.name && stack === error.stack) return error;
+  const wrapped = new Error(message);
+  Object.setPrototypeOf(wrapped, Object.getPrototypeOf(error));
+  Object.defineProperty(wrapped, "name", { value: name, configurable: true });
+  wrapped.stack = stack;
+  return wrapped;
 }
 
 export class RecordingRpc {
@@ -26,15 +50,17 @@ export class RecordingRpc {
   private retryCount = 0;
   get counts() { return { live: this.liveReads, replayed: this.replayedReads, retries: this.retryCount }; }
   constructor(readonly opts: RunOptions, readonly caseId: string) {
-    this.connection = new Connection(opts.rpcUrl, {
-      commitment: "confirmed",
-      disableRetryOnRateLimit: true,
-      fetch: Object.assign(
-        (input: Parameters<typeof fetch>[0], init?: Parameters<typeof fetch>[1]) =>
-          fetch(input, { ...init, signal: AbortSignal.timeout(opts.requestTimeoutMs) }),
-        { preconnect: fetch.preconnect },
-      ),
-    });
+    try {
+      this.connection = new Connection(opts.rpcUrl, {
+        commitment: "confirmed",
+        disableRetryOnRateLimit: true,
+        fetch: Object.assign(
+          (input: Parameters<typeof fetch>[0], init?: Parameters<typeof fetch>[1]) =>
+            fetch(input, { ...init, signal: AbortSignal.timeout(opts.requestTimeoutMs) }),
+          { preconnect: fetch.preconnect },
+        ),
+      });
+    } catch (error) { throw redactedError(error, opts.rpcUrl); }
   }
   private fixturePath(key: string) { return join(this.opts.fixturesDir, this.caseId, `${key}.json`); }
 
@@ -55,10 +81,10 @@ export class RecordingRpc {
     for (let attempt = 1; ; attempt++) {
       try { return await this.liveAttempt(live); }
       catch (error) {
-        if (!(error instanceof Error) || !RETRYABLE.test(`${error.name}: ${error.message}`) || attempt >= MAX_ATTEMPTS) throw error;
+        if (!(error instanceof Error) || !RETRYABLE.test(`${error.name}: ${error.message}`) || attempt >= MAX_ATTEMPTS) throw redactedError(error, this.opts.rpcUrl);
         const delay = (delays[attempt - 1] ?? RETRY_DELAYS_MS[attempt - 1]) * (0.8 + Math.random() * 0.4);
         this.retryCount++;
-        console.error(`[record] ${method} retry: attempt ${attempt + 1}/${MAX_ATTEMPTS} in ${Math.round(delay)} ms`);
+        console.error(redactSecrets(`[record] ${method} retry: attempt ${attempt + 1}/${MAX_ATTEMPTS} in ${Math.round(delay)} ms`, this.opts.rpcUrl));
         await sleep(delay);
       }
     }
@@ -89,7 +115,7 @@ export class RecordingRpc {
       writeFileSync(path, JSON.stringify({ method, params, slot, retrievedAt, rpcUrl, responseSha256, response }, null, 1));
     }
     this.liveReads++;
-    if (this.opts.record && this.liveReads % 25 === 0) console.error(`[record] ${this.liveReads} live reads, ${this.replayedReads} replayed, last: ${method}`);
+    if (this.opts.record && this.liveReads % 25 === 0) console.error(redactSecrets(`[record] ${this.liveReads} live reads, ${this.replayedReads} replayed, last: ${method}`, this.opts.rpcUrl));
     return { value, evidence };
   }
 
