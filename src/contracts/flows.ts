@@ -162,6 +162,134 @@ export function aggregateBuybackMonths(rows: BuybackObservation[]) {
 export type FlowSampleRow = { signature: string; slot: number; blockTime: number | null; tx: any; evidenceIds: string[]; asOf: string; basis: "observed" };
 export type FlowSample = { address: string; limit: number; rows: FlowSampleRow[]; evidenceIds: string[]; window: Window };
 
+/** Attribute Anchor log names to the active invocation, including nested calls. Names imply no behaviour. */
+export function programLogInstructions(tx: any, program: string) {
+  const stack: { program: string; depth: number; names: { name: string; logIndex: number }[] }[] = [];
+  const instructions: { name: string; logIndex: number; depth: number; succeeded: boolean | null; basis: "observed (program log)" }[] = [];
+  const finish = (frame: typeof stack[number], succeeded: boolean | null) => {
+    if (frame.program === program) instructions.push(...frame.names.map(n => ({ ...n, depth: frame.depth, succeeded, basis: "observed (program log)" as const })));
+  };
+  for (const [logIndex, line] of (tx?.meta?.logMessages ?? []).entries()) {
+    const invoke = /^Program (\S+) invoke \[(\d+)\]$/.exec(line);
+    if (invoke) {
+      const depth = Number(invoke[2]);
+      while (stack.length && stack.at(-1)!.depth >= depth) finish(stack.pop()!, null);
+      stack.push({ program: invoke[1], depth, names: [] });
+      continue;
+    }
+    const end = /^Program (\S+) (success|failed:.*)$/.exec(line);
+    if (end) {
+      let index = stack.length - 1;
+      while (index >= 0 && stack[index].program !== end[1]) index--;
+      if (index >= 0) {
+        while (stack.length - 1 > index) finish(stack.pop()!, null);
+        finish(stack.pop()!, end[2] === "success");
+      }
+      continue;
+    }
+    const instruction = /^Program log: Instruction: (.+)$/.exec(line);
+    if (instruction && stack.length) stack.at(-1)!.names.push({ name: instruction[1], logIndex });
+  }
+  while (stack.length) finish(stack.pop()!, null);
+  return instructions.sort((a, b) => a.logIndex - b.logIndex);
+}
+
+/** Transaction-wide MNDE credits qualify only alongside a successful debit of the observed vault. */
+export function vaultClaimObservation(tx: any, vault: string, program: string, mnde: string) {
+  const succeeded = tx?.meta ? tx.meta.err === null : null;
+  const parsed = tx ? transactionInstructions(tx) : { top: [], inner: [] };
+  const invocationLocations = [
+    ...(parsed.top.some(i => i.program === program) ? ["top-level"] : []),
+    ...(parsed.inner.some(i => i.program === program) ? ["inner"] : []),
+  ];
+  const deltas = succeeded ? tokenDeltas(tx) : null;
+  const debit = deltas?.find(d => d.account === vault && d.mint === mnde && BigInt(d.deltaRaw) < 0n);
+  const keys = tx ? transactionKeys(tx) : [];
+  const recipients = debit ? deltas!.filter(d => d.mint === mnde && BigInt(d.deltaRaw) > 0n).map(d => ({
+    destination: d.account, amountRaw: d.deltaRaw,
+    // A pre-balance owner may have changed; only the post owner is historical claimant evidence.
+    claimant: (tx.meta.postTokenBalances.find((b: any) => keys[b.accountIndex] === d.account)?.owner ?? null) as string | null,
+  })) : [];
+  return { succeeded, unavailable: !tx, unavailableTokenBalances: succeeded === true && deltas === null,
+    invokedDistributorProgram: invocationLocations.length > 0, invocationLocations,
+    vaultDebitRaw: debit ? String(-BigInt(debit.deltaRaw)) : null, recipients, instructions: programLogInstructions(tx, program) };
+}
+
+export type FundedDistributorVault = { address: string; distributor: string; program: string; amountReceivedRaw: string; evidenceIds: string[] };
+export async function readDistributorClaims(rpc: RecordingRpc, fundedVaults: FundedDistributorVault[], mnde: string,
+  participation: Participation, sample: (address: string, limit: number) => Promise<FlowSample>) {
+  const start = rpc.evidence.length, voters = new Set(participation.vsr.rows.map(v => v.voterAuthority));
+  const voterIds = unique(participation.vsr.rows.flatMap(v => v.evidenceIds));
+  const ownerCache = new Map<string, Awaited<ReturnType<typeof readTokenAccount>>>();
+  const vaults = [];
+  for (const vault of fundedVaults) {
+    const balance = await readTokenAccount(rpc, new PublicKey(vault.address)), history = await sample(vault.address, 300);
+    const transactions = [];
+    for (const row of history.rows) {
+      const observation = vaultClaimObservation(row.tx, vault.address, vault.program, mnde), recipients = [];
+      for (const credit of observation.recipients) {
+        let claimant = credit.claimant;
+        const evidenceIds = [...row.evidenceIds];
+        if (!claimant) {
+          let read = ownerCache.get(credit.destination);
+          if (!read) { read = await readTokenAccount(rpc, new PublicKey(credit.destination)); ownerCache.set(credit.destination, read); }
+          if (read.value?.mint === mnde) claimant = read.value.owner;
+          evidenceIds.push(...read.evidenceIds);
+        }
+        recipients.push({ ...credit, claimant, voterAuthority: claimant !== null && voters.has(claimant),
+          claimantBasis: credit.claimant ? "observed (postTokenBalances)" : claimant ? "decoded (current token-account read)" : "unresolved",
+          evidenceIds: unique(evidenceIds) });
+      }
+      transactions.push({ ...observation, recipients, signature: row.signature, blockTime: row.blockTime, slot: row.slot, asOf: row.asOf,
+        basis: row.basis, evidenceIds: unique([...row.evidenceIds, ...recipients.flatMap(r => r.evidenceIds)]) });
+    }
+    const raw = balance.value?.mint === mnde ? String(balance.value.amountRaw) : null;
+    vaults.push({ ...vault, basis: "observed" as const, window: { ...history.window, limit: 300 }, transactions,
+      currentBalance: { raw, mnde: raw === null ? null : formatUnits(BigInt(raw), 9), mint: balance.value?.mint ?? null,
+        owner: balance.value?.owner ?? null, mintMatches: balance.value ? balance.value.mint === mnde : null,
+        ownerMatches: balance.value ? balance.value.owner === vault.distributor : null,
+        basis: "decoded" as const, slot: balance.slot, evidenceIds: balance.evidenceIds },
+      amountReceivedMnde: formatUnits(BigInt(vault.amountReceivedRaw), 9),
+      balanceMinusReceivedRaw: raw === null ? null : String(BigInt(raw) - BigInt(vault.amountReceivedRaw)),
+      evidenceIds: unique([...vault.evidenceIds, ...balance.evidenceIds, ...history.evidenceIds, ...transactions.flatMap(t => t.evidenceIds)]) });
+  }
+  const rows = vaults.flatMap(v => v.transactions), transactions = [...new Map(rows.map(t => [t.signature, t])).values()];
+  // A transaction shared by sampled vaults contributes each credited account only once.
+  const credits = [...new Map(rows.flatMap(t => t.recipients.map(r => [`${t.signature}:${r.destination}`, { ...r, signature: t.signature }] as const))).values()];
+  const claimants = unique(credits.flatMap(r => r.claimant ? [r.claimant] : [])), voterClaimants = claimants.filter(c => voters.has(c));
+  const total = sum(credits.map(r => BigInt(r.amountRaw))), voterTotal = sum(credits.filter(r => r.voterAuthority).map(r => BigInt(r.amountRaw)));
+  const names = [...new Map(vaults.flatMap(v => v.transactions.flatMap(t => t.instructions.map(i => [`${t.signature}:${v.program}:${i.logIndex}`, { ...i, program: v.program, transactionSucceeded: t.succeeded, evidenceIds: t.evidenceIds }] as const)))).values()];
+  const evidence = [...participation.evidence, ...rpc.evidence], ids = unique([...voterIds, ...vaults.flatMap(v => v.evidenceIds), ...rpc.evidence.slice(start).map(e => e.id)]);
+  const meta = provenance(evidence, ids, "derived");
+  return { ...meta, window: { ...timeWindow(transactions.map(t => t.blockTime)), limitPerVault: 300 },
+    transactionsRequested: transactions.length, transactionsRead: transactions.filter(t => !t.unavailable).length,
+    unavailableTransactions: transactions.filter(t => t.unavailable).length, unavailableTokenBalances: transactions.filter(t => t.unavailableTokenBalances).length,
+    vaultDebits: rows.filter(t => t.vaultDebitRaw !== null).length,
+    vaultDebitedRaw: String(sum(rows.map(t => BigInt(t.vaultDebitRaw ?? "0")))),
+    distinctClaimants: claimants.length, voterAuthorityClaimants: voterClaimants.length,
+    totalClaimedRaw: String(total), totalClaimedMnde: formatUnits(total, 9), voterAuthorityClaimedRaw: String(voterTotal),
+    claimantShare: ratio(BigInt(voterClaimants.length), BigInt(claimants.length)), claimedAmountShare: ratio(voterTotal, total),
+    unresolvedRecipientCredits: credits.filter(r => r.claimant === null).length,
+    unresolvedClaimedRaw: String(sum(credits.filter(r => r.claimant === null).map(r => BigInt(r.amountRaw)))),
+    top10Claimants: claimants.map(claimant => {
+      const selected = credits.filter(r => r.claimant === claimant), raw = sum(selected.map(r => BigInt(r.amountRaw)));
+      return { claimant, voterAuthority: voters.has(claimant), amountRaw: String(raw), amountMnde: formatUnits(raw, 9),
+        transactions: unique(selected.map(r => r.signature)).length, ...provenance(evidence, [...voterIds, ...selected.flatMap(r => r.evidenceIds)], "derived") };
+    }).sort((a, b) => BigInt(a.amountRaw) === BigInt(b.amountRaw) ? a.claimant.localeCompare(b.claimant) : BigInt(a.amountRaw) > BigInt(b.amountRaw) ? -1 : 1).slice(0, 10),
+    instructionNameCounts: unique(names.map(i => JSON.stringify([i.program, i.name]))).map(key => {
+      const [program, name] = JSON.parse(key) as [string, string], selected = names.filter(i => i.program === program && i.name === name);
+      return { program, name, count: selected.length, successfulInvocations: selected.filter(i => i.succeeded === true && i.transactionSucceeded === true).length,
+        ...provenance(evidence, selected.flatMap(i => i.evidenceIds)), basis: "observed (program log)" as const };
+    }),
+    vaults: vaults.map(v => ({ ...v, asOf: meta.asOf, currentBalance: { ...v.currentBalance, asOf: meta.asOf } })),
+    assumptions: ["Vaults are actual buyback-transfer destinations for distributors without an IDL; received amounts cover the buyback sample only.",
+      "Successful vault debits select all same-transaction MNDE credits, regardless of instruction name or program invocation; this does not prove instruction-level causality or eligibility.",
+      "Unknown owners remain unresolved. Claimant share uses known distinct owners; amount share includes unresolved credits in its denominator. Current token-account fallback owners are not historical ownership proof.",
+      "Current VSR authority overlap does not establish historical eligibility or subsequent locking. Eligibility rules are off-chain; v6 is never verified.",
+      "Newest 300 signatures per vault are a bounded sample; missing transactions, metadata, and truncated logs can hide activity. Balance and funding are separate observations, not a conservation reconciliation."],
+  };
+}
+
 /** Decode successful program calls; transaction-wide credits are counted once per claimant. */
 export function distributorInstructions(tx: any, program: string, address: string, idl: LegacyIdl, mnde: string, voters: Set<string>) {
   if (tx?.meta?.err !== null) return { instructions: [], claims: [] };
@@ -387,6 +515,13 @@ export async function readFlows(rpc: RecordingRpc, registry: PackRegistry, layer
     const classification = classified.get(owner)!;
     distributors.push(await readDistributor(rpc, registry, layer, context, owner, classification.owner!, mnde, participation, sample));
   }
+  const fundedVaults = distributors.filter(d => d.idl.kind === "no-idl").flatMap(d => {
+    const transfers = buybacks.flatMap(b => b.recipients.filter(r => r.owner === d.address).map(r => ({ ...r, evidenceIds: b.evidenceIds })));
+    return unique(transfers.map(r => r.destination)).map(address => ({ address, distributor: d.address, program: d.program,
+      amountReceivedRaw: String(sum(transfers.filter(r => r.destination === address).map(r => BigInt(r.amountRaw)))),
+      evidenceIds: unique(transfers.filter(r => r.destination === address).flatMap(r => r.evidenceIds)) }));
+  });
+  const distributorClaims = await readDistributorClaims(rpc, fundedVaults, mnde, participation, sample);
   const fundingSample = await sample(buybackWallet, 1000), fundingRows = [];
   const fundingSourceDetails = new Map<string, { address: string; classification: Awaited<ReturnType<typeof destination>>["classification"]; roles: { name: string; basis: string; evidenceIds: string[] }[]; evidenceIds: string[] }>();
   for (const row of fundingSample.rows) {
@@ -469,9 +604,10 @@ export async function readFlows(rpc: RecordingRpc, registry: PackRegistry, layer
     let status = "unresolved", chainResult = "No decoded revenue destination or observed collection established.", details: unknown = null, ids: string[] = [docsId, registryId];
     if (c.id === "v1") { const v = layer.claims.find(c => c.id === "v1")!; status = v.status; chainResult = v.note; ids.push(...v.evidenceIds); }
     if (c.id === "v5") { chainResult = `${v5.note} Observed funding sources: ${buybackFunding.bySource.map(s => `${s.source ?? "unresolved"} (${fundingSourceDetails.get(s.source ?? "")?.roles.map(r => `${r.name}; ${r.basis}`).join(", ") || "classified account"}): ${s.amountRaw} raw ${s.asset}`).join("; ") || "none in sample"}. No same-window protocol revenue figure established.`; details = v5; ids.push(...treasurySample.evidenceIds, ...buybackSample.evidenceIds, ...fundingIds); }
-    if (c.id === "v6") { status = BigInt(distributorSummary.voterAuthorityClaimedRaw) > 0n || voterShare !== null && voterShare > 0 ? "partly" : "unresolved";
+    if (c.id === "v6") { status = BigInt(distributorSummary.voterAuthorityClaimedRaw) > 0n || BigInt(distributorClaims.voterAuthorityClaimedRaw) > 0n ? "partly" : "unresolved";
       chainResult = `${distributorSummary.voterAuthorityClaimants} of ${distributorSummary.distinctClaimants} sampled distributor claimants (${distributorSummary.claimedAmountShare === null ? "unknown" : (distributorSummary.claimedAmountShare * 100).toFixed(2)} % of observed claimed MNDE) are current VSR voter authorities; window ${distributorSummary.window.oldestBlockTime ?? "unknown"}–${distributorSummary.window.newestBlockTime ?? "unknown"} (Unix seconds). Direct recipient share: ${voterShare ?? "unknown"}. Current overlap does not establish historical eligibility, subsequent locking, or tracing of fungible bought MNDE through a funded vault.`;
-      details = { share: voterShare, window: buybackSample.window, distributors: distributorSummary }; ids.push(...buybacks.flatMap(b => b.evidenceIds), ...participation.vsr.timeLocked.evidenceIds, ...distributorSummary.evidenceIds); }
+      chainResult += ` IDL-free vault observations: ${distributorClaims.voterAuthorityClaimants} of ${distributorClaims.distinctClaimants} known claimants (${distributorClaims.claimantShare === null ? "unknown" : (distributorClaims.claimantShare * 100).toFixed(2)} %), ${distributorClaims.claimedAmountShare === null ? "unknown" : (distributorClaims.claimedAmountShare * 100).toFixed(2)} % of ${distributorClaims.totalClaimedMnde} observed claimed MNDE go to current VSR voter authorities; window ${distributorClaims.window.oldestBlockTime ?? "unknown"}–${distributorClaims.window.newestBlockTime ?? "unknown"} (Unix seconds). Eligibility rules are off-chain and remain unverified.`;
+      details = { share: voterShare, window: buybackSample.window, distributors: distributorSummary, distributorClaims }; ids.push(...buybacks.flatMap(b => b.evidenceIds), ...participation.vsr.timeLocked.evidenceIds, ...distributorSummary.evidenceIds, ...distributorClaims.evidenceIds); }
     if (c.id === "v7") { status = seeds.length ? "partly" : "unresolved"; chainResult = `${seeds.length} DAO MNDE transfer candidates within 1% of 10,000,000 in B.1; pool-seed purpose requires proposal and receipt review.`; details = seeds.map(e => ({ ...e, asOf: ledger?.asOf ?? meta.asOf })); ids.push(...seeds.flatMap(e => e.evidenceIds), ...(ledgerId ? [ledgerId] : [])); }
     if (c.id === "v8") { chainResult = `${contextProposals.length} proposal names match MIP-17, MIP-11 or MIP-13; names provide claimed context, not execution semantics.`; details = contextProposals.map(proposal => ({ ...proposal, asOf: ledger?.asOf ?? meta.asOf, basis: "claimed" })); ids.push(...contextProposals.flatMap(p => p.evidenceIds), ...(ledgerId ? [ledgerId] : [])); }
     if (c.id === "v9") { status = dominant === "2592000" ? "verified" : dominant ? "contradiction" : "unresolved"; chainResult = `Dominant Constant MNDE lockup period by used deposit count: ${dominant ?? "none or tied"} seconds. This checks stored periods, not an unlock execution.`; details = periods; ids.push(...participation.vsr.timeLocked.evidenceIds); }
@@ -488,7 +624,7 @@ export async function readFlows(rpc: RecordingRpc, registry: PackRegistry, layer
         destinationDetail: { ...r.destinationDetail, ...p(r.destinationDetail.evidenceIds), classification: r.destinationDetail.classification ? { ...r.destinationDetail.classification, ...p(r.destinationDetail.classification.evidenceIds, r.destinationDetail.classification.kind === "native-treasury-pda" ? "derived" : "decoded") } : null } })) },
     buybacks: { wallet: buybackWallet, walletLabelBasis: "claimed", ata: buybackAta, ataBasis: "derived", ...p([...buybackSample.evidenceIds, registryId]), window: { ...buybackSample.window, ...p(buybackSample.evidenceIds) }, transactions: buybacks.map(b => ({ ...b, recipients: b.recipients.map(r => ({ ...r, ...p([...b.evidenceIds, ...r.evidenceIds]), slot: b.slot,
       classification: r.classification ? { ...r.classification, ...p(r.classification.evidenceIds, r.classification.kind === "native-treasury-pda" ? "derived" : "decoded") } : null })) })), months, voterAuthorityShare: figure(voterShare, p(unique(buybacks.flatMap(b => b.evidenceIds)), "derived")) },
-    distributors, distributorSummary, buybackFunding,
+    distributors, distributorSummary, buybackFunding, distributorClaims,
     claims, feeClaims, verdict: assembleVerdict(routes, mechanisms, claims, offsets, meta, [
       ...distributors.map(d => ({ link: `buyback wallet → ${d.address} (${d.idlName ?? "IDL unresolved"}) → sampled claimants`, qualification: `Funding is an account action. ${d.summary.voterAuthorityClaimants} of ${d.summary.distinctClaimants} current-voter claimant matches; successful claim-named calls and credits are observations, not verified merkle enforcement.`, evidenceIds: d.evidenceIds })),
       { link: "funding source accounts → buyback wallet → MNDE purchases", qualification: buybackFunding.comparison, evidenceIds: unique([...fundingIds, ...buybackSample.evidenceIds]) },

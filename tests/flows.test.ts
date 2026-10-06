@@ -2,7 +2,7 @@ import { describe, expect, test } from "bun:test";
 import { readFileSync } from "node:fs";
 import bs58 from "bs58";
 import { PublicKey, SystemProgram } from "@solana/web3.js";
-import { DESTINATION_PATTERNS, snakeCase, instructionDiscriminator, tokenDeltas, tokenTransfers, attributeInstruction, walletCosts, aggregateBuybackMonths, aggregateFunding, fundingCredits, distributorInstructions, aggregateDistributorClaims, readDistributor, compareRevenueWindows, declaredRoutes, matchFeeStatements, assembleVerdict, readFlows, type BuybackObservation } from "../src/contracts/flows";
+import { DESTINATION_PATTERNS, snakeCase, instructionDiscriminator, tokenDeltas, tokenTransfers, attributeInstruction, walletCosts, aggregateBuybackMonths, aggregateFunding, fundingCredits, distributorInstructions, aggregateDistributorClaims, readDistributor, programLogInstructions, vaultClaimObservation, readDistributorClaims, compareRevenueWindows, declaredRoutes, matchFeeStatements, assembleVerdict, readFlows, type BuybackObservation } from "../src/contracts/flows";
 import { TOKEN_PROGRAM } from "../src/chain/token-layout";
 import { RecordingRpc } from "../src/chain/rpc";
 import { runOptions } from "../src/config";
@@ -105,12 +105,18 @@ import { associatedTokenAccount } from "../src/pack/classify";
 import { deflateSync } from "node:zlib";
 import { idlAddress, type LegacyIdl } from "../src/contracts/idl";
 const ata = associatedTokenAccount(new PublicKey(buyback), new PublicKey(registry.mints.find((m: any) => m.id === "mnde").address));
-test.skipIf(!hasFixture("getSignaturesForAddress", { pubkey: buyback, limit: 1000 }))("mainnet flows (skipped until Claude records G5b keys)", async () => {
+// Actual transfer destination in the G5b capture, not an ATA inferred from the owner.
+const recordedDistributorVault = "3HT41nesAgcoNDeGAVFKwss5mzScMH2Uik6pcP71xnhB";
+test.skipIf(!hasFixture("getSignaturesForAddress", { pubkey: recordedDistributorVault, limit: 300 }))("mainnet flows (skipped until Claude records G5c vault keys)", async () => {
   const rpc = new RecordingRpc(runOptions({ offline: true, record: false }), "marinade-contracts");
   const layer = await readContractsLayer(rpc, registry, contracts), participation = await readParticipation(rpc, registry, contracts, layer);
   const result = await readFlows(rpc, registry, layer, participation, null, docs);
   expect(result.routes.length).toBeGreaterThan(0); expect(result.claims).toHaveLength(9); expect(result.treasury.transactionsRequested.value).toBeLessThanOrEqual(1000);
   expect(result.buybackFunding.wallet).toBe(buyback); expect(Array.isArray(result.distributors)).toBe(true);
+  expect(result.distributorClaims.vaults.some(v => v.address === recordedDistributorVault)).toBe(true);
+  expect(result.distributorClaims.transactionsRead).toBeGreaterThan(0);
+  expect(result.distributorClaims.vaults.every(v => v.window.limit === 300)).toBe(true);
+  expect(result.claims.find(c => c.id === "v6")?.status).not.toBe("verified");
   expect(() => JSON.stringify(result)).not.toThrow();
 }, 120_000);
 
@@ -164,7 +170,7 @@ test("synthetic flow reader keeps missing transactions, treasury windows, purcha
   expect(result.buybackFunding.months[0]).toMatchObject({ solReceivedRaw: "2000000000", solSpentOnMndeRaw: "0" });
   expect(result.verdict.operatedByAccounts.some(r => r.link.includes("funding source"))).toBe(true);
   expect(result.claims.find(c => c.id === "v9")?.status).toBe("verified"); expect(result.claims.find(c => c.id === "v5")?.status).toBe("unresolved");
-  expect(result.claims.find(c => c.id === "v6")?.status).toBe("partly"); expect(() => JSON.stringify(result)).not.toThrow();
+  expect(result.claims.find(c => c.id === "v6")?.status).toBe("unresolved"); expect(() => JSON.stringify(result)).not.toThrow();
   // Exercise discovery from an actual buyback outflow, then drive v6 through the distributor.
   distribution.meta.postTokenBalances[1].owner = distributor;
   const previousAccountRead = rpc.connection.getAccountInfoAndContext, previousSignatures = rpc.connection.getSignaturesForAddress;
@@ -187,6 +193,32 @@ test("synthetic flow reader keeps missing transactions, treasury windows, purcha
   expect(indirect.verdict.operatedByAccounts.some(r => r.link.includes("merkle_distributor"))).toBe(true);
   expect(indirect.verdict.enforcedByCode.some(r => r.link.includes(distributor))).toBe(false);
   expect(() => JSON.stringify(indirect)).not.toThrow();
+  // Remove the IDL: discovery must follow the recorded transfer destination, not the stored vault field.
+  const withIdlAccountRead = rpc.connection.getAccountInfoAndContext, withIdlSignatures = rpc.connection.getSignaturesForAddress;
+  const vaultData = Buffer.alloc(165); new PublicKey(mnde).toBuffer().copy(vaultData); new PublicKey(distributor).toBuffer().copy(vaultData, 32); vaultData.writeBigUInt64LE(600n, 64);
+  rpc.connection.getAccountInfoAndContext = async (k, options) => k.equals(idlKey) ? { context: { slot: 500 }, value: null } :
+    k.toBase58() === recipientToken ? { context: { slot: 500 }, value: { owner: TOKEN_PROGRAM, data: vaultData, executable: false, lamports: 1, rentEpoch: 0 } } : withIdlAccountRead(k, options);
+  rpc.connection.getSignaturesForAddress = async (k, options, commitment) => k.toBase58() === recipientToken ?
+    (expect(options?.limit).toBe(300), signatures(["claim-one", "claim-two"])) : withIdlSignatures(k, options, commitment);
+  for (const t of [transactions["claim-one"], transactions["claim-two"]]) {
+    t.transaction.message.accountKeys[4] = recipientToken;
+    t.meta.logMessages = [`Program ${program} invoke [1]`, "Program log: Instruction: Redeem", `Program ${program} success`];
+  }
+  const withoutIdl = await readFlows(rpc, registry, fullLayer, fullParticipation, null, docs);
+  expect(withoutIdl.distributors[0].idl.kind).toBe("no-idl");
+  expect(withoutIdl.distributorSummary.distinctClaimants).toBe(0);
+  expect(withoutIdl.distributorClaims).toMatchObject({ distinctClaimants: 2, voterAuthorityClaimants: 1, claimantShare: 0.5, claimedAmountShare: 0.25, totalClaimedRaw: "400" });
+  expect(withoutIdl.distributorClaims.vaults[0]).toMatchObject({ address: recipientToken, amountReceivedRaw: "1000000000", currentBalance: { raw: "600", basis: "decoded" } });
+  expect(withoutIdl.distributorClaims.instructionNameCounts[0]).toMatchObject({ name: "Redeem", count: 2, basis: "observed (program log)" });
+  expect(withoutIdl.claims.find(c => c.id === "v6")).toMatchObject({ status: "partly" });
+  expect(withoutIdl.claims.find(c => c.id === "v6")?.chainResult).toContain("50.00 %");
+  expect(withoutIdl.claims.find(c => c.id === "v6")?.chainResult).toContain("25.00 %");
+  expect(withoutIdl.distributorClaims.evidenceIds).toContain("voter-evidence");
+  expect(() => JSON.stringify(withoutIdl)).not.toThrow();
+  for (const t of [transactions["claim-one"], transactions["claim-two"]]) t.meta.postTokenBalances[0].uiTokenAmount.amount = "1000";
+  const noClaims = await readFlows(rpc, registry, fullLayer, fullParticipation, null, docs);
+  expect(noClaims.distributorClaims.totalClaimedRaw).toBe("0");
+  expect(noClaims.claims.find(c => c.id === "v6")?.status).toBe("unresolved");
 });
 
 const distributorIdl: LegacyIdl = { name: "merkle_distributor", version: "0.1.0", instructions: [
@@ -205,6 +237,110 @@ function claimTx(who = claimant, amount = "100", name = "claim"): any {
     meta: { err: null, preTokenBalances: [balance(4, "1000", distributor)], postTokenBalances: [balance(4, String(1000n - BigInt(amount)), distributor), balance(3, amount, who)],
       preBalances: [10000, 0, 0, 0, 0, 0], postBalances: [5000, 0, 0, 0, 0, 0], fee: 5000, innerInstructions: [] } };
 }
+describe("IDL-free distributor claims", () => {
+  test("log names stay with their invoking program across nested calls, failures and truncation", () => {
+    const t: any = claimTx();
+    t.meta.logMessages = ["Program log: Instruction: Outside", `Program ${program} invoke [1]`, "Program log: Instruction: Outer",
+      `Program ${dest} invoke [2]`, "Program log: Instruction: WrongProgram", `Program ${program} invoke [3]`,
+      "Program log: Instruction: Inner", `Program ${program} failed: custom program error: 0x1`, `Program ${dest} success`,
+      "Program log: Instruction: Resumed", `Program ${program} success`, "Program log: Instruction: OutsideAgain",
+      `Program ${program} invoke [1]`, "Program log: Instruction: Truncated"];
+    expect(programLogInstructions(t, program).map(({ name, depth, succeeded, basis }) => ({ name, depth, succeeded, basis }))).toEqual([
+      { name: "Outer", depth: 1, succeeded: true, basis: "observed (program log)" },
+      { name: "Inner", depth: 3, succeeded: false, basis: "observed (program log)" },
+      { name: "Resumed", depth: 1, succeeded: true, basis: "observed (program log)" },
+      { name: "Truncated", depth: 1, succeeded: null, basis: "observed (program log)" },
+    ]);
+  });
+  test("successful vault debit includes every MNDE credit, with post owner and CPI invocation", () => {
+    const t: any = claimTx();
+    t.transaction.message.instructions = [{ programIdIndex: 1, accounts: [], data: "" }];
+    t.meta.loadedAddresses = { writable: [token, key(70)], readonly: [] };
+    t.meta.innerInstructions = [{ index: 0, instructions: [{ programIdIndex: 5, accounts: [4, 3, 6], data: "" }] }];
+    t.meta.preTokenBalances.push(balance(3, "50", wallet));
+    t.meta.postTokenBalances.push(balance(6, "200", dest), balance(7, "900", dest, usdc, 6));
+    const result = vaultClaimObservation(t, vault, program, mint);
+    expect(result).toMatchObject({ vaultDebitRaw: "100", invokedDistributorProgram: true, invocationLocations: ["inner"],
+      recipients: [{ destination: claimantToken, amountRaw: "50", claimant }, { destination: token, amountRaw: "200", claimant: dest }] });
+    // Credits can exceed the vault debit: these are transaction observations, not a conservation allocation.
+    delete t.meta.postTokenBalances[1].owner;
+    expect(vaultClaimObservation(t, vault, program, mint).recipients[0].claimant).toBeNull();
+  });
+  test("claim-named non-debits, failures, wrong-mint vaults and missing metadata do not create claims", () => {
+    const t: any = claimTx(); t.meta.logMessages = [`Program ${program} invoke [1]`, "Program log: Instruction: Claim", `Program ${program} success`];
+    t.meta.postTokenBalances[0].uiTokenAmount.amount = "1000";
+    expect(vaultClaimObservation(t, vault, program, mint).recipients).toEqual([]);
+    t.meta.postTokenBalances[0].uiTokenAmount.amount = "900"; t.meta.err = { InstructionError: [0, "failed"] };
+    expect(vaultClaimObservation(t, vault, program, mint).vaultDebitRaw).toBeNull();
+    t.meta.err = null;
+    expect(vaultClaimObservation(t, vault, program, usdc).recipients).toEqual([]);
+    delete t.meta.preTokenBalances;
+    expect(vaultClaimObservation(t, vault, program, mint)).toMatchObject({ unavailableTokenBalances: true, vaultDebitRaw: null, recipients: [] });
+    expect(vaultClaimObservation(null, vault, program, mint)).toMatchObject({ unavailable: true, recipients: [] });
+  });
+  test("vault debit does not require a claim name or a distributor invocation", () => {
+    const t: any = claimTx(); t.transaction.message.instructions = [];
+    expect(vaultClaimObservation(t, vault, program, mint)).toMatchObject({ invokedDistributorProgram: false, instructions: [],
+      recipients: [{ claimant, amountRaw: "100" }] });
+  });
+  test("recorded fallback, multiple accounts per claimant, overlapping vault samples and exact totals", async () => {
+    const rpc = new RecordingRpc(runOptions({ record: false, offline: false, rpcUrl: "http://127.0.0.1:1", minIntervalMs: 0 }), "synthetic-vault-claims");
+    const otherVault = key(71), sameOwnerToken = key(72), otherOwnerToken = key(73), unknownToken = key(74);
+    const reads: string[] = [];
+    rpc.connection.getAccountInfoAndContext = async k => {
+      const address = k.toBase58(); reads.push(address);
+      if (address === unknownToken) return { context: { slot: 500 }, value: null };
+      const data = Buffer.alloc(165); new PublicKey(mint).toBuffer().copy(data);
+      new PublicKey(address === sameOwnerToken ? claimant : distributor).toBuffer().copy(data, 32); data.writeBigUInt64LE(600n, 64);
+      return { context: { slot: 500 }, value: { owner: TOKEN_PROGRAM, data, executable: false, lamports: 1, rentEpoch: 0 } };
+    };
+    const t: any = claimTx();
+    t.transaction.message.accountKeys.push(otherVault, sameOwnerToken, otherOwnerToken, unknownToken);
+    t.meta.preTokenBalances.push(balance(6, "200", distributor), balance(7, "0", wallet));
+    t.meta.postTokenBalances[0].uiTokenAmount.amount = "500";
+    t.meta.postTokenBalances.push(balance(6, "0", distributor), balance(7, "100", wallet), balance(8, "200", dest), balance(9, "100", wallet));
+    delete t.meta.postTokenBalances[3].owner; delete t.meta.postTokenBalances[5].owner;
+    t.meta.logMessages = [`Program ${program} invoke [1]`, "Program log: Instruction: Redeem", `Program ${program} success`];
+    const sample = async (address: string, limit: number) => ({ address, limit, evidenceIds: ["history"], window: { oldestBlockTime: 10, newestBlockTime: 20 }, rows: [
+      { signature: "shared", tx: t, blockTime: 10, ...meta, slot: 123, basis: "observed" as const },
+      { signature: "missing", tx: null, blockTime: 20, ...meta, slot: 124, basis: "observed" as const },
+    ] });
+    const result = await readDistributorClaims(rpc, [vault, otherVault].map(address => ({ address, distributor, program, amountReceivedRaw: "90071992547409930", evidenceIds: ["funding"] })),
+      mint, { evidence: [], vsr: { rows: [{ voterAuthority: claimant, evidenceIds: ["voter"] }] } } as any, sample);
+    expect(result).toMatchObject({ transactionsRequested: 2, transactionsRead: 1, unavailableTransactions: 1, vaultDebits: 2, vaultDebitedRaw: "700",
+      distinctClaimants: 2, voterAuthorityClaimants: 1, totalClaimedRaw: "500", totalClaimedMnde: "0.0000005", voterAuthorityClaimedRaw: "200",
+      claimantShare: 0.5, claimedAmountShare: 0.4, unresolvedRecipientCredits: 1, unresolvedClaimedRaw: "100",
+      window: { oldestBlockTime: 10, newestBlockTime: 20, limitPerVault: 300 } });
+    expect(result.top10Claimants.map(r => r.amountRaw)).toEqual(["200", "200"]);
+    expect(result.vaults[0]).toMatchObject({ amountReceivedRaw: "90071992547409930", balanceMinusReceivedRaw: "-90071992547409330", currentBalance: { raw: "600", basis: "decoded" } });
+    expect(result.vaults[0].transactions[0].recipients.find(r => r.destination === sameOwnerToken)).toMatchObject({ claimant, claimantBasis: "decoded (current token-account read)" });
+    expect(reads.filter(a => a === sameOwnerToken)).toHaveLength(1);
+    expect(reads.filter(a => a === unknownToken)).toHaveLength(1);
+    expect(result.instructionNameCounts).toMatchObject([{ name: "Redeem", count: 1, successfulInvocations: 1, basis: "observed (program log)" }]);
+    expect(result.evidenceIds).toEqual(expect.arrayContaining(["voter", "funding", "history"]));
+    expect(rpc.evidence).toHaveLength(4);
+    expect(() => JSON.stringify(result)).not.toThrow();
+  });
+  test("top ten ranks exact large amounts and empty denominators stay null", async () => {
+    const rpc = new RecordingRpc(runOptions({ record: false, rpcUrl: "http://127.0.0.1:1", minIntervalMs: 0 }), "synthetic-top-claims");
+    rpc.connection.getAccountInfoAndContext = async () => ({ context: { slot: 500 }, value: null });
+    const t: any = claimTx(); t.meta.postTokenBalances = [t.meta.postTokenBalances[0]];
+    for (let i = 0; i < 12; i++) {
+      t.transaction.message.accountKeys.push(key(90 + i));
+      t.meta.postTokenBalances.push(balance(6 + i, String(90071992547409930n + BigInt(i)), key(110 + i)));
+    }
+    const p = { evidence: [], vsr: { rows: [] } } as any;
+    const sample = async (address: string, limit: number) => ({ address, limit, evidenceIds: [], window: { oldestBlockTime: null, newestBlockTime: null },
+      rows: [{ signature: "large", tx: t, blockTime: null, ...meta, slot: 123, basis: "observed" as const }] });
+    const result = await readDistributorClaims(rpc, [{ address: vault, distributor, program, amountReceivedRaw: "0", evidenceIds: [] }], mint, p, sample);
+    expect(result.top10Claimants).toHaveLength(10); expect(result.top10Claimants[0].amountRaw).toBe("90071992547409941");
+    expect(result.totalClaimedRaw).toBe("1080863910568919226");
+    expect(result.claimedAmountShare).toBe(0); expect(result.vaults[0].currentBalance.raw).toBeNull();
+    const empty = await readDistributorClaims(rpc, [], mint, p, sample);
+    expect(empty).toMatchObject({ claimantShare: null, claimedAmountShare: null, totalClaimedRaw: "0", top10Claimants: [] });
+  });
+});
+
 describe("distributor claim evidence", () => {
   test("discriminator names, nested signer roles and weighted current voter overlap", () => {
     const voters = new Set([claimant]);
