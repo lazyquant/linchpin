@@ -1,3 +1,5 @@
+import { loadTokenomicsBundle, tokenomicsDigest } from '../src/tokenomics/cache';
+import { sameCouncilMembers } from '../src/tokenomics/councils';
 import { hasGovernanceFixture } from './helpers/governance';
 import { CANNED_QUERIES, type Neo4jDriverLike } from '../src/graph/neo4j';
 import { buildTokenomicsGraph, assertTokenomicsNamespace, tokenomicsCypherBatches, loadTokenomicsNeo4j, TOKENOMICS_QUERIES, runTokenomicsLocal, runTokenomicsNeo4j } from '../src/graph/tokenomics-neo4j';
@@ -62,7 +64,7 @@ describe.skipIf(!governanceRecorded)('tokenomics recorded backend', () => {
   test('build is offline and the reward fee resolves through admin to the Marinade DAO council', () => {
     expect(built.reads.live).toBe(0); expect(built.reads.replayed).toBeGreaterThan(0);
     const fee = built.bundle.parameters.data!.rows.find(r => r.field === 'rewardFee')!;
-    expect(fee.value).toBe('0'); expect(fee.display).toBe('0 %');
+    expect(fee.value).toBe('0'); expect(fee.display).toBe('0.00 %');
     const setter = fee.setBy.find(s => s.instruction === 'configMarinade')!;
     expect(setter.role).toBe('adminAuthority'); expect(setter.basis).toBe('inferred');
     const controller = built.bundle.control.data!.controllers.find(c => c.id === setter.controllerId)!;
@@ -70,8 +72,8 @@ describe.skipIf(!governanceRecorded)('tokenomics recorded backend', () => {
   });
   test('fee units, SOL units and price scaling preserve the exact raw values', () => {
     const rows = built.bundle.parameters.data!.rows;
-    expect(rows.find(r => r.field === 'delayedUnstakeFee')).toMatchObject({ value: '2000', display: '0.2 %', unit: '%' });
-    expect(rows.find(r => r.field === 'liqPool.treasuryCut')?.display).toBe('50 %');
+    expect(rows.find(r => r.field === 'delayedUnstakeFee')).toMatchObject({ value: '2000', display: '0.20 %', unit: '%' });
+    expect(rows.find(r => r.field === 'liqPool.treasuryCut')?.display).toBe('50.00 %');
     expect(rows.find(r => r.field === 'stakingSolCap')?.display).toBe('18,446,744,073.709551615 SOL');
     const price = rows.find(r => r.field === 'msolPrice')!;
     expect(price.unit).toBe('SOL per mSOL'); expect(Number(price.display.split(' ')[0])).toBe(Number(price.value) / 2 ** 32);
@@ -118,15 +120,75 @@ describe.skipIf(!governanceRecorded)('tokenomics recorded backend', () => {
     const purchase = links.find(l => l.id === 'buyback-purchases')!;
     expect(purchase.status).toBe('operated-by-accounts'); expect(BigInt(purchase.observed!.amount.raw)).toBeGreaterThan(0n);
     expect(purchase.observed!.transactions).toBeGreaterThan(0);
-    expect(links.find(l => l.id === 'purchases-stakers')?.status).toBe('not-observed');
+    expect(links.find(l => l.id === 'purchases-stakers')?.status).toBe('operated-by-accounts');
     expect(links.find(l => l.id === 'delayed-destination')?.status).toBe('pending');
-    for (const date of purchase.observed!.window) expect(built.bundle.answer.data!.statements.find(s => s.id === 'buyback-route')!.text).toContain(date);
+    for (const date of purchase.observed!.window) expect(built.bundle.answer.data!.statements.find(s => s.id === 'buyback-route')!.text).toContain(date.slice(0, 10));
     expect(built.bundle.answer.data!.shortAnswer.status).toBe('partly');
-    expect(built.bundle.answer.data!.statements).toHaveLength(8);
+    expect(built.bundle.answer.data!.statements).toHaveLength(10);
     expect(built.bundle.flows.data!.treasury.inflows?.byInstruction?.length).toBeGreaterThan(0);
     expect(built.bundle.holders.data!.mnde.top.length).toBeGreaterThan(0);
     expect(built.bundle.holders.data!.msol.downstream.length).toBeGreaterThan(0);
     expect(built.bundle.offsets.data!.rows.some(r => r.id === 'holders-pending')).toBe(false);
+  });
+
+  test('buyback credits without a same-transaction payment are reported next to purchases, never merged (Claude, 2026-10-06)', () => {
+    const purchase = built.bundle.path.data!.links.find(l => l.id === 'buyback-purchases')!;
+    const rows = purchase.observed!.byInstruction!;
+    expect(rows.length).toBe(2);
+    expect(rows[0].instruction).toContain('same-transaction');
+    expect(rows[1].instruction).toContain('without a same-transaction payment');
+    expect(BigInt(rows[0].amount.raw) + BigInt(rows[1].amount.raw)).toBe(BigInt(purchase.observed!.amount.raw));
+    expect(rows[0].transactions + rows[1].transactions).toBe(purchase.observed!.transactions);
+    const text = built.bundle.answer.data!.statements.find(s => s.id === 'buyback-route')!.text;
+    expect(text).toContain(`${rows[0].transactions} purchases`);
+    expect(text).toContain(`${rows[1].transactions} transactions through program`);
+    expect(text).toContain(purchase.observed!.amount.display);
+    const months = built.bundle.flows.data!.buybacks.months;
+    const credited = months.reduce((n, m) => n + BigInt(m.mndeCreditedWithoutPayment?.raw ?? '0'), 0n);
+    expect(credited).toBe(BigInt(rows[1].amount.raw));
+    expect([...months.map(m => m.month)]).toEqual([...months.map(m => m.month)].sort());
+    expect(built.bundle.flows.data!.buybacks.creditPrograms!.length).toBeGreaterThan(0);
+  }, 120_000);
+  test('distributor claims, purchase months and recipient transfers retain exact recorded scope', () => {
+    const path = built.bundle.path.data!, claims = path.links.find(l => l.id === 'purchases-stakers')!;
+    expect(claims.observed).toMatchObject({ transactions: 4, claims: 4, voterAuthorityClaims: 4,
+      amount: { raw: '15416329929463' }, voterAuthorityAmount: { raw: '15416329929463' }, claimantShare: 1, claimedAmountShare: 1 });
+    expect(built.bundle.claims.data!.rows.find(c => c.id === 'v6')?.status).toBe('partly');
+    const recipient = path.links.find(l => l.id === 'buyback-recipient:3HT41nesAgcoNDeGAVFKwss5mzScMH2Uik6pcP71xnhB')!;
+    expect(recipient.mechanism).toContain('NewClaim ×4'); expect(recipient.mechanism).toContain('NewDistributor ×1');
+    expect(recipient.mechanism).toContain('meRdrpyDCAbQxunjZSLmJ78GxQcn4fJUvqU93GoHZr1');
+    expect(recipient.observed!.amount.raw).toBe('4244303363608441');
+    const text = built.bundle.answer.data!.statements.find(s => s.id === 'buyback-route')!.text;
+    expect(text).toContain('73 purchases paid with'); expect(text).toContain('4,475,493.127687976 MNDE'); expect(text).toContain('965.987819213 SOL');
+    expect(text).toContain('2025-12: 3,819,939.280319603 MNDE'); expect(text).toContain('2026-01: 2,529,358.314054663 MNDE');
+    expect(text).toContain('2026-02: 77,808.635710129 MNDE'); expect(text).toContain('2026-10: 4,244,303.363608441 MNDE');
+    expect(text).toContain('4 of 4 claims observed so far (15,416.329929463 MNDE)');
+    const short = built.bundle.answer.data!.shortAnswer.text;
+    expect(short.startsWith('Program code routes')).toBe(true);
+    expect(short.split(/\. (?=[A-Z])/)).toHaveLength(3);
+    expect(short.indexOf('Moving treasury funds')).toBeLessThan(short.indexOf('The Marinade DAO council'));
+    for (const s of built.bundle.answer.data!.statements) {
+      expect(s.text.endsWith('.')).toBe(true);
+      for (const match of s.text.matchAll(/(\d+(?:\.\d+)?) %/g)) expect(match[1]).toMatch(/\.\d{2}$/);
+    }
+  });
+  test('council membership and Emergency Council seat control agree with graph provenance', () => {
+    const control = built.bundle.control.data!, councils = control.controllers.filter(c => c.type === 'council-realm');
+    const dao = councils.find(c => c.realm?.name === 'Marinade DAO')!, emergency = councils.find(c => c.realm?.name === 'Marinade DAO Emergency Council')!;
+    expect(sameCouncilMembers(dao, emergency)).toBe(true);
+    expect(sameCouncilMembers(dao, { ...emergency, members: emergency.members!.slice(1) })).toBe(false);
+    expect(sameCouncilMembers({ ...dao, members: [] }, { ...emergency, members: [] })).toBe(false);
+    const row = control.rows.find(r => r.id === `control:council-mint:${emergency.realm!.address}`)!;
+    expect(row.controllerId).toBe(dao.id); expect(row.governance).toBe('FsrqQfLGdFVtySSSsyZJUzVBA9bvGZSKyhp7nsJCqgJe');
+    expect(row.note).toContain('community voting disabled');
+    const graph = buildTokenomicsGraph(built.bundle);
+    expect(graph.relationships.filter(r => r.type === 'SAME_MEMBERS_AS')).toMatchObject([{ props: { basis: ['derived'], members: 5 } }]);
+    expect(graph.relationships.some(r => r.type === 'CAN_CHANGE' && r.source === dao.id && r.props.controlId === row.id)).toBe(true);
+    expect(graph.relationships.some(r => r.type === 'MINT_AUTHORITY' && r.source === `mint:council-mint:${emergency.realm!.address}`)).toBe(true);
+    expect(built.bundle.answer.data!.statements.find(s => s.id === 'treasury-voting')!.text).toContain('1 council token to propose');
+    expect(built.bundle.answer.data!.statements.find(s => s.id === 'msol-upgrade')!.text).toContain('is a current Marinade DAO council member.');
+    for (const c of councils) { expect(c.threshold).not.toContain(' | '); expect(c.threshold!.length).toBeLessThan(110); }
+    expect(dao.threshold).toContain('3 of 5'); expect(dao.threshold).toContain('40.00–50.00 %');
   });
   test('controllers separate voting bodies and group unresolved Native roles', () => {
     const { controllers } = built.bundle.control.data!;
@@ -349,5 +411,54 @@ describe.skipIf(!governanceRecorded)('tokenomics TG graph and service', () => {
     await rejected;
     await expect(service.load()).rejects.toMatchObject({ status: 409 });
     settle();
+  });
+});
+
+
+describe.skipIf(!governanceRecorded)('tokenomics disk cache', () => {
+  async function withCache(check: (root: string, load: () => Promise<TokenomicsBuild>, logs: string[], calls: () => number) => Promise<void>) {
+    const root = mkdtempSync(join(tmpdir(), 'tokenomics-cache-')), logs: string[] = [];
+    let calls = 0;
+    const fetch = spyOn(globalThis, 'fetch').mockImplementation(noNetwork);
+    const load = () => loadTokenomicsBundle({ root, packResult: captured }, { build: async () => { calls++; return built; }, log: s => logs.push(s) });
+    try { await check(root, load, logs, () => calls); expect(fetch).not.toHaveBeenCalled(); }
+    finally { fetch.mockRestore(); rmSync(root, { recursive: true, force: true }); }
+  }
+  test('cache hit preserves bundle export and evidence lookup without rebuilding', async () => withCache(async (_root, load, logs, calls) => {
+    await load(); const hit = await load(); expect(calls()).toBe(1);
+    expect(logs[0]).toMatch(/^tokenomics bundle: cache miss in \d+ ms$/); expect(logs[1]).toMatch(/^tokenomics bundle: cache hit in \d+ ms$/);
+    for (const path of [base, `${base}/export/tokenomics.json`, `${base}/evidence?${[...built.evidence.records.keys()].slice(0, 200).map(id => `id=${id}`).join('&')}`, `${base}/unknown`])
+      expect(await (await tokenomicsRoutes(hit, request(path))).text()).toBe(await (await tokenomicsRoutes(built, request(path))).text());
+  }));
+  test('fixture names, sizes, pack inputs and model version invalidate the digest', async () => withCache(async (root, load, _logs, calls) => {
+    await load(); const original = tokenomicsDigest(root);
+    for (const directory of ['fixtures/marinade-contracts', 'fixtures/marinade-pack', 'packs/marinade/sources/labels']) {
+      mkdirSync(join(root, directory), { recursive: true });
+      const file = join(root, directory, 'sample.json');
+      const before = tokenomicsDigest(root); writeFileSync(file, '{}'); expect(tokenomicsDigest(root)).not.toBe(before);
+      await load(); const added = tokenomicsDigest(root); writeFileSync(file, '{"changed":true}'); expect(tokenomicsDigest(root)).not.toBe(added);
+      await load();
+    }
+    expect(calls()).toBe(7); expect(tokenomicsDigest(root)).not.toBe(original);
+    expect(tokenomicsDigest(root, 'new-model-version')).not.toBe(tokenomicsDigest(root));
+  }));
+  test('corrupt JSON and altered payloads are ignored and rewritten', async () => withCache(async (root, load, _logs, calls) => {
+    await load(); const file = join(root, 'out/tokenomics/marinade', `bundle-${tokenomicsDigest(root)}.json`);
+    writeFileSync(file, '{truncated'); await load(); expect(calls()).toBe(2);
+    const cached = JSON.parse(readFileSync(file, 'utf8')); cached.build.bundle.answer.data.shortAnswer.text = 'corrupt';
+    writeFileSync(file, JSON.stringify(cached)); await load(); expect(calls()).toBe(3);
+    expect((await load()).bundle).toEqual(built.bundle); expect(calls()).toBe(3);
+  }));
+});
+
+describe('tokenomics bundle cache key', () => {
+  test('a change in tokenomics source code changes the cache digest (Claude, 2026-10-06)', () => {
+    const root = mkdtempSync(join(tmpdir(), 'linchpin-digest-'));
+    mkdirSync(join(root, 'src/tokenomics'), { recursive: true });
+    writeFileSync(join(root, 'src/tokenomics/sections.ts'), 'export const a = 1;\n');
+    const before = tokenomicsDigest(root);
+    writeFileSync(join(root, 'src/tokenomics/sections.ts'), 'export const a = 2;\n');
+    expect(tokenomicsDigest(root)).not.toBe(before);
+    rmSync(root, { recursive: true, force: true });
   });
 });

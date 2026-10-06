@@ -1,3 +1,4 @@
+import { sameCouncilMembers } from '../tokenomics/councils';
 import { canonical, sha256 } from '../chain/evidence';
 import type { Basis, BundleResponse, GraphData, GraphQueryResult, Provenance } from '../tokenomics/api';
 import { CANNED_QUERIES, runCannedNeo4j, type CannedQuery, type Neo4jDriverLike } from './neo4j';
@@ -5,7 +6,7 @@ import { CANNED_QUERIES, runCannedNeo4j, type CannedQuery, type Neo4jDriverLike 
 type Value = string | number | boolean | null | string[];
 type Props = Record<string, Value>;
 export const TG_LABELS = ['Governance', 'PathNode', 'Program', 'Parameter', 'Role', 'Authority', 'Controller', 'Member', 'Mint', 'TokenAccount', 'Claim', 'HolderGroup', 'Metric'] as const;
-export const TG_RELATIONS = ['ROUTES_TO', 'SET_BY', 'HELD_BY', 'CONTROLLED_BY', 'MEMBER_OF', 'UPGRADE_AUTHORITY', 'MINT_AUTHORITY', 'FREEZE_AUTHORITY', 'CAN_CHANGE', 'CHECKS', 'HOLDS', 'LOCKS', 'VOTES_IN', 'VETOES'] as const;
+export const TG_RELATIONS = ['ROUTES_TO', 'SET_BY', 'HELD_BY', 'CONTROLLED_BY', 'MEMBER_OF', 'UPGRADE_AUTHORITY', 'MINT_AUTHORITY', 'FREEZE_AUTHORITY', 'CAN_CHANGE', 'CHECKS', 'HOLDS', 'LOCKS', 'VOTES_IN', 'VETOES', 'SAME_MEMBERS_AS'] as const;
 export type TGNode = { id: string; labels: string[]; props: Props };
 export type TGRelationship = { source: string; target: string; type: string; key: string; props: Props };
 export type TokenomicsGraph = { nodes: TGNode[]; relationships: TGRelationship[] };
@@ -50,7 +51,7 @@ export function buildTokenomicsGraph(bundle: BundleResponse): TokenomicsGraph {
   for (const n of path?.nodes ?? []) node(`path:${n.id}`, 'PathNode', n.label, { address: n.address ?? null, kind: n.kind });
   for (const l of path?.links ?? []) rel('ROUTES_TO', `path:${l.from}`, `path:${l.to}`, l, { linkId: l.id, status: l.status, mechanism: l.mechanism,
     amountRaw: l.observed?.amount.raw ?? null, amount: l.observed?.amount.display ?? null, unit: l.observed?.amount.unit ?? null,
-    windowStart: l.observed?.window[0] ?? null, windowEnd: l.observed?.window[1] ?? null, transactions: l.observed?.transactions ?? null, note: l.note }, { linkId: l.id });
+    windowStart: l.observed?.window[0] ?? null, windowEnd: l.observed?.window[1] ?? null, transactions: l.observed?.transactions ?? null, claims: l.observed?.claims ?? null, voterAuthorityClaims: l.observed?.voterAuthorityClaims ?? null, claimedAmountShare: l.observed?.claimedAmountShare ?? null, voterAuthorityAmountRaw: l.observed?.voterAuthorityAmount?.raw ?? null, note: l.note }, { linkId: l.id });
   for (const c of control?.controllers ?? []) {
     node(c.id, 'Controller', c.label, { address: c.address, controllerType: c.type, realm: c.realm?.address ?? null, threshold: c.threshold ?? null, detailAddresses: (c.members ?? []).map(m => m.address), note: c.note ?? null }, c);
     for (const g of c.governances ?? []) {
@@ -61,6 +62,14 @@ export function buildTokenomicsGraph(bundle: BundleResponse): TokenomicsGraph {
       const member = node(`member:${m.address}`, 'Member', m.label ?? m.address, { address: m.address }, c);
       rel('MEMBER_OF', member, c.id, c, { detailKind: c.type === 'multisig' ? 'multisig member' : 'authority detail' });
     }
+  }
+  const councils = control?.controllers.filter(c => c.type === 'council-realm') ?? [];
+  for (let a = 0; a < councils.length; a++) for (let b = a + 1; b < councils.length; b++) {
+    const left = councils[a], right = councils[b];
+    if (sameCouncilMembers(left, right)) rel('SAME_MEMBERS_AS', left.id, right.id, {
+      basis: 'derived', evidenceIds: [...new Set([...left.evidenceIds, ...right.evidenceIds])],
+      slot: Math.max(left.slot ?? 0, right.slot ?? 0) || null, asOf: [left.asOf, right.asOf].filter((v): v is string => v !== null).sort().at(-1) ?? null,
+    }, { members: new Set(left.members!.map(m => m.address)).size, what: `Same ${left.members!.length} current council member addresses` });
   }
   for (const program of bundle.programs.data?.rows ?? []) node(`program:${program.id}`, 'Program', program.id, { address: program.address }, program);
   for (const mint of ['MNDE', 'mSOL']) node(`mint:${mint.toLowerCase()}`, 'Mint', mint);

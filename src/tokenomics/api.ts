@@ -48,7 +48,10 @@ export type AnswerData = {
 
 /* ---------- path: activity → fees → treasury → buybacks → MNDE holders ---------- */
 export type PathNode = { id: string; label: string; kind: 'activity' | 'fee' | 'account' | 'program' | 'mechanism' | 'holders' | 'governance'; address?: string | null };
-export type ObservedFlow = Provenance & { window: [string, string]; transactions: number; amount: Amount; perDay?: Amount | null; byInstruction?: { instruction: string; amount: Amount; transactions: number }[] };
+export type ObservedFlow = Provenance & { window: [string, string]; transactions: number; amount: Amount; perDay?: Amount | null; byInstruction?: { instruction: string; amount: Amount; transactions: number }[];
+  claims?: number; voterAuthorityClaims?: number; distinctClaimants?: number; voterAuthorityClaimants?: number;
+  claimantShare?: number | null; claimedAmountShare?: number | null; voterAuthorityAmount?: Amount;
+};
 export type PathLink = Provenance & {
   id: string; from: string; to: string; mechanism: string; status: LinkStatus;
   parameters: { id: string; display: string }[];      // ids reference ParametersData rows
@@ -111,7 +114,11 @@ export type HoldersData = {
 export type FlowsData = {
   declaredRoutes: (Provenance & { id: string; program: string; instruction: string; account: string; address: string | null; note: string })[];
   treasury: { inflows: ObservedFlow | null; outflows: (Provenance & { time: string; to: Address; amount: Amount; signature: string })[] };
-  buybacks: { months: (Provenance & { month: string; mndeBought: Amount; cost: Amount[]; mndeSent: Amount; recipients: number; shareToLockers: number | null })[] };
+  buybacks: { months: (Provenance & { month: string; mndeBought: Amount; cost: Amount[]; mndeSent: Amount; recipients: number; shareToLockers: number | null;
+    /** MNDE credited with no payment in the same transaction (e.g. order-program fills); cost not observed. Optional, added 2026-10-06. */
+    mndeCreditedWithoutPayment?: Amount; creditTransactions?: number })[];
+    /** Programs (other than token, ATA, system, compute budget) in the credit-without-payment transactions. Optional. */
+    creditPrograms?: string[] };
 };
 
 /* ---------- claims vs chain ---------- */

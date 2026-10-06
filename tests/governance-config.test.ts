@@ -80,7 +80,7 @@ describe('corrected governance API and graph with synthetic recorded accounts', 
     for (let n = 0; n < path.nodes.length; n++) for (const l of path.links) if (reachable.has(l.from)) reachable.add(l.to);
     expect(reachable.has('admin-authority')).toBe(false); expect(reachable.has('dao-treasury-mnde')).toBe(true);
     expect(path.links.find(l => l.id === 'council-admin')?.status).toBe('enforced-by-code');
-    expect(answer.shortAnswer.text).toContain('only the Marinade DAO council (2 members) votes');
+    expect(answer.shortAnswer.text).toContain('The Marinade DAO council (2 members) sets the fee route');
     expect(answer.statements.find(s => s.id === 'fee-control')?.text).toContain('MNDE holders cannot propose or vote there');
     expect(answer.statements.find(s => s.id === 'treasury-voting')?.text).toContain('200,000 MNDE to propose');
     expect(answer.statements.find(s => s.id === 'msol-upgrade')?.text).toContain('2 of the 3 signers');

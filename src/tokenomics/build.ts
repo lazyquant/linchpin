@@ -16,11 +16,16 @@ import type { EvidenceRecord } from './api';
 import { EvidenceIndex } from './evidence';
 import { buildSections, type SectionInputs } from './sections';
 
-export async function buildTokenomics({ root, packResult }: { root: string; packResult: { packet: PackPacket | unknown; evidence: Evidence[] } }) {
-  const started = performance.now();
+export function assertCapturedPack(packResult: { packet: unknown; evidence: Evidence[] }): asserts packResult is { packet: PackPacket; evidence: Evidence[] } {
   const pack = packResult.packet as PackPacket;
   if (pack.pack !== 'marinade' || !pack.offline || !pack.controllerPaths || !pack.ledger || packResult.evidence.some(e => e.source !== 'fixture'))
     throw new Error('Tokenomics requires the captured offline Marinade pack result');
+}
+
+export async function buildTokenomics({ root, packResult }: { root: string; packResult: { packet: PackPacket | unknown; evidence: Evidence[] } }) {
+  const started = performance.now();
+  assertCapturedPack(packResult);
+  const pack = packResult.packet;
   const json = <T>(file: string): T => JSON.parse(readFileSync(join(root, file), 'utf8'));
   const registry = json<PackRegistry>('packs/marinade/registry.json');
   const contracts = json<ContractsInput>('packs/marinade/contracts.json');

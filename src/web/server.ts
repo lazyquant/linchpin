@@ -8,7 +8,8 @@ import { DEFAULT_RPC_URL } from '../config';
 import { redactedRpcUrl, redactSecrets } from '../chain/rpc';
 import { CASES, present, withBaseline, makeMemo, type CaseId, type Result } from './model';
 import { runPipeline, liveDirectory, saveResult, ROOT, type Run } from './runner';
-import { buildTokenomics, type TokenomicsBuild } from '../tokenomics/build';
+import type { TokenomicsBuild } from '../tokenomics/build';
+import { loadTokenomicsBundle } from '../tokenomics/cache';
 import { TokenomicsGraphService } from '../tokenomics/graph-service';
 import { tokenomicsRoutes } from './tokenomics-routes';
 
@@ -150,8 +151,7 @@ if (import.meta.main) {
   const service = new ResearchService();
   console.log('Preparing four completed examples from recorded fixtures…');
   await service.prepare();
-  service.tokenomics = await buildTokenomics({ root: ROOT, packResult: service.results.get('marinade')! });
-  console.log(`Tokenomics captured build: ${service.tokenomics.buildMs.toFixed(0)} ms · ${service.tokenomics.reads.replayed} fixture reads · ${service.tokenomics.reads.live} live reads`);
+  service.tokenomics = await loadTokenomicsBundle({ root: ROOT, packResult: service.results.get('marinade')! });
   process.once('SIGINT', () => { void service.close().catch(() => {}).finally(() => process.exit(0)); });
   const port = Number(process.env.LINCHPIN_WEB_PORT ?? 8875);
   if (!Number.isSafeInteger(port) || port < 1024 || port > 65535) throw new Error('LINCHPIN_WEB_PORT must be an integer from 1024 to 65535');
