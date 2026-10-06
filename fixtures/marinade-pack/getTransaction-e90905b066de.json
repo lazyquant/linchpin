@@ -1,0 +1,152 @@
+{
+ "method": "getTransaction",
+ "params": {
+  "signature": "2D4JnDLZ7wuD41gzdMNYGc9Rya9AFR6XTZqhDxQGPq3bLY7WazadLHpH8AjFnZ6HtF6T4jLpGoqEd574Ecjb73hY"
+ },
+ "slot": null,
+ "retrievedAt": "2026-10-05T21:18:24.489Z",
+ "rpcUrl": "https://api.mainnet-beta.solana.com/",
+ "responseSha256": "62ccbff98dbc473f8c5625c0214fc784d82fb90eb2ba9fb3f16cb2e2fcee169b",
+ "response": {
+  "blockTime": 1707989929,
+  "meta": {
+   "computeUnitsConsumed": 35692,
+   "err": null,
+   "fee": 5000,
+   "innerInstructions": [
+    {
+     "index": 1,
+     "instructions": [
+      {
+       "accounts": [
+        4,
+        6,
+        3,
+        5,
+        13,
+        12,
+        7
+       ],
+       "data": "5Sxr3",
+       "programIdIndex": 9,
+       "stackHeight": 2
+      }
+     ]
+    }
+   ],
+   "loadedAddresses": {
+    "readonly": [],
+    "writable": []
+   },
+   "logMessages": [
+    "Program ComputeBudget111111111111111111111111111111 invoke [1]",
+    "Program ComputeBudget111111111111111111111111111111 success",
+    "Program GovMaiHfpVPw8BAM1mbdzgmSZYDw2tdP32J2fapoQoYs invoke [1]",
+    "Program log: VERSION:\"3.1.1\"",
+    "Program log: GOVERNANCE-INSTRUCTION: ExecuteTransaction",
+    "Program BPFLoaderUpgradeab1e11111111111111111111111 invoke [2]",
+    "Upgraded program vBoNdEvzMrSai7is21XgVYik65mqtaKXuSdMBJ1xkW4",
+    "Program BPFLoaderUpgradeab1e11111111111111111111111 success",
+    "Program GovMaiHfpVPw8BAM1mbdzgmSZYDw2tdP32J2fapoQoYs consumed 35542 of 999850 compute units",
+    "Program GovMaiHfpVPw8BAM1mbdzgmSZYDw2tdP32J2fapoQoYs success"
+   ],
+   "postBalances": [
+    577069438,
+    3521760,
+    3285120,
+    0,
+    8293181040,
+    11770604039,
+    1141440,
+    890880,
+    2533440,
+    1,
+    1,
+    1141440,
+    1169280,
+    1009200
+   ],
+   "postTokenBalances": [],
+   "preBalances": [
+    577074438,
+    3521760,
+    3285120,
+    5027938800,
+    8293181040,
+    6742665239,
+    1141440,
+    890880,
+    2533440,
+    1,
+    1,
+    1141440,
+    1169280,
+    1009200
+   ],
+   "preTokenBalances": [],
+   "rewards": [],
+   "status": {
+    "Ok": null
+   }
+  },
+  "slot": 248296915,
+  "transaction": {
+   "message": {
+    "header": {
+     "numReadonlySignedAccounts": 0,
+     "numReadonlyUnsignedAccounts": 7,
+     "numRequiredSignatures": 1
+    },
+    "accountKeys": [
+     "BoYakS9dGZ2iA5SDYrXMpELpdPFkrur1XHgFytv8mErP",
+     "46rJvqTFZh5nv1SnyCZhufBz4Ku8i6RguFrggShZiiMX",
+     "5282Z646LA2icg67u6TPJ8PaD9EtvMdZuqe3p5X4eAHW",
+     "6bYGY88mbVnKHAdzty4rofsPbHMHCvpBPGnvobi6BX4i",
+     "8kiB8dpx2eB7CaHDvegbUzJLsEKjjBNA8rn2y3Th2d3S",
+     "chMavQVSWyZKSGkofRbwdqFkw5DQttMJM5XYXuBUjHK",
+     "vBoNdEvzMrSai7is21XgVYik65mqtaKXuSdMBJ1xkW4",
+     "6YAju4nd4t7kyuHV6NvVpMepMk11DgWyYjKVJUak2EEm",
+     "7iUtTuZAh2Len8LiC1u68gUMPMsKh9kce9bcbdGwtBZY",
+     "BPFLoaderUpgradeab1e11111111111111111111111",
+     "ComputeBudget111111111111111111111111111111",
+     "GovMaiHfpVPw8BAM1mbdzgmSZYDw2tdP32J2fapoQoYs",
+     "SysvarC1ock11111111111111111111111111111111",
+     "SysvarRent111111111111111111111111111111111"
+    ],
+    "recentBlockhash": "8dRNfMMcYUNacaMgJRKENamXopgKbh21dnxojZ6TVZUR",
+    "instructions": [
+     {
+      "accounts": [],
+      "data": "FjL4FH",
+      "programIdIndex": 10,
+      "stackHeight": 1
+     },
+     {
+      "accounts": [
+       8,
+       1,
+       2,
+       9,
+       4,
+       6,
+       3,
+       5,
+       13,
+       12,
+       7
+      ],
+      "data": "H",
+      "programIdIndex": 11,
+      "stackHeight": 1
+     }
+    ],
+    "indexToProgramIds": {}
+   },
+   "signatures": [
+    "2D4JnDLZ7wuD41gzdMNYGc9Rya9AFR6XTZqhDxQGPq3bLY7WazadLHpH8AjFnZ6HtF6T4jLpGoqEd574Ecjb73hY"
+   ]
+  },
+  "transactionIndex": 160,
+  "version": "legacy"
+ }
+}

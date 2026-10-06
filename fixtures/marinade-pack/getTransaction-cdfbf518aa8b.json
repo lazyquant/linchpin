@@ -1,0 +1,152 @@
+{
+ "method": "getTransaction",
+ "params": {
+  "signature": "2QfSCXZjApDpdiReXT3bd97d1gM9tS5Ff6Z1CwgqGv7LSHxuj6C7xHw48WzLtLu2VfGn3dQxYDXk2fjqTi7MiHhB"
+ },
+ "slot": null,
+ "retrievedAt": "2026-10-06T02:50:06.180Z",
+ "rpcUrl": "https://api.mainnet-beta.solana.com/",
+ "responseSha256": "f746a6bc09321bdbed8322e982fbcab1deb835ca18ff0c7ffeb1659ae846ee69",
+ "response": {
+  "blockTime": 1775740376,
+  "meta": {
+   "computeUnitsConsumed": 48417,
+   "costUnits": 53647,
+   "err": null,
+   "fee": 6232,
+   "innerInstructions": [
+    {
+     "index": 2,
+     "instructions": [
+      {
+       "accounts": [
+        2,
+        1
+       ],
+       "data": "U3aV9Va9xnf",
+       "programIdIndex": 6,
+       "stackHeight": 2
+      }
+     ]
+    }
+   ],
+   "loadedAddresses": {
+    "readonly": [],
+    "writable": []
+   },
+   "logMessages": [
+    "Program ComputeBudget111111111111111111111111111111 invoke [1]",
+    "Program ComputeBudget111111111111111111111111111111 success",
+    "Program ComputeBudget111111111111111111111111111111 invoke [1]",
+    "Program ComputeBudget111111111111111111111111111111 success",
+    "Program GovMaiHfpVPw8BAM1mbdzgmSZYDw2tdP32J2fapoQoYs invoke [1]",
+    "Program log: VERSION:\"3.1.1\"",
+    "Program log: GOVERNANCE-INSTRUCTION: ExecuteTransaction",
+    "Program KvauGMspG5k6rtzrqqn7WNn3oZdyKqLKwK2XWQ8FLjd invoke [2]",
+    "Program log: Instruction: UpdateAdmin",
+    "Program log: Update admin from KAdmgpyvci2iakCtjDhUeUEEN5dDYca9aKgdGQ7atEu to BD9XxcmnvbJHgCcX8b2QMXjmcXHQ332NskFvjq6DTByU",
+    "Program KvauGMspG5k6rtzrqqn7WNn3oZdyKqLKwK2XWQ8FLjd consumed 24922 of 982581 compute units",
+    "Program KvauGMspG5k6rtzrqqn7WNn3oZdyKqLKwK2XWQ8FLjd success",
+    "Program GovMaiHfpVPw8BAM1mbdzgmSZYDw2tdP32J2fapoQoYs consumed 46299 of 999700 compute units",
+    "Program GovMaiHfpVPw8BAM1mbdzgmSZYDw2tdP32J2fapoQoYs success",
+    "Program L2TExMFKdjpN9kozasaurPirfHy9P8sbXoAN1qA3S95 invoke [1]",
+    "Program L2TExMFKdjpN9kozasaurPirfHy9P8sbXoAN1qA3S95 consumed 1818 of 953401 compute units",
+    "Program L2TExMFKdjpN9kozasaurPirfHy9P8sbXoAN1qA3S95 success"
+   ],
+   "postBalances": [
+    535618608,
+    436252802,
+    208331120,
+    2129760,
+    3375600,
+    1,
+    1141440,
+    2665446,
+    2533440,
+    1141440
+   ],
+   "postTokenBalances": [],
+   "preBalances": [
+    535624840,
+    436252802,
+    208331120,
+    2129760,
+    3375600,
+    1,
+    1141440,
+    2665446,
+    2533440,
+    1141440
+   ],
+   "preTokenBalances": [],
+   "rewards": [],
+   "status": {
+    "Ok": null
+   }
+  },
+  "slot": 412076476,
+  "transaction": {
+   "message": {
+    "header": {
+     "numReadonlySignedAccounts": 0,
+     "numReadonlyUnsignedAccounts": 5,
+     "numRequiredSignatures": 1
+    },
+    "accountKeys": [
+     "KAdmgpyvci2iakCtjDhUeUEEN5dDYca9aKgdGQ7atEu",
+     "2TNCzzYJt3uHmpFpqeeJkza4pQUK9xoLa79DJH9AdgGA",
+     "BD9XxcmnvbJHgCcX8b2QMXjmcXHQ332NskFvjq6DTByU",
+     "F9MC3QSAngPcvLqfqYSgyu9hQ38ppXsrPrckULrv84gr",
+     "FSk7mYLQAzjkad5HKAoypiTYCVynMXFThr4FqBJg1BkC",
+     "ComputeBudget111111111111111111111111111111",
+     "KvauGMspG5k6rtzrqqn7WNn3oZdyKqLKwK2XWQ8FLjd",
+     "L2TExMFKdjpN9kozasaurPirfHy9P8sbXoAN1qA3S95",
+     "CnPBhNLpwPDY5rw8Wa8bt8DCkRNJ2GoGVf9xb7VYNrRr",
+     "GovMaiHfpVPw8BAM1mbdzgmSZYDw2tdP32J2fapoQoYs"
+    ],
+    "recentBlockhash": "AGQqsQqTLJfAV6UpGC7ZC6kDSDnYHa2amjaVvuMYspvM",
+    "instructions": [
+     {
+      "accounts": [],
+      "data": "FjL4FH",
+      "programIdIndex": 5,
+      "stackHeight": 1
+     },
+     {
+      "accounts": [],
+      "data": "3pFaJWL7i8jR",
+      "programIdIndex": 5,
+      "stackHeight": 1
+     },
+     {
+      "accounts": [
+       8,
+       4,
+       3,
+       6,
+       2,
+       1
+      ],
+      "data": "H",
+      "programIdIndex": 9,
+      "stackHeight": 1
+     },
+     {
+      "accounts": [
+       0
+      ],
+      "data": "BgfmnV6qN7LPc1LmTuxnN3phD7RfMFKgDwV",
+      "programIdIndex": 7,
+      "stackHeight": 1
+     }
+    ],
+    "indexToProgramIds": {}
+   },
+   "signatures": [
+    "2QfSCXZjApDpdiReXT3bd97d1gM9tS5Ff6Z1CwgqGv7LSHxuj6C7xHw48WzLtLu2VfGn3dQxYDXk2fjqTi7MiHhB"
+   ]
+  },
+  "transactionIndex": 668,
+  "version": "legacy"
+ }
+}

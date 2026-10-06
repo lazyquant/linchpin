@@ -1,0 +1,155 @@
+{
+ "method": "getTransaction",
+ "params": {
+  "signature": "5CYdCBoixbj1N54V63kxKLKJ6x2my4GZLUWdPHv2xroz2Hvb9WE1eoiWaeh67vnVWuMmFw4bJjfiBb1G7nwv46RW"
+ },
+ "slot": null,
+ "retrievedAt": "2026-10-06T01:12:35.063Z",
+ "rpcUrl": "https://api.mainnet-beta.solana.com/",
+ "responseSha256": "93d2ef193366d89b2b67b07457b647773b6f8e5a11c49bf508f0ef73c2889561",
+ "response": {
+  "blockTime": 1781979859,
+  "meta": {
+   "computeUnitsConsumed": 34589,
+   "costUnits": 37128,
+   "err": null,
+   "fee": 380000,
+   "innerInstructions": [
+    {
+     "index": 2,
+     "instructions": [
+      {
+       "accounts": [
+        3,
+        4,
+        8,
+        9
+       ],
+       "data": "K5xx1qgZU7dk21PuDdwWaQiU24TgpJWc7",
+       "programIdIndex": 9,
+       "stackHeight": 2
+      },
+      {
+       "accounts": [
+        8
+       ],
+       "data": "CLrNjtAnx8GnDYk2FZ2GZq3QjhsAKMheiWpB1MGYEPtDDXS2vCP2LKR",
+       "programIdIndex": 9,
+       "stackHeight": 3
+      }
+     ]
+    }
+   ],
+   "loadedAddresses": {
+    "readonly": [],
+    "writable": []
+   },
+   "logMessages": [
+    "Program ComputeBudget111111111111111111111111111111 invoke [1]",
+    "Program ComputeBudget111111111111111111111111111111 success",
+    "Program ComputeBudget111111111111111111111111111111 invoke [1]",
+    "Program ComputeBudget111111111111111111111111111111 success",
+    "Program GovMaiHfpVPw8BAM1mbdzgmSZYDw2tdP32J2fapoQoYs invoke [1]",
+    "Program log: VERSION:\"3.1.1\"",
+    "Program log: GOVERNANCE-INSTRUCTION: ExecuteTransaction",
+    "Program vBoNdEvzMrSai7is21XgVYik65mqtaKXuSdMBJ1xkW4 invoke [2]",
+    "Program log: Instruction: ConfigureConfig",
+    "Program vBoNdEvzMrSai7is21XgVYik65mqtaKXuSdMBJ1xkW4 invoke [3]",
+    "Program vBoNdEvzMrSai7is21XgVYik65mqtaKXuSdMBJ1xkW4 consumed 3653 of 974582 compute units",
+    "Program vBoNdEvzMrSai7is21XgVYik65mqtaKXuSdMBJ1xkW4 success",
+    "Program vBoNdEvzMrSai7is21XgVYik65mqtaKXuSdMBJ1xkW4 consumed 11988 of 982011 compute units",
+    "Program vBoNdEvzMrSai7is21XgVYik65mqtaKXuSdMBJ1xkW4 success",
+    "Program GovMaiHfpVPw8BAM1mbdzgmSZYDw2tdP32J2fapoQoYs consumed 34289 of 999700 compute units",
+    "Program GovMaiHfpVPw8BAM1mbdzgmSZYDw2tdP32J2fapoQoYs success"
+   ],
+   "postBalances": [
+    108649242879,
+    2714400,
+    3821040,
+    5178240,
+    208331120,
+    2533440,
+    1,
+    1141440,
+    0,
+    1141440
+   ],
+   "postTokenBalances": [],
+   "preBalances": [
+    108649622879,
+    2714400,
+    3821040,
+    5178240,
+    208331120,
+    2533440,
+    1,
+    1141440,
+    0,
+    1141440
+   ],
+   "preTokenBalances": [],
+   "rewards": [],
+   "status": {
+    "Ok": null
+   }
+  },
+  "slot": 427777412,
+  "transaction": {
+   "message": {
+    "header": {
+     "numReadonlySignedAccounts": 0,
+     "numReadonlyUnsignedAccounts": 6,
+     "numRequiredSignatures": 1
+    },
+    "accountKeys": [
+     "MarUnsjPzT3Nm3gHRturftuYouxsrkEcCUkATkUdP3H",
+     "2goF8saW9dFA1t6Fo9dp32agaHaxtVUdG6pVa1ARLZWr",
+     "4SLjaZ8B2ETjgpwNmCP3FSaUDGmrZx3QH6XL6ZiTyDCA",
+     "vbMaRfmTCg92HWGzmd53APkMNpPnGVGZTUHwUJQkXAU",
+     "BD9XxcmnvbJHgCcX8b2QMXjmcXHQ332NskFvjq6DTByU",
+     "CnPBhNLpwPDY5rw8Wa8bt8DCkRNJ2GoGVf9xb7VYNrRr",
+     "ComputeBudget111111111111111111111111111111",
+     "GovMaiHfpVPw8BAM1mbdzgmSZYDw2tdP32J2fapoQoYs",
+     "j6cZKhHTFuWsiCgPT5wriQpZWqWWUSQqjDJ8S2YDvDL",
+     "vBoNdEvzMrSai7is21XgVYik65mqtaKXuSdMBJ1xkW4"
+    ],
+    "recentBlockhash": "37w6sL8tGrY6oJmXbuTbAvLzzqwh9zUM47Ghc5TvZ6a7",
+    "instructions": [
+     {
+      "accounts": [],
+      "data": "3qi1MbrtkR83",
+      "programIdIndex": 6,
+      "stackHeight": 1
+     },
+     {
+      "accounts": [],
+      "data": "FjL4FH",
+      "programIdIndex": 6,
+      "stackHeight": 1
+     },
+     {
+      "accounts": [
+       5,
+       2,
+       1,
+       9,
+       3,
+       4,
+       8,
+       9
+      ],
+      "data": "H",
+      "programIdIndex": 7,
+      "stackHeight": 1
+     }
+    ],
+    "indexToProgramIds": {}
+   },
+   "signatures": [
+    "5CYdCBoixbj1N54V63kxKLKJ6x2my4GZLUWdPHv2xroz2Hvb9WE1eoiWaeh67vnVWuMmFw4bJjfiBb1G7nwv46RW"
+   ]
+  },
+  "transactionIndex": 397,
+  "version": "legacy"
+ }
+}

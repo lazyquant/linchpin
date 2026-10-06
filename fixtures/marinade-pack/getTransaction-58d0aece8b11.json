@@ -1,0 +1,132 @@
+{
+ "method": "getTransaction",
+ "params": {
+  "signature": "2Ys7rpvE2Tu4J1g8qB9MhADbxLR9jPfeAXqT8MoGDcvUsduqxB94EJGNwftPQtjvueuZsSHfHbMNU42KJuiEdCz1"
+ },
+ "slot": null,
+ "retrievedAt": "2026-10-05T21:17:43.918Z",
+ "rpcUrl": "https://api.mainnet-beta.solana.com/",
+ "responseSha256": "d4eeb51aa1fd5a70654eb444cc4f905f71256be9c6ab8d31cd7b29764a17c993",
+ "response": {
+  "blockTime": 1681479635,
+  "meta": {
+   "computeUnitsConsumed": 47312,
+   "err": null,
+   "fee": 5000,
+   "innerInstructions": [
+    {
+     "index": 0,
+     "instructions": [
+      {
+       "accounts": [
+        3,
+        8,
+        7,
+        2,
+        6,
+        4
+       ],
+       "data": "9rcr1moyTKfg3W5zjmWWL7B4dvivqgHFZS",
+       "programIdIndex": 9,
+       "stackHeight": null
+      }
+     ]
+    }
+   ],
+   "loadedAddresses": {
+    "readonly": [],
+    "writable": []
+   },
+   "logMessages": [
+    "Program GovMaiHfpVPw8BAM1mbdzgmSZYDw2tdP32J2fapoQoYs invoke [1]",
+    "Program log: VERSION:\"3.1.0\"",
+    "Program log: GOVERNANCE-INSTRUCTION: ExecuteTransaction",
+    "Program GovMaiHfpVPw8BAM1mbdzgmSZYDw2tdP32J2fapoQoYs invoke [2]",
+    "Program log: VERSION:\"3.1.0\"",
+    "Program log: GOVERNANCE-INSTRUCTION: SetRealmConfig { config_args: RealmConfigArgs { use_council_mint: true, min_community_weight_to_create_governance: 18446744073709551615, community_mint_max_voter_weight_source: SupplyFraction(10000000000), community_token_config_args: GoverningTokenConfigArgs { use_voter_weight_addin: false, use_max_voter_weight_addin: false, token_type: Liquid }, council_token_config_args: GoverningTokenConfigArgs { use_voter_weight_addin: false, use_max_voter_weight_addin: false, token_type: Membership } } }",
+    "Program GovMaiHfpVPw8BAM1mbdzgmSZYDw2tdP32J2fapoQoYs consumed 17004 of 174975 compute units",
+    "Program GovMaiHfpVPw8BAM1mbdzgmSZYDw2tdP32J2fapoQoYs success",
+    "Program GovMaiHfpVPw8BAM1mbdzgmSZYDw2tdP32J2fapoQoYs consumed 47312 of 200000 compute units",
+    "Program GovMaiHfpVPw8BAM1mbdzgmSZYDw2tdP32J2fapoQoYs success"
+   ],
+   "postBalances": [
+    1280307680,
+    3396480,
+    2039280,
+    2811840,
+    2930160,
+    3194640,
+    1,
+    1461600,
+    2533440,
+    1141440
+   ],
+   "postTokenBalances": [],
+   "preBalances": [
+    1280312680,
+    3396480,
+    2039280,
+    2811840,
+    2930160,
+    3194640,
+    1,
+    1461600,
+    2533440,
+    1141440
+   ],
+   "preTokenBalances": [],
+   "rewards": [],
+   "status": {
+    "Ok": null
+   }
+  },
+  "slot": 188381807,
+  "transaction": {
+   "message": {
+    "header": {
+     "numReadonlySignedAccounts": 0,
+     "numReadonlyUnsignedAccounts": 4,
+     "numRequiredSignatures": 1
+    },
+    "accountKeys": [
+     "chMavQVSWyZKSGkofRbwdqFkw5DQttMJM5XYXuBUjHK",
+     "27bcMjcseezCsfs8ghS43GvFVGyLwSPMcTBjatRWBUJG",
+     "4N7VtoYY5YhVkFAEXYfT5AfqfhXfNNX8CT74SyPbMhuf",
+     "899YG3yk4F66ZgbNWLHriZHTXSKk9e1kvsKEquW7L6Mo",
+     "CFsN3hcLSK4sQyeEm9kYg7uNBsygR8xm445r8Kk7CvFK",
+     "CPj4F9iRnLfXn1e2BUbS9VEASpjPMBqWGGSLqEnR8JYY",
+     "11111111111111111111111111111111",
+     "6MGwpuJ5YE1c8jJaF8FKurQdDJeYRf1adX76dovkXxRs",
+     "FsrqQfLGdFVtySSSsyZJUzVBA9bvGZSKyhp7nsJCqgJe",
+     "GovMaiHfpVPw8BAM1mbdzgmSZYDw2tdP32J2fapoQoYs"
+    ],
+    "recentBlockhash": "99DyXWF49YYnmYddntbpYNPt1EucCjSjkoM7ahRJbJxx",
+    "instructions": [
+     {
+      "accounts": [
+       8,
+       1,
+       5,
+       9,
+       3,
+       8,
+       7,
+       2,
+       6,
+       4
+      ],
+      "data": "H",
+      "programIdIndex": 9,
+      "stackHeight": 1
+     }
+    ],
+    "indexToProgramIds": {}
+   },
+   "signatures": [
+    "2Ys7rpvE2Tu4J1g8qB9MhADbxLR9jPfeAXqT8MoGDcvUsduqxB94EJGNwftPQtjvueuZsSHfHbMNU42KJuiEdCz1"
+   ]
+  },
+  "transactionIndex": 139,
+  "version": "legacy"
+ }
+}

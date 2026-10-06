@@ -1,0 +1,164 @@
+{
+ "method": "getTransaction",
+ "params": {
+  "signature": "5dpY8wokcrV3NPAzoPE9ywJWSGHJT6djv7u7iVywpcLq3d2brahWmvZ5pguLrR8YBBThXEeMkx7uXfBeasuwZVn8"
+ },
+ "slot": null,
+ "retrievedAt": "2026-10-06T02:49:00.864Z",
+ "rpcUrl": "https://api.mainnet-beta.solana.com/",
+ "responseSha256": "171bfa41812b7c74eb6122760dd8c6bb0f79da304863622bbdb2e9f2d8567293",
+ "response": {
+  "blockTime": 1790374125,
+  "meta": {
+   "computeUnitsConsumed": 44446,
+   "costUnits": 47128,
+   "err": null,
+   "fee": 380000,
+   "innerInstructions": [
+    {
+     "index": 2,
+     "instructions": [
+      {
+       "accounts": [
+        1,
+        9,
+        7,
+        7,
+        4,
+        4,
+        4
+       ],
+       "data": "Fs15KECKTcv8Nszj5vqE6Bo42PZFtto9AgBVbsmAsQZ3GkuXPnnQJsU7aWH2y3H2Lpf1DnAHsQZo6FRSPQyrRM6hjPPpq",
+       "programIdIndex": 8,
+       "stackHeight": 2
+      }
+     ]
+    }
+   ],
+   "loadedAddresses": {
+    "readonly": [],
+    "writable": []
+   },
+   "logMessages": [
+    "Program ComputeBudget111111111111111111111111111111 invoke [1]",
+    "Program ComputeBudget111111111111111111111111111111 success",
+    "Program ComputeBudget111111111111111111111111111111 invoke [1]",
+    "Program ComputeBudget111111111111111111111111111111 success",
+    "Program GovMaiHfpVPw8BAM1mbdzgmSZYDw2tdP32J2fapoQoYs invoke [1]",
+    "Program log: VERSION:\"3.1.1\"",
+    "Program log: GOVERNANCE-INSTRUCTION: ExecuteTransaction",
+    "Program VoteMBhDCqGLRgYpp9o7DGyq81KNmwjXQRAHStjtJsS invoke [2]",
+    "Program log: Instruction: ConfigureVotingMint",
+    "Program VoteMBhDCqGLRgYpp9o7DGyq81KNmwjXQRAHStjtJsS consumed 11661 of 974250 compute units",
+    "Program VoteMBhDCqGLRgYpp9o7DGyq81KNmwjXQRAHStjtJsS success",
+    "Program GovMaiHfpVPw8BAM1mbdzgmSZYDw2tdP32J2fapoQoYs consumed 42328 of 999700 compute units",
+    "Program GovMaiHfpVPw8BAM1mbdzgmSZYDw2tdP32J2fapoQoYs success",
+    "Program L2TExMFKdjpN9kozasaurPirfHy9P8sbXoAN1qA3S95 invoke [1]",
+    "Program L2TExMFKdjpN9kozasaurPirfHy9P8sbXoAN1qA3S95 consumed 1818 of 957372 compute units",
+    "Program L2TExMFKdjpN9kozasaurPirfHy9P8sbXoAN1qA3S95 success"
+   ],
+   "postBalances": [
+    8923563948,
+    7015680,
+    2722880,
+    2550160,
+    1,
+    1,
+    2665447,
+    20115615131,
+    1141440,
+    2533440,
+    1141440
+   ],
+   "postTokenBalances": [],
+   "preBalances": [
+    8923943948,
+    7015680,
+    2722880,
+    2550160,
+    1,
+    1,
+    2665447,
+    20115615131,
+    1141440,
+    2533440,
+    1141440
+   ],
+   "preTokenBalances": [],
+   "rewards": [],
+   "status": {
+    "Ok": null
+   }
+  },
+  "slot": 450482615,
+  "transaction": {
+   "message": {
+    "header": {
+     "numReadonlySignedAccounts": 0,
+     "numReadonlyUnsignedAccounts": 7,
+     "numRequiredSignatures": 1
+    },
+    "accountKeys": [
+     "8HVYKgq2PA4SCDuPZSfHBH1aupTBJYPVru6kq3UfuSX9",
+     "5zgEgPbWKsAAnLPjSM56ZsbLPfVM6nUzh3u45tCnm97D",
+     "6W6Wy7snkuqj1Vy7tHqRd32ZnF423tGqdtQHVsA2yaVd",
+     "CzXJQfKmd7hSstgEEYmAguN16UunRZfPkmj6yBDy8EZ5",
+     "11111111111111111111111111111111",
+     "ComputeBudget111111111111111111111111111111",
+     "L2TExMFKdjpN9kozasaurPirfHy9P8sbXoAN1qA3S95",
+     "MNDEFzGvMt87ueuHvVU9VcTqsAP5b3fTGPsHuuPA5ey",
+     "VoteMBhDCqGLRgYpp9o7DGyq81KNmwjXQRAHStjtJsS",
+     "FsrqQfLGdFVtySSSsyZJUzVBA9bvGZSKyhp7nsJCqgJe",
+     "GovMaiHfpVPw8BAM1mbdzgmSZYDw2tdP32J2fapoQoYs"
+    ],
+    "recentBlockhash": "6d3U18uCDzxAsnKDCZFgNM3ARMR5JdSGdupzwfD4cHpR",
+    "instructions": [
+     {
+      "accounts": [],
+      "data": "FjL4FH",
+      "programIdIndex": 5,
+      "stackHeight": 1
+     },
+     {
+      "accounts": [],
+      "data": "3qi1MbrtkR83",
+      "programIdIndex": 5,
+      "stackHeight": 1
+     },
+     {
+      "accounts": [
+       9,
+       3,
+       2,
+       8,
+       1,
+       9,
+       7,
+       7,
+       4,
+       4,
+       4
+      ],
+      "data": "H",
+      "programIdIndex": 10,
+      "stackHeight": 1
+     },
+     {
+      "accounts": [
+       0
+      ],
+      "data": "BgfmmsFBr67CG4HoLq5PJnxLnyzs3RThXVH",
+      "programIdIndex": 6,
+      "stackHeight": 1
+     }
+    ],
+    "indexToProgramIds": {}
+   },
+   "signatures": [
+    "5dpY8wokcrV3NPAzoPE9ywJWSGHJT6djv7u7iVywpcLq3d2brahWmvZ5pguLrR8YBBThXEeMkx7uXfBeasuwZVn8"
+   ]
+  },
+  "transactionIndex": 679,
+  "version": "legacy"
+ }
+}

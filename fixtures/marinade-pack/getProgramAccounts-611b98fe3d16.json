@@ -1,0 +1,37 @@
+{
+ "method": "getProgramAccounts",
+ "params": {
+  "programId": "GovMaiHfpVPw8BAM1mbdzgmSZYDw2tdP32J2fapoQoYs",
+  "filters": [
+   {
+    "memcmp": {
+     "offset": 0,
+     "bytes": "F"
+    }
+   },
+   {
+    "memcmp": {
+     "offset": 1,
+     "bytes": "2UB1cmriXGWm7qdubatrBnaTyZzvrBcp4cPPmQsVnnb2"
+    }
+   }
+  ]
+ },
+ "slot": 453697276,
+ "retrievedAt": "2026-10-05T21:16:49.141Z",
+ "rpcUrl": "https://api.mainnet-beta.solana.com/",
+ "responseSha256": "92b449553b41fc7d01ba3d32928da3f80ebe4db3edd2ad90d800e1d151cd37b5",
+ "response": [
+  {
+   "pubkey": "GUdMvELaABJU1RVKtY91CkCLNBK78U31sAEY2FSvhcTg",
+   "account": {
+    "lamports": 3751440,
+    "data": "DhXRsBW6RynnNJdIXs6PUMk4A9uPACOWhsmkeJ+/LHrRBTeZbyaZZ0+3CG5Gj7M7T94USfR6i+/Ys0K/azPP83IF5w6Mtj7eTGmjD70CG6TJYbGybqLmfNWBUl8mBjD0BFABAQABAAAABwAAAEFwcHJvdmXFGz2B0fVbAAEBAAEAAQABAAAAAAAAAAAAAABlURxlAAAAAAFlURxlAAAAAAFlURxlAAAAAAFRjzENAAAAAAFllyFlAAAAAAFf9yJlAAAAAAFf9yJlAAAAAAAB7Qo4NkG24A0AAQACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACsAAABUaGUgdGVzdCBvZiB0aGUgTWFyaW5hZGUgcHJvZ3JhbSBnb3Zlcm5hbmNlLQAAAFVwZ3JhZGluZyB0aGUga2VkZ2VyZWUgcHJvZ3JhbSB0byBhbmNob3IgMC4yOAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+    "owner": "GovMaiHfpVPw8BAM1mbdzgmSZYDw2tdP32J2fapoQoYs",
+    "executable": false,
+    "rentEpoch": 18446744073709552000,
+    "space": 411
+   }
+  }
+ ]
+}

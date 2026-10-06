@@ -1,0 +1,107 @@
+{
+ "method": "getTransaction",
+ "params": {
+  "signature": "2vEPk1mVLdr131WXn6RLasJixnsofyQa4GusMKYnjUvpcSWaq2i3jEgg1a9Hn1XNPiz3T6S1L31kCKXedFvSiXFH"
+ },
+ "slot": null,
+ "retrievedAt": "2026-10-05T21:18:25.714Z",
+ "rpcUrl": "https://api.mainnet-beta.solana.com/",
+ "responseSha256": "1604665a6cbe4d80025207d45a44577709220ccabb0a12a0cfe7d87a91af23f0",
+ "response": {
+  "blockTime": 1681984218,
+  "meta": {
+   "computeUnitsConsumed": 34572,
+   "err": null,
+   "fee": 5000,
+   "innerInstructions": [
+    {
+     "index": 0,
+     "instructions": [
+      {
+       "accounts": [
+        3
+       ],
+       "data": "3p7p6bYSRUgeCC5d83RFA8uDSLpKsDSq41kG1GUiNWWuBiuVxMzy",
+       "programIdIndex": 4,
+       "stackHeight": null
+      }
+     ]
+    }
+   ],
+   "loadedAddresses": {
+    "readonly": [],
+    "writable": []
+   },
+   "logMessages": [
+    "Program GovMaiHfpVPw8BAM1mbdzgmSZYDw2tdP32J2fapoQoYs invoke [1]",
+    "Program log: VERSION:\"3.1.0\"",
+    "Program log: GOVERNANCE-INSTRUCTION: ExecuteTransaction",
+    "Program GovMaiHfpVPw8BAM1mbdzgmSZYDw2tdP32J2fapoQoYs invoke [2]",
+    "Program log: VERSION:\"3.1.0\"",
+    "Program log: GOVERNANCE-INSTRUCTION: SetGovernanceConfig { config: GovernanceConfig { community_vote_threshold: Disabled, min_community_weight_to_create_proposal: 18446744073709551615, min_transaction_hold_up_time: 0, voting_base_time: 259200, community_vote_tipping: Disabled, council_vote_threshold: YesVotePercentage(50), council_veto_vote_threshold: YesVotePercentage(40), min_council_weight_to_create_proposal: 1, council_vote_tipping: Early, community_veto_vote_threshold: Disabled, voting_cool_off_time: 0, deposit_exempt_proposal_count: 10 } }",
+    "Program GovMaiHfpVPw8BAM1mbdzgmSZYDw2tdP32J2fapoQoYs consumed 13773 of 183565 compute units",
+    "Program GovMaiHfpVPw8BAM1mbdzgmSZYDw2tdP32J2fapoQoYs success",
+    "Program GovMaiHfpVPw8BAM1mbdzgmSZYDw2tdP32J2fapoQoYs consumed 34572 of 200000 compute units",
+    "Program GovMaiHfpVPw8BAM1mbdzgmSZYDw2tdP32J2fapoQoYs success"
+   ],
+   "postBalances": [
+    1095001360,
+    3640080,
+    2101920,
+    2533440,
+    1141440
+   ],
+   "postTokenBalances": [],
+   "preBalances": [
+    1095006360,
+    3640080,
+    2101920,
+    2533440,
+    1141440
+   ],
+   "preTokenBalances": [],
+   "rewards": [],
+   "status": {
+    "Ok": null
+   }
+  },
+  "slot": 189462255,
+  "transaction": {
+   "message": {
+    "header": {
+     "numReadonlySignedAccounts": 0,
+     "numReadonlyUnsignedAccounts": 1,
+     "numRequiredSignatures": 1
+    },
+    "accountKeys": [
+     "chMavQVSWyZKSGkofRbwdqFkw5DQttMJM5XYXuBUjHK",
+     "4aFTwGoQ8ugDo7mEKu3R9g3eoK7PEKGYHWxwkmf8SxWB",
+     "4JP4gWFtNA2534fSm5NNbqzgAWyK7tJstBE3ejXF2uXT",
+     "CnPBhNLpwPDY5rw8Wa8bt8DCkRNJ2GoGVf9xb7VYNrRr",
+     "GovMaiHfpVPw8BAM1mbdzgmSZYDw2tdP32J2fapoQoYs"
+    ],
+    "recentBlockhash": "CMDUNAZUtJjhtqdtb6xftCsHK6ibEBU8PoJbYZko8oin",
+    "instructions": [
+     {
+      "accounts": [
+       3,
+       1,
+       2,
+       4,
+       3
+      ],
+      "data": "H",
+      "programIdIndex": 4,
+      "stackHeight": 1
+     }
+    ],
+    "indexToProgramIds": {}
+   },
+   "signatures": [
+    "2vEPk1mVLdr131WXn6RLasJixnsofyQa4GusMKYnjUvpcSWaq2i3jEgg1a9Hn1XNPiz3T6S1L31kCKXedFvSiXFH"
+   ]
+  },
+  "transactionIndex": 67,
+  "version": "legacy"
+ }
+}

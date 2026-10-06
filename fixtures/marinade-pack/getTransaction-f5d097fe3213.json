@@ -1,0 +1,161 @@
+{
+ "method": "getTransaction",
+ "params": {
+  "signature": "6499GiybJMXYDp6DuuJMe1kohrFpZ57YQxvNDfafmVDVpkPhDoAp5qW3PrDYWfkD2xw5Qtcmp7MyFfzkvevf68gg"
+ },
+ "slot": null,
+ "retrievedAt": "2026-10-06T02:47:53.232Z",
+ "rpcUrl": "https://api.mainnet-beta.solana.com/",
+ "responseSha256": "7cb6db36c9667b36ba34051b4b69860ee3493d987f7ae66bde5c5323a1bdfd01",
+ "response": {
+  "blockTime": 1775150611,
+  "meta": {
+   "computeUnitsConsumed": 36989,
+   "costUnits": 40700,
+   "err": null,
+   "fee": 380000,
+   "innerInstructions": [
+    {
+     "index": 2,
+     "instructions": [
+      {
+       "accounts": [
+        2,
+        6,
+        1,
+        4,
+        13,
+        12,
+        7
+       ],
+       "data": "5Sxr3",
+       "programIdIndex": 9,
+       "stackHeight": 2
+      }
+     ]
+    }
+   ],
+   "loadedAddresses": {
+    "readonly": [],
+    "writable": []
+   },
+   "logMessages": [
+    "Program ComputeBudget111111111111111111111111111111 invoke [1]",
+    "Program ComputeBudget111111111111111111111111111111 success",
+    "Program ComputeBudget111111111111111111111111111111 invoke [1]",
+    "Program ComputeBudget111111111111111111111111111111 success",
+    "Program GovMaiHfpVPw8BAM1mbdzgmSZYDw2tdP32J2fapoQoYs invoke [1]",
+    "Program log: VERSION:\"3.1.1\"",
+    "Program log: GOVERNANCE-INSTRUCTION: ExecuteTransaction",
+    "Program BPFLoaderUpgradeab1e11111111111111111111111 invoke [2]",
+    "Upgraded program vBoNdEvzMrSai7is21XgVYik65mqtaKXuSdMBJ1xkW4",
+    "Program BPFLoaderUpgradeab1e11111111111111111111111 success",
+    "Program GovMaiHfpVPw8BAM1mbdzgmSZYDw2tdP32J2fapoQoYs consumed 36689 of 999700 compute units",
+    "Program GovMaiHfpVPw8BAM1mbdzgmSZYDw2tdP32J2fapoQoYs success"
+   ],
+   "postBalances": [
+    981317826,
+    0,
+    8293181040,
+    3361680,
+    8033022715,
+    3285120,
+    1141440,
+    890880,
+    2533440,
+    1,
+    1,
+    1141440,
+    1169280,
+    1009200
+   ],
+   "postTokenBalances": [],
+   "preBalances": [
+    981697826,
+    7752583920,
+    8293181040,
+    3361680,
+    280438795,
+    3285120,
+    1141440,
+    890880,
+    2533440,
+    1,
+    1,
+    1141440,
+    1169280,
+    1009200
+   ],
+   "preTokenBalances": [],
+   "rewards": [],
+   "status": {
+    "Ok": null
+   }
+  },
+  "slot": 410576659,
+  "transaction": {
+   "message": {
+    "header": {
+     "numReadonlySignedAccounts": 0,
+     "numReadonlyUnsignedAccounts": 7,
+     "numRequiredSignatures": 1
+    },
+    "accountKeys": [
+     "CUuLjSEx7q3AB3sRGn3sMJBsSNTmULwowMGUh6NdsxQD",
+     "5XdjPijmq6Gj8RR7ZJT3sVXr9rXXX5JYVVHFMwsvjgcM",
+     "8kiB8dpx2eB7CaHDvegbUzJLsEKjjBNA8rn2y3Th2d3S",
+     "AfModBYQ25TPQiZfKgP9CUaJc2FpWr3dHWpkqSCRkBdH",
+     "chMavQVSWyZKSGkofRbwdqFkw5DQttMJM5XYXuBUjHK",
+     "SuUeKTRvi3jUSYDj749doL9kZso8aqPFXr7xbib7mxE",
+     "vBoNdEvzMrSai7is21XgVYik65mqtaKXuSdMBJ1xkW4",
+     "6YAju4nd4t7kyuHV6NvVpMepMk11DgWyYjKVJUak2EEm",
+     "7iUtTuZAh2Len8LiC1u68gUMPMsKh9kce9bcbdGwtBZY",
+     "BPFLoaderUpgradeab1e11111111111111111111111",
+     "ComputeBudget111111111111111111111111111111",
+     "GovMaiHfpVPw8BAM1mbdzgmSZYDw2tdP32J2fapoQoYs",
+     "SysvarC1ock11111111111111111111111111111111",
+     "SysvarRent111111111111111111111111111111111"
+    ],
+    "recentBlockhash": "C3tK3LENbKwLL4e2xqBqGPSgEB4XZNoa3iQbgwgFpS7o",
+    "instructions": [
+     {
+      "accounts": [],
+      "data": "3qi1MbrtkR83",
+      "programIdIndex": 10,
+      "stackHeight": 1
+     },
+     {
+      "accounts": [],
+      "data": "FjL4FH",
+      "programIdIndex": 10,
+      "stackHeight": 1
+     },
+     {
+      "accounts": [
+       8,
+       3,
+       5,
+       9,
+       2,
+       6,
+       1,
+       4,
+       13,
+       12,
+       7
+      ],
+      "data": "H",
+      "programIdIndex": 11,
+      "stackHeight": 1
+     }
+    ],
+    "indexToProgramIds": {}
+   },
+   "signatures": [
+    "6499GiybJMXYDp6DuuJMe1kohrFpZ57YQxvNDfafmVDVpkPhDoAp5qW3PrDYWfkD2xw5Qtcmp7MyFfzkvevf68gg"
+   ]
+  },
+  "transactionIndex": 504,
+  "version": "legacy"
+ }
+}

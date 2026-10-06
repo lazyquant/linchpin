@@ -1,0 +1,154 @@
+{
+ "method": "getTransaction",
+ "params": {
+  "signature": "2rnXivbYMePe2hdCQD8ypenrcy9vx6NfoX3hFyLXxZkE6aUus6znt6NqRZ8W8cSNbsDRyHZWVz4ETwTDBvxECUEh"
+ },
+ "slot": null,
+ "retrievedAt": "2026-10-06T02:50:48.865Z",
+ "rpcUrl": "https://api.mainnet-beta.solana.com/",
+ "responseSha256": "9181688dbe12bfd9fd0e0334bb3fc2b0f3101dab2604cc9057995dab708de6c6",
+ "response": {
+  "blockTime": 1683894170,
+  "meta": {
+   "computeUnitsConsumed": 31011,
+   "err": null,
+   "fee": 6600,
+   "innerInstructions": [
+    {
+     "index": 0,
+     "instructions": [
+      {
+       "accounts": [
+        3,
+        2,
+        6
+       ],
+       "data": "A",
+       "programIdIndex": 9,
+       "stackHeight": null
+      }
+     ]
+    }
+   ],
+   "loadedAddresses": {
+    "readonly": [],
+    "writable": []
+   },
+   "logMessages": [
+    "Program GovMaiHfpVPw8BAM1mbdzgmSZYDw2tdP32J2fapoQoYs invoke [1]",
+    "Program log: VERSION:\"3.1.0\"",
+    "Program log: GOVERNANCE-INSTRUCTION: ExecuteTransaction",
+    "Program TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA invoke [2]",
+    "Program log: Instruction: CloseAccount",
+    "Program TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA consumed 3015 of 176689 compute units",
+    "Program TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA success",
+    "Program GovMaiHfpVPw8BAM1mbdzgmSZYDw2tdP32J2fapoQoYs consumed 31011 of 200000 compute units",
+    "Program GovMaiHfpVPw8BAM1mbdzgmSZYDw2tdP32J2fapoQoYs success",
+    "Program ComputeBudget111111111111111111111111111111 invoke [1]",
+    "Program ComputeBudget111111111111111111111111111111 success",
+    "Program ComputeBudget111111111111111111111111111111 invoke [1]",
+    "Program ComputeBudget111111111111111111111111111111 success"
+   ],
+   "postBalances": [
+    89462000,
+    2317680,
+    204969440,
+    0,
+    3486960,
+    2533440,
+    200000000,
+    1,
+    1141440,
+    934087680
+   ],
+   "postTokenBalances": [],
+   "preBalances": [
+    89468600,
+    2317680,
+    202930160,
+    2039280,
+    3486960,
+    2533440,
+    200000000,
+    1,
+    1141440,
+    934087680
+   ],
+   "preTokenBalances": [
+    {
+     "accountIndex": 3,
+     "mint": "MNDEFzGvMt87ueuHvVU9VcTqsAP5b3fTGPsHuuPA5ey",
+     "owner": "B56RWQGf9RFw7t8gxPzrRvk5VRmB5DoF94aLoJ25YtvG",
+     "programId": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+     "uiTokenAmount": {
+      "amount": "0",
+      "decimals": 9,
+      "uiAmount": null,
+      "uiAmountString": "0"
+     }
+    }
+   ],
+   "rewards": [],
+   "status": {
+    "Ok": null
+   }
+  },
+  "slot": 193507482,
+  "transaction": {
+   "message": {
+    "header": {
+     "numReadonlySignedAccounts": 0,
+     "numReadonlyUnsignedAccounts": 5,
+     "numRequiredSignatures": 1
+    },
+    "accountKeys": [
+     "EWRoBcEK2B9h97yqbCJ1rjyhs7wSZ9RfddY6Yuibo71k",
+     "7W6u87drmcJqx5cMpMcWAz8pnLkMvAKqsFW8MnrJExma",
+     "BD9XxcmnvbJHgCcX8b2QMXjmcXHQ332NskFvjq6DTByU",
+     "C7Ed3NwdUgfbokCu68mHg7TPNNA2PU4pZ2ThKU7ukxss",
+     "Heg2PyCRWfbpQ33EkVRyX1DgKS1rrxhvvT4BqsqA51Vp",
+     "8z6A4qSfL9FFvwX12zqt6HrbzaWthGUqBe4czCn9iXtq",
+     "B56RWQGf9RFw7t8gxPzrRvk5VRmB5DoF94aLoJ25YtvG",
+     "ComputeBudget111111111111111111111111111111",
+     "GovMaiHfpVPw8BAM1mbdzgmSZYDw2tdP32J2fapoQoYs",
+     "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
+    ],
+    "recentBlockhash": "EFY6VsSsu8bKyQzbugqEZmk51GfdSYfAdbU2ekWcPEwP",
+    "instructions": [
+     {
+      "accounts": [
+       5,
+       4,
+       1,
+       9,
+       3,
+       2,
+       6
+      ],
+      "data": "H",
+      "programIdIndex": 8,
+      "stackHeight": 1
+     },
+     {
+      "accounts": [],
+      "data": "3QBcnUb9zKM9",
+      "programIdIndex": 7,
+      "stackHeight": 1
+     },
+     {
+      "accounts": [],
+      "data": "Fj2Eoy",
+      "programIdIndex": 7,
+      "stackHeight": 1
+     }
+    ],
+    "indexToProgramIds": {}
+   },
+   "signatures": [
+    "2rnXivbYMePe2hdCQD8ypenrcy9vx6NfoX3hFyLXxZkE6aUus6znt6NqRZ8W8cSNbsDRyHZWVz4ETwTDBvxECUEh"
+   ]
+  },
+  "transactionIndex": 364,
+  "version": "legacy"
+ }
+}

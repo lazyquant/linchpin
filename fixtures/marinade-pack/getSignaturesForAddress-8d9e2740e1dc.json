@@ -1,0 +1,47 @@
+{
+ "method": "getSignaturesForAddress",
+ "params": {
+  "pubkey": "Hp1zS2AHKmecP9CQw63L6wnvkmvqUkW4SEZKW5pEX3uA",
+  "limit": 50
+ },
+ "slot": null,
+ "retrievedAt": "2026-10-06T02:50:40.854Z",
+ "rpcUrl": "https://api.mainnet-beta.solana.com/",
+ "responseSha256": "c1dc3b736bc2ce5e30674d6d0ff793c39844a2fe0228333bd7a8309709f6f0a8",
+ "response": [
+  {
+   "blockTime": 1699956521,
+   "confirmationStatus": "finalized",
+   "err": null,
+   "memo": null,
+   "signature": "XhNQqPbVcRE7Zf9JrW4TUaQWxCBaG76HTeMP1SEpf484Lauzkw1p8dNyCDP7TATT5kfQwTtGF4dhvNGzQuFJdS7",
+   "slot": 229945066,
+   "transactionIndex": 138
+  },
+  {
+   "blockTime": 1699541666,
+   "confirmationStatus": "finalized",
+   "err": {
+    "InstructionError": [
+     1,
+     {
+      "Custom": 1
+     }
+    ]
+   },
+   "memo": null,
+   "signature": "3zWZvnaUcGe4a64QhqogrNkn7Nvmcx29iP5n6E32drmSYpkrFJzDG9hgaV6Jd3GEoxwtCUvfFEW74P2RggmsaDL9",
+   "slot": 228995047,
+   "transactionIndex": 87
+  },
+  {
+   "blockTime": 1699266011,
+   "confirmationStatus": "finalized",
+   "err": null,
+   "memo": null,
+   "signature": "3YheU5vxVU7Tgf6sVTEZwrNy9pW7k7NPwS1EqVbQom61F6Bbd32MtevkXURnZ1vNMFLxTtvjnHUAuRVxHhYWZQoh",
+   "slot": 228338034,
+   "transactionIndex": 1399
+  }
+ ]
+}
