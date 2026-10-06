@@ -17,6 +17,7 @@
     "linchpin": "bun run src/cli.ts",
     "demo": "bun run src/cli.ts demo --offline",
     "test": "bun test",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "web": "bun run src/web/server.ts"
   }
 }
