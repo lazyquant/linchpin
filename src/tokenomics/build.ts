@@ -46,7 +46,7 @@ export async function buildTokenomics({ root, packResult }: { root: string; pack
     const file = join(root, 'src/contracts', `${name}.ts`);
     if (!existsSync(file)) continue;
     const module = await import(pathToFileURL(file).href);
-    if (typeof module.buildTokenomicsSection !== 'function') throw new Error(`Optional ${name} layer has no tokenomics adapter`);
+    if (typeof module.buildTokenomicsSection !== 'function') continue; // the layer exists but is not wired into the API yet (B1c); its section stays pending
     const value = await (module.buildTokenomicsSection as OptionalLayerReader<typeof name>)({ rpc, registry, contracts, layer, participation, authorities, pack });
     // Assignment keeps the runtime discriminator paired with its corresponding section shape.
     Object.assign(optional, { [name]: value });
