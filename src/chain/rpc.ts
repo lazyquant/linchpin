@@ -5,7 +5,7 @@ import { canonical, fixtureKey, sha256, type Evidence } from "./evidence";
 import type { RunOptions } from "../config";
 import { setTimeout as delay } from 'node:timers/promises';
 
-type Recorded<T> = { value: T; evidence: Evidence };
+export type Recorded<T> = { value: T; evidence: Evidence };
 const RETRY_DELAYS_MS = [1000, 2000, 4000, 8000, 16000, 30000, 30000, 30000];
 const MAX_ATTEMPTS = 8;
 const RETRYABLE = /429|Too Many Requests|503|502|ECONNRESET|ETIMEDOUT|fetch failed|TimeoutError|AbortError|aborted|timed out/i;
@@ -140,11 +140,28 @@ export class RecordingRpc {
       async () => { const r = await this.connection.getBalanceAndContext(pubkey); return { value: r.value, slot: r.context.slot }; }, (v) => v, (j) => j);
   }
 
-  getProgramAccounts(programId: PublicKey, filters: GetProgramAccountsFilter[] = []): Promise<Recorded<GetProgramAccountsResponse>> {
-    return this.call("getProgramAccounts", { programId: programId.toBase58(), filters },
-      async () => { const r = await this.connection.getProgramAccounts(programId, { filters, withContext: true }); return { value: r.value, slot: r.context.slot }; },
+  getProgramAccounts(programId: PublicKey, filters: GetProgramAccountsFilter[] = [], dataSlice?: { offset: number; length: number }): Promise<Recorded<GetProgramAccountsResponse>> {
+    const slice = dataSlice === undefined ? {} : { dataSlice };
+    return this.call("getProgramAccounts", { programId: programId.toBase58(), filters, ...slice },
+      async () => { const r = await this.connection.getProgramAccounts(programId, { filters, ...slice, withContext: true }); return { value: r.value, slot: r.context.slot }; },
       (v) => v.map(({ pubkey, account }) => ({ pubkey: pubkey.toBase58(), account: { ...account, owner: account.owner.toBase58(), data: account.data.toString("base64") } })),
       (j) => j.map((entry: any) => ({ pubkey: new PublicKey(entry.pubkey), account: { ...entry.account, owner: new PublicKey(entry.account.owner), data: Buffer.from(entry.account.data, "base64") } })));
+  }
+
+  getMultipleAccounts(pubkeys: PublicKey[]): Promise<Recorded<(AccountInfo<Buffer> | null)[]>> {
+    if (pubkeys.length > 100) throw new Error("getMultipleAccounts: at most 100 pubkeys per call");
+    return this.call("getMultipleAccounts", { pubkeys: pubkeys.map(p => p.toBase58()) },
+      async () => { const r = await this.connection.getMultipleAccountsInfoAndContext(pubkeys); return { value: r.value, slot: r.context.slot }; },
+      v => v.map(a => a && { ...a, owner: a.owner.toBase58(), data: a.data.toString("base64") }),
+      j => j.map((a: any) => a && { ...a, owner: new PublicKey(a.owner), data: Buffer.from(a.data, "base64") }));
+  }
+
+  getTokenLargestAccounts(mint: PublicKey): Promise<Recorded<{ address: string; amountRaw: string; decimals: number }[]>> {
+    return this.call("getTokenLargestAccounts", { mint: mint.toBase58() },
+      async () => {
+        const r = await this.connection.getTokenLargestAccounts(mint);
+        return { value: r.value.map(a => ({ address: a.address.toBase58(), amountRaw: a.amount, decimals: a.decimals })), slot: r.context.slot };
+      }, v => v, j => j);
   }
 
   getSignaturesForAddress(pubkey: PublicKey, limit = 50): Promise<Recorded<ConfirmedSignatureInfo[]>> {

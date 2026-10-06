@@ -347,3 +347,65 @@ describe("token layout", () => {
     expect(formatUnits(-300000000000000000n, 9)).toBe("-300,000,000");
   });
 });
+
+describe("contract RPC reads", () => {
+  const pk = new PublicKey(Buffer.alloc(32, 21));
+  const recorder = () => new RecordingRpc(runOptions({ record: true, offline: false, refresh: false, minIntervalMs: 0, fixturesDir: tempDir(), rpcUrl: "http://127.0.0.1:1" }), "contracts");
+
+  test("optional dataSlice has a separate fixture key while omitted and undefined preserve old params", async () => {
+    const rpc = recorder();
+    const filters = [{ memcmp: { offset: 0, bytes: "abc" } }];
+    const calls: unknown[] = [];
+    (rpc.connection as any).getProgramAccounts = async (_key: PublicKey, config: { dataSlice?: { offset: number; length: number } }) => {
+      calls.push(config);
+      return { context: { slot: 71 }, value: [{ pubkey: pk, account: { owner: pk, executable: false, lamports: 1, data: config.dataSlice ? Buffer.alloc(0) : Buffer.from([7]), rentEpoch: 0 } }] };
+    };
+    const old = await rpc.getProgramAccounts(pk, filters);
+    const explicitUndefined = await rpc.getProgramAccounts(pk, filters, undefined);
+    const sliced = await rpc.getProgramAccounts(pk, filters, { offset: 0, length: 0 });
+    expect(old.evidence.params).toEqual({ programId: pk.toBase58(), filters });
+    expect(explicitUndefined.evidence.id).toBe(old.evidence.id);
+    expect(sliced.evidence.params).toEqual({ programId: pk.toBase58(), filters, dataSlice: { offset: 0, length: 0 } });
+    expect(sliced.evidence.id).not.toBe(old.evidence.id);
+    expect(calls).toEqual([{ filters, withContext: true }, { filters, withContext: true, dataSlice: { offset: 0, length: 0 } }]);
+    const replay = new RecordingRpc({ ...rpc.opts, offline: true }, "contracts");
+    expect(await replay.getProgramAccounts(pk, filters, { offset: 0, length: 0 })).toEqual({ ...sliced, evidence: { ...sliced.evidence, source: "fixture" } });
+    expect((await replay.getProgramAccounts(pk, filters)).value[0].account.data).toEqual(Buffer.from([7]));
+  });
+
+  test("multiple accounts preserve null positions, buffers, pubkeys, order and evidence on replay", async () => {
+    const rpc = recorder();
+    const keys = [pk, PublicKey.default, pk];
+    const info = { data: Buffer.from([128, 255]), owner: pk, executable: false, lamports: 99, rentEpoch: 0 };
+    rpc.connection.getMultipleAccountsInfoAndContext = async addresses => {
+      expect(addresses).toEqual(keys);
+      return { context: { slot: 72 }, value: [info, null, info] };
+    };
+    const live = await rpc.getMultipleAccounts(keys);
+    expect(live).toMatchObject({ value: [info, null, info], evidence: { method: "getMultipleAccounts", slot: 72, params: { pubkeys: keys.map(k => k.toBase58()) } } });
+    const fx = JSON.parse(readFileSync(join(rpc.opts.fixturesDir, "contracts", `${fixtureKey("getMultipleAccounts", live.evidence.params)}.json`), "utf8"));
+    expect(fx.response).toEqual([{ ...info, owner: pk.toBase58(), data: "gP8=" }, null, { ...info, owner: pk.toBase58(), data: "gP8=" }]);
+    const offline = new RecordingRpc({ ...rpc.opts, offline: true }, "contracts");
+    expect(await offline.getMultipleAccounts(keys)).toEqual({ ...live, evidence: { ...live.evidence, source: "fixture" } });
+  });
+
+  test("multiple accounts accepts 100 and rejects 101 before any RPC", async () => {
+    const rpc = recorder(); let calls = 0;
+    rpc.connection.getMultipleAccountsInfoAndContext = async addresses => { calls++; return { context: { slot: 73 }, value: addresses.map(() => null) }; };
+    expect((await rpc.getMultipleAccounts(Array(100).fill(pk))).value).toHaveLength(100);
+    expect(() => rpc.getMultipleAccounts(Array(101).fill(pk))).toThrow("at most 100");
+    expect(calls).toBe(1); expect(rpc.evidence).toHaveLength(1);
+  });
+
+  test("largest token accounts preserve raw precision and return replayable evidence", async () => {
+    const rpc = recorder();
+    rpc.connection.getTokenLargestAccounts = async mint => {
+      expect(mint).toEqual(pk);
+      return { context: { slot: 74 }, value: [{ address: PublicKey.default, amount: "18446744073709551615", decimals: 9, uiAmount: null }] };
+    };
+    const live = await rpc.getTokenLargestAccounts(pk);
+    expect(live).toMatchObject({ value: [{ address: PublicKey.default.toBase58(), amountRaw: "18446744073709551615", decimals: 9 }], evidence: { slot: 74, method: "getTokenLargestAccounts", params: { mint: pk.toBase58() } } });
+    const offline = new RecordingRpc({ ...rpc.opts, offline: true }, "contracts");
+    expect(await offline.getTokenLargestAccounts(pk)).toEqual({ ...live, evidence: { ...live.evidence, source: "fixture" } });
+  });
+});
