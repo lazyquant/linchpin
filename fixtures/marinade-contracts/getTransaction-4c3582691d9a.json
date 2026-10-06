@@ -1,0 +1,168 @@
+{
+ "method": "getTransaction",
+ "params": {
+  "signature": "4wTcKMB6fvbJUmhY7n6gQvL9omRTbPPFQCkHA8m4BWP3s9YcQHZL2u1xpj4eVpuoHtVHnK2UaTEZWYpDpbFLqk3W"
+ },
+ "slot": null,
+ "retrievedAt": "2026-10-06T10:14:27.350Z",
+ "rpcUrl": "https://solana-mainnet.g.alchemy.com",
+ "responseSha256": "ccfa786886d50e33c91f9b8662c9cc4eeae9f419fbbe2308f0c81e4a6bb49b7b",
+ "response": {
+  "blockTime": 1791209159,
+  "meta": {
+   "computeUnitsConsumed": 37174,
+   "costUnits": 41060,
+   "err": null,
+   "fee": 5003,
+   "innerInstructions": [],
+   "loadedAddresses": {
+    "readonly": [],
+    "writable": []
+   },
+   "logMessages": [
+    "Program ComputeBudget111111111111111111111111111111 invoke [1]",
+    "Program ComputeBudget111111111111111111111111111111 success",
+    "Program MarBmsSgKXdrN1egZf5sqe1TMai9K1rChYNDJgjq7aD invoke [1]",
+    "Program log: Instruction: UpdateActive",
+    "Program log: Extra lamports in stake balance: 0",
+    "Program log: current staked lamports 1003867557",
+    "Program log: Staking rewards: 169746",
+    "Program log: protocol_rewards_fee 0",
+    "Program data: +xKAS9BQrox1EZsxdYB1huP0p+XND4kOlqdTsQ/Mx2gelHOgCDJw8RoEAAAAAAAAhwEAAAXXoMHJXz/JAewlWBteqswZeHrOvqqsBHAileDIvBBC+AAAAFp8QBUrKBtOPMAMCZJlRC6q75KfVNaJ9F/TS1LZWK0OkzbTOwAAAAClzdU7AAAAAAEAAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAc0hmtZUQAADfU4nMh/AHAGrTEmkBAAAAa9MSaQEAAAAAAAAAxp7bjOUECADEqzZNf68FAA==",
+    "Program MarBmsSgKXdrN1egZf5sqe1TMai9K1rChYNDJgjq7aD consumed 37024 of 202850 compute units",
+    "Program MarBmsSgKXdrN1egZf5sqe1TMai9K1rChYNDJgjq7aD success"
+   ],
+   "postBalances": [
+    1125420085,
+    1006150437,
+    11891295022,
+    23280517,
+    3898546590,
+    2039280,
+    36640992354832,
+    1274626591,
+    1,
+    58141464,
+    1141440,
+    1169280,
+    114979200,
+    200653906,
+    0,
+    30000000
+   ],
+   "postTokenBalances": [
+    {
+     "accountIndex": 5,
+     "mint": "mSoLzYCxHdYgdzU16g5QSh3i5K3z3KZK7ytfqcJm7So",
+     "owner": "89SrbjbuNyqSqAALKBsKBqMSh463eLvzS4iVWCeArBgB",
+     "programId": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+     "uiTokenAmount": {
+      "amount": "13379813593",
+      "decimals": 9,
+      "uiAmount": 13.379813593,
+      "uiAmountString": "13.379813593"
+     }
+    }
+   ],
+   "preBalances": [
+    1125425088,
+    1006150437,
+    11891295022,
+    23280517,
+    3898546590,
+    2039280,
+    36640992354832,
+    1274626591,
+    1,
+    58141464,
+    1141440,
+    1169280,
+    114979200,
+    200653906,
+    0,
+    30000000
+   ],
+   "preTokenBalances": [
+    {
+     "accountIndex": 5,
+     "mint": "mSoLzYCxHdYgdzU16g5QSh3i5K3z3KZK7ytfqcJm7So",
+     "owner": "89SrbjbuNyqSqAALKBsKBqMSh463eLvzS4iVWCeArBgB",
+     "programId": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+     "uiTokenAmount": {
+      "amount": "13379813593",
+      "decimals": 9,
+      "uiAmount": 13.379813593,
+      "uiAmountString": "13.379813593"
+     }
+    }
+   ],
+   "rewards": [],
+   "status": {
+    "Ok": null
+   }
+  },
+  "slot": 453601206,
+  "transaction": {
+   "message": {
+    "header": {
+     "numReadonlySignedAccounts": 0,
+     "numReadonlyUnsignedAccounts": 8,
+     "numRequiredSignatures": 1
+    },
+    "accountKeys": [
+     "opLSF7LdfyWNBby5o6FT8UFsr2A4UGKteECgtLSYrSm",
+     "PojyYf8A9qX6Z1FhQ82UkJUVnVGaMhJD58PVDKbtdDb",
+     "mSoLzYCxHdYgdzU16g5QSh3i5K3z3KZK7ytfqcJm7So",
+     "8szGkuLTAux9XMgZ2vtY39jVSowEcpBfFfD8hXSEqdGC",
+     "Anv3XE7e5saNdm16MU6bniYS59Mpv7DzQXHAhxJUmAKW",
+     "B1aLzaNMeFVAyQ6f3XbbUyKcH2YPHu2fqiEagmiF23VR",
+     "Du3Ysj1wKbxPKkuPPnvzQLQh8oMSVifs3jGZjJWXFmHN",
+     "DwFYJNnhLmw19FBTrVaLWZ8SZJpxdPoSYVSJaio9tjbY",
+     "ComputeBudget111111111111111111111111111111",
+     "MarBmsSgKXdrN1egZf5sqe1TMai9K1rChYNDJgjq7aD",
+     "Stake11111111111111111111111111111111111111",
+     "SysvarC1ock11111111111111111111111111111111",
+     "SysvarStakeHistory1111111111111111111111111",
+     "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+     "3JLPCS1qM2zRw3Dp6V4hZnYHd4toMNPkNesXdX9tg6KM",
+     "9eG63CdHjsfhHmobHgLtESGC8GabbmRcaSpHAZrtmhco"
+    ],
+    "recentBlockhash": "Hzq6dfEnbeyna2qv7TXCHdw3EhsAVyx5hXbkDk8mko2k",
+    "instructions": [
+     {
+      "accounts": [],
+      "data": "3F8aKq24k59R",
+      "programIdIndex": 8,
+      "stackHeight": 1
+     },
+     {
+      "accounts": [
+       3,
+       4,
+       1,
+       15,
+       6,
+       2,
+       14,
+       5,
+       11,
+       12,
+       10,
+       13,
+       7
+      ],
+      "data": "XXqaPKQG4cd3JLypJ66CP",
+      "programIdIndex": 9,
+      "stackHeight": 1
+     }
+    ],
+    "indexToProgramIds": {}
+   },
+   "signatures": [
+    "4wTcKMB6fvbJUmhY7n6gQvL9omRTbPPFQCkHA8m4BWP3s9YcQHZL2u1xpj4eVpuoHtVHnK2UaTEZWYpDpbFLqk3W"
+   ]
+  },
+  "transactionIndex": 656,
+  "version": "legacy"
+ }
+}

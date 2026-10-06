@@ -10,6 +10,7 @@ export type Recorded<T> = { value: T; evidence: Evidence };
 const RETRY_DELAYS_MS = [1000, 2000, 4000, 8000, 16000, 30000, 30000, 30000];
 const MAX_ATTEMPTS = 8;
 const RETRYABLE = /429|Too Many Requests|503|502|ECONNRESET|ETIMEDOUT|fetch failed|TimeoutError|AbortError|aborted|timed out/i;
+export const UNSUPPORTED_TX_VERSION = /Transaction version \(\d+\) is not supported/i;
 const sleep = (ms: number, signal?: AbortSignal) => delay(ms, undefined, { signal });
 
 /** Persist endpoint identity only; credentials, paths, query strings and fragments are private. */
@@ -179,7 +180,15 @@ export class RecordingRpc {
 
   getTransaction(signature: string): Promise<Recorded<VersionedTransactionResponse | null>> {
     return this.call("getTransaction", { signature },
-      async () => ({ value: await this.connection.getTransaction(signature, { maxSupportedTransactionVersion: 0 }), slot: null }),
+      async () => {
+        try { return { value: await this.connection.getTransaction(signature, { maxSupportedTransactionVersion: 0 }), slot: null }; }
+        catch (error) {
+          // Transactions in a newer format (e.g. version 1) cannot be parsed by this client. Record them as unavailable (null) so that
+          // replay is identical and every consumer counts them as unavailable instead of failing the whole recording.
+          if (UNSUPPORTED_TX_VERSION.test(String((error as Error)?.message ?? error))) return { value: null, slot: null };
+          throw error;
+        }
+      },
       (v) => v && JSON.parse(JSON.stringify(v)), (j) => j);  // fixtures keep the raw JSON shape; consumers only read meta/logs/balances
   }
 

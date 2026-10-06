@@ -1,5 +1,5 @@
 // Maintainer capture/replay. Runtime IDLs always come through RecordingRpc, never test vectors.
-import { readFileSync, mkdirSync, writeFileSync } from "node:fs";
+import { readFileSync, readdirSync, existsSync, mkdirSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { runOptions } from "../src/config";
 import { RecordingRpc, redactSecrets } from "../src/chain/rpc";
@@ -7,6 +7,9 @@ import type { PackRegistry } from "../src/pack/build";
 import { readContractsLayer, type ContractsInput } from "../src/contracts/marinade";
 import { readParticipation } from "../src/contracts/participation";
 import { readAuthorities } from "../src/contracts/authorities";
+import { readHolders, validateLabels } from "../src/contracts/holders";
+import { readFlows } from "../src/contracts/flows";
+import type { TreasuryLedger } from "../src/pack/ledger";
 import { toPlain } from "../src/contracts/decode";
 
 const args = process.argv.slice(2);
@@ -23,11 +26,23 @@ try {
   const layer = await readContractsLayer(rpc, registry, contracts);
   const participation = await readParticipation(rpc, registry, contracts, layer);
   const authorities = await readAuthorities(rpc, registry, layer);
+  const docsCapture = JSON.parse(readFileSync(new URL("../packs/marinade/sources/marinade-docs-capture-2026-10-05.json", import.meta.url), "utf8"));
+  // B.1 is a prior recorded artifact, not silently re-recorded as part of this layer.
+  const ledgerPath = [join(opts.outDir, "marinade/packet.json"), join(opts.outDir, "web/marinade/packet.json")].find(existsSync);
+  const packet = ledgerPath ? JSON.parse(readFileSync(ledgerPath, "utf8")) : null;
+  const ledger: (TreasuryLedger & { asOf?: string }) | undefined = packet?.ledger ? { ...packet.ledger, asOf: packet.generatedAt } : undefined;
+  const labelsDir = new URL("../packs/marinade/sources/labels/", import.meta.url);
+  const labels = existsSync(labelsDir) ? readdirSync(labelsDir).filter(name => name.endsWith(".json")).sort()
+    .map(name => validateLabels(JSON.parse(readFileSync(new URL(name, labelsDir), "utf8")))) : [];
+  const holders = await readHolders(rpc, registry, layer, participation, authorities, labels);
+  const flows = await readFlows(rpc, registry, layer, participation, holders, docsCapture, ledger);
   const outDir = join(opts.outDir, "contracts-marinade");
   mkdirSync(outDir, { recursive: true });
   writeFileSync(join(outDir, "contracts.json"), JSON.stringify(toPlain(layer), null, 2) + "\n");
   writeFileSync(join(outDir, "participation.json"), JSON.stringify(toPlain(participation), null, 2) + "\n");
   writeFileSync(join(outDir, "authorities.json"), JSON.stringify(toPlain(authorities), null, 2) + "\n");
+  writeFileSync(join(outDir, "flows.json"), JSON.stringify(toPlain(flows), null, 2) + "\n");
+  writeFileSync(join(outDir, "holders.json"), JSON.stringify(toPlain(holders), null, 2) + "\n");
   rpc.flushEvidence(outDir);
   const classified = [
     ...layer.authorities.map(a => a.classification),
@@ -45,6 +60,10 @@ try {
         missing: participation.vsr.reconciliation.missing.value, depositsRaw: participation.vsr.reconciliation.deposits.raw, vaultBalancesRaw: participation.vsr.reconciliation.vaultBalances.raw },
       dormantPrograms: participation.activity.filter(p => p.dormant.value).map(p => p.program),
       directedStakeTotal: participation.directedStake.total.value, referralPartners: participation.referral.partners.map(p => p.name), ticketCheck: participation.delayedUnstake.countsAgree.value },
+    holders: { mndeNonzeroOwners: holders.mnde.distinctNonZeroOwners.value, mndeSupplyDifferenceRaw: holders.mnde.differenceFromSupplyRaw.value,
+      msolSupplyDifferenceRaw: holders.msol.differenceFromSupplyRaw.value, floatVerifiedOnlyRaw: holders.float.verifiedOnly.raw, floatIncludingClaimedRaw: holders.float.includingClaimed.raw },
+    flows: { treasuryTransactions: flows.treasury.transactionsRead.value, buybackTransactions: flows.buybacks.transactions.length,
+      claims: flows.claims.map(c => ({ id: c.id, status: c.status, chainResult: c.chainResult })) },
     authorityResolution: { resolved: authorities.resolved.value, unresolved: authorities.unresolved.value },
     parameters: layer.parameters.length, classifiedAuthorities: new Set(classified.map(a => a.address)).size, claimV1: layer.claims[0], reads: rpc.counts,
     failedChecks: layer.checks.filter(c => c.status !== "verified"), priceSanity: layer.parameters.find(p => p.field === "msolPrice")?.scaling?.sanityCheck }, null, 2));

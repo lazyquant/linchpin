@@ -11,10 +11,18 @@ import { accountDiscriminator, decodeAccountAs, toPlain } from "./decode";
 
 export type ContractsLayer = Awaited<ReturnType<typeof readContractsLayer>>;
 export type Provenance = { evidenceIds: string[]; slot: number | null; asOf: string; basis: "decoded" | "derived" | "observed" | "claimed" | "declared" };
+// Layers finalize their evidence arrays before constructing rows. Cache the index,
+// rather than scanning every evidence record for every deposit/holder figure.
+const evidenceIndexes = new WeakMap<Evidence[], { length: number; byId: Map<string, Evidence>; asOf: string }>();
 export function provenance(evidence: Evidence[], ids = evidence.map(e => e.id), basis: Provenance["basis"] = "decoded"): Provenance {
-  const selected = evidence.filter(e => ids.includes(e.id));
-  return { evidenceIds: [...new Set(ids)], slot: selected.reduce<number | null>((s, e) => e.slot === null ? s : Math.max(s ?? 0, e.slot), null),
-    asOf: evidence.reduce((s, e) => e.retrievedAt > s ? e.retrievedAt : s, ""), basis };
+  let index = evidenceIndexes.get(evidence);
+  if (!index || index.length !== evidence.length) {
+    index = { length: evidence.length, byId: new Map(evidence.map(e => [e.id, e])), asOf: evidence.reduce((s, e) => e.retrievedAt > s ? e.retrievedAt : s, "") };
+    evidenceIndexes.set(evidence, index);
+  }
+  const evidenceIds = [...new Set(ids)];
+  const slot = evidenceIds.reduce<number | null>((s, id) => { const e = index!.byId.get(id); return e?.slot == null ? s : Math.max(s ?? 0, e.slot); }, null);
+  return { evidenceIds, slot, asOf: index.asOf, basis };
 }
 export const figure = <T>(value: T, p: Provenance, unit?: string) => ({ value, ...p, ...(unit ? { unit } : {}) });
 

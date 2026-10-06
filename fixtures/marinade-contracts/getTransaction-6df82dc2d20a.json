@@ -1,0 +1,96 @@
+{
+ "method": "getTransaction",
+ "params": {
+  "signature": "N5gnY95iWM2CJLLBqzec9m8xzWZnVZAmo4Ksz9jX3QcartALp9ocYsMW38j2oRy4z6KWKejLsxsDQr4YRMEsT8q"
+ },
+ "slot": null,
+ "retrievedAt": "2026-10-06T10:26:38.455Z",
+ "rpcUrl": "https://solana-mainnet.g.alchemy.com",
+ "responseSha256": "bb3ef3f9a084d3d8f6f1bd59039749882838572adbe732d98377c54cd16fa397",
+ "response": {
+  "blockTime": 1788329857,
+  "meta": {
+   "computeUnitsConsumed": 450,
+   "costUnits": 1784,
+   "err": null,
+   "fee": 5050,
+   "innerInstructions": [],
+   "loadedAddresses": {
+    "readonly": [],
+    "writable": []
+   },
+   "logMessages": [
+    "Program ComputeBudget111111111111111111111111111111 invoke [1]",
+    "Program ComputeBudget111111111111111111111111111111 success",
+    "Program ComputeBudget111111111111111111111111111111 invoke [1]",
+    "Program ComputeBudget111111111111111111111111111111 success",
+    "Program 11111111111111111111111111111111 invoke [1]",
+    "Program 11111111111111111111111111111111 success"
+   ],
+   "postBalances": [
+    1695600,
+    959242288,
+    1,
+    1
+   ],
+   "postTokenBalances": [],
+   "preBalances": [
+    1701650,
+    959241288,
+    1,
+    1
+   ],
+   "preTokenBalances": [],
+   "rewards": [],
+   "status": {
+    "Ok": null
+   }
+  },
+  "slot": 443626068,
+  "transaction": {
+   "message": {
+    "header": {
+     "numReadonlySignedAccounts": 0,
+     "numReadonlyUnsignedAccounts": 2,
+     "numRequiredSignatures": 1
+    },
+    "accountKeys": [
+     "5kk8ugzA1TJCZM5soNHHDzrqbaemxT98yfaW3j3jgT9k",
+     "89SrbjbuNyqSqAALKBsKBqMSh463eLvzS4iVWCeArBgB",
+     "11111111111111111111111111111111",
+     "ComputeBudget111111111111111111111111111111"
+    ],
+    "recentBlockhash": "J34Cffa2DRP4GFoCsj3AtwSx9jmNjzveE1muiZ9966Ne",
+    "instructions": [
+     {
+      "accounts": [],
+      "data": "JC3gyu",
+      "programIdIndex": 3,
+      "stackHeight": 1
+     },
+     {
+      "accounts": [],
+      "data": "3vGhvZn9zGuM",
+      "programIdIndex": 3,
+      "stackHeight": 1
+     },
+     {
+      "accounts": [
+       0,
+       1
+      ],
+      "data": "3Bxs4ffTu9T19DNF",
+      "programIdIndex": 2,
+      "stackHeight": 1
+     }
+    ],
+    "indexToProgramIds": {}
+   },
+   "signatures": [
+    "N5gnY95iWM2CJLLBqzec9m8xzWZnVZAmo4Ksz9jX3QcartALp9ocYsMW38j2oRy4z6KWKejLsxsDQr4YRMEsT8q"
+   ]
+  },
+  "transactionIndex": 722,
+  "version": "legacy"
+ }
+}

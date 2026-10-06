@@ -1,6 +1,7 @@
 import { afterEach, describe, expect, spyOn, test } from "bun:test";
 import { mkdtempSync, readFileSync, rmSync } from "node:fs";
 import { join } from "node:path";
+import { tmpdir } from "node:os";
 import { PublicKey } from "@solana/web3.js";
 import { RecordingRpc, redactedRpcUrl, redactSecrets } from "../src/chain/rpc";
 import { runOptions } from "../src/config";
@@ -407,5 +408,25 @@ describe("contract RPC reads", () => {
     expect(live).toMatchObject({ value: [{ address: PublicKey.default.toBase58(), amountRaw: "18446744073709551615", decimals: 9 }], evidence: { slot: 74, method: "getTokenLargestAccounts", params: { mint: pk.toBase58() } } });
     const offline = new RecordingRpc({ ...rpc.opts, offline: true }, "contracts");
     expect(await offline.getTokenLargestAccounts(pk)).toEqual({ ...live, evidence: { ...live.evidence, source: "fixture" } });
+  });
+});
+
+describe("unsupported transaction versions", () => {
+  test("a transaction in a newer format is recorded as unavailable (null) and replays identically", async () => {
+    const fixturesDir = mkdtempSync(join(tmpdir(), "linchpin-txv-"));
+    const live = new RecordingRpc(runOptions({ offline: false, record: true, refresh: false, rpcUrl: "https://rpc.example", fixturesDir, minIntervalMs: 0 }), "txv");
+    (live.connection as any).getTransaction = async () => { throw new Error('failed to get transaction: Transaction version (1) is not supported by the requesting client.'); };
+    const recorded = await live.getTransaction("5ig1");
+    expect(recorded.value).toBeNull();
+    const offline = new RecordingRpc(runOptions({ offline: true, record: false, refresh: false, rpcUrl: "http://127.0.0.1:1", fixturesDir }), "txv");
+    const replayed = await offline.getTransaction("5ig1");
+    expect(replayed.value).toBeNull();
+    expect(replayed.evidence.id).toBe(recorded.evidence.id);
+  });
+  test("other getTransaction errors still fail", async () => {
+    const fixturesDir = mkdtempSync(join(tmpdir(), "linchpin-txv-"));
+    const live = new RecordingRpc(runOptions({ offline: false, record: true, refresh: false, rpcUrl: "https://rpc.example", fixturesDir, minIntervalMs: 0, retryDelaysMs: [] }), "txv");
+    (live.connection as any).getTransaction = async () => { throw new Error("invalid signature"); };
+    await expect(live.getTransaction("bad")).rejects.toThrow();
   });
 });
