@@ -1,7 +1,7 @@
 import { describe, test, expect, beforeAll } from 'bun:test';
 import { CASES } from '../src/web/model';
 import { runPipeline, ROOT } from '../src/web/runner';
-import { ResearchService, api } from '../src/web/server';
+import { ResearchService, api, SERVER_IDLE_TIMEOUT_SECONDS } from '../src/web/server';
 import { readFileSync } from 'node:fs';
 import { liveActivityIntro } from '../src/web/activity-view';
 
@@ -14,6 +14,15 @@ describe('local research workspace with real recorded evidence', () => {
     const build = await Bun.build({ entrypoints: [new URL('../src/web/index.html', import.meta.url).pathname], root: ROOT, target: 'browser' });
     expect(build.success).toBe(true);
     expect(build.outputs.some(output => output.path.endsWith('.svg'))).toBe(true);
+  });
+  test('legacy /favicon.ico requests get the same brand mark instead of a 404', async () => {
+    const response = await api(service)(request('/favicon.ico'));
+    expect(response.status).toBe(200);
+    expect(response.headers.get('content-type')).toBe('image/svg+xml');
+  });
+  test('the server keeps connections open longer than the 120 s Neo4j load cap (Bun default is 10 s)', () => {
+    expect(SERVER_IDLE_TIMEOUT_SECONDS).toBeGreaterThan(120);
+    expect(SERVER_IDLE_TIMEOUT_SECONDS).toBeLessThanOrEqual(255);
   });
   test('favicon serves the existing brand mark with a one-day cache', async () => {
     const response = await api(service)(request('/favicon.svg'));

@@ -87,11 +87,13 @@ export class ResearchService {
   }
 }
 const json = (value: unknown, status = 200) => Response.json(value, { status, headers: { 'Cache-Control': 'no-store' } });
+/** Bun closes a connection after 10 s without response bytes by default, which cut Neo4j loads (up to the 120 s load cap) and slow Aura answers. Must exceed that cap and stay within Bun's 255 s maximum. */
+export const SERVER_IDLE_TIMEOUT_SECONDS = 150;
 const exports = { 'memo.md': 'text/markdown; charset=utf-8', 'packet.json': 'application/json', 'graph.json': 'application/json', 'evidence.jsonl': 'application/x-ndjson' } as const;
 export function api(service: ResearchService) {
   return async (request: Request): Promise<Response> => {
     const u = new URL(request.url); const parts = u.pathname.split('/').filter(Boolean);
-    if (request.method === 'GET' && u.pathname === '/favicon.svg') return new Response(
+    if (request.method === 'GET' && (u.pathname === '/favicon.svg' || u.pathname === '/favicon.ico')) return new Response(
       readFileSync(join(ROOT, 'favicon.svg'), 'utf8'),
       { headers: { 'Content-Type': 'image/svg+xml', 'Cache-Control': 'public, max-age=86400' } },
     );
@@ -142,6 +144,6 @@ if (import.meta.main) {
   const port = Number(process.env.LINCHPIN_WEB_PORT ?? 8875);
   if (!Number.isSafeInteger(port) || port < 1024 || port > 65535) throw new Error('LINCHPIN_WEB_PORT must be an integer from 1024 to 65535');
   const handler = api(service);
-  const server = Bun.serve({ hostname: '127.0.0.1', port, routes: { '/': index }, fetch: handler, development: false });
+  const server = Bun.serve({ hostname: '127.0.0.1', port, idleTimeout: SERVER_IDLE_TIMEOUT_SECONDS, routes: { '/': index }, fetch: handler, development: false });
   console.log(`Linchpin research workspace: ${server.url} · captured examples ready · live refresh available`);
 }
