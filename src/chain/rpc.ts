@@ -3,12 +3,13 @@ import { existsSync, mkdirSync, readFileSync, writeFileSync, appendFileSync } fr
 import { join } from "node:path";
 import { canonical, fixtureKey, sha256, type Evidence } from "./evidence";
 import type { RunOptions } from "../config";
+import { setTimeout as delay } from 'node:timers/promises';
 
 type Recorded<T> = { value: T; evidence: Evidence };
 const RETRY_DELAYS_MS = [1000, 2000, 4000, 8000, 16000, 30000, 30000, 30000];
 const MAX_ATTEMPTS = 8;
 const RETRYABLE = /429|Too Many Requests|503|502|ECONNRESET|ETIMEDOUT|fetch failed|TimeoutError|AbortError|aborted|timed out/i;
-const sleep = (ms: number) => new Promise<void>(resolve => setTimeout(resolve, ms));
+const sleep = (ms: number, signal?: AbortSignal) => delay(ms, undefined, { signal });
 
 /** Persist endpoint identity only; credentials, paths, query strings and fragments are private. */
 export function redactedRpcUrl(value: string): string {
@@ -21,6 +22,7 @@ export function redactSecrets(text: string, rpcUrl: string): string {
   try {
     const url = new URL(rpcUrl);
     secrets.push(url.search, url.search.slice(1), ...url.pathname.split("/").filter(segment => segment.length > 16));
+    secrets.push(url.username, url.password, ...url.searchParams.values(), url.hash.slice(1));
   } catch {} // Even an invalid endpoint must be scrubbed from configuration errors.
   const pattern = [...new Set(secrets)].filter(Boolean).sort((a, b) => b.length - a.length)
     .map(secret => secret.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")).join("|");
@@ -49,14 +51,14 @@ export class RecordingRpc {
   private replayedReads = 0;
   private retryCount = 0;
   get counts() { return { live: this.liveReads, replayed: this.replayedReads, retries: this.retryCount }; }
-  constructor(readonly opts: RunOptions, readonly caseId: string) {
+  constructor(readonly opts: RunOptions, readonly caseId: string, readonly control: { signal?: AbortSignal; onRead?: (evidence: Evidence) => void } = {}) {
     try {
       this.connection = new Connection(opts.rpcUrl, {
         commitment: "confirmed",
         disableRetryOnRateLimit: true,
         fetch: Object.assign(
           (input: Parameters<typeof fetch>[0], init?: Parameters<typeof fetch>[1]) =>
-            fetch(input, { ...init, signal: AbortSignal.timeout(opts.requestTimeoutMs) }),
+            fetch(input, { ...init, signal: control.signal ? AbortSignal.any([control.signal, AbortSignal.timeout(opts.requestTimeoutMs)]) : AbortSignal.timeout(opts.requestTimeoutMs) }),
           { preconnect: fetch.preconnect },
         ),
       });
@@ -67,8 +69,10 @@ export class RecordingRpc {
   /** Serialize attempts so concurrent reads and retries share the same throttle. */
   private liveAttempt<T>(live: () => Promise<T>): Promise<T> {
     const result = this.liveQueue.then(async () => {
+      this.control.signal?.throwIfAborted();
       let remaining: number;
-      while ((remaining = this.opts.minIntervalMs - (performance.now() - this.lastLiveStart)) > 0) await sleep(remaining);
+      while ((remaining = this.opts.minIntervalMs - (performance.now() - this.lastLiveStart)) > 0) await sleep(remaining, this.control.signal);
+      this.control.signal?.throwIfAborted();
       this.lastLiveStart = performance.now();
       return live();
     });
@@ -81,17 +85,19 @@ export class RecordingRpc {
     for (let attempt = 1; ; attempt++) {
       try { return await this.liveAttempt(live); }
       catch (error) {
+        this.control.signal?.throwIfAborted();
         if (!(error instanceof Error) || !RETRYABLE.test(`${error.name}: ${error.message}`) || attempt >= MAX_ATTEMPTS) throw redactedError(error, this.opts.rpcUrl);
         const delay = (delays[attempt - 1] ?? RETRY_DELAYS_MS[attempt - 1]) * (0.8 + Math.random() * 0.4);
         this.retryCount++;
         console.error(redactSecrets(`[record] ${method} retry: attempt ${attempt + 1}/${MAX_ATTEMPTS} in ${Math.round(delay)} ms`, this.opts.rpcUrl));
-        await sleep(delay);
+        await sleep(delay, this.control.signal);
       }
     }
   }
 
   /** Run one RPC call through evidence capture and record/replay. `serialize`/`revive` keep fixtures JSON-safe. */
   private async call<T>(method: string, params: unknown, live: () => Promise<{ value: T; slot: number | null }>, serialize: (v: T) => unknown, revive: (j: any) => T): Promise<Recorded<T>> {
+    this.control.signal?.throwIfAborted();
     const key = fixtureKey(method, params);
     const path = this.fixturePath(key);
     if (this.opts.offline || (this.opts.record && !this.opts.refresh && existsSync(path))) {
@@ -101,9 +107,11 @@ export class RecordingRpc {
       const evidence: Evidence = { id: sha256(`${method}${canonical(params)}${fx.responseSha256}`), method, params, slot: fx.slot, retrievedAt: fx.retrievedAt, rpcUrl: redactedRpcUrl(fx.rpcUrl), responseSha256: fx.responseSha256, source: "fixture" };
       this.evidence.push(evidence);
       this.replayedReads++;
+      this.control.onRead?.(evidence);
       return { value, evidence };
     }
     const { value, slot } = await this.retryLive(method, live);
+    this.control.signal?.throwIfAborted();
     const response = serialize(value);
     const responseSha256 = sha256(canonical(response));
     const retrievedAt = new Date().toISOString();
@@ -115,6 +123,7 @@ export class RecordingRpc {
       writeFileSync(path, JSON.stringify({ method, params, slot, retrievedAt, rpcUrl, responseSha256, response }, null, 1));
     }
     this.liveReads++;
+    this.control.onRead?.(evidence);
     if (this.opts.record && this.liveReads % 25 === 0) console.error(redactSecrets(`[record] ${this.liveReads} live reads, ${this.replayedReads} replayed, last: ${method}`, this.opts.rpcUrl));
     return { value, evidence };
   }

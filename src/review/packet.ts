@@ -1,4 +1,5 @@
 import { REVIEW_CSS } from "./style";
+import { amountFact, type StateFact } from '../chain/state';
 import { formatUnits } from "../chain/token-layout";
 import { sha256 } from "../chain/evidence";
 import type { ProposalBundle } from "../governance/reader";
@@ -11,7 +12,7 @@ import type { Graph } from "../graph/model";
 import { mermaid, controlPath } from "../graph/build";
 import { checks, dimensions, type CheckRow, type Dimensions } from "./checks";
 
-export type Packet = { caseId: string; title: string; generatedAt: string; offline: boolean; bindingSha256: string; proposal: ProposalBundle["proposal"]; governance: ProposalBundle["governance"]; realm: ProposalBundle["realm"]; claimed: Claim[]; decoded: Decoded[]; effects: Effect[]; simulated: SimulationRun[]; skippedFixtures: SkippedFixture[]; instructionKeys: string[]; observed: { receipts: Receipt[]; reconciliations: Reconciliation[] }; coverage: Coverage[]; checks: CheckRow[]; dimensions: Dimensions; controlPath: string[]; graph: Graph; evidenceCount: number; reviewDecision: { status: "not-recorded"; note: string } };
+export type Packet = { stateFacts?: StateFact[]; caseId: string; title: string; generatedAt: string; offline: boolean; bindingSha256: string; proposal: ProposalBundle["proposal"]; governance: ProposalBundle["governance"]; realm: ProposalBundle["realm"]; claimed: Claim[]; decoded: Decoded[]; effects: Effect[]; simulated: SimulationRun[]; skippedFixtures: SkippedFixture[]; instructionKeys: string[]; observed: { receipts: Receipt[]; reconciliations: Reconciliation[] }; coverage: Coverage[]; checks: CheckRow[]; dimensions: Dimensions; controlPath: string[]; graph: Graph; evidenceCount: number; reviewDecision: { status: "not-recorded"; note: string } };
 
 export function bindingHash(b: ProposalBundle): string {
   return sha256(JSON.stringify(b.transactions.map((t) => ({ a: t.address, i: t.instructions.map((ix) => [ix.programId, ix.accounts, ix.dataHex]) }))));
@@ -20,7 +21,11 @@ export function bindingHash(b: ProposalBundle): string {
 export function buildPacket(args: { caseId: string; title: string; offline: boolean; bundle: ProposalBundle; decoded: Decoded[]; effects: Effect[]; sims: SimulationRun[]; skippedFixtures?: SkippedFixture[]; receipts: Receipt[]; reconciliations: Reconciliation[]; claims: Claim[]; coverage: Coverage[]; graph: Graph; evidenceCount: number }): Packet {
   const b = args.bundle; const firstDebit = args.decoded.find((d) => d.kind === "burn" || d.kind === "transfer");
   const firstTa = firstDebit && "source" in firstDebit ? firstDebit.source : null;
-  return { caseId: args.caseId, title: args.title, generatedAt: new Date().toISOString(), offline: args.offline, bindingSha256: bindingHash(b), proposal: b.proposal, governance: b.governance, realm: b.realm, claimed: args.claims, decoded: args.decoded, effects: args.effects, simulated: args.sims, skippedFixtures: args.skippedFixtures ?? [], instructionKeys: b.transactions.flatMap((t, ti) => t.instructions.map((_, ii) => `fx-${ti}-${ii}`)), observed: { receipts: args.receipts, reconciliations: args.reconciliations }, coverage: args.coverage, checks: checks(b, args.effects, args.coverage, args.reconciliations, args.receipts), dimensions: dimensions(b, args.effects, args.coverage, args.sims, args.reconciliations), controlPath: firstTa ? controlPath(args.graph, firstTa) : [], graph: args.graph, evidenceCount: args.evidenceCount, reviewDecision: { status: "not-recorded", note: "a human records approve / reject / needs-work against bindingSha256; a changed payload invalidates it" } };
+  const stateFacts = [
+    ...Object.entries(b.tokenAccounts).map(([address, t]) => amountFact(`balance:${address}`, `Token balance · ${address}`, t.amountRaw, b.mints[t.mint]?.decimals ?? null, t.slot, [t.evidenceId])),
+    ...Object.entries(b.mints).map(([address, m]) => amountFact(`supply:${address}`, `Mint supply · ${address}`, m.supplyRaw, m.decimals, m.slot, [m.evidenceId])),
+  ];
+  return { stateFacts, caseId: args.caseId, title: args.title, generatedAt: new Date().toISOString(), offline: args.offline, bindingSha256: bindingHash(b), proposal: b.proposal, governance: b.governance, realm: b.realm, claimed: args.claims, decoded: args.decoded, effects: args.effects, simulated: args.sims, skippedFixtures: args.skippedFixtures ?? [], instructionKeys: b.transactions.flatMap((t, ti) => t.instructions.map((_, ii) => `fx-${ti}-${ii}`)), observed: { receipts: args.receipts, reconciliations: args.reconciliations }, coverage: args.coverage, checks: checks(b, args.effects, args.coverage, args.reconciliations, args.receipts), dimensions: dimensions(b, args.effects, args.coverage, args.sims, args.reconciliations), controlPath: firstTa ? controlPath(args.graph, firstTa) : [], graph: args.graph, evidenceCount: args.evidenceCount, reviewDecision: { status: "not-recorded", note: "a human records approve / reject / needs-work against bindingSha256; a changed payload invalidates it" } };
 }
 
 const esc = (s: unknown) => String(s ?? "").replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]!));

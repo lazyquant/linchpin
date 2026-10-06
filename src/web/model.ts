@@ -1,3 +1,5 @@
+import { compareState, type StateDiff } from './diff';
+import { redactedRpcUrl } from '../chain/rpc';
 import type { Evidence } from '../chain/evidence';
 import type { Packet } from '../review/packet';
 import type { PackPacket } from '../pack/model';
@@ -14,13 +16,14 @@ export type CaseId = typeof CASES[number]['id'];
 export type Source = { id: string; kind: 'docs' | 'chain'; title: string; capturedAt: string; slot: number | null; hash?: string; url?: string; detail: unknown };
 export type Finding = { id: string; title: string; text: string; status: string; basis: string; sourceIds: string[]; code: string[] };
 export type Path = { label: string; nodeIds: string[]; sourceIds: string[]; note: string; status: string };
-export type View = { id: CaseId; title: string; question: string; generatedAt: string; capturedRange: string[]; slotRange: (number | null)[]; evidenceCount: number; findings: Finding[]; paths: Path[]; graph: DisplayGraph; timeline: { label: string; time: string; detail: string; sourceIds: string[] }[]; unknowns: string[]; memo: string; ledger?: PackPacket['ledger']; binding?: string };
+export type Freshness = { source: 'captured' | 'live'; retrievedAt: string[]; slotRange: (number | null)[]; liveReads: number; replayedReads: number; rpcHost: string | null; dir: string | null };
+export type View = { freshness: Freshness; stateDiff?: StateDiff[]; changedCount?: number; baselineRange?: string[]; id: CaseId; title: string; question: string; generatedAt: string; capturedRange: string[]; slotRange: (number | null)[]; evidenceCount: number; findings: Finding[]; paths: Path[]; graph: DisplayGraph; timeline: { label: string; time: string; detail: string; sourceIds: string[] }[]; unknowns: string[]; memo: string; ledger?: PackPacket['ledger']; binding?: string };
 export type Result = { view: View; sources: Source[]; packet: Packet | PackPacket; evidence: Evidence[] };
 const uniq = <T>(v: T[]) => [...new Set(v)];
 const iso = (v: number | null) => v == null ? 'Time unavailable' : new Date(v * 1000).toISOString();
 const url = (value: string) => /^https?:\/\//.test(value) ? value : undefined;
 
-export function present(id: CaseId, packet: Packet | PackPacket, evidence: Evidence[]): Result {
+export function present(id: CaseId, packet: Packet | PackPacket, evidence: Evidence[], live?: { rpcHost: string; dir: string }): Result {
   const scope = CASES.find(c => c.id === id)!;
   const sources: Source[] = uniq(evidence.map(e => e.id)).map(id => {
     const e = evidence.find(e => e.id === id)!;
@@ -28,7 +31,10 @@ export function present(id: CaseId, packet: Packet | PackPacket, evidence: Evide
   });
   const dates = sources.map(s => s.capturedAt).sort();
   const slots = evidence.flatMap(e => e.slot == null ? [] : [e.slot]);
-  const view: View = { id, title: scope.label, question: scope.question, generatedAt: packet.generatedAt, capturedRange: dates.length ? [dates[0], dates.at(-1)!] : [], slotRange: slots.length ? [Math.min(...slots), Math.max(...slots)] : [null, null], evidenceCount: packet.evidenceCount, findings: [], paths: [], graph: { nodes: [], edges: [] }, timeline: [], unknowns: [], memo: '' };
+  const freshEvidence = live ? evidence.filter(e => e.source === 'rpc') : evidence;
+  const freshDates = freshEvidence.map(e => e.retrievedAt).sort(), freshSlots = freshEvidence.flatMap(e => e.slot == null ? [] : [e.slot]);
+  const freshness: Freshness = { source: live ? 'live' : 'captured', retrievedAt: freshDates.length ? [freshDates[0], freshDates.at(-1)!] : [], slotRange: freshSlots.length ? [Math.min(...freshSlots), Math.max(...freshSlots)] : [null, null], liveReads: evidence.filter(e => e.source === 'rpc').length, replayedReads: evidence.filter(e => e.source === 'fixture').length, rpcHost: live ? redactedRpcUrl(live.rpcHost) : null, dir: live?.dir ?? null };
+  const view: View = { freshness, id, title: scope.label, question: scope.question, generatedAt: packet.generatedAt, capturedRange: dates.length ? [dates[0], dates.at(-1)!] : [], slotRange: slots.length ? [Math.min(...slots), Math.max(...slots)] : [null, null], evidenceCount: packet.evidenceCount, findings: [], paths: [], graph: { nodes: [], edges: [] }, timeline: [], unknowns: [], memo: '' };
   if ('pack' in packet) {
     packet.claims.forEach(c => sources.push({ id: `doc:${c.id}`, kind: 'docs', title: c.source, capturedAt: c.retrievedAt, slot: null, url: url(c.source), detail: { claim: c.text, status: c.status, note: c.note } }));
     for (const [i, p] of packet.controllerPaths.entries()) {
@@ -59,6 +65,7 @@ export function present(id: CaseId, packet: Packet | PackPacket, evidence: Evide
       view.findings.push({ id: `ledger-${a.asset}`, title: `Treasury flows · ${a.asset.slice(0, 8)}…`, text: `External outflows ${a.externalOutflowsDisplay}; internal moves ${a.internalMovesDisplay}; burns ${a.burnsDisplay}; net DAO-controlled balance change ${a.netChangeOfDaoControlledBalanceDisplay}. Governance execution boundary only; ${a.decimals ?? 'unknown'} decimals.`, status: 'observed', basis: 'reconciled execution receipts', sourceIds: uniq(entries.flatMap(e => e.evidenceIds)), code: ['src/pack/ledger.ts'] });
     }
     view.unknowns = packet.unknowns.map(u => u.text);
+    if (live) view.unknowns.push('The treasury ledger replays committed historical fixtures; its proposals and receipts were not refreshed.');
     view.unknowns.push('The treasury ledger covers governance executions; it does not establish the complete buyback / revenue / reward route.');
     view.timeline = packet.ledger.entries.filter(e => e.receiptSignature).map(e => ({ label: e.proposalName, time: iso(e.executedAt), detail: `${e.instructionLabel} · ${e.amountDisplay ?? 'no token amount'} · ${e.reconciliation}`, sourceIds: e.evidenceIds }));
   } else {
@@ -79,7 +86,7 @@ export function present(id: CaseId, packet: Packet | PackPacket, evidence: Evide
       { label: 'Voting completed', time: iso(packet.proposal.votingCompletedAt), detail: `Proposal state ${packet.proposal.stateName}; token weights are not voter counts.`, sourceIds: [packet.proposal.evidenceId] },
       ...packet.observed.receipts.map(r => ({ label: `Execution · transaction ${r.txIndex + 1}`, time: iso(r.blockTime), detail: `Slot ${r.slot} · ${r.success ? 'successful receipt' : 'failed receipt'} · ${packet.proposal.votingCompletedAt != null && r.blockTime != null ? `+${r.blockTime - packet.proposal.votingCompletedAt}s after voting` : 'timing unavailable'} · ${r.signature}`, sourceIds: r.evidenceIds }))
     ];
-    view.unknowns = ['A replay uses recorded captures. Current account state is not the historical pre-execution state.', 'A human review decision has not been recorded.'];
+    view.unknowns = [live ? 'Current account state was read live; it is not the historical pre-execution state.' : 'A replay uses recorded captures. Current account state is not the historical pre-execution state.', 'A human review decision has not been recorded.'];
     if (packet.effects.some(e => e.type === 'unknown')) view.unknowns.push('Unsupported instructions remain unresolved; receipt success does not decode their meaning.');
     if (id === 'bonk-bip76') view.unknowns.push('Voter counts, concentration and vote buying are reported claims, not established by this review. The source token account is not proof of all DAO assets. This is a retrospective reconstruction.');
     if (id === 'mip-14') view.unknowns.push('The 30% denominator uses claimed pre-burn supply; the historical pre-burn mint state was not captured.');
@@ -102,9 +109,17 @@ export function present(id: CaseId, packet: Packet | PackPacket, evidence: Evide
   return { view, sources, packet, evidence };
 }
 
+export function withBaseline(result: Result, captured: Result): Result {
+  const view = { ...result.view, ...compareState(captured, result), baselineRange: [...captured.view.capturedRange] };
+  view.memo = makeMemo(view, result.sources);
+  return { ...result, view };
+}
+export function liveHeader(view: View): string {
+  return `Live read at ${view.freshness.retrievedAt.at(-1) ?? 'time unavailable'}, slot ${view.freshness.slotRange[1] ?? 'unknown'}, host ${view.freshness.rpcHost} · captured baseline ${(view.baselineRange ?? []).join(' — ')}`;
+}
 export function makeMemo(view: View, sources: Source[]): string {
   const refs = uniq(view.findings.flatMap(f => f.sourceIds));
   const number = (id: string) => refs.indexOf(id) + 1;
   const citations = (f: Finding) => f.sourceIds.map(id => `[${number(id)}]`).join(' ');
-  return [`# ${view.title} — research memo`, '', '**Draft · deterministic synthesis from recorded evidence · human review pending**', '', `Question: ${view.question}`, `Generated: ${view.generatedAt}`, `Captured: ${view.capturedRange.join(' — ')}; ${view.evidenceCount} evidence records.`, '', '## Findings', '', ...view.findings.map(f => `### ${f.title}\n\n${f.text}\n\nBasis: ${f.basis}; status: ${f.status}. ${citations(f)}\n`), ...(view.ledger ? ['## Governance treasury ledger', '', ...view.ledger.summary.assets.map(a => `- Mint ${a.asset}: external outflows ${a.externalOutflowsDisplay}; internal moves ${a.internalMovesDisplay}; burns ${a.burnsDisplay}; net DAO balance change ${a.netChangeOfDaoControlledBalanceDisplay}. Decimals: ${a.decimals ?? 'unknown'}.`), '', 'Totals are reconciled governance execution flows within the captured boundary. Full ledger rows and their evidence IDs are available in packet.json.'] : []), '', '## Unknowns and next evidence', '', ...view.unknowns.map(u => `- ${u}`), '', '## Sources', '', ...refs.map(id => { const s = sources.find(s => s.id === id)!; return `[${number(id)}] ${s.title}; captured ${s.capturedAt}; slot ${s.slot ?? 'not applicable'}; evidence ID ${s.id}${s.hash ? `; response SHA-256 ${s.hash}` : ''}${s.url ? `; ${s.url}` : ''}`; }), '', 'Code references describe the local decoder/check implementation; they are not a full smart-contract source audit. No live language model or vector search is used in this memo.', ''].join('\n');
+  return [`# ${view.title} — research memo`, '', '**Draft · deterministic synthesis from recorded evidence · human review pending**', '', `Question: ${view.question}`, `Generated: ${view.generatedAt}`, view.freshness.source === 'live' ? liveHeader(view) : `Captured: ${view.capturedRange.join(' — ')}; ${view.evidenceCount} evidence records.`, ...(view.freshness.source === 'live' ? ['', '## What changed since capture', '', ...(view.changedCount ? view.stateDiff!.filter(r => r.changed).map(r => `- ${r.label}: ${r.captured} → ${r.current}. Captured slot ${r.capturedSlot ?? 'unknown'}, ${r.capturedAt ?? 'time unavailable'}; current slot ${r.currentSlot ?? 'unknown'}, ${r.currentAt ?? 'time unavailable'}. Evidence: captured ${r.evidenceIds.captured.join(', ') || 'none'}; current ${r.evidenceIds.current.join(', ') || 'none'}.`) : ['Nothing changed since capture'])] : []), '', '## Findings', '', ...view.findings.map(f => `### ${f.title}\n\n${f.text}\n\nBasis: ${f.basis}; status: ${f.status}. ${citations(f)}\n`), ...(view.ledger ? ['## Governance treasury ledger', '', ...view.ledger.summary.assets.map(a => `- Mint ${a.asset}: external outflows ${a.externalOutflowsDisplay}; internal moves ${a.internalMovesDisplay}; burns ${a.burnsDisplay}; net DAO balance change ${a.netChangeOfDaoControlledBalanceDisplay}. Decimals: ${a.decimals ?? 'unknown'}.`), '', 'Totals are reconciled governance execution flows within the captured boundary. Full ledger rows and their evidence IDs are available in packet.json.'] : []), '', '## Unknowns and next evidence', '', ...view.unknowns.map(u => `- ${u}`), '', '## Sources', '', ...refs.map(id => { const s = sources.find(s => s.id === id)!; return `[${number(id)}] ${s.title}; captured ${s.capturedAt}; slot ${s.slot ?? 'not applicable'}; evidence ID ${s.id}${s.hash ? `; response SHA-256 ${s.hash}` : ''}${s.url ? `; ${s.url}` : ''}`; }), '', 'Code references describe the local decoder/check implementation; they are not a full smart-contract source audit. No live language model or vector search is used in this memo.', ''].join('\n');
 }

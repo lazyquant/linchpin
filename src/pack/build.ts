@@ -1,3 +1,4 @@
+import { amountFact, type StateFact } from '../chain/state';
 import { PublicKey } from "@solana/web3.js";
 import type { RecordingRpc } from "../chain/rpc";
 import { readProgramAuthority } from "../chain/program-authority";
@@ -32,12 +33,15 @@ function expectedController(claim: RegistryClaim): string | null {
 }
 
 export async function buildPack(rpc: RecordingRpc, registry: PackRegistry, options: {
-  title?: string; docsCapture?: DocsCapture; burns?: Record<string, KnownBurn[]>; generatedAt?: string; ledger?: PackFile["ledger"];
+  title?: string; docsCapture?: DocsCapture; burns?: Record<string, KnownBurn[]>; generatedAt?: string; ledger?: PackFile["ledger"]; ledgerRpc?: RecordingRpc;
 } = {}): Promise<PackPacket> {
   const generatedAt = options.generatedAt ?? new Date().toISOString();
+  const stateFacts: StateFact[] = []; const mintDecimals = new Map<string, number>();
   const paths: ControllerPath[] = []; const statements: PackPacket["statements"] = []; const claims: PackClaim[] = [];
   const unknowns = registry.unknownsSeed.map((text, i) => ({ id: `seed-${i + 1}`, text, firstSeen: registry.retrievedAt }));
   const discovery = await listGovernances(rpc, new PublicKey(registry.governance.program), new PublicKey(registry.governance.realm));
+  stateFacts.push({ id: 'governance-list-size', label: 'Governance-list size', value: String(discovery.governances.length), raw: String(discovery.governances.length),
+    slot: rpc.evidence.filter(e => discovery.evidenceIds.includes(e.id)).at(-1)?.slot ?? null, evidenceIds: discovery.evidenceIds });
   const ctx = { program: new PublicKey(registry.governance.program), governances: discovery.governances.map(g => new PublicKey(g.address)) };
   const classifications = new Map<string, AuthorityClassification>();
   const derivedAddresses = deriveLiquidStakingAddresses();
@@ -117,13 +121,14 @@ export async function buildPack(rpc: RecordingRpc, registry: PackRegistry, optio
 
   for (const entry of registry.mints) {
     const read = await readMintState(rpc, new PublicKey(entry.address));
+    stateFacts.push(amountFact(`supply:${entry.address}`, `${entry.id} supply`, read.value?.supplyRaw ?? null, read.value?.decimals ?? null, read.slot, read.evidenceIds));
     if (!read.value) {
       paths.push({ subject: entry.address, subjectKind: "mint", role: entry.id, authorityType: "mint", authority: null, authorityKind: "unreadable",
         path: [entry.address], status: "unresolved", claims: entry.claims ?? [], evidenceIds: read.evidenceIds, slot: read.slot, note: "Chain: mint absent or unsupported layout." });
       for (const [i, claim] of (entry.claims ?? []).entries()) addClaim(`${entry.id}-claim-${i + 1}`, claim, "unresolved", true, "Mint state unavailable.");
       continue;
     }
-    const mint = read.value;
+    const mint = read.value; mintDecimals.set(entry.address, mint.decimals);
     for (const authorityType of ["mint", "freeze"] as const) {
       const authority = authorityType === "mint" ? mint.mintAuthority : mint.freezeAuthority;
       const row: ControllerPath = authority ? controller(entry, "mint", authorityType, await classify(authority)) : {
@@ -155,6 +160,7 @@ export async function buildPack(rpc: RecordingRpc, registry: PackRegistry, optio
     let row: ControllerPath;
     if (a.kind === "token-account") {
       const token = await readTokenAccount(rpc, new PublicKey(entry.address));
+      stateFacts.push(amountFact(`balance:${entry.address}`, `${entry.role ?? entry.id} balance`, token.value?.amountRaw ?? null, mintDecimals.get(a.mint) ?? null, token.slot, token.evidenceIds));
       try {
         row = controller(entry, "account", "owner", await classify(a.tokenOwner));
       } catch (error) {
@@ -174,6 +180,7 @@ export async function buildPack(rpc: RecordingRpc, registry: PackRegistry, optio
     const mnde = registry.mints.find(m => m.id === "mnde");
     if (mnde && (a.kind === "wallet" || a.kind === "wallet-no-account")) {
       const ata = await readTokenAccount(rpc, associatedTokenAccount(new PublicKey(entry.address), new PublicKey(mnde.address)));
+      stateFacts.push(amountFact(`balance:${ata.address}`, `${entry.role ?? entry.id} MNDE balance`, ata.value?.amountRaw ?? null, mintDecimals.get(mnde.address) ?? null, ata.slot, ata.evidenceIds));
       statements.push({ id: `${entry.id}-mnde-ata`, topic: "treasury", text: `${entry.id}: MNDE ATA ${ata.address}: ${ata.value ? `${ata.value.amountRaw} raw MNDE` : "absent or unsupported token layout; no token balance observed"}.`, status: "verified", evidenceIds: ata.evidenceIds, slot: ata.slot });
     }
   }
@@ -186,20 +193,22 @@ export async function buildPack(rpc: RecordingRpc, registry: PackRegistry, optio
   }
   let ledger = emptyTreasuryLedger("ledger disabled");
   if (options.ledger?.enabled) {
+    const ledgerRpc = options.ledgerRpc ?? rpc;
     try {
-      const proposals = await listRealmProposals(rpc, ctx.program, new PublicKey(registry.governance.realm));
-      ledger = await buildTreasuryLedger(rpc, ctx.program, options.ledger.programVersion ?? MARINADE_PROGRAM_VERSION, proposals, {
+      const proposals = await listRealmProposals(ledgerRpc, ctx.program, new PublicKey(registry.governance.realm));
+      ledger = await buildTreasuryLedger(ledgerRpc, ctx.program, options.ledger.programVersion ?? MARINADE_PROGRAM_VERSION, proposals, {
         maxProposals: options.ledger.maxProposals, nativeTreasuries: discovery.governances.map(g => g.nativeTreasury), governances: discovery.governances.map(g => g.address),
       });
     } catch (error) {
-      if (!rpc.opts.offline || !(error instanceof Error) || !error.message.startsWith("offline: fixture missing for ")) throw error;
+      if (!ledgerRpc.opts.offline || !(error instanceof Error) || !error.message.startsWith("offline: fixture missing for ")) throw error;
       ledger = emptyTreasuryLedger("ledger not recorded yet");
     }
   }
-  const slots = rpc.evidence.flatMap(e => e.slot == null ? [] : [e.slot]);
+  const evidence = options.ledgerRpc && options.ledgerRpc !== rpc ? [...rpc.evidence, ...options.ledgerRpc.evidence] : rpc.evidence;
+  const slots = evidence.flatMap(e => e.slot == null ? [] : [e.slot]);
   const coverage = { total: paths.length, verified: 0, claimed: 0, contradiction: 0, unresolved: 0 };
   for (const row of paths) if (row.status !== "outside-scope") coverage[row.status]++;
-  return { pack: registry.pack, title: options.title ?? registry.title, generatedAt, offline: rpc.opts.offline,
+  return { stateFacts, pack: registry.pack, title: options.title ?? registry.title, generatedAt, offline: rpc.opts.offline,
     asOfSlotRange: slots.length ? [Math.min(...slots), Math.max(...slots)] : [null, null], researchQuestion: registry.researchQuestion, controllerPaths: paths,
-    statements, claims, unknowns, coverage, ledger, evidenceCount: rpc.evidence.length };
+    statements, claims, unknowns, coverage, ledger, evidenceCount: evidence.length };
 }

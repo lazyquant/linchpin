@@ -1,6 +1,7 @@
 import type { View, Source, Finding, Path, CaseId } from './model';
+import type { StateDiff } from './diff';
 import type { Run } from './runner';
-type Scope = { id: CaseId; label: string; kind: string; question: string; ready: boolean };
+type Scope = { id: CaseId; label: string; kind: string; question: string; ready: boolean; hasLive: boolean };
 const $ = <T extends HTMLElement = HTMLElement>(selector: string) => document.querySelector<T>(selector)!;
 const esc = (v: unknown) => String(v ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]!));
 const short = (v: string, n = 7) => v.length > n * 2 ? `${v.slice(0, n)}…${v.slice(-4)}` : v;
@@ -8,25 +9,37 @@ const day = (v: string) => v ? v.slice(0, 10) : 'date unavailable';
 let scopes: Scope[] = [], active: CaseId = 'marinade', view: View | null = null, tab = 'findings', pathIndex = 0, filter = 'all', showAll = false;
 let run: Run | null = null, inspecting = 'activity', ledgerQuery = '', sourceQuery = '', sourceRequest = 0;
 const runs = new Map<CaseId, Run>();
-async function api<T>(url: string, init?: RequestInit): Promise<T> { const r = await fetch(url, init); if (!r.ok) throw new Error(`Request failed (${r.status}). Check the local server.`); return r.json(); }
+const selections = new Map<CaseId, 'captured' | 'live'>();
+const selectedSource = () => selections.get(active) ?? 'captured';
+let viewRequest = 0;
+async function api<T>(url: string, init?: RequestInit): Promise<T> { const r = await fetch(url, init); if (!r.ok) { const data = await r.json().catch(() => ({})); throw new Error(data.error ?? `Request failed (${r.status}). Check the local server.`); } return r.json(); }
 function notice(message: string) { $('#notice').textContent = message; $('#notice').classList.add('visible'); setTimeout(() => $('#notice').classList.remove('visible'), 4200); }
 function animate(el: HTMLElement) { el.style.animation = 'none'; void el.offsetWidth; el.style.animation = ''; }
-function exportUrl(file: string) { return `/api/cases/${active}/export/${file}`; }
+function exportUrl(file: string) { return `/api/cases/${active}/export/${file}?source=${selectedSource()}`; }
 function setTab(next: string) { tab = next; document.querySelectorAll<HTMLButtonElement>('[data-tab]').forEach(b => b.setAttribute('aria-selected', String(b.dataset.tab === next))); $('#content').setAttribute('aria-label', next === 'map' ? 'Control map' : next); render(); animate($('#content')); }
-async function load(id: CaseId) {
+async function load(id: CaseId, source = selections.get(id) ?? 'captured') {
+  selections.set(id, source); const request = ++viewRequest; ++sourceRequest;
   active = id; view = null; pathIndex = 0; filter = 'all', showAll = false; ledgerQuery = ''; run = runs.get(id) ?? null; inspecting = 'activity';
   history.replaceState(null, '', `/#${id}`); renderCases();
   const scope = scopes.find(c => c.id === id)!;
   $('#case-title').textContent = scope.label; $('#case-kind').textContent = scope.kind; $('#question').textContent = scope.question;
   $('#content').innerHTML = '<p class="empty">Opening the completed evidence…</p>'; $('#capture').textContent = ''; $('#evidence-count').textContent = ''; activity(); updateRun();
-  try { const data = await api<View>(`/api/cases/${id}`); if (active !== id) return; view = data; updateHeader(); render(); activity(); }
-  catch (error) { if (active === id) $('#content').innerHTML = `<p class="error">${esc((error as Error).message)}</p>`; }
+  try { const data = await api<View>(`/api/cases/${id}?source=${source}`); if (active !== id || request !== viewRequest) return; view = data; updateHeader(); render(); activity(); }
+  catch (error) { if (active === id && request === viewRequest) $('#content').innerHTML = `<p class="error">${esc((error as Error).message)}</p>`; }
 }
 function renderCases() { $('#cases').innerHTML = scopes.map(c => `<button class="case-button ${c.id === active ? 'selected' : ''}" data-case="${c.id}" ${c.id === active ? 'aria-current="true"' : ''}>${esc(c.label)}<small>${esc(c.kind)}</small></button>`).join(''); }
-function updateRun() { const busy = runs.get(active)?.status === 'running'; $('#run').textContent = busy ? 'Research running…' : 'Run research ↗'; ($('#run') as HTMLButtonElement).disabled = busy; }
+function updateRun() {
+  const current = runs.get(active), busy = current?.status === 'running';
+  $('#run').textContent = busy && current?.source !== 'live' ? 'Research running…' : 'Run research ↗';
+  $('#refresh').textContent = busy && current?.source === 'live' ? 'Refreshing…' : 'Refresh from chain ↗';
+  ($('#run') as HTMLButtonElement).disabled = busy; ($('#refresh') as HTMLButtonElement).disabled = busy;
+  $('#source-toggle').hidden = !scopes.find(c => c.id === active)?.hasLive;
+  document.querySelectorAll<HTMLButtonElement>('[data-view-source]').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.viewSource === selectedSource())));
+}
 function updateHeader() {
   if (!view) return;
-  $('#capture').textContent = `Captured ${day(view.capturedRange[0])}${day(view.capturedRange[0]) !== day(view.capturedRange[1]) ? ` – ${day(view.capturedRange[1])}` : ''} · offline replay`;
+  updateRun();
+  $('#capture').textContent = view.freshness.source === 'live' ? `Live read ${view.freshness.retrievedAt.at(-1)} · slot ${view.freshness.slotRange[1] ?? 'unknown'} · ${view.freshness.rpcHost} · ${view.freshness.liveReads} reads` : `Captured ${day(view.capturedRange[0])}${day(view.capturedRange[0]) !== day(view.capturedRange[1]) ? ` – ${day(view.capturedRange[1])}` : ''} · offline replay`;
   $('#evidence-count').textContent = `${view.evidenceCount.toLocaleString()} evidence records`;
   $('#generation').textContent = `Built ${new Date(view.generatedAt).toLocaleTimeString()} · draft`;
 }
@@ -37,11 +50,20 @@ function render() {
   else if (tab === 'timeline') renderTimeline();
   else renderMemo();
 }
+function diffPanel() {
+  if (view?.freshness.source !== 'live') return '';
+  const rows = view.stateDiff ?? [], changed = rows.filter(r => r.changed), unchanged = rows.filter(r => !r.changed);
+  const table = (facts: StateDiff[]) => `<div class="table-wrap"><table class="state-diff"><thead><tr><th>Fact</th><th>Captured · slot, time</th><th>Current · slot, time</th><th></th></tr></thead><tbody>${facts.map(r => `<tr><td>${esc(r.label)}</td><td>${esc(r.captured)}<small>Slot ${r.capturedSlot ?? 'unknown'}<br>${esc(r.capturedAt ?? 'Time unavailable')}</small></td><td>${esc(r.current)}<small>Slot ${r.currentSlot ?? 'unknown'}<br>${esc(r.currentAt ?? 'Time unavailable')}</small></td><td>${r.changed ? '<span class="changed-badge">changed</span>' : ''}</td></tr>`).join('')}</tbody></table></div>`;
+  return `<section class="diff-panel"><div class="section-intro"><div><h2>Current vs captured</h2><p>${changed.length} changed facts · exact values with capture provenance</p></div></div>${changed.length ? table(changed) : '<p class="map-note">Nothing changed since capture.</p>'}${unchanged.length ? `<details><summary>${unchanged.length} unchanged facts · show</summary>${table(unchanged)}</details>` : ''}</section>`;
+}
+function liveMemoHeader() {
+  return view ? `Live read at ${view.freshness.retrievedAt.at(-1)}, slot ${view.freshness.slotRange[1] ?? 'unknown'}, host ${view.freshness.rpcHost} · captured baseline ${(view.baselineRange ?? []).join(' — ')}` : '';
+}
 function renderFindings() {
   if (!view) return;
   const matched = view.findings.filter(f => filter === 'all' || filter === 'review' && ['unresolved', 'contradiction', 'needs review', 'conditional'].includes(f.status) || filter === 'supply' && /supply/i.test(`${f.title} ${f.text}`));
   const selected = filter === 'all' && !showAll && view.id === 'marinade' ? matched.slice(0, 6) : matched;
-  $('#content').innerHTML = `<div class="section-intro"><div><h2>Findings & evidence</h2><p>Each finding retains its basis and supporting records.</p></div><select class="filter" id="finding-filter" aria-label="Filter findings"><option value="all">All findings</option><option value="review">Needs review</option><option value="supply">Token supply</option></select></div>${selected.map((f, i) => `<article class="finding" id="finding-${esc(f.id)}"><span class="number">${String(i + 1).padStart(2, '0')}</span><div><h3>${esc(f.title)}</h3><p>${esc(f.text)}</p><div class="meta"><span class="status ${['unresolved', 'contradiction', 'needs review', 'conditional'].includes(f.status) ? 'review' : ''}">${esc(f.status)}</span><span>${esc(f.basis)}</span><button class="source-button" data-finding="${esc(f.id)}">Inspect sources · ${f.sourceIds.length} ↗</button></div></div></article>`).join('')}${!selected.length ? '<p class="empty">No findings match this filter.</p>' : ''}${matched.length > selected.length ? `<button id="show-all" class="secondary" style="margin-top:22px">Show all ${matched.length} findings ↓</button>` : ''}`;
+  $('#content').innerHTML = `${diffPanel()}<div class="section-intro"><div><h2>Findings & evidence</h2><p>Each finding retains its basis and supporting records.</p></div><select class="filter" id="finding-filter" aria-label="Filter findings"><option value="all">All findings</option><option value="review">Needs review</option><option value="supply">Token supply</option></select></div>${selected.map((f, i) => `<article class="finding" id="finding-${esc(f.id)}"><span class="number">${String(i + 1).padStart(2, '0')}</span><div><h3>${esc(f.title)}</h3><p>${esc(f.text)}</p><div class="meta"><span class="status ${['unresolved', 'contradiction', 'needs review', 'conditional'].includes(f.status) ? 'review' : ''}">${esc(f.status)}</span><span>${esc(f.basis)}</span><button class="source-button" data-finding="${esc(f.id)}">Inspect sources · ${f.sourceIds.length} ↗</button></div></div></article>`).join('')}${!selected.length ? '<p class="empty">No findings match this filter.</p>' : ''}${matched.length > selected.length ? `<button id="show-all" class="secondary" style="margin-top:22px">Show all ${matched.length} findings ↓</button>` : ''}`;
   $('#finding-filter') && (($('#finding-filter') as HTMLSelectElement).value = filter);
 }
 function mapPaths(): Path[] {
@@ -79,18 +101,18 @@ function renderTimeline() {
   if (view.ledger) {
     const ledger = view.ledger;
     const selected = ledger.entries.filter(e => !ledgerQuery || `${e.proposalName} ${e.instructionLabel} ${e.asset} ${e.source} ${e.destination} ${e.reconciliation}`.toLowerCase().includes(ledgerQuery.toLowerCase()));
-    $('#content').innerHTML = `<div class="section-intro"><div><h2>Governance treasury ledger</h2><p>${ledger.proposalsScanned} proposals scanned · ${ledger.entries.length} instruction rows · governance executions only</p></div></div><div class="table-wrap"><table><thead><tr><th>Asset mint</th><th>External outflows</th><th>Internal moves</th><th>Burns</th><th>Net DAO change</th></tr></thead><tbody>${ledger.summary.assets.map(a => `<tr><td title="${esc(a.asset)}">${esc(short(a.asset))}<small>${a.decimals ?? '?'} decimals</small></td><td>${esc(a.externalOutflowsDisplay)}</td><td>${esc(a.internalMovesDisplay)}</td><td>${esc(a.burnsDisplay)}</td><td>${esc(a.netChangeOfDaoControlledBalanceDisplay)}</td></tr>`).join('')}</tbody></table></div><p class="map-note">Totals include reconciled, observed token flows. Internal moves do not reduce combined DAO holdings. Unsupported instructions remain separate.</p><div class="ledger-controls"><input id="ledger-search" type="search" placeholder="Search proposal, mint, account or receipt status" aria-label="Search ledger" value="${esc(ledgerQuery)}"></div><p class="map-note">Showing ${Math.min(selected.length, 60)} of ${selected.length} matching rows. Full ledger included in <a href="${exportUrl('packet.json')}">packet.json</a>.</p><div id="ledger-rows">${selected.slice(0, 60).map(e => `<article class="ledger-row"><button class="source-button" data-ledger="${ledger.entries.indexOf(e)}">Sources ↗</button><h3>${esc(e.proposalName)}</h3><p>${esc(e.instructionLabel)} · ${esc(e.amountDisplay ?? 'no token amount')}<br>${esc(short(e.asset ?? 'no asset'))} · ${esc(e.sourceControl)} → ${esc(e.destinationControl)}<br>${esc(e.reconciliation)} · ${esc(e.basis)} · slot ${e.receiptSlot ?? e.slot ?? 'unknown'}</p></article>`).join('')}</div>`;
+    $('#content').innerHTML = `<div class="section-intro"><div><h2>Governance treasury ledger</h2><p>${ledger.proposalsScanned} proposals scanned · ${ledger.entries.length} instruction rows · governance executions only</p></div></div><div class="table-wrap"><table><thead><tr><th>Asset mint</th><th>External outflows</th><th>Internal moves</th><th>Burns</th><th>Net DAO change</th></tr></thead><tbody>${ledger.summary.assets.map(a => `<tr><td title="${esc(a.asset)}">${esc(short(a.asset))}<small>${a.decimals ?? '?'} decimals</small></td><td>${esc(a.externalOutflowsDisplay)}</td><td>${esc(a.internalMovesDisplay)}</td><td>${esc(a.burnsDisplay)}</td><td>${esc(a.netChangeOfDaoControlledBalanceDisplay)}</td></tr>`).join('')}</tbody></table></div><p class="map-note">${view.freshness.source === 'live' ? 'This ledger replays committed historical fixtures; its proposals and receipts were not refreshed. ' : ''}Totals include reconciled, observed token flows. Internal moves do not reduce combined DAO holdings. Unsupported instructions remain separate.</p><div class="ledger-controls"><input id="ledger-search" type="search" placeholder="Search proposal, mint, account or receipt status" aria-label="Search ledger" value="${esc(ledgerQuery)}"></div><p class="map-note">Showing ${Math.min(selected.length, 60)} of ${selected.length} matching rows. Full ledger included in <a href="${exportUrl('packet.json')}">packet.json</a>.</p><div id="ledger-rows">${selected.slice(0, 60).map(e => `<article class="ledger-row"><button class="source-button" data-ledger="${ledger.entries.indexOf(e)}">Sources ↗</button><h3>${esc(e.proposalName)}</h3><p>${esc(e.instructionLabel)} · ${esc(e.amountDisplay ?? 'no token amount')}<br>${esc(short(e.asset ?? 'no asset'))} · ${esc(e.sourceControl)} → ${esc(e.destinationControl)}<br>${esc(e.reconciliation)} · ${esc(e.basis)} · slot ${e.receiptSlot ?? e.slot ?? 'unknown'}</p></article>`).join('')}</div>`;
   } else $('#content').innerHTML = `<div class="section-intro"><div><h2>Proposal → execution</h2><p>Historical events from the proposal account and execution receipts.</p></div></div>${view.timeline.map((t, i) => `<article class="timeline-item"><h3>${esc(t.label)}</h3><time>${esc(t.time)}</time><p>${esc(t.detail)}</p><button class="source-button" data-timeline="${i}">Inspect evidence ↗</button></article>`).join('')}`;
 }
 function renderMemo() {
   if (!view) return;
   const refs = [...new Set(view.findings.flatMap(f => f.sourceIds))];
-  $('#content').innerHTML = `<div class="memo-toolbar"><span class="status">Draft · human review pending</span><a class="secondary" href="${exportUrl('memo.md')}">Export memo ↓</a><button id="print-memo" class="secondary">Print / save PDF</button></div><article class="memo"><h2>${esc(view.title)} — research memo</h2><p>${esc(view.question)}</p><p>Recorded evidence captured ${view.capturedRange.map(day).join(' — ')}. ${view.evidenceCount.toLocaleString()} evidence records. Generated ${esc(view.generatedAt)}.</p><h3>Findings</h3>${view.findings.map(f => `<section><h4>${esc(f.title)}</h4><p>${esc(f.text)} ${f.sourceIds.map(id => `<button class="citation" data-source="${esc(id)}" aria-label="Inspect citation ${refs.indexOf(id) + 1}">[${refs.indexOf(id) + 1}]</button>`).join('')}</p><p class="source-meta">${esc(f.basis)} · ${esc(f.status)}</p></section>`).join('')}<h3>Unknowns & next evidence</h3><ul>${view.unknowns.map(u => `<li>${esc(u)}</li>`).join('')}</ul><h3>Source manifest</h3><p class="sources">${refs.map((id, i) => `[${i + 1}] ${esc(id)}`).join('<br>')}</p><p>Deterministic synthesis from the local checks. No live language model is used. Code references describe the decoder implementation, not a full smart-contract source audit.</p></article>`;
+  $('#content').innerHTML = `<div class="memo-toolbar"><span class="status">Draft · human review pending</span><a class="secondary" href="${exportUrl('memo.md')}">Export memo ↓</a><button id="print-memo" class="secondary">Print / save PDF</button></div><article class="memo"><h2>${esc(view.title)} — research memo</h2><p>${esc(view.question)}</p><p>${view.freshness.source === 'live' ? esc(liveMemoHeader()) : `Recorded evidence captured ${view.capturedRange.map(day).join(' — ')}. ${view.evidenceCount.toLocaleString()} evidence records. Generated ${esc(view.generatedAt)}.`}</p>${view.freshness.source === 'live' ? `<h3>What changed since capture</h3>${view.changedCount ? `<ul>${view.stateDiff!.filter(r => r.changed).map(r => `<li>${esc(r.label)}: ${esc(r.captured)} → ${esc(r.current)}</li>`).join('')}</ul>` : '<p>Nothing changed since capture</p>'}` : ''}<h3>Findings</h3>${view.findings.map(f => `<section><h4>${esc(f.title)}</h4><p>${esc(f.text)} ${f.sourceIds.map(id => `<button class="citation" data-source="${esc(id)}" aria-label="Inspect citation ${refs.indexOf(id) + 1}">[${refs.indexOf(id) + 1}]</button>`).join('')}</p><p class="source-meta">${esc(f.basis)} · ${esc(f.status)}</p></section>`).join('')}<h3>Unknowns & next evidence</h3><ul>${view.unknowns.map(u => `<li>${esc(u)}</li>`).join('')}</ul><h3>Source manifest</h3><p class="sources">${refs.map((id, i) => `[${i + 1}] ${esc(id)}`).join('<br>')}</p><p>Deterministic synthesis from the local checks. No live language model is used. Code references describe the decoder implementation, not a full smart-contract source audit.</p></article>`;
 }
 function activity() {
   inspecting = 'activity'; $('#inspector-title').textContent = 'Research activity';
   const current = runs.get(active);
-  $('#inspector-body').innerHTML = current ? `<p class="activity-note">${current.status === 'running' ? 'Rebuilding the case from recorded evidence.' : current.status === 'completed' ? 'Research complete. Findings and the memo use this run’s results.' : esc(current.error)}<br><strong>Offline · deterministic pipeline</strong></p><ol class="activity-list">${current.events.map(e => `<li><time>${esc(e.at.slice(11, 23))} UTC${e.evidenceCount != null ? ` · ${e.evidenceCount} records` : ''}</time>${esc(e.message)}</li>`).join('')}</ol>` : `<p class="activity-note">A completed example is open.<br>Run research to rebuild its findings and memo from the recorded inputs.</p><ol class="activity-list"><li>Read documented claims</li><li>Resolve controllers & decode instructions</li><li>Check recorded state & execution</li><li>Assemble cited findings and draft memo</li></ol><p class="activity-note">Data freshness is shown above. Replaying fixtures does not refresh the chain snapshot.</p>`;
+  $('#inspector-body').innerHTML = current ? `<p class="activity-note">${current.status === 'running' ? current.source === 'live' ? 'Reading current state through the configured endpoint.' : 'Rebuilding the case from recorded evidence.' : current.status === 'completed' ? 'Research complete. Findings and the memo use this run’s results.' : esc(current.error)}<br><strong>${current.source === 'live' ? `Live · ${esc(current.rpcHost ?? 'host unavailable')} · ${current.events.at(-1)?.liveReads ?? current.events.filter(e => e.liveReads != null).at(-1)?.liveReads ?? 0} reads` : 'Offline · deterministic pipeline'}</strong></p><ol class="activity-list">${current.events.map(e => `<li><time>${esc(e.at.slice(11, 23))} UTC${e.evidenceCount != null ? ` · ${e.evidenceCount} records · ${e.liveReads ?? 0} live reads` : ''}</time>${esc(e.message)}</li>`).join('')}</ol>` : `<p class="activity-note">A completed example is open.<br>Run research to rebuild its findings and memo from the recorded inputs.</p><ol class="activity-list"><li>Read documented claims</li><li>Resolve controllers & decode instructions</li><li>Check recorded state & execution</li><li>Assemble cited findings and draft memo</li></ol><p class="activity-note">Data freshness is shown above. Replaying fixtures does not refresh the chain snapshot.</p>`;
   animate($('#inspector-body'));
 }
 async function inspectSources(title: string, ids: string[], code: string[] = [], context = '') {
@@ -99,7 +121,7 @@ async function inspectSources(title: string, ids: string[], code: string[] = [],
   $('#inspector-body').innerHTML = `<p class="activity-note">${esc(title)}</p><p class="activity-note">Opening supporting records…</p>`;
   const query = ids.slice(0, 80).map(id => `id=${encodeURIComponent(id)}`).join('&');
   try {
-    const data = ids.length ? await api<{items: Source[]; total: number; more: boolean}>(`/api/cases/${caseId}/sources?${query}`) : {items: [], total: 0, more: false};
+    const data = ids.length ? await api<{items: Source[]; total: number; more: boolean}>(`/api/cases/${caseId}/sources?source=${selectedSource()}&${query}`) : {items: [], total: 0, more: false};
     if (request !== sourceRequest || caseId !== active || inspecting !== 'sources') return;
     if (ids.length > 80) { data.more = true; data.total = ids.length; }
     $('#inspector-body').innerHTML = `<p class="activity-note"><strong>${esc(title)}</strong>${context ? `<br>${esc(context)}` : ''}</p>${code.length ? `<div class="inspector-label">CODE / LOCAL RULES</div>${code.map(c => `<code class="code-ref">${esc(c)}</code>`).join('')}<p class="activity-note">These implement the check; they are not audited protocol source.</p>` : ''}${data.items.length ? data.items.map(sourceHtml).join('') : '<p class="activity-note">No direct supporting record is attached to this item. Treat it as unresolved or a research assumption.</p>'}${data.more ? `<p class="activity-note">Showing ${data.items.length} of ${data.total} records. Export the full evidence log below.</p>` : ''}<p class="inspector-label">REPRODUCIBLE EXPORTS</p><a class="source-button" href="${exportUrl('evidence.jsonl')}">Evidence log ↓</a> · <a class="source-button" href="${exportUrl('packet.json')}">Full packet ↓</a>`;
@@ -111,19 +133,21 @@ async function browseSources(q = '') {
   $('#inspector').classList.add('open'); inspecting = 'browse'; const request = ++sourceRequest, caseId = active;
   $('#inspector-title').textContent = 'Source library';
   if (!$('#source-search')) $('#inspector-body').innerHTML = '<input id="source-search" class="source-search" type="search" aria-label="Search evidence" placeholder="Search method, account, date or slot"><div id="source-results"></div>';
-  try { const data = await api<{items: Source[]; total: number; more: boolean}>(`/api/cases/${caseId}/sources?q=${encodeURIComponent(q)}`); if (request !== sourceRequest || caseId !== active || inspecting !== 'browse') return; $('#source-results').innerHTML = `<p class="activity-note">${data.total} matching sources${data.more ? ' · first 150 shown' : ''}</p>${data.items.map(sourceHtml).join('')}`; } catch (e) { notice((e as Error).message); }
+  try { const data = await api<{items: Source[]; total: number; more: boolean}>(`/api/cases/${caseId}/sources?source=${selectedSource()}&q=${encodeURIComponent(q)}`); if (request !== sourceRequest || caseId !== active || inspecting !== 'browse') return; $('#source-results').innerHTML = `<p class="activity-note">${data.total} matching sources${data.more ? ' · first 150 shown' : ''}</p>${data.items.map(sourceHtml).join('')}`; } catch (e) { notice((e as Error).message); }
 }
-async function startRun() {
-  const caseId = active; $('#inspector').classList.add('open'); inspecting = 'activity';
+async function startRun(source: 'captured' | 'live' = 'captured') {
+  const caseId = active; if (source === 'live') await load(caseId, 'captured'); $('#inspector').classList.add('open'); inspecting = 'activity';
   try {
-    const current = await api<Run>(`/api/cases/${caseId}/run`, {method: 'POST'}); runs.set(caseId, current); run = current; updateRun(); activity();
+    const current = await api<Run>(`/api/cases/${caseId}/${source === 'live' ? 'refresh' : 'run'}`, {method: 'POST'}); runs.set(caseId, current); run = current; updateRun(); activity();
     const poll = async () => {
       try {
         const next = await api<Run>(`/api/runs/${current.id}`); runs.set(caseId, next);
         if (active === caseId) { run = next; updateRun(); if (inspecting === 'activity') activity(); }
         if (next.status === 'running') { setTimeout(poll, 300); return; }
-        if (next.status === 'completed') { const result = await api<View>(`/api/cases/${caseId}`); if (active === caseId) { view = result; updateHeader(); render(); notice('Research complete. The findings and memo have been rebuilt.'); } }
-        else if (active === caseId) notice(next.error ?? 'Research failed.');
+        if (next.status === 'completed') {
+          if (next.source === 'live') scopes.find(c => c.id === caseId)!.hasLive = true;
+          if (active === caseId) { await load(caseId, next.source ?? 'captured'); notice(next.source === 'live' ? 'Live evidence captured. Compare current state with the captured example.' : 'Research complete. The captured example is open.'); }
+        } else if (active === caseId) { await load(caseId, 'captured'); activity(); notice(next.error ?? 'Research failed.'); }
       } catch (e) { current.status = 'failed'; current.error = 'Connection to the local research server was interrupted.'; runs.set(caseId, current); updateRun(); if (active === caseId) { activity(); notice((e as Error).message); } }
     }; void poll();
   } catch (e) { notice((e as Error).message); }
@@ -133,7 +157,9 @@ document.addEventListener('click', event => {
   if (target.dataset.case) void load(target.dataset.case as CaseId);
   else if (target.dataset.tab) setTab(target.dataset.tab);
   else if (target.id === 'run') void startRun();
-  else if (target.id === 'open-example') { setTab('findings'); activity(); notice('Completed example opened. Run research to rebuild it.'); }
+  else if (target.id === 'refresh') void startRun('live');
+  else if (target.dataset.viewSource) void load(active, target.dataset.viewSource as 'captured' | 'live');
+  else if (target.id === 'open-example') { setTab('findings'); void load(active, 'captured'); }
   else if (target.id === 'activity-button') { $('#inspector').classList.add('open'); activity(); }
   else if (target.id === 'close-inspector') $('#inspector').classList.remove('open');
   else if (target.id === 'show-all') { showAll = true; renderFindings(); }
