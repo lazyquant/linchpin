@@ -100,7 +100,7 @@ test("synthetic holder reader reconciles supply, classifies roles, splits float 
   expect(result.msol.differenceFromSupplyRaw.value).toBe("0"); expect(result.asOfSlotRange).toEqual([100, 103]); expect(() => JSON.stringify(result)).not.toThrow();
 });
 
-test.skipIf(!hasFixture("getProgramAccounts", { programId: TOKEN_PROGRAM.toBase58(), filters: [{ dataSize: 165 }, { memcmp: { offset: 0, bytes: mnde } }], dataSlice: { offset: 32, length: 40 } }))("mainnet holder sums and provenance (skipped until Claude records G4 keys)", async () => {
+test.skipIf(!hasFixture("getProgramAccounts", { programId: TOKEN_PROGRAM.toBase58(), filters: [{ dataSize: 165 }, { memcmp: { offset: 0, bytes: mnde } }], dataSlice: { offset: 32, length: 40 } }))("mainnet holder sums and provenance (skipped until the mainnet fixtures are recorded)", async () => {
   const rpc = new RecordingRpc(runOptions({ record: false, offline: true }), "marinade-contracts");
   const layer = await readContractsLayer(rpc, registry, contracts), participation = await readParticipation(rpc, registry, contracts, layer), authorities = await readAuthorities(rpc, registry, layer);
   const result = await readHolders(rpc, registry, layer, participation, authorities);

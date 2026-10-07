@@ -184,7 +184,7 @@ describe("contracts layer with synthetic RPC responses", () => {
 
 const fixtureDir = new URL("../fixtures/marinade-contracts/", import.meta.url);
 const hasFixtures = existsSync(fixtureDir) && readdirSync(fixtureDir).some(f => f.endsWith(".json"));
-if (!hasFixtures) console.warn("SKIP contracts-marinade recorded checks: fixtures/marinade-contracts/ is empty or absent; Claude must run bun run scripts/record-contracts.ts --record.");
+if (!hasFixtures) console.warn("SKIP contracts-marinade recorded checks: fixtures/marinade-contracts/ is empty or absent; run bun run scripts/record-contracts.ts --record.");
 
 describe("recorded Marinade contracts (offline)", () => {
   let layer: Layer;

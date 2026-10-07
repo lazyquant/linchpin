@@ -2,7 +2,7 @@
 
 The graph is a **rebuildable index** of committed evidence, not a new source of truth. Packets, recorded RPC fixtures, receipt reconciliation and evidence identifiers remain authoritative. Loading does not fetch Solana state or refresh the captured evidence. The application can call `runCannedLocal(records, id)` when Neo4j is unavailable and render the same columns as `runCannedNeo4j(driver, id, { database })`.
 
-The local workspace now provides these queries in its **Graph** tab, with an optional Aura connection, a load button, and automatic local fallback. See [the browser Graph guide](local-browser-demo.md#graph) for configuration, source badges, memo provenance, and API routes.
+The research workspace provides these queries in its **Graph** tab, with an optional Aura connection, a load button, and automatic local fallback. See [the workspace Graph guide](workspace.md#graph) for configuration, source badges, memo provenance, and API routes.
 
 ## Create an Aura database
 

@@ -168,7 +168,7 @@ describe("instruction inventory and inferred control", () => {
     expect(control.unmatched[0]).toMatchObject({ argPath: "value", reason: "ambiguous state field", candidates: ["a.value", "b.value"] });
     expect(control.unmatched[1].argPath).toBe("absent");
   });
-  test("all nine spike IDLs can be inventoried as test inputs", () => {
+  test("all nine reference IDLs can be inventoried as test inputs", () => {
     const files = readdirSync(new URL("./vectors/idl/", import.meta.url)).filter(f => f.endsWith(".json"));
     expect(files).toHaveLength(9);
     for (const file of files) {

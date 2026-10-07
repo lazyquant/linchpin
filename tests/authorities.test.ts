@@ -137,7 +137,7 @@ describe("transaction observations", () => {
   });
 });
 const recorded = hasFixture("getSignaturesForAddress", { pubkey: MSOL_UPGRADE_AUTHORITY, limit: 50 });
-test.skipIf(!recorded)("mainnet controller derivations and evidence (skipped until Claude records G2b keys)", async () => {
+test.skipIf(!recorded)("mainnet controller derivations and evidence (skipped until the mainnet fixtures are recorded)", async () => {
   const rpc = new RecordingRpc(runOptions({ record: false, offline: true }), "marinade-contracts");
   const result = await readAuthorities(rpc, registry, await readContractsLayer(rpc, registry, contracts));
   const ids = new Set(result.evidence.map(e => e.id));

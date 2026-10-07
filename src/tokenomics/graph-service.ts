@@ -78,7 +78,7 @@ export class TokenomicsGraphService {
       const loading = loadTokenomicsNeo4j(bounded, this.graph, this.config); work = loading;
       try {
         const result = await deadline(loading, ms);
-        this.failure = result.regression === 'changed' ? `Demo query regression changed: ${result.changedQueries.join(', ')}` : null;
+        this.failure = result.regression === 'changed' ? `Governance-case query regression changed: ${result.changedQueries.join(', ')}` : null;
         return { ...result, host: redactedNeo4jHost(this.config.uri) };
       } finally { expired = true; }
     } catch (error) { this.failure = this.scrub(error); throw new GraphError(this.failure, error instanceof Timeout ? 504 : 502); }

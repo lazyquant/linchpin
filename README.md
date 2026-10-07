@@ -1,128 +1,133 @@
 # Linchpin
 
-## What Linchpin is
+**The dependency engine for protocol economics.**
 
-Linchpin is the dependency engine for protocol economics and tokenomics. Its first application is Solana governance review: a TypeScript CLI that turns a Solana Realms proposal into a reproducible review packet, keeping claims, decoded instructions, conditional simulations and observed execution separate. The demo produces JSON and static HTML from committed evidence fixtures, with a control path from the treasury token account to governance. It needs no server, database or LLM.
+Linchpin reads a protocol's programs, live state and transactions straight from Solana mainnet and links them into one evidence graph. Every value carries its basis: what the protocol *claims*, what the code *allows*, and what *happened* on chain. Funds, DAOs and protocol teams use it to see who controls what, what a proposal moves, and which claims hold, before they allocate, vote or ship a change.
 
-## What the demo shows
+> Follow the money. Find the control. Verify the claim.
 
-The demo reviews two real Marinade MIP-14 proposals:
+## Use cases
 
-- **Execution proposal:** “MIP-14: Burn 30% of MNDE Total Supply.” The payload decodes to a burn of **300,000,000 MNDE** from the governance's treasury token account. The receipt records a source-account change of exactly **−300,000,000 MNDE** and matches the decoded effect.
-- **Opinion proposal:** “MIP-14: Burn 0–50% of MNDE Total Supply.” Its five options contain no instructions. The packet says **“no executable payload: signaling only”** and treats execution eligibility as not applicable.
+### Governance review
 
-The execution proposal's **30% is a claim**. The decoded 300,000,000 MNDE matches that percentage only under the **forum claim of 1,000,000,000 MNDE pre-burn supply**; on-chain pre-execution supply was not captured. Other forum figures remain captured claims for human review.
+Review a Realms proposal before the vote. Linchpin decodes the payload, previews it as a conditional simulation, reads the execution receipt when there is one, and traces the control path from the touched account to the realm. Claimed, decoded, simulated and observed stay side by side; nothing is collapsed into a verdict.
 
-The recorded historical-payload preview fails with insufficient funds against the state at its capture slot. A separately labelled fixture that burns **1 MNDE** succeeds. Both results are conditional previews. The successful historical receipt remains separate from those previews. The unrelated assertion-guard program in the receipt is kept visible in the reconciliation notes.
+**BonkDAO BIP-76.** From the proposal's instructions alone, with receipts, balances and the vote result withheld, Linchpin identifies a transfer of 4,426,104,450,305.966 BONK from the treasury token account to an account created by the same proposal. The receipt then shows 99.9999 % of the source account moved, 49 seconds after voting ended, on a vote that cleared its 1 % threshold by 0.0028 percentage points.
 
-BonkDAO BIP-76 “Sowellian BonkDAO” adds a treasury-transfer case. Its description matched the payload: send 4,426,104,450,305.966 BONK to the stated recipient's token account. The packet flags the effectively full-treasury transfer (33 raw units left) to a destination that held 0 before execution, a hold-up of 0 with the transfer executed 49 seconds after voting ended, and a quorum cleared by about 0.0028 percentage points. The proposal entered execution after 38 seconds. Outlet reports remain attributed claims; voter count and concentration are not analysed. This is a historical review, with no claim that Linchpin detected or would have detected it before execution.
+**Marinade MIP-14.** The proposal claimed a 30 % burn. The payload decodes to a burn of exactly 300,000,000 MNDE from the DAO's treasury token account, and the receipt shows the account falling from 438,930,393 to 138,930,393 MNDE. The 30 % holds only under the forum's claimed one-billion pre-burn supply, and Linchpin labels it as a claim.
 
-## Run instructions
+### Protocol and token research
 
-The build plan uses Bun 1.4.2. For initial setup, with package access available:
+Answer an economic question with evidence: *is there an enforceable path from the protocol's activity to token holders, what offsets it, and who can change it?*
+
+**Marinade and MNDE: partly.** Program code routes the liquid-unstake treasury cut (50 % of the LP fee) and the 0.2 % stake-account withdrawal fee into the treasury; the reward fee is 0 %. Moving treasury funds, buying MNDE and funding the distributor are operated by accounts: the buyback wallet received 10.9 M MNDE since December 2025, and all four distributor claims observed so far went to current MNDE lockers. A five-member council sets the fees through a council-only governance; MNDE holders vote on the DAO treasury. The claimed 10 % revenue allocation to buybacks (MIP-22) is not visible on chain and stays unresolved.
+
+### Monitoring and due diligence
+
+The same graph answers who can change fees, pause a program or upgrade it, which accounts a proposal shares with a protocol's tokenomics, and where a DAO's tokens went.
+
+## How it works
+
+1. **Read.** Programs' published Anchor interfaces (IDLs), account state and transactions through any Solana RPC endpoint. Every read is recorded with its slot, retrieval time and response hash.
+2. **Decode.** Instructions, authorities, fee parameters, governance configuration, votes and receipts, with an IDL-driven Borsh decoder and the SPL Governance SDK.
+3. **Link.** One evidence graph with typed relationships, in Neo4j or in memory. Every value is labelled `declared`, `decoded`, `observed`, `derived`, `claimed`, `reported` or `inferred`.
+4. **Answer.** Review packets, research bundles, a local research workspace and canned graph queries. Every number opens its evidence records.
+
+Recorded evidence replays offline and deterministically; live refresh reads current state through your endpoint and shows what changed.
+
+## Quick start
+
+Requires [Bun](https://bun.sh) 1.4 or later.
 
 ```sh
 bun install
-```
-
-With dependencies already installed, run the demo offline from the repository root:
-
-```sh
-bun run demo
-open out/mip-14/packet.html out/mip-14-opinion/packet.html out/bonk-bip76/packet.html
-```
-
-All three cases replay from committed fixtures (`fixtures/<case>/`), recorded from public mainnet RPC on 2026-10-05; `--record` refreshes them when network is available.
-
-`bun run demo` uses `--offline` and replays the committed fixtures. To demonstrate that it does not depend on a reachable RPC endpoint:
-
-```sh
-LINCHPIN_RPC_URL=http://127.0.0.1:1 bun run demo
-```
-
-The output reports `historical-payload=fail fixture=ok` and `observed: all receipts match decoded effects` for MIP-14. The opinion control reports `not executed` and `no simulation`. Each case writes `packet.json`, `packet.html`, `graph.json` and `evidence.jsonl` under `out/<case-id>/`.
-
-Review one recorded case or run the checks:
-
-```sh
-bun run linchpin review cases/mip-14.json --offline
 bun test
-bun run typecheck
-```
-
-The timed walkthrough is in [docs/demo-script.md](docs/demo-script.md).
-
-## Local research workspace
-
-```sh
 bun run web
 ```
 
-Open http://127.0.0.1:8875 for four completed examples with findings, a control map, ledger / timeline, sources, a draft memo, and a **Graph** tab for four cross-case questions. Graph uses Neo4j Aura when configured and reachable, otherwise the captured in-memory graph, and always labels its source. **Run research** replays the committed evidence offline. **Refresh from chain ↗** reads the configured RPC, saves isolated live evidence under `out/web/<case>/live/`, and compares current facts with the captured baseline. **Captured | Live** switches the workspace and exports. Refreshes have a 120-second cap; failures keep the captured example selected. Committed fixtures stay untouched, and Marinade's historical proposal ledger remains an offline replay.
+Open http://127.0.0.1:8875. The workspace starts on recorded evidence and works offline. The [workspace guide](docs/workspace.md) describes every view.
 
-To use a private endpoint, put `LINCHPIN_RPC_URL` in `~/.config/linchpin.env` and run `bun --env-file="$HOME/.config/linchpin.env" run web`. Without it, refresh uses the public mainnet endpoint. The workspace shows only the redacted host. See [the local browser demo guide](docs/local-browser-demo.md) for endpoint settings, read scope and live exports.
-
-## How to read a packet
-
-Start with the four evidence columns:
-
-| Basis | What it tells you |
-| --- | --- |
-| **Claimed** | Proposal and forum statements, with their source and retrieval time. A statement's presence does not verify it. |
-| **Decoded** | Supported instruction bytes and their effects, including treasury movement and supply change. Unsupported instructions remain `unknown`. |
-| **Simulated** | Conditional previews, labelled by payload, capture slot, assumptions, logs and success or failure. The 1 MNDE fixture is an altered payload. |
-| **Observed** | The historical execution receipt and reconciliation with the decoded effect, including token balance changes and other programs in the transaction. |
-
-Follow the **control path**: treasury token account → native treasury PDA → governance → Marinade DAO. This identifies the account-control relationships behind the burn authority.
-
-Read the checks and the five dimensions separately:
-
-| Dimension | MIP-14 execution packet |
-| --- | --- |
-| `description_matches_effects` | `covered (see assumptions)`; the percentage depends on the unverified supply claim, and free-text claims remain unchecked. |
-| `execution_eligible` | `already executed (historical)` |
-| `simulation_result` | Historical payload failed; the labelled 1 MNDE fixture succeeded. |
-| `execution_status` | `observed: all receipts match decoded effects` |
-| `policy_result` | `no policy configured: human review required` |
-
-The packet includes a `bindingSha256` for the payload. A changed payload changes the binding and invalidates a review decision tied to the earlier binding. The generated review decision is `not-recorded`; a human records approve, reject or needs-work against the binding.
-
-## What it does not claim
-
-- A successful simulation does not prove authorization, governance execution eligibility or safety. Signature verification is disabled, the recent blockhash is replaced, and the preview is not submittable.
-- State at a preview's capture slot is not the historical pre-execution state. Offline replay uses recorded state; it does not refresh today's balances.
-- The forum's pre-burn supply and other forum figures are claims. The packet does not establish on-chain pre-burn supply or machine-check every prose statement.
-- There is no policy engine or automatic approval. Unsupported programs and instructions need review; this slice does not decode arbitrary instructions or analyze program upgrades.
-- The demo does not yet map downstream dependencies or evaluate voter-weight anomalies. Its checks are separate review dimensions, not a single safety verdict.
-
-## Protocol Pack (Slice A)
-
-The Marinade Protocol Pack answers who can change each program, mint and treasury in its declared registry. Controller paths trace program upgrade authorities, mint and freeze authorities, and treasury token owners through verified governance relationships or matching program-derived addresses. Unidentified controllers stay unresolved. The supply statement separates observed MNDE supply and mint authority from the claimed cap, incorporates the recorded historical burn, and shows the remaining unexplained difference.
-
-Slice A covers control and supply. It does not trace value flows or produce a flow ledger yet; fee and value-route statements remain attributed claims. A verified PDA identifies its deriving program, but does not establish that program's upgrade controller or operator identity.
-
-Run from the repository root with dependencies already installed:
+Live reads and Neo4j are optional. Configure them in an environment file outside the repository, for example `~/.config/linchpin.env` with mode 600:
 
 ```sh
-bun run linchpin pack packs/marinade/pack.json --offline
+LINCHPIN_RPC_URL=https://your-solana-rpc-endpoint
+NEO4J_URI=neo4j+s://your-instance.databases.neo4j.io
+NEO4J_USERNAME=neo4j
+NEO4J_PASSWORD=your-password
 ```
 
-The command replays `fixtures/marinade-pack` and writes `packet.json`, `packet.html` and `evidence.jsonl` under `out/pack-marinade/`. Slots and evidence identify the captured state; offline replay does not refresh it. Treasury token owners whose account reads have not been captured remain `unresolved` with the note “owner not yet captured”.
+```sh
+bun run web:live
+```
 
-| Status | Meaning |
+Credentials never reach the browser, the evidence or the output files; only the redacted host is shown.
+
+### Command line
+
+```sh
+bun run linchpin review cases/mip-14.json --offline         # one governance review packet
+bun run cases                                               # every recorded governance case
+bun run linchpin pack packs/marinade/pack.json --offline    # Marinade control and supply map, DAO treasury ledger
+bun run linchpin doctor                                     # check the configured RPC endpoint
+```
+
+Each review writes `packet.json`, `packet.html`, `graph.json` and `evidence.jsonl` under `out/<case>/`. `--record` fills missing evidence from the configured endpoint and `--record --refresh` re-reads it; `--offline` uses recorded evidence only.
+
+Research layers and graph loaders:
+
+```sh
+bun run scripts/record-contracts.ts --offline                                       # contract, participation, authority, holder and flow layers
+bun --env-file="$HOME/.config/linchpin.env" run scripts/load-neo4j.ts               # governance cases into Neo4j
+bun --env-file="$HOME/.config/linchpin.env" run scripts/load-tokenomics-neo4j.ts    # tokenomics graph into Neo4j
+```
+
+Both loaders accept `--dry-run`.
+
+## Reading the evidence
+
+| Basis | Meaning |
 | --- | --- |
-| `verified` | The stated relationship or fact is supported by captured chain state or an exact PDA derivation. Read the note for its limits. |
-| `claimed` | An attributed source statement that has not been established by the checks in this slice. |
-| `contradiction` | Observed state conflicts with a checked claim; the packet preserves the claim and the chain result. |
-| `unresolved` | Evidence is missing or insufficient to establish the controller or check the claim. |
-| `outside-scope` | The question is outside the declared analysis boundary. Slice A leaves value-route claims as `claimed` and does not verify flows. |
+| Declared | From a program's on-chain interface definition: structure, roles, accounts |
+| Decoded | From instruction bytes or account state decoded at a stated slot |
+| Simulated | A conditional preview with its payload, capture slot and assumptions; never proof of authorization or safety |
+| Observed | From transactions and receipts: balances moved, instructions executed |
+| Derived | Computed from decoded or observed values, with the method stated |
+| Claimed | A statement from documentation, a forum or a proposal, kept with its source and retrieval time |
+| Reported | A figure from a third party, attributed |
+| Inferred | A labelled conclusion that the evidence does not establish directly |
 
-The coverage line counts controller paths in the declared boundary, separately from statements and claims.
+Statuses stay explicit: `verified`, `claimed`, `contradiction`, `unresolved` and `outside-scope`. Unknown programs and unsupported instructions stay visible as unknown; missing evidence stays missing.
+
+## Repository layout
+
+| Path | Contents |
+| --- | --- |
+| `src/chain/` | Recording RPC client, evidence records, redaction, transaction-version handling |
+| `src/governance/` | Realms reader, instruction decoding, effects, conditional simulation, receipts |
+| `src/contracts/` | IDL reading and Borsh decoding, instruction inventory, authorities, participation, flows, holders, governance configuration |
+| `src/tokenomics/` | Research sections, the tokenomics API contract, evidence lookup, bundle cache |
+| `src/graph/` | Graph builders and Neo4j loaders with regression checks |
+| `src/web/` | Research workspace server and interface |
+| `cases/`, `packs/` | Governance case specifications; protocol registries and captured sources |
+| `fixtures/` | Recorded mainnet evidence used for replay and tests |
+| `tests/` | Unit, replay and integration tests |
+| `docs/` | [Workspace](docs/workspace.md), [tokenomics API](docs/tokenomics-api.md), [contract reading](docs/contracts.md), [Neo4j: governance cases](docs/neo4j.md), [Neo4j: tokenomics graph](docs/neo4j-tokenomics.md) |
+
+## Scope
+
+Linchpin checks economics and control against chain state. It is not a code audit and does not search programs for bugs. A successful simulation is a conditional preview: signature verification is disabled and the blockhash replaced, so it proves neither authorization nor safety. Recorded state at a capture slot is not historical pre-execution state. Prices, ratings and investment recommendations are out of scope.
 
 ## Roadmap
 
-Planned work after this demo includes MIP-21, broader destination history, voter concentration checks and the Python core. The next demonstration direction is the MIP-21 treasury exchange, a dependency map to mSOL and protocol fees, and a pilot with one DAO. These are roadmap items, outside the current demo.
+- **Alerts on control changes:** notify when fees, authorities, upgrade rights or governance configuration change, or when a proposal that touches them is created.
+- **Pre-vote exposure:** dated pre-execution balances and policies, so a review states how much of a treasury a payload moves before the vote.
+- **Live tokenomics refresh:** the research view refreshed from chain like the governance cases, with a diff against the last capture.
+- **More Solana protocols:** registries and fee-route maps for further Anchor and Realms protocols; the readers for interfaces, authorities and governance are protocol-independent.
+- **Deeper governance analysis:** treasury exchanges, voter concentration and delegation, veto paths.
+- **Hosted workspace and API** for funds, DAOs and protocol teams.
+- **Claim extraction:** documentation and forum claims captured with an agent layer, always checked against chain evidence.
+- **EVM readers** on the same evidence model.
 
-## Licence
+## License
 
 Apache-2.0. See [LICENSE](LICENSE).

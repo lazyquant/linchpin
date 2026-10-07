@@ -1,10 +1,17 @@
 {
   "name": "linchpin",
+  "version": "0.4.0",
+  "description": "The dependency engine for protocol economics: governance review and protocol research from Solana mainnet evidence.",
+  "license": "Apache-2.0",
   "type": "module",
   "private": true,
-  "devDependencies": {
-    "@types/bun": "^1.4.2",
-    "@types/node": "22"
+  "scripts": {
+    "linchpin": "bun run src/cli.ts",
+    "cases": "bun run src/cli.ts cases --offline",
+    "test": "bun test",
+    "typecheck": "tsc --noEmit",
+    "web": "bun run src/web/server.ts",
+    "web:live": "LINCHPIN_RPC_MIN_INTERVAL_MS=50 bun --env-file=$HOME/.config/linchpin.env run src/web/server.ts"
   },
   "dependencies": {
     "@solana/spl-governance": "0.3.28",
@@ -13,13 +20,8 @@
     "bs58": "6.0.0",
     "neo4j-driver": "^6.2.0"
   },
-  "version": "0.1.0",
-  "scripts": {
-    "linchpin": "bun run src/cli.ts",
-    "demo": "bun run src/cli.ts demo --offline",
-    "test": "bun test",
-    "typecheck": "tsc --noEmit",
-    "web": "bun run src/web/server.ts",
-    "web:live": "LINCHPIN_RPC_MIN_INTERVAL_MS=50 bun --env-file=$HOME/.config/linchpin.env run src/web/server.ts"
+  "devDependencies": {
+    "@types/bun": "^1.4.2",
+    "@types/node": "22"
   }
 }

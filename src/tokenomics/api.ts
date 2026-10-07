@@ -1,7 +1,7 @@
 /**
  * Tokenomics API contract, v1 (2026-10-06). Types only; no logic.
- * Backend (Claude + Codex, branch `tokenomics-graph`) serves these shapes under /api/tokenomics.
- * Frontend (separate Codex session, branch `tokenomics-ui`) renders them. Change this file only by agreement.
+ * The server serves these shapes under /api/tokenomics; the research workspace renders them.
+ * Treat this file as a stable contract: change it only together with both sides.
  * Every number the UI shows must come from one of these fields; every field carries provenance.
  */
 

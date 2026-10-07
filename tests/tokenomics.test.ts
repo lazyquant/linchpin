@@ -132,7 +132,7 @@ describe.skipIf(!governanceRecorded)('tokenomics recorded backend', () => {
     expect(built.bundle.offsets.data!.rows.some(r => r.id === 'holders-pending')).toBe(false);
   });
 
-  test('buyback credits without a same-transaction payment are reported next to purchases, never merged (Claude, 2026-10-06)', () => {
+  test('buyback credits without a same-transaction payment are reported next to purchases, never merged', () => {
     const purchase = built.bundle.path.data!.links.find(l => l.id === 'buyback-purchases')!;
     const rows = purchase.observed!.byInstruction!;
     expect(rows.length).toBe(2);
@@ -316,7 +316,7 @@ describe.skipIf(!governanceRecorded)('tokenomics TG graph and service', () => {
     } };
     return { graph, driver, calls };
   }
-  test('namespace rejects forbidden demo labels, relationships and unsafe interpolation before writing', async () => {
+  test('namespace rejects forbidden governance-case labels, relationships and unsafe interpolation before writing', async () => {
     const { graph, driver, calls } = fake();
     for (const type of ['TRANSFER', 'BURN', 'X`) DELETE n']) {
       const invalid = { ...graph, relationships: [{ ...graph.relationships[0], type }] };
@@ -351,7 +351,7 @@ describe.skipIf(!governanceRecorded)('tokenomics TG graph and service', () => {
     }
     for (const call of [...calls.slice(0, 4), ...calls.slice(-4)]) expect(call.config.routing).toBe('READ');
   });
-  test('regression reports the differing demo query ids and fails the API graph envelope', async () => {
+  test('regression reports the differing governance-case query ids and fails the API graph envelope', async () => {
     const { driver } = fake(true);
     const service = new TokenomicsGraphService(built.bundle, { config, driverFactory: () => driver });
     const loaded = await tokenomicsRoutes(built, request(`${base}/graph/load`, { method: 'POST' }), service);
@@ -465,7 +465,7 @@ describe.skipIf(!governanceRecorded)('tokenomics disk cache', () => {
 });
 
 describe('tokenomics bundle cache key', () => {
-  test('a change in tokenomics source code changes the cache digest (Claude, 2026-10-06)', () => {
+  test('a change in tokenomics source code changes the cache digest', () => {
     const root = mkdtempSync(join(tmpdir(), 'linchpin-digest-'));
     mkdirSync(join(root, 'src/tokenomics'), { recursive: true });
     writeFileSync(join(root, 'src/tokenomics/sections.ts'), 'export const a = 1;\n');

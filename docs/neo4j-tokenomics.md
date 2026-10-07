@@ -12,13 +12,13 @@ Relationships are `ROUTES_TO`, `SET_BY`, `HELD_BY`, `CONTROLLED_BY`, `MEMBER_OF`
 
 Every relationship carries `basis` (an array), `evidenceIds`, `slot`, and `key`. Keys are SHA-256 of the type, endpoints and distinguishing fields such as the source link ID or setter instruction. Evidence IDs resolve through the tokenomics evidence endpoint. Raw token amounts remain strings; no floating-point sum is used. `MEMBER_OF` represents recorded multisig owners and current council owners. Unresolved groups retain address details in `detailAddresses`. `Governance` nodes preserve individual configurations; controllers reach them through `VOTES_IN` or veto-only `VETOES`, carrying per-side permissions and threshold text. Governance `CAN_CHANGE` edges identify the controlled targets.
 
-Static validation rejects any other label or relationship, notably the demo's `:Entity`, `TRANSFER`, and `BURN`. The loader creates:
+Static validation rejects any other label or relationship, notably the governance-case namespace's `:Entity`, `TRANSFER`, and `BURN`. The loader creates:
 
 ```cypher
 CREATE CONSTRAINT tg_id IF NOT EXISTS FOR (n:TG) REQUIRE n.id IS UNIQUE
 ```
 
-It replaces the TG namespace so removed facts cannot survive a new snapshot. The demo namespace is retained. Values enter Cypher exclusively through parameters, and validated type groups use `UNWIND` batches of at most 500 records. Nodes load before relationships. Replacement is sequential, not one atomic transaction; a failed load may leave an incomplete TG snapshot. The API's query parity check then falls back to its complete local graph until a successful reload.
+It replaces the TG namespace so removed facts cannot survive a new snapshot. The governance-case namespace is retained. Values enter Cypher exclusively through parameters, and validated type groups use `UNWIND` batches of at most 500 records. Nodes load before relationships. Replacement is sequential, not one atomic transaction; a failed load may leave an incomplete TG snapshot. The API's query parity check then falls back to its complete local graph until a successful reload.
 
 Before the first write and after the last write, all four `CANNED_QUERIES` execute via `runCannedNeo4j`. Sorted normalized rows must remain equal, including duplicates. Load results report `regression: 'unchanged' | 'changed'` and `changedQueries`. A change fails the API graph envelope and the CLI exits nonzero. The demo queries are read-only throughout this check.
 
@@ -36,7 +36,7 @@ With `NEO4J_URI`, `NEO4J_PASSWORD` and optionally `NEO4J_USERNAME` / `NEO4J_DATA
 bun run scripts/load-tokenomics-neo4j.ts
 ```
 
-The loader prints counts by type, redacted host, batch totals, regression result and the eight query row counts. It exits nonzero for a changed demo query, a failed load, or an Aura result that differs from the captured bundle. Credentials are never printed.
+The loader prints counts by type, redacted host, batch totals, regression result and the eight query row counts. It exits nonzero for a changed governance-case query, a failed load, or an Aura result that differs from the captured bundle. Credentials are never printed.
 
 The server endpoint is `POST /api/tokenomics/marinade/graph/load`. It accepts same-origin requests, serializes loads, and caps a load at 120 seconds. GET requests never load the database. READ queries have a five-second deadline and a 30-second cache. The driver is created only when needed. Unavailable or stale Aura results use local rows and a scrubbed explanation.
 

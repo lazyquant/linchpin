@@ -63,7 +63,7 @@ export function buildGraph(b: ProposalBundle, decoded: Decoded[], effects: Effec
   return { nodes: [...nodes.values()], edges };
 }
 
-/** The control path the demo follows: token account → treasury PDA → governance → realm. */
+/** The control path a review follows: token account → treasury PDA → governance → realm. */
 export function controlPath(g: Graph, tokenAccount: string): string[] {
   const path = [`ta:${tokenAccount}`]; let cur = path[0];
   for (const t of ["OWNED_BY", "TREASURY_OF", "BELONGS_TO"]) { const e = g.edges.find((x) => x.from === cur && x.type === t); if (!e) break; path.push(e.to); cur = e.to; }

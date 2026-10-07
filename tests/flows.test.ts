@@ -107,7 +107,7 @@ import { idlAddress, type LegacyIdl } from "../src/contracts/idl";
 const ata = associatedTokenAccount(new PublicKey(buyback), new PublicKey(registry.mints.find((m: any) => m.id === "mnde").address));
 // Actual transfer destination in the G5b capture, not an ATA inferred from the owner.
 const recordedDistributorVault = "3HT41nesAgcoNDeGAVFKwss5mzScMH2Uik6pcP71xnhB";
-test.skipIf(!hasFixture("getSignaturesForAddress", { pubkey: recordedDistributorVault, limit: 300 }))("mainnet flows (skipped until Claude records G5c vault keys)", async () => {
+test.skipIf(!hasFixture("getSignaturesForAddress", { pubkey: recordedDistributorVault, limit: 300 }))("mainnet flows (skipped until the mainnet fixtures are recorded)", async () => {
   const rpc = new RecordingRpc(runOptions({ offline: true, record: false }), "marinade-contracts");
   const layer = await readContractsLayer(rpc, registry, contracts), participation = await readParticipation(rpc, registry, contracts, layer);
   const result = await readFlows(rpc, registry, layer, participation, null, docs);

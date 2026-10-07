@@ -3,8 +3,8 @@
   "registry": "packs/marinade/registry.json",
   "note": "Contract-layer inputs for the tokenomics dependency graph (plan G1-G3). Kept separate from registry.json so the Slice A pack and its fixtures are unchanged.",
   "singletons": [
-    { "id": "liquid-staking-state", "program": "liquid-staking", "address": "8szGkuLTAux9XMgZ2vtY39jVSowEcpBfFfD8hXSEqdGC", "account": "State", "source": "docs:contract-addresses (Marinade State account); discriminator verified in the 2026-10-06 spike" },
-    { "id": "vsr-registrar-mnde", "program": "vsr", "account": "Registrar", "derive": { "seeds": ["realm", "utf8:registrar", "mint:mnde"] }, "source": "voter-stake-registry PDA convention; discriminator verified in the 2026-10-06 spike" }
+    { "id": "liquid-staking-state", "program": "liquid-staking", "address": "8szGkuLTAux9XMgZ2vtY39jVSowEcpBfFfD8hXSEqdGC", "account": "State", "source": "docs:contract-addresses (Marinade State account); discriminator verified on 2026-10-06" },
+    { "id": "vsr-registrar-mnde", "program": "vsr", "account": "Registrar", "derive": { "seeds": ["realm", "utf8:registrar", "mint:mnde"] }, "source": "voter-stake-registry PDA convention; discriminator verified on 2026-10-06" }
   ],
   "enumerate": [
     { "program": "tokadapt", "account": "State", "mode": "full" },

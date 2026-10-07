@@ -177,7 +177,7 @@ function assertTotals(r: Awaited<ReturnType<typeof readParticipation>>) {
 const p = registry.programs.find(p => p.id === "vsr")!;
 const registrarAddress = PublicKey.findProgramAddressSync([new PublicKey(registry.governance.realm).toBuffer(), Buffer.from("registrar"), new PublicKey(registry.mints.find(m => m.id === "mnde")!.address).toBuffer()], new PublicKey(p.address))[0].toBase58();
 const recorded = hasFixture("getProgramAccounts", { programId: p.address, filters: [{ memcmp: { offset: 0, bytes: bs58.encode(accountDiscriminator("Voter")) } }, { memcmp: { offset: fieldOffset(vsr, "Voter", "registrar"), bytes: registrarAddress } }] });
-test.skipIf(!recorded)("mainnet participation sums, recorded supply shares and evidence (skipped until Claude records G3 keys)", async () => {
+test.skipIf(!recorded)("mainnet participation sums, recorded supply shares and evidence (skipped until the mainnet fixtures are recorded)", async () => {
   const rpc = new RecordingRpc(runOptions({ offline: true, record: false }), "marinade-contracts");
   assertTotals(await readParticipation(rpc, registry, contracts, await readContractsLayer(rpc, registry, contracts)));
 }, 120_000);
