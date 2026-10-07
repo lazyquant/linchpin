@@ -20,7 +20,7 @@ CREATE CONSTRAINT tg_id IF NOT EXISTS FOR (n:TG) REQUIRE n.id IS UNIQUE
 
 It replaces the TG namespace so removed facts cannot survive a new snapshot. The governance-case namespace is retained. Values enter Cypher exclusively through parameters, and validated type groups use `UNWIND` batches of at most 500 records. Nodes load before relationships. Replacement is sequential, not one atomic transaction; a failed load may leave an incomplete TG snapshot. The API's query parity check then falls back to its complete local graph until a successful reload.
 
-Before the first write and after the last write, all four `CANNED_QUERIES` execute via `runCannedNeo4j`. Sorted normalized rows must remain equal, including duplicates. Load results report `regression: 'unchanged' | 'changed'` and `changedQueries`. A change fails the API graph envelope and the CLI exits nonzero. The demo queries are read-only throughout this check.
+Before the first write and after the last write, all four `CANNED_QUERIES` execute via `runCannedNeo4j`. Sorted normalized rows must remain equal, including duplicates. Load results report `regression: 'unchanged' | 'changed'` and `changedQueries`. A change fails the API graph envelope and the CLI exits nonzero. The governance-case queries are read-only throughout this check.
 
 ## Commands
 
