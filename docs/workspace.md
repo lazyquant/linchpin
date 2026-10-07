@@ -54,6 +54,15 @@ The right pane provides evidence navigation and focused follow-up questions; it 
 
 Every run writes `out/web/<case>/packet.json`, `graph.json`, `evidence.jsonl` and `memo.md`.
 
+## Guided walkthroughs
+
+`#walkthrough-bonk` and `#walkthrough-mnde` open a full-screen guided view of the two flagship cases; the **Guided walkthrough ↗** button opens it from any page. Each case has four scenes:
+
+- **BonkDAO BIP-76:** the proposal (declared action → authority → executed effect), how it passed (approval against the recorded maximum vote weight and the threshold, hold-up and execution timing), what executed (each transaction and its receipt), and the cited memo.
+- **Marinade and MNDE:** the value path (code routes, account operations and claimed links drawn differently), who controls it (who sets the fee route, where MNDE holders vote), what was observed (buyback receipts split into same-transaction purchases and credits without payment, distributor claims), and the cited memo.
+
+Every fact opens its supporting records. The **Ask the evidence** rail answers suggested and typed questions from cited records only; it uses no language model and says when a question is not established by the captured case. Arrow keys move between scenes. **Download cited memo ↓** exports the case memo from `GET /api/walkthrough/bonk/memo.md` or `GET /api/walkthrough/mnde/memo.md`, marked as a draft for human review. **Open full workspace ↗** returns to the matching case.
+
 ## Refresh from chain
 
 **Refresh from chain ↗** reads current state through the RPC endpoint configured in the server's environment. Configure it outside the repository, for example in `~/.config/linchpin.env` (mode 600):
@@ -114,6 +123,7 @@ NEO4J_DATABASE=neo4j
 | `GET /api/graph/summary` | Live node and relationship counts for both graph namespaces |
 | `GET /api/graph/proposal-dependencies?case=…` | Accounts a case touches that carry tokenomics roles |
 | `GET /api/graph/governance-cases` | Governance cases that share accounts with the tokenomics graph |
+| `GET /api/walkthrough/:case/memo.md` | The cited memo of a guided walkthrough (`bonk` or `mnde`) |
 | `POST /api/graph/load`, `POST /api/tokenomics/marinade/graph/load` | Load the graph into Neo4j (same-origin only) |
 
 Responses carry `source`, the redacted `host`, a scrubbed `reason` on fallback, and `retrievedAt`. Unknown cases and sections return 404; loading without configuration returns 409.

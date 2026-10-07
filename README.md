@@ -45,7 +45,7 @@ bun test
 bun run web
 ```
 
-Open http://127.0.0.1:8875. The workspace starts on recorded evidence and works offline. The [workspace guide](docs/workspace.md) describes every view.
+Open http://127.0.0.1:8875. The workspace starts on recorded evidence and works offline. For a guided tour of the two flagship cases, open http://127.0.0.1:8875/#walkthrough-bonk. The [workspace guide](docs/workspace.md) describes every view.
 
 Live reads and Neo4j are optional. Configure them in an environment file outside the repository, for example `~/.config/linchpin.env` with mode 600:
 
