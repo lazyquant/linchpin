@@ -12,6 +12,9 @@ import type { TokenomicsBuild } from '../tokenomics/build';
 import { loadTokenomicsBundle } from '../tokenomics/cache';
 import { TokenomicsGraphService } from '../tokenomics/graph-service';
 import { tokenomicsRoutes } from './tokenomics-routes';
+import { bonkStory, mndeStory, walkthroughMemo } from './case-walkthrough-model';
+import type { Packet } from '../review/packet';
+import type { BundleResponse } from '../tokenomics/api';
 
 export class ResearchService {
   results = new Map<CaseId, Result>();
@@ -108,6 +111,16 @@ export function api(service: ResearchService) {
       { headers: { 'Content-Type': 'image/svg+xml', 'Cache-Control': 'public, max-age=86400' } },
     );
     if (request.method === 'POST' && request.headers.get('origin') && request.headers.get('origin') !== u.origin) return json({ error: 'Same-origin requests only' }, 403);
+    if (parts[0] === 'api' && parts[1] === 'walkthrough' && parts.length === 4 && parts[3] === 'memo.md') {
+      const which = parts[2] === 'bonk' ? 'bonk' : parts[2] === 'mnde' ? 'mnde' : null;
+      if (!which) return json({ error: 'Walkthrough not found' }, 404);
+      if (request.method !== 'GET') return json({ error: 'Method not allowed' }, 405);
+      const source = await api(service)(new Request(new URL(which === 'bonk' ? '/api/cases/bonk-bip76/export/packet.json' : '/api/tokenomics/marinade', u.origin)));
+      if (!source.ok) return json({ error: 'Stored research is unavailable.' }, 503);
+      const facts = which === 'bonk' ? bonkStory(await source.json() as Packet).facts : mndeStory(await source.json() as BundleResponse).facts;
+      return new Response(walkthroughMemo(which, facts, new Date().toISOString()), { headers: {
+        'Content-Type': 'text/markdown; charset=utf-8', 'Content-Disposition': `attachment; filename="linchpin-${which}-walkthrough-memo.md"`, 'Cache-Control': 'no-store' } });
+    }
     if (parts[0] === 'api' && parts[1] === 'tokenomics') {
       try { return await tokenomicsRoutes(service.tokenomics, request, service.tokenomicsGraph); }
       finally { if (request.method === 'POST' && parts[3] === 'graph' && parts[4] === 'load') service.graph.invalidateSummary(); }

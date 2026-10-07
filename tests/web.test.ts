@@ -20,6 +20,17 @@ describe('local research workspace with real recorded evidence', () => {
     expect(response.status).toBe(200);
     expect(response.headers.get('content-type')).toBe('image/svg+xml');
   });
+  test('the guided walkthrough memo is served from stored research, with citations and review limits', async () => {
+    const response = await api(service)(request('/api/walkthrough/bonk/memo.md'));
+    expect(response.status).toBe(200);
+    expect(response.headers.get('content-type')).toContain('text/markdown');
+    expect(response.headers.get('content-disposition')).toContain('linchpin-bonk-walkthrough-memo.md');
+    const memo = await response.text();
+    expect(memo).toContain('Draft · human review pending');
+    expect(memo).toContain('0.00033');
+    expect((await api(service)(request('/api/walkthrough/other/memo.md'))).status).toBe(404);
+    expect((await api(service)(request('/api/walkthrough/bonk/memo.md', { method: 'POST' }))).status).toBe(405);
+  });
   test('the server keeps connections open longer than the 120 s Neo4j load cap (Bun default is 10 s)', () => {
     expect(SERVER_IDLE_TIMEOUT_SECONDS).toBeGreaterThan(120);
     expect(SERVER_IDLE_TIMEOUT_SECONDS).toBeLessThanOrEqual(255);

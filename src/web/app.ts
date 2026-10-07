@@ -68,6 +68,7 @@ async function openHome() {
 }
 async function routeHash() {
   const hash = location.hash.slice(1);
+  if (hash.startsWith('walkthrough-')) return; // owned by case-walkthrough.ts
   if (hash === 'tokenomics') await tokenomics.open();
   else if (scopes.some(c => c.id === hash)) await load(hash as CaseId);
   else await openHome();
