@@ -49,6 +49,8 @@ Open http://127.0.0.1:8875. The workspace starts on recorded evidence and works 
 
 Live reads and Neo4j are optional. Configure them in an environment file outside the repository, for example `~/.config/linchpin.env` with mode 600:
 
+For local Neo4j Community Edition in Docker, follow the [local database setup](docs/local-neo4j.md).
+
 ```sh
 LINCHPIN_RPC_URL=https://your-solana-rpc-endpoint
 NEO4J_URI=neo4j+s://your-instance.databases.neo4j.io
@@ -111,7 +113,7 @@ Statuses stay explicit: `verified`, `claimed`, `contradiction`, `unresolved` and
 | `cases/`, `packs/` | Governance case specifications; protocol registries and captured sources |
 | `fixtures/` | Recorded mainnet evidence used for replay and tests |
 | `tests/` | Unit, replay and integration tests |
-| `docs/` | [Workspace](docs/workspace.md), [tokenomics API](docs/tokenomics-api.md), [contract reading](docs/contracts.md), [Neo4j: governance cases](docs/neo4j.md), [Neo4j: tokenomics graph](docs/neo4j-tokenomics.md) |
+| `docs/` | [Workspace](docs/workspace.md), [tokenomics API](docs/tokenomics-api.md), [contract reading](docs/contracts.md), [Neo4j: governance cases](docs/neo4j.md), [Neo4j: tokenomics graph](docs/neo4j-tokenomics.md), [plan harness](docs/harness.md) |
 
 ## Scope
 

@@ -196,7 +196,9 @@ if (cmd === "review" && args[1]) await review(args[1]);
 else if (cmd === "pack" && args[1]) await pack(args[1]);
 else if (cmd === "cases" || cmd === "demo") { for (const c of ["cases/mip-14.json", "cases/mip-14-opinion.json", "cases/bonk-bip76.json"]) await review(c); }
 else if (cmd === "doctor") await doctor();
-else { console.log(safeOutput("usage: linchpin review <case.json> [--offline|--record [--refresh]] [--out dir] | linchpin pack <pack.json> [--offline|--record [--refresh]] [--out dir] | linchpin cases [--offline] | linchpin doctor; modes: --offline (fixtures only), --record (fill missing fixtures), --record --refresh (re-fetch all)")); process.exit(cmd ? 1 : 0); }
+else if (cmd === "flowchart") process.exitCode = await (await import("./flowchart/command")).runFlowchartCommand(args.slice(1));
+else if (cmd === "flowchart-validate") process.exitCode = await (await import("./flowchart/command")).runFlowchartValidateCommand(args.slice(1));
+else { console.log(safeOutput("usage: linchpin review <case.json> [--offline|--record [--refresh]] [--out dir] | linchpin pack <pack.json> [--offline|--record [--refresh]] [--out dir] | linchpin cases [--offline] | linchpin doctor; modes: --offline (fixtures only), --record (fill missing fixtures), --record --refresh (re-fetch all) | linchpin flowchart <input.json> --out <file.html> [--title <text>] [--source evidence-graph] | linchpin flowchart-validate <file.html> [--input <input.json>] [--source evidence-graph]")); process.exit(cmd ? 1 : 0); }
 } catch (error) {
   console.error(safeOutput(error instanceof Error ? `${error.name}: ${error.message}` : String(error)));
   process.exitCode = 1;

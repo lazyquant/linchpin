@@ -1,0 +1,25 @@
+{
+  "nodes": [
+    { "id": "node:c", "type": "Claim", "label": "Claim C says “burn”", "props": { "text": "quoted claim" } },
+    { "id": "node:a", "type": "Proposal", "label": "Proposal A" },
+    { "id": "node:B", "type": "Realm", "label": "Réalm B €" },
+    { "id": "node:b", "type": "Governance", "label": "Governance b" },
+    { "id": "node:ab", "type": "Mint", "label": "Mint ab" },
+    { "id": "iso:x", "type": "Program", "label": "Isolated program" },
+    { "id": "loop:z", "type": "Effect", "label": "Self-loop effect", "props": { "n": 1 } },
+    { "id": "node:ñ", "type": "TokenAccount", "label": "Cuenta ñ" }
+  ],
+  "edges": [
+    { "from": "node:b", "to": "node:c", "type": "CONTROLS", "basis": "observed", "evidenceIds": ["ev2"] },
+    { "from": "node:a", "to": "node:b", "type": "PROPOSED_IN", "basis": "observed", "evidenceIds": ["ev1"], "props": { "slot": 1 } },
+    { "from": "node:c", "to": "node:a", "type": "DESCRIBES", "basis": "claimed", "evidenceIds": [] },
+    { "from": "loop:z", "to": "loop:z", "type": "AFFECTS", "basis": "simulated", "evidenceIds": ["ev3"] },
+    { "from": "node:ab", "to": "node:B", "type": "BELONGS_TO", "basis": "decoded", "evidenceIds": ["ev4", "ev5"] },
+    { "from": "node:ab", "to": "node:B", "type": "BELONGS_TO", "basis": "decoded", "evidenceIds": ["ev4", "ev5"] },
+    { "from": "node:a", "to": "node:B", "type": "TREASURY_OF", "basis": "unknown", "evidenceIds": ["ev6"] },
+    { "from": "node:a", "to": "node:B", "type": "TREASURY_OF", "basis": "observed", "evidenceIds": ["ev6"] },
+    { "from": "node:B", "to": "node:ab", "type": "MINTS", "basis": "reported", "evidenceIds": ["ev7"] },
+    { "from": "node:b", "to": "node:c", "type": "CONTROLS", "basis": "observed", "evidenceIds": ["ev10"] },
+    { "from": "node:ñ", "to": "node:ab", "type": "HOLDS", "basis": "derived", "evidenceIds": ["ev8"] }
+  ]
+}
