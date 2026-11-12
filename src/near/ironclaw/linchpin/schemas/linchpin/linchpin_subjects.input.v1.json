@@ -1,0 +1,21 @@
+{
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "chain": {
+      "type": "string",
+      "enum": [
+        "rhea",
+        "intents",
+        "governance",
+        "mpc"
+      ]
+    },
+    "maxResults": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 100000
+    }
+  },
+  "required": []
+}

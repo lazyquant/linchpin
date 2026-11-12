@@ -1,0 +1,103 @@
+{
+  "view_account": {
+    "jsonrpc": "2.0",
+    "id": "near-reader",
+    "result": {
+      "amount": "1000000000000000000000000",
+      "locked": "0",
+      "code_hash": "6Nek1MZ8cwJJ2xMQAUWup9V5AToYS9rkTxJfwo6BCpFa",
+      "storage_usage": 1234,
+      "block_height": 223810500,
+      "block_hash": "6e32KjPqRhzdNCw6qB7jRvKR1CqLcTJjP6g4uvxmHFwj"
+    }
+  },
+  "view_access_key_list": {
+    "jsonrpc": "2.0",
+    "id": "near-reader",
+    "result": {
+      "block_height": 223810500,
+      "block_hash": "6e32KjPqRhzdNCw6qB7jRvKR1CqLcTJjP6g4uvxmHFwj",
+      "keys": [
+        {
+          "public_key": "ed25519:3z2MnvQqD3dsUPynZpV8CFtyXhFiTksjZhjDr26isEXv",
+          "access_key": { "nonce": 1, "permission": "FullAccess" }
+        },
+        {
+          "public_key": "ed25519:CTjF3Xm8s7Gob9qLPMbh3sAq8scdoEpibrDFFCMAVwcQ",
+          "access_key": {
+            "nonce": 2,
+            "permission": {
+              "FunctionCall": {
+                "allowance": null,
+                "method_names": ["execute_intents"],
+                "receiver_id": "intents.near"
+              }
+            }
+          }
+        }
+      ]
+    }
+  },
+  "view_code": {
+    "jsonrpc": "2.0",
+    "id": "near-reader",
+    "result": {
+      "code_base64": "AGFzbQEAAAA=",
+      "hash": "6Nek1MZ8cwJJ2xMQAUWup9V5AToYS9rkTxJfwo6BCpFa",
+      "block_height": 223810500,
+      "block_hash": "6e32KjPqRhzdNCw6qB7jRvKR1CqLcTJjP6g4uvxmHFwj"
+    }
+  },
+  "call_function": {
+    "jsonrpc": "2.0",
+    "id": "near-reader",
+    "result": {
+      "result": [123, 34, 111, 107, 34, 58, 116, 114, 117, 101, 125],
+      "block_height": 223810500,
+      "block_hash": "6e32KjPqRhzdNCw6qB7jRvKR1CqLcTJjP6g4uvxmHFwj"
+    }
+  },
+  "block": {
+    "jsonrpc": "2.0",
+    "id": "near-reader",
+    "result": {
+      "author": "svrn.pool.near",
+      "header": {
+        "height": 223810500,
+        "hash": "6e32KjPqRhzdNCw6qB7jRvKR1CqLcTJjP6g4uvxmHFwj",
+        "timestamp_nanosec": "1700000000000000000",
+        "latest_protocol_version": 88
+      }
+    }
+  },
+  "status": {
+    "jsonrpc": "2.0",
+    "id": "near-reader",
+    "result": {
+      "chain_id": "mainnet",
+      "protocol_version": 88,
+      "version": { "build": "2.14.0" }
+    }
+  },
+  "call_error": {
+    "jsonrpc": "2.0",
+    "id": "near-reader",
+    "result": {
+      "error": "wasm execution failed: MethodNotFound",
+      "block_height": 223810500,
+      "block_hash": "6e32KjPqRhzdNCw6qB7jRvKR1CqLcTJjP6g4uvxmHFwj"
+    }
+  },
+  "archival_success": {
+    "jsonrpc": "2.0",
+    "id": "near-reader",
+    "result": {
+      "amount": "0",
+      "locked": "0",
+      "code_hash": "6Nek1MZ8cwJJ2xMQAUWup9V5AToYS9rkTxJfwo6BCpFa",
+      "storage_usage": 1,
+      "block_height": 223800000,
+      "block_hash": "C5mgq5C8cCyVHipGhMGvk6WjX4yhmdgQYvRmW4EKMUsN"
+    }
+  }
+}

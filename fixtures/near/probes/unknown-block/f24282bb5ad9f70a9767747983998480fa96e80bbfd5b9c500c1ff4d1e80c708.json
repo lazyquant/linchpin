@@ -1,0 +1,45 @@
+{
+ "version": 1,
+ "requestSha256": "f24282bb5ad9f70a9767747983998480fa96e80bbfd5b9c500c1ff4d1e80c708",
+ "request": {
+  "method": "query",
+  "params": {
+   "account_id": "intents.near",
+   "request_type": "view_account",
+   "block_id": 999999999999
+  }
+ },
+ "endpointHost": "archival-rpc.mainnet.fastnear.com",
+ "retrievedAt": "2026-11-09T19:17:43.353Z",
+ "httpStatus": 200,
+ "outcome": "rpc-error",
+ "blockHeight": null,
+ "blockHash": null,
+ "responseSha256": "bfe450cb8ab485daf587bd0555ce52a3c910082aae6d6338081a90a93f7635a5",
+ "response": {
+  "jsonrpc": "2.0",
+  "error": {
+   "name": "HANDLER_ERROR",
+   "cause": {
+    "info": {
+     "block_reference": {
+      "block_id": 999999999999
+     }
+    },
+    "name": "UNKNOWN_BLOCK"
+   },
+   "code": -32000,
+   "message": "Server error",
+   "data": "DB Not Found Error: BLOCK HEIGHT: 999999999999 \n Cause: Unknown"
+  },
+  "id": "near-reader"
+ },
+ "archival": {
+  "requestedBlockId": "999999999999",
+  "attempted": true,
+  "host": "archival-rpc.mainnet.fastnear.com",
+  "errorName": "UNKNOWN_BLOCK",
+  "errorBodySha256": "bfe450cb8ab485daf587bd0555ce52a3c910082aae6d6338081a90a93f7635a5"
+ },
+ "fallbackRequestSha256": "cba4d016e6ef8994405a33e21c1e49e928994ae636aa58408d285ebe63bd2085"
+}

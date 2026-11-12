@@ -1,0 +1,31 @@
+{
+ "version": 1,
+ "requestSha256": "30e901a23b9fa6a3d6d84364ac7baa3e90b51a3cedb728faed8f2c50510b322d",
+ "request": {
+  "method": "query",
+  "params": {
+   "account_id": "rainbowbridge.sputnik-dao.near",
+   "request_type": "call_function",
+   "method_name": "get_policy",
+   "args_base64": "e30=",
+   "finality": "final"
+  }
+ },
+ "endpointHost": "archival-rpc.mainnet.fastnear.com",
+ "retrievedAt": "2026-11-09T19:32:54.473Z",
+ "httpStatus": 200,
+ "outcome": "result",
+ "blockHeight": "223810654",
+ "blockHash": "8QPmCKsSTzeTHRLWgGvBbTd4iGgKVjrbEzPVQvUDS6j1",
+ "responseSha256": "4658eea8046db04d7944f4f3ef37c61c599784689ab05663fe144ecd5a69fbfe",
+ "response": {
+  "jsonrpc": "2.0",
+  "result": {
+   "block_hash": "8QPmCKsSTzeTHRLWgGvBbTd4iGgKVjrbEzPVQvUDS6j1",
+   "block_height": 223810654,
+   "logs": []
+  },
+  "id": "near-reader"
+ },
+ "resultText": "{\"roles\":[{\"name\":\"all\",\"kind\":\"Everyone\",\"permissions\":[\"*:AddProposal\"],\"vote_policy\":{}},{\"name\":\"council\",\"kind\":{\"Group\":[\"b530f2243673f233b2e12e526c500101b76139c032b1b8f1c6f0ef88fcd4dc25\",\"b94b3558971e4dedf18c3c187534f3929c8c62b1cb92d59245537224dcb477b6\",\"8043294d1468f766cba17a7cb6ee9e5355afa791e0640d6ede036c48e49ec312\",\"e4e352a1ed9f5de5af31423068fe1d61f95db3fea32af597b719dc7e8cdf51c7\",\"ec0fe8a0e723f121997d4ceea4b1abdbb07fcca3d18d9f9e7b62e441deb9966e\"]},\"permissions\":[\"*:Finalize\",\"*:AddProposal\",\"*:VoteApprove\",\"*:VoteReject\",\"*:VoteRemove\"],\"vote_policy\":{\"remove_member_from_role\":{\"weight_kind\":\"RoleWeight\",\"quorum\":\"0\",\"threshold\":[2,5]},\"upgrade_remote\":{\"weight_kind\":\"RoleWeight\",\"quorum\":\"0\",\"threshold\":[2,5]},\"set_vote_token\":{\"weight_kind\":\"RoleWeight\",\"quorum\":\"0\",\"threshold\":[2,5]},\"vote\":{\"weight_kind\":\"RoleWeight\",\"quorum\":\"0\",\"threshold\":[2,5]},\"bounty_done\":{\"weight_kind\":\"RoleWeight\",\"quorum\":\"0\",\"threshold\":[2,5]},\"transfer\":{\"weight_kind\":\"RoleWeight\",\"quorum\":\"0\",\"threshold\":[2,5]},\"upgrade_self\":{\"weight_kind\":\"RoleWeight\",\"quorum\":\"0\",\"threshold\":[2,5]},\"call\":{\"weight_kind\":\"RoleWeight\",\"quorum\":\"0\",\"threshold\":[2,5]},\"policy\":{\"weight_kind\":\"RoleWeight\",\"quorum\":\"0\",\"threshold\":[2,5]},\"add_member_to_role\":{\"weight_kind\":\"RoleWeight\",\"quorum\":\"0\",\"threshold\":[2,5]},\"add_bounty\":{\"weight_kind\":\"RoleWeight\",\"quorum\":\"0\",\"threshold\":[2,5]},\"config\":{\"weight_kind\":\"RoleWeight\",\"quorum\":\"0\",\"threshold\":[2,5]}}}],\"default_vote_policy\":{\"weight_kind\":\"RoleWeight\",\"quorum\":\"0\",\"threshold\":[1,2]},\"proposal_bond\":\"1000000000000000000000000\",\"proposal_period\":\"604800000000000\",\"bounty_bond\":\"1000000000000000000000000\",\"bounty_forgiveness_period\":\"86400000000000\"}"
+}

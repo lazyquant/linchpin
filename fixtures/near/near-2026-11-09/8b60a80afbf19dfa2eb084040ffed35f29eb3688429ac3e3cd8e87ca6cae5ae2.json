@@ -1,0 +1,31 @@
+{
+ "version": 1,
+ "requestSha256": "8b60a80afbf19dfa2eb084040ffed35f29eb3688429ac3e3cd8e87ca6cae5ae2",
+ "request": {
+  "method": "query",
+  "params": {
+   "account_id": "intents.sputnik-dao.near",
+   "request_type": "call_function",
+   "method_name": "get_policy",
+   "args_base64": "e30=",
+   "finality": "final"
+  }
+ },
+ "endpointHost": "archival-rpc.mainnet.fastnear.com",
+ "retrievedAt": "2026-11-09T19:31:48.386Z",
+ "httpStatus": 200,
+ "outcome": "result",
+ "blockHeight": "223810540",
+ "blockHash": "Gy12BgNWonni3HtYN6hNy9AiYRejQmZBHBXhBxQRUTzQ",
+ "responseSha256": "74713151b10ec2ff6e4abbd9f197fc12b9f389158c6f294eeda66102bd8491d1",
+ "response": {
+  "jsonrpc": "2.0",
+  "result": {
+   "block_hash": "Gy12BgNWonni3HtYN6hNy9AiYRejQmZBHBXhBxQRUTzQ",
+   "block_height": 223810540,
+   "logs": []
+  },
+  "id": "near-reader"
+ },
+ "resultText": "{\"roles\":[{\"name\":\"council\",\"kind\":{\"Group\":[\"400d1c029b9575ab98af5fae579046d8c5d0bc9341263b6b797839815532dbe7\",\"8e69c33b572dad1f2da6f744c834705e651d3784af2471b58949f2fefd5b55d3\",\"5024319f62e6f45f1b2364e6b92c58413d5279d20730cb2e616a613967cb692c\",\"9600c0ec4de7a77f828965528c8c6028ba3aa430e4537cd25b7865d9430f63ae\",\"ac39364aae9f15438b575f677768c2cf4a7cc74b7dcd198980e8618f003ff538\"]},\"permissions\":[\"*:*\"],\"vote_policy\":{\"transfer\":{\"weight_kind\":\"RoleWeight\",\"quorum\":\"0\",\"threshold\":\"3\"},\"call\":{\"weight_kind\":\"RoleWeight\",\"quorum\":\"0\",\"threshold\":\"3\"},\"upgrade_self\":{\"weight_kind\":\"RoleWeight\",\"quorum\":\"0\",\"threshold\":\"3\"},\"vote\":{\"weight_kind\":\"RoleWeight\",\"quorum\":\"0\",\"threshold\":\"3\"},\"config\":{\"weight_kind\":\"RoleWeight\",\"quorum\":\"0\",\"threshold\":\"3\"},\"set_vote_token\":{\"weight_kind\":\"RoleWeight\",\"quorum\":\"0\",\"threshold\":\"3\"},\"upgrade_remote\":{\"weight_kind\":\"RoleWeight\",\"quorum\":\"0\",\"threshold\":\"3\"},\"add_member_to_role\":{\"weight_kind\":\"RoleWeight\",\"quorum\":\"0\",\"threshold\":\"3\"},\"remove_member_from_role\":{\"weight_kind\":\"RoleWeight\",\"quorum\":\"0\",\"threshold\":\"3\"}}},{\"name\":\"all\",\"kind\":\"Everyone\",\"permissions\":[\"add_member_to_role:AddProposal\",\"config:AddProposal\",\"call:AddProposal\",\"policy:AddProposal\",\"remove_member_from_role:AddProposal\"],\"vote_policy\":{}}],\"default_vote_policy\":{\"weight_kind\":\"RoleWeight\",\"quorum\":\"0\",\"threshold\":[1,2]},\"proposal_bond\":\"100000000000000000000000\",\"proposal_period\":\"604800000000000\",\"bounty_bond\":\"100000000000000000000000\",\"bounty_forgiveness_period\":\"604800000000000\"}"
+}

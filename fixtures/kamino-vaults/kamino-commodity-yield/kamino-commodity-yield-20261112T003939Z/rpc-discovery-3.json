@@ -1,0 +1,54 @@
+{
+  "kind": "rpc",
+  "role": "rpc-discovery-3",
+  "method": "getMultipleAccounts",
+  "params": [
+    [
+      "Dwg1aeZFYtsyMEkoyJn2ak8pPqaXMWd1uui6FBkM1872",
+      "3t4JZcueEzTbVP6kLxXrL3VpWx45jDer4eqysweBchNH"
+    ],
+    {
+      "encoding": "base64",
+      "commitment": "confirmed",
+      "dataSlice": {
+        "offset": 0,
+        "length": 120
+      }
+    }
+  ],
+  "endpoint": "https://api.mainnet-beta.solana.com",
+  "retrievedAt": "2026-11-12T00:39:40.594Z",
+  "httpStatus": 200,
+  "slot": 468327427,
+  "responseSha256": "d53626a11eaad7f1fabbca790fe7ff5debb352fa772c1cc585fe2c0f718cda49",
+  "response": {
+    "context": {
+      "apiVersion": "4.4.0",
+      "slot": 468327427
+    },
+    "value": [
+      {
+        "data": [
+          "9nIyYkidHHgBAAAAAAAAAP8AAAAAAAAAh/2ygohtG9syuhEWL8yGdUw1HpLJ+y6mCLayBZhJJAKH/bKCiG0b2zK6ERYvzIZ1TDUeksn7LqYItrIFmEkkAgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+          "base64"
+        ],
+        "executable": false,
+        "lamports": 33352320,
+        "owner": "KLend2g3cP87fffoy8q1mQqGKjrxjC8boSyAYavgmjD",
+        "rentEpoch": 18446744073709552000,
+        "space": 4664
+      },
+      {
+        "data": [
+          "WYB23QZItJI7WoETV+VlCGIA+6KmTudsXJBoxyovbpdBNh4ZhDpTswAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA3A0ywCoDmgsQAAAAAAAAAOsa6hsAAAAA",
+          "base64"
+        ],
+        "executable": false,
+        "lamports": 200726443,
+        "owner": "HFn8GnPADiny6XqUoWE8uRPPxb29ikn4yTuPa9MF2fWJ",
+        "rentEpoch": 18446744073709552000,
+        "space": 28712
+      }
+    ]
+  }
+}

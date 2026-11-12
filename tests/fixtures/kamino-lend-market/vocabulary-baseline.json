@@ -1,0 +1,414 @@
+{
+ "UPGRADE_AUTHORITY": {
+  "class": "control",
+  "direction": "subject-to-object",
+  "cardinality": "one"
+ },
+ "MINT_AUTHORITY": {
+  "class": "control",
+  "direction": "subject-to-object",
+  "cardinality": "one"
+ },
+ "FREEZE_AUTHORITY": {
+  "class": "control",
+  "direction": "subject-to-object",
+  "cardinality": "one"
+ },
+ "CONFIG_AUTHORITY": {
+  "class": "control",
+  "direction": "subject-to-object",
+  "cardinality": "one"
+ },
+ "PROGRAM_DATA": {
+  "class": "dependency",
+  "direction": "subject-to-object",
+  "cardinality": "one"
+ },
+ "ISSUED_BY_PROGRAM": {
+  "class": "dependency",
+  "direction": "subject-to-object",
+  "cardinality": "one"
+ },
+ "DEPENDS_ON": {
+  "class": "dependency",
+  "direction": "subject-to-object",
+  "cardinality": "many"
+ },
+ "BACKED_BY": {
+  "class": "backing",
+  "direction": "subject-to-object",
+  "cardinality": "many"
+ },
+ "ORIGINATES_FROM": {
+  "class": "origin",
+  "direction": "subject-to-object",
+  "cardinality": "one"
+ },
+ "SUPPLY_RAW": {
+  "class": "state",
+  "direction": "subject-to-object",
+  "cardinality": "one"
+ },
+ "ALLOCATES_TO": {
+  "class": "dependency",
+  "direction": "subject-to-object",
+  "cardinality": "many"
+ },
+ "IN_MARKET": {
+  "class": "dependency",
+  "direction": "subject-to-object",
+  "cardinality": "one"
+ },
+ "PRICED_BY": {
+  "class": "dependency",
+  "direction": "subject-to-object",
+  "cardinality": "many"
+ },
+ "OWNER_PROGRAM": {
+  "class": "dependency",
+  "direction": "subject-to-object",
+  "cardinality": "one"
+ },
+ "VAULT_ADMIN": {
+  "class": "control",
+  "direction": "subject-to-object",
+  "cardinality": "one"
+ },
+ "ALLOCATION_ADMIN": {
+  "class": "control",
+  "direction": "subject-to-object",
+  "cardinality": "one"
+ },
+ "MARKET_OWNER": {
+  "class": "control",
+  "direction": "subject-to-object",
+  "cardinality": "one"
+ },
+ "CONTROLLED_BY": {
+  "class": "control",
+  "direction": "subject-to-object",
+  "cardinality": "one"
+ },
+ "MULTISIG_MEMBER": {
+  "class": "control",
+  "direction": "subject-to-object",
+  "cardinality": "many"
+ },
+ "MULTISIG_THRESHOLD": {
+  "class": "state",
+  "direction": "subject-to-object",
+  "cardinality": "one"
+ },
+ "IDLE_RAW": {
+  "class": "state",
+  "direction": "subject-to-object",
+  "cardinality": "one"
+ },
+ "AVAILABLE_LIQUIDITY_RAW": {
+  "class": "state",
+  "direction": "subject-to-object",
+  "cardinality": "one"
+ },
+ "BORROWED_RAW": {
+  "class": "state",
+  "direction": "subject-to-object",
+  "cardinality": "one"
+ },
+ "owned-by": {
+  "class": "control",
+  "direction": "subject-to-object",
+  "cardinality": "one",
+  "traversable": true
+ },
+ "upgraded-by": {
+  "class": "control",
+  "direction": "subject-to-object",
+  "cardinality": "many",
+  "traversable": true
+ },
+ "super-admin-of": {
+  "class": "control",
+  "direction": "subject-to-object",
+  "cardinality": "many",
+  "traversable": true
+ },
+ "holds-role": {
+  "class": "control",
+  "direction": "subject-to-object",
+  "cardinality": "many",
+  "traversable": true
+ },
+ "priced-by": {
+  "class": "dependency",
+  "direction": "subject-to-object",
+  "cardinality": "many",
+  "traversable": true
+ },
+ "legacy-oracle": {
+  "class": "dependency",
+  "direction": "subject-to-object",
+  "cardinality": "many",
+  "traversable": true
+ },
+ "routes-through": {
+  "class": "dependency",
+  "direction": "subject-to-object",
+  "cardinality": "many",
+  "traversable": true
+ },
+ "deployed-by": {
+  "class": "dependency",
+  "direction": "subject-to-object",
+  "cardinality": "one",
+  "traversable": true
+ },
+ "has-code-hash": {
+  "class": "state",
+  "direction": "subject-to-object",
+  "cardinality": "one",
+  "traversable": false
+ },
+ "proposal": {
+  "class": "state",
+  "direction": "subject-to-object",
+  "cardinality": "one",
+  "traversable": false
+ },
+ "ft-metadata": {
+  "class": "state",
+  "direction": "subject-to-object",
+  "cardinality": "one",
+  "traversable": false
+ },
+ "deployed-version": {
+  "class": "state",
+  "direction": "subject-to-object",
+  "cardinality": "many",
+  "traversable": false
+ },
+ "claimed-document": {
+  "class": "state",
+  "direction": "subject-to-object",
+  "cardinality": "many",
+  "traversable": false
+ },
+ "has-full-access-key": {
+  "class": "control",
+  "direction": "subject-to-object",
+  "cardinality": "many",
+  "traversable": false
+ },
+ "has-function-call-key": {
+  "class": "control",
+  "direction": "subject-to-object",
+  "cardinality": "many",
+  "traversable": false
+ },
+ "council-member": {
+  "class": "control",
+  "direction": "subject-to-object",
+  "cardinality": "many",
+  "traversable": false
+ },
+ "vote-threshold": {
+  "class": "control",
+  "direction": "subject-to-object",
+  "cardinality": "many",
+  "traversable": false
+ },
+ "paused": {
+  "class": "control",
+  "direction": "subject-to-object",
+  "cardinality": "many",
+  "traversable": false
+ },
+ "mpc-participant": {
+  "class": "control",
+  "direction": "subject-to-object",
+  "cardinality": "many",
+  "traversable": false
+ },
+ "mpc-allowed-image": {
+  "class": "control",
+  "direction": "subject-to-object",
+  "cardinality": "many",
+  "traversable": false
+ },
+ "token-depositer": {
+  "class": "control",
+  "direction": "subject-to-object",
+  "cardinality": "many",
+  "traversable": false
+ },
+ "proposal-period": {
+  "class": "control",
+  "direction": "subject-to-object",
+  "cardinality": "one",
+  "traversable": false
+ },
+ "bond": {
+  "class": "control",
+  "direction": "subject-to-object",
+  "cardinality": "one",
+  "traversable": false
+ },
+ "pause-operator": {
+  "class": "control",
+  "direction": "subject-to-object",
+  "cardinality": "one",
+  "traversable": false
+ },
+ "contract-mode": {
+  "class": "control",
+  "direction": "subject-to-object",
+  "cardinality": "one",
+  "traversable": false
+ },
+ "mpc-threshold": {
+  "class": "control",
+  "direction": "subject-to-object",
+  "cardinality": "one",
+  "traversable": false
+ },
+ "fee-collector": {
+  "class": "control",
+  "direction": "subject-to-object",
+  "cardinality": "one",
+  "traversable": false
+ },
+ "ASSET_MINT": {
+  "class": "dependency",
+  "direction": "subject-to-object",
+  "cardinality": "one"
+ },
+ "DECIMALS": {
+  "class": "state",
+  "direction": "subject-to-object",
+  "cardinality": "one"
+ },
+ "FUNDED_BY": {
+  "class": "dependency",
+  "direction": "subject-to-object",
+  "cardinality": "one"
+ },
+ "touches-control-of": {
+  "class": "control",
+  "direction": "subject-to-object",
+  "cardinality": "many",
+  "traversable": true
+ },
+ "touches-code-of": {
+  "class": "control",
+  "direction": "subject-to-object",
+  "cardinality": "many",
+  "traversable": true
+ },
+ "changes-parameter-of": {
+  "class": "control",
+  "direction": "subject-to-object",
+  "cardinality": "many",
+  "traversable": true
+ },
+ "moves-funds-from": {
+  "class": "dependency",
+  "direction": "subject-to-object",
+  "cardinality": "many",
+  "traversable": true
+ },
+ "moves-funds-to": {
+  "class": "dependency",
+  "direction": "subject-to-object",
+  "cardinality": "many",
+  "traversable": true
+ },
+ "account-kind": {
+  "class": "state",
+  "direction": "subject-to-object",
+  "cardinality": "one",
+  "traversable": false
+ },
+ "proxy-implementation": {
+  "class": "control",
+  "direction": "subject-to-object",
+  "cardinality": "one",
+  "traversable": false
+ },
+ "proxy-admin": {
+  "class": "control",
+  "direction": "subject-to-object",
+  "cardinality": "one",
+  "traversable": true
+ },
+ "proxy-beacon": {
+  "class": "control",
+  "direction": "subject-to-object",
+  "cardinality": "one",
+  "traversable": false
+ },
+ "proxy-scheme": {
+  "class": "state",
+  "direction": "subject-to-object",
+  "cardinality": "one",
+  "traversable": false
+ },
+ "pending-owner": {
+  "class": "control",
+  "direction": "subject-to-object",
+  "cardinality": "one",
+  "traversable": true
+ },
+ "role-admin": {
+  "class": "control",
+  "direction": "subject-to-object",
+  "cardinality": "one",
+  "traversable": false
+ },
+ "role-members-unknown": {
+  "class": "control",
+  "direction": "subject-to-object",
+  "cardinality": "many",
+  "traversable": false
+ },
+ "safe-owner": {
+  "class": "control",
+  "direction": "subject-to-object",
+  "cardinality": "many",
+  "traversable": true
+ },
+ "safe-threshold": {
+  "class": "state",
+  "direction": "subject-to-object",
+  "cardinality": "one",
+  "traversable": false
+ },
+ "timelock-delay": {
+  "class": "state",
+  "direction": "subject-to-object",
+  "cardinality": "one",
+  "traversable": false
+ },
+ "deprecated": {
+  "class": "state",
+  "direction": "subject-to-object",
+  "cardinality": "one",
+  "traversable": false
+ },
+ "upgraded-address": {
+  "class": "state",
+  "direction": "subject-to-object",
+  "cardinality": "one",
+  "traversable": false
+ },
+ "freeze-operator": {
+  "class": "control",
+  "direction": "subject-to-object",
+  "cardinality": "one",
+  "traversable": false
+ },
+ "minter-admin": {
+  "class": "control",
+  "direction": "subject-to-object",
+  "cardinality": "one",
+  "traversable": false
+ }
+}

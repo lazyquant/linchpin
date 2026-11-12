@@ -1,0 +1,66 @@
+{
+  "note": "Marinade values are the base-commit measurements recorded by plan 032 (probe at ca5ed27, Neo4j unconfigured, committed fixtures, buildTokenomics called directly). Kamino values were measured by the tester on the built run tree and corroborate the probe record: capture sentora-pyusd-20261109T170418Z, state slot 467394687.",
+  "marinade": {
+    "bundle": "9e6fe9f8b0ef727a99eb93b529a396ab76072e08ede7067c787bc7d8bd605840",
+    "protocols0": "24f3d330a565718a2a9bac94c5291fcff880a8cc904b72dccd665e37433d242c",
+    "route": "f0134cbe92b9e6ce9940ef4876e4cbaa5d7281747be8794192ffa3f9b8e2849e",
+    "sections": {
+      "answer": "c82125f07ac67a6369d3c1e11d34fc13890a7b6e3824bc8b3ee1372e441ca716",
+      "path": "1655c8ba8b1ad0a73db11a2923c97835ee13b08233f82c71f45e4e91606b6ae2",
+      "control": "5fd10e7aa1969d571b29abaca8dc59965a2802cc83557dc6e6997d19ec4e7fff",
+      "offsets": "de74ab9f8f593af47d9f59ffd4af58f2f7b24b0764ff6fb8c496abbc0dd08ef0",
+      "parameters": "ed2773421790ef642de256d83e7c5746b3e63bb20dab2fa202b01de423a786e6",
+      "programs": "584fa8722ea99fafa57bdcac900e667518f826f92b7112e49cc2f60cfafc0823",
+      "participation": "f299240f6eddff77db82b845d770f5aa8df0d4973f4b1725c0813d01b7bf06a7",
+      "holders": "1affc9c34cec451126e94d4e7bcdc87535fe70a1e950e490968d26005f4520a5",
+      "flows": "448392f5d90f88aad4df18b0fbd741ee013a077adaa3929e737993e5b6706d45",
+      "claims": "8f814477d5765d906f4ea23d19792f2cafabb665a50fb672823300df11c57879",
+      "graph": "7da58c7f8774d0a7c8531ea2ae70e1024c904459e1f2dac0d2f6a24b37f39beb"
+    },
+    "export": {
+      "body": "c2a9a403c9eb7f440b0543a6857a2159e11f72861db39030c319eeeebce6f989",
+      "contentDisposition": "attachment; filename=\"linchpin-marinade-tokenomics.json\""
+    },
+    "evidenceIdSet": "a9551ed16917af2390edc196976ee643056905eb1d7485e899388c99cf351e4c",
+    "evidence200": "9e6ad8e4297e720d7352b3c65883398e1fe190752eb3460ab9f5672d96c3757b",
+    "evidenceUnknown": "e7da17446d9a07301d5048f233242a3f92fd2e52ded492d9908bc7e67e9b0f82",
+    "graph": {
+      "nodes": 585,
+      "relationships": 593,
+      "canonical": "13949d75f402f7b65fce13a6162e8b57d6f3be37ea92b32313a1d0c89baeb27a"
+    },
+    "queryList": "2785a13dcf1f77628377280e361fac410b874f95624e81d66ebced19bdf7a146",
+    "tokenomicsQueries": "f2e7bda300509d8171919c42e28febbb554a2506dce855b8275ae1a2d9e4cd1e",
+    "fakeLoad": {
+      "statements": 37,
+      "canonical": "7c86a04d4f2d759f7e5ee2a9fc86ce673d06571bd8051cc7c92b5c95b423933b"
+    },
+    "answers17": "024dc8d8e4f184fd663205be4fb438919b87130ebe0b90b6f28e4ceb3c47b5fa"
+  },
+  "kamino": {
+    "captureId": "sentora-pyusd-20261109T170418Z",
+    "stateSlot": 467394687,
+    "bundle": "53e20a4b04c7c024577051318454bc9dee8061d0fa6db1c4b22a8484306ce3f7",
+    "reads": { "live": 0, "replayed": 16, "retries": 0 },
+    "graph": { "nodes": 69, "relationships": 53 },
+    "dependencyCounts": { "ALLOCATES_TO": 7, "IN_MARKET": 7, "PRICED_BY": 7 },
+    "vaultDependenciesRows": 21,
+    "parameterRows": 28,
+    "controlRows": 12,
+    "controllers": 4,
+    "programRows": 3,
+    "loaderDryRun": {
+      "kamino": {
+        "protocol": "kamino",
+        "nodes": 69,
+        "relationships": 53,
+        "nodesByType": { "Authority": 4, "Claim": 1, "Controller": 4, "Market": 7, "Metric": 1, "OracleSource": 1, "Parameter": 28, "Program": 3, "Reserve": 7, "Role": 12, "Vault": 1 },
+        "relationshipsByType": { "ALLOCATES_TO": 7, "CAN_CHANGE": 12, "CHECKS": 1, "CONTROLLED_BY": 4, "HELD_BY": 12, "IN_MARKET": 7, "PRICED_BY": 7, "UPGRADE_AUTHORITY": 3 }
+      },
+      "default": {
+        "nodes": 585,
+        "relationships": 593
+      }
+    }
+  }
+}

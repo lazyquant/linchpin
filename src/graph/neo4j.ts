@@ -159,16 +159,20 @@ export function cypherBatches(records: GraphRecords): { constraints: string[]; n
       for (let i = 0; i < values.length; i += 500) destination.push({ cypher: query(label), params: { rows: values.slice(i, i + 500) as object[] } });
   }
   batches(records.nodes, n => n.label, label => `UNWIND $rows AS row
-MERGE (n:Entity {id: row.id})
+MERGE (n:CaseEntity {id: row.id})
 WITH n, row, reduce(cases = coalesce(n.cases, []), c IN row.props.cases | CASE WHEN c IN cases THEN cases ELSE cases + c END) AS cases
 SET n += row.props, n.cases = cases
 SET n:${label}`, nodeBatches);
   batches(records.relationships, r => { if (!RELATION_TYPES[r.type]) throw new Error('Unsupported graph relation'); return r.type; }, type => `UNWIND $rows AS row
-MATCH (a:Entity {id: row.source}), (b:Entity {id: row.target})
+MATCH (a:CaseEntity {id: row.source}), (b:CaseEntity {id: row.target})
 MERGE (a)-[r:${type} {key: row.key}]->(b)
 SET r += row.props
 SET r.slot = toInteger(row.props.slot), r.decimals = toInteger(row.props.decimals)`, relBatches);
-  return { constraints: ['CREATE CONSTRAINT entity_id IF NOT EXISTS FOR (n:Entity) REQUIRE n.id IS UNIQUE'], nodeBatches, relBatches };
+  return { constraints: [
+    'MATCH (n:Entity) WHERE n.schemaVersion IS NULL SET n:CaseEntity REMOVE n:Entity',
+    'DROP CONSTRAINT entity_id IF EXISTS',
+    'CREATE CONSTRAINT case_entity_id IF NOT EXISTS FOR (n:CaseEntity) REQUIRE n.id IS UNIQUE',
+  ], nodeBatches, relBatches };
 }
 export function neo4jConfigFromEnv(env: Record<string, string | undefined> = process.env) {
   if (!env.NEO4J_URI || !env.NEO4J_PASSWORD) return null;
@@ -190,7 +194,7 @@ const joinCypher = (list: string, separator: string) => `reduce(text = '', value
 // Sum decimal strings by columns. Neither IEEE-754 nor Neo4j's signed 64-bit
 // integer range can truncate raw u64 amounts or a sum exceeding that range.
 const digitSum = `s.carry + reduce(v = 0, amount IN amounts | v + coalesce(toInteger(substring(reverse(amount), i, 1)), 0))`;
-const externalCypher = `MATCH (:Entity)-[r:TRANSFER]->(d:Entity)
+const externalCypher = `MATCH (:CaseEntity)-[r:TRANSFER]->(d:CaseEntity)
 WHERE r.flow = $flow AND r.asset = $mint
 WITH d.id AS destination, collect(DISTINCT r.destinationControl) AS controls,
      count(DISTINCT r.proposal) AS proposals, collect(r.amountRaw) AS amounts,
@@ -214,14 +218,14 @@ ORDER BY size(totalRaw) DESC, totalRaw DESC, destination`;
 export const CANNED_QUERIES: CannedQuery[] = [
   { id: 'shared-controllers', title: 'Shared controllers', question: 'Which controllers appear in two or more recorded cases?',
     columns: ['entity', 'type', 'label', 'cases', 'inboundControlEdges'], params: { types: ['Governance', 'NativeTreasury', 'Realm', 'Program'], controlTypes: CONTROL_TYPES },
-    cypher: `MATCH (n:Entity) WHERE n.type IN $types AND size(n.cases) >= 2
+    cypher: `MATCH (n:CaseEntity) WHERE n.type IN $types AND size(n.cases) >= 2
 CALL { WITH n UNWIND n.cases AS c WITH c ORDER BY c RETURN collect(c) AS cases }
-OPTIONAL MATCH (:Entity)-[r]->(n) WHERE type(r) IN $controlTypes
+OPTIONAL MATCH (:CaseEntity)-[r]->(n) WHERE type(r) IN $controlTypes
 RETURN n.id AS entity, n.type AS type, n.label AS label, ${joinCypher('cases', ',')} AS cases, count(r) AS inboundControlEdges
 ORDER BY entity` },
   { id: 'paths-to-realm', title: 'Paths to Marinade DAO', question: 'Which token accounts, programs and mints have a control path of up to four hops to the Marinade realm?',
     columns: ['start', 'startType', 'hops', 'path', 'bases', 'cases'], params: { realm: MARINADE_REALM, startTypes: ['TokenAccount', 'Program', 'Mint'], controlTypes: CONTROL_TYPES },
-    cypher: `MATCH p = (s:Entity)-[*1..4]->(:Entity {id: $realm})
+    cypher: `MATCH p = (s:CaseEntity)-[*1..4]->(:CaseEntity {id: $realm})
 WHERE s.type IN $startTypes AND all(r IN relationships(p) WHERE type(r) IN $controlTypes)
 CALL { WITH p UNWIND relationships(p) AS r WITH DISTINCT r.case AS c ORDER BY c RETURN collect(c) AS cases }
 RETURN DISTINCT s.id AS start, s.type AS startType, length(p) AS hops,
@@ -232,10 +236,10 @@ ORDER BY start, hops, path, bases, cases` },
     columns: ['destination', 'destinationControl', 'proposals', 'totalRaw', 'totalDisplay', 'firstExecutedAt', 'lastExecutedAt'], params: { mint: MNDE_MINT, flow: 'externalOutflows' }, cypher: externalCypher },
   { id: 'case-inventory', title: 'Recorded case inventory', question: 'How many entities, relationships and evidence records are indexed for each case, and at which slots?',
     columns: ['case', 'nodes', 'relationships', 'evidence', 'slotMin', 'slotMax'], params: {},
-    cypher: `MATCH (n:Entity) UNWIND n.cases AS caseId
+    cypher: `MATCH (n:CaseEntity) UNWIND n.cases AS caseId
 WITH caseId, count(n) AS nodes, max(n['inventoryEvidence_' + caseId]) AS evidence,
      min(n['inventorySlotMin_' + caseId]) AS slotMin, max(n['inventorySlotMax_' + caseId]) AS slotMax
-CALL { WITH caseId MATCH (:Entity)-[r]->(:Entity) WHERE r.case = caseId RETURN count(r) AS relationships }
+CALL { WITH caseId MATCH (:CaseEntity)-[r]->(:CaseEntity) WHERE r.case = caseId RETURN count(r) AS relationships }
 RETURN caseId AS case, nodes, relationships, coalesce(evidence, 0) AS evidence, slotMin, slotMax ORDER BY case` },
 ];
 function canned(id: string): CannedQuery {

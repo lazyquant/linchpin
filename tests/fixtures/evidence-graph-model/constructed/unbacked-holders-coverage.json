@@ -1,0 +1,47 @@
+{
+  "note": "AC5 negative fixture: a constructed protocol registry that marks the holders mechanic as mapped although the snapshot holds no fact of a holders-assigned predicate. Expected: buildEvidenceRecords refuses with BuildRejected 'unbacked-coverage'.",
+  "snapshot": {
+    "version": 1,
+    "id": "solana-mainnet-beta.kamino.sentora-pyusd-20261110T140000Z",
+    "chain": "solana",
+    "network": "mainnet-beta",
+    "constructed": false,
+    "observedFrom": "2026-11-09T17:04:20.763Z",
+    "observedTo": "2026-11-09T17:04:20.763Z",
+    "fromBlockOrSlot": "700",
+    "toBlockOrSlot": "700",
+    "freshUntil": "2026-11-10T17:04:20.763Z",
+    "subjects": ["solana:mainnet-beta:A2wsxhA7pF4B2UKVfXocb6TAAP9ipfPJam6oMKgDE5BK"],
+    "readers": [{ "id": "tester-unbacked-reader", "status": "complete", "subjects": ["solana:mainnet-beta:A2wsxhA7pF4B2UKVfXocb6TAAP9ipfPJam6oMKgDE5BK"] }],
+    "names": {},
+    "receipts": [
+      { "id": "rc-tester-unbacked-va", "source": "tester-fixture:unbacked-holders-coverage/vault-admin", "responseSha256": "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee", "privacy": "public", "observation": { "chain": "solana", "network": "mainnet-beta", "blockOrSlot": "700", "blockHash": null, "observedAt": "2026-11-09T17:04:20.763Z", "retrievedAt": "2026-11-09T17:04:20.763Z", "historicalState": "current-only" } }
+    ],
+    "facts": [
+      { "id": "f-tester-unbacked-va", "subject": "solana:mainnet-beta:A2wsxhA7pF4B2UKVfXocb6TAAP9ipfPJam6oMKgDE5BK", "predicate": "VAULT_ADMIN", "object": "solana:mainnet-beta:7fLxEftpppneavpueYgP2s7HhSGbWpj2jTCmAEwwqonY", "basis": "decoded", "status": "verified", "evidenceIds": ["rc-tester-unbacked-va"], "path": [], "validFrom": null, "validTo": null, "privacy": "public" }
+    ]
+  },
+  "protocols": [
+    {
+      "id": "protocol:tester-unbacked",
+      "title": "Tester unbacked holders",
+      "series": "kamino.sentora-pyusd",
+      "source": "tests/fixtures/evidence-graph-model/constructed/unbacked-holders-coverage.json",
+      "memberRule": "snapshot-subjects",
+      "members": [],
+      "coverage": [
+        { "mechanic": "control", "status": "mapped", "note": "Tester fixture: backed by the VAULT_ADMIN fact." },
+        { "mechanic": "code-upgrade", "status": "not-mapped", "note": "Tester fixture: not mapped." },
+        { "mechanic": "supply", "status": "not-mapped", "note": "Tester fixture: not mapped." },
+        { "mechanic": "dependencies", "status": "not-mapped", "note": "Tester fixture: not mapped." },
+        { "mechanic": "parameters", "status": "not-mapped", "note": "Tester fixture: not mapped." },
+        { "mechanic": "fees", "status": "not-mapped", "note": "Tester fixture: not mapped." },
+        { "mechanic": "treasury", "status": "not-mapped", "note": "Tester fixture: not mapped." },
+        { "mechanic": "governance", "status": "not-mapped", "note": "Tester fixture: not mapped." },
+        { "mechanic": "holders", "status": "mapped", "note": "Tester fixture: deliberately unbacked; no holders-assigned predicate has a fact in this series." },
+        { "mechanic": "flows", "status": "not-mapped", "note": "Tester fixture: not mapped." },
+        { "mechanic": "claims", "status": "not-mapped", "note": "Tester fixture: not mapped." }
+      ]
+    }
+  ]
+}

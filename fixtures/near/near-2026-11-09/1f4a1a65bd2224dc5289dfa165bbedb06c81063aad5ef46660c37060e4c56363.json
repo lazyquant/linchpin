@@ -1,0 +1,31 @@
+{
+ "version": 1,
+ "requestSha256": "1f4a1a65bd2224dc5289dfa165bbedb06c81063aad5ef46660c37060e4c56363",
+ "request": {
+  "method": "query",
+  "params": {
+   "account_id": "omft.near",
+   "request_type": "call_function",
+   "method_name": "acl_get_permissioned_accounts",
+   "args_base64": "e30=",
+   "finality": "final"
+  }
+ },
+ "endpointHost": "archival-rpc.mainnet.fastnear.com",
+ "retrievedAt": "2026-11-09T19:32:22.423Z",
+ "httpStatus": 200,
+ "outcome": "result",
+ "blockHeight": "223810599",
+ "blockHash": "HfjCv27nWiCrJtpLvvGfbTTiivwuiECvKdmLokjLqLV5",
+ "responseSha256": "04379c6ad319b3a785298c59a4e069832ece7a287f7fce91ce78cf861839e491",
+ "response": {
+  "jsonrpc": "2.0",
+  "result": {
+   "block_hash": "HfjCv27nWiCrJtpLvvGfbTTiivwuiECvKdmLokjLqLV5",
+   "block_height": 223810599,
+   "logs": []
+  },
+  "id": "near-reader"
+ },
+ "resultText": "{\"super_admins\":[\"omft.near\",\"intents.sputnik-dao.near\"],\"roles\":{\"TokenDeployer\":{\"admins\":[],\"grantees\":[\"bridge-mng.near\",\"int-dpl-dao.sputnik-dao.near\"]},\"TokenDepositer\":{\"admins\":[],\"grantees\":[\"bridge-mng.near\",\"int-mnt-dao.sputnik-dao.near\"]},\"UnpauseManager\":{\"admins\":[],\"grantees\":[]},\"DAO\":{\"admins\":[],\"grantees\":[\"intents.sputnik-dao.near\"]},\"PauseManager\":{\"admins\":[],\"grantees\":[]}}}"
+}

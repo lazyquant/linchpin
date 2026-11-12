@@ -1,0 +1,31 @@
+{
+ "version": 1,
+ "requestSha256": "db6c32f48fcf4a6e7e9f196144ded7f48b05a5be627af831d056c26998ff2729",
+ "request": {
+  "method": "query",
+  "params": {
+   "account_id": "burrow.sputnik-dao.near",
+   "request_type": "call_function",
+   "method_name": "get_proposal",
+   "args_base64": "eyJpZCI6OTAwMDE5fQ==",
+   "finality": "final"
+  }
+ },
+ "endpointHost": "archival-rpc.mainnet.fastnear.com",
+ "retrievedAt": "2026-11-09T19:30:36.329Z",
+ "httpStatus": 200,
+ "outcome": "result",
+ "blockHeight": "223810415",
+ "blockHash": "9Hb4Kravs84Vhv13YuVtDKhoxTHxbhbq9FsRgmiNqfcM",
+ "responseSha256": "72faed25f7ab30d6b67e02fae6ac8597f878beb2a80726f2f7665511f29c378e",
+ "response": {
+  "jsonrpc": "2.0",
+  "result": {
+   "block_hash": "9Hb4Kravs84Vhv13YuVtDKhoxTHxbhbq9FsRgmiNqfcM",
+   "block_height": 223810415,
+   "logs": []
+  },
+  "id": "near-reader"
+ },
+ "resultText": "{\"id\":900019,\"proposer\":\"linchpin-constructed-proposer.near\",\"status\":\"InProgress\",\"submission_time\":\"1794130938955922010\",\"kind\":{\"FunctionCall\":{\"receiver_id\":\"aggregate-oracle.near\",\"actions\":[{\"method_name\":\"set_owner\",\"args\":\"eyJvd25lcl9pZCI6ImxpbmNocGluLWNvbnN0cnVjdGVkLW93bmVyLm5lYXIifQ==\",\"deposit\":\"1\",\"gas\":\"120000000000000\"}]}},\"votes\":{},\"vote_counts\":{}}"
+}

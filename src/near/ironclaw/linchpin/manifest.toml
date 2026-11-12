@@ -1,0 +1,125 @@
+schema_version = "reborn.extension_manifest.v3"
+id = "linchpin"
+name = "Linchpin"
+version = "0.1.0"
+description = "Read-only NEAR dependency, control and policy evidence with receipts."
+trust = "third_party"
+
+[mcp]
+server = "https://<host>/mcp"
+namespace = "linchpin"
+max_tools = 8
+default_permission = "ask"
+effects = ["network", "use_secret"]
+
+[mcp.origin_gate_matrix]
+automation = "forbidden"
+loop_run = "gated_unless_granted"
+product = "forbidden"
+
+[[mcp.credentials]]
+handle = "linchpin_mcp_token"
+vendor = "linchpin"
+scopes = []
+injection = { type = "header", name = "authorization", prefix = "Bearer " }
+
+[auth.linchpin]
+method = "api_key"
+display_name = "Linchpin MCP token"
+fields = [{ handle = "linchpin_mcp_token", label = "Linchpin MCP token", secret = true }]
+
+[[tools]]
+default_permission = "ask"
+description = "List public NEAR subjects and snapshot coverage."
+id = "linchpin.linchpin_subjects"
+input_schema_ref = "schemas/linchpin/linchpin_subjects.input.v1.json"
+prompt_doc_ref = "prompts/linchpin/linchpin_subjects.md"
+
+[tools.origin_gate_matrix]
+automation = "forbidden"
+loop_run = "gated_unless_granted"
+product = "forbidden"
+
+[[tools]]
+default_permission = "ask"
+description = "Read bounded dependency facts and receipts."
+id = "linchpin.linchpin_dependencies"
+input_schema_ref = "schemas/linchpin/linchpin_dependencies.input.v1.json"
+prompt_doc_ref = "prompts/linchpin/linchpin_dependencies.md"
+
+[tools.origin_gate_matrix]
+automation = "forbidden"
+loop_run = "gated_unless_granted"
+product = "forbidden"
+
+[[tools]]
+default_permission = "ask"
+description = "Read control facts, roles and receipts for a public subject."
+id = "linchpin.linchpin_control"
+input_schema_ref = "schemas/linchpin/linchpin_control.input.v1.json"
+prompt_doc_ref = "prompts/linchpin/linchpin_control.md"
+
+[tools.origin_gate_matrix]
+automation = "forbidden"
+loop_run = "gated_unless_granted"
+product = "forbidden"
+
+[[tools]]
+default_permission = "ask"
+description = "Compare recorded dependency facts between snapshots."
+id = "linchpin.linchpin_changes"
+input_schema_ref = "schemas/linchpin/linchpin_changes.input.v1.json"
+prompt_doc_ref = "prompts/linchpin/linchpin_changes.md"
+
+[tools.origin_gate_matrix]
+automation = "forbidden"
+loop_run = "gated_unless_granted"
+product = "forbidden"
+
+[[tools]]
+default_permission = "ask"
+description = "Read public evidence receipts by identifier."
+id = "linchpin.linchpin_evidence"
+input_schema_ref = "schemas/linchpin/linchpin_evidence.input.v1.json"
+prompt_doc_ref = "prompts/linchpin/linchpin_evidence.md"
+
+[tools.origin_gate_matrix]
+automation = "forbidden"
+loop_run = "gated_unless_granted"
+product = "forbidden"
+
+[[tools]]
+default_permission = "ask"
+description = "Read asset route coverage and receipted observations."
+id = "linchpin.linchpin_intent_review"
+input_schema_ref = "schemas/linchpin/linchpin_intent_review.input.v1.json"
+prompt_doc_ref = "prompts/linchpin/linchpin_intent_review.md"
+
+[tools.origin_gate_matrix]
+automation = "forbidden"
+loop_run = "gated_unless_granted"
+product = "forbidden"
+
+[[tools]]
+default_permission = "ask"
+description = "Read proposal effects and explicit coverage gaps."
+id = "linchpin.linchpin_governance_review"
+input_schema_ref = "schemas/linchpin/linchpin_governance_review.input.v1.json"
+prompt_doc_ref = "prompts/linchpin/linchpin_governance_review.md"
+
+[tools.origin_gate_matrix]
+automation = "forbidden"
+loop_run = "gated_unless_granted"
+product = "forbidden"
+
+[[tools]]
+default_permission = "ask"
+description = "Evaluate a server policy over recorded public evidence."
+id = "linchpin.linchpin_policy_verdict"
+input_schema_ref = "schemas/linchpin/linchpin_policy_verdict.input.v1.json"
+prompt_doc_ref = "prompts/linchpin/linchpin_policy_verdict.md"
+
+[tools.origin_gate_matrix]
+automation = "forbidden"
+loop_run = "gated_unless_granted"
+product = "forbidden"

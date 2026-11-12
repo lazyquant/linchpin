@@ -1,0 +1,19 @@
+{
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "dao": {
+      "type": "string",
+      "maxLength": 256,
+      "pattern": "^(near:mainnet:)?[a-z0-9][a-z0-9._~-]*(#[a-z-]+:[A-Za-z0-9._~-]+)?$"
+    },
+    "proposalId": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 1000000000
+    }
+  },
+  "required": [
+    "dao"
+  ]
+}

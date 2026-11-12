@@ -1,0 +1,49 @@
+{
+  "version": 1,
+  "id": "solana-mainnet-beta.kamino.sentora-pyusd-constructed-mint-unknown",
+  "chain": "solana",
+  "network": "mainnet-beta",
+  "constructed": true,
+  "observedFrom": "2026-11-10T00:00:00.000Z",
+  "observedTo": "2026-11-10T00:00:00.000Z",
+  "fromBlockOrSlot": null,
+  "toBlockOrSlot": null,
+  "freshUntil": "2027-01-01T00:00:00.000Z",
+  "subjects": ["solana:mainnet-beta:Mint2222222222222222222222222222222222222"],
+  "readers": [
+    { "id": "mint-fixture-reader", "status": "complete", "subjects": ["solana:mainnet-beta:Mint2222222222222222222222222222222222222"] }
+  ],
+  "names": {},
+  "receipts": [
+    {
+      "id": "rc-mint-unknown-fixture",
+      "source": "constructed fixture record, written for this test, no network read",
+      "responseSha256": "1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e",
+      "observation": {
+        "chain": "solana",
+        "network": "mainnet-beta",
+        "blockOrSlot": null,
+        "blockHash": null,
+        "observedAt": "2026-11-10T00:00:00.000Z",
+        "retrievedAt": "2026-11-10T00:00:00.000Z",
+        "historicalState": "constructed"
+      },
+      "privacy": "public"
+    }
+  ],
+  "facts": [
+    {
+      "id": "fact-mint-unknown-fixture-001",
+      "subject": "solana:mainnet-beta:Mint2222222222222222222222222222222222222",
+      "predicate": "MINT_AUTHORITY",
+      "object": "unknown",
+      "basis": "decoded",
+      "status": "unverified",
+      "evidenceIds": ["rc-mint-unknown-fixture"],
+      "path": [],
+      "validFrom": "2026-11-09T00:00:00.000Z",
+      "validTo": null,
+      "privacy": "public"
+    }
+  ]
+}

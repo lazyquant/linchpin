@@ -11,18 +11,18 @@ export type GovernanceBridge = GraphOrigin & { rows: GovernanceTouch[] };
 export const SUMMARY_QUERIES = [
   'MATCH (n) RETURN count(n) AS count',
   'MATCH ()-[r]->() RETURN count(r) AS count',
-  'MATCH (n:Entity) RETURN count(n) AS count',
+  'MATCH (n:CaseEntity) RETURN count(n) AS count',
   'MATCH (n:TG) RETURN count(n) AS count',
-  "MATCH (n) UNWIND labels(n) AS l WITH l WHERE l <> 'Entity' AND l <> 'TG' RETURN l, count(*) AS count",
+  "MATCH (n) UNWIND labels(n) AS l WITH l WHERE l <> 'CaseEntity' AND l <> 'TG' RETURN l, count(*) AS count",
   'MATCH (:TG)-[r]->(:TG) RETURN count(r) AS count',
 ];
-export const PROPOSAL_BRIDGE_CYPHER = `MATCH (c:Entity) WHERE $case IN c.cases
+export const PROPOSAL_BRIDGE_CYPHER = `MATCH (c:CaseEntity) WHERE $case IN c.cases
 MATCH (t:TG {address: c.id})
 OPTIONAL MATCH (t)-[r]-(u:TG)
 WITH c, t, collect(DISTINCT type(r) + ' · ' + coalesce(u.label, u.id))[0..6] AS links
 RETURN c.id AS address, c.type AS caseRole, c.label AS caseLabel, head([l IN labels(t) WHERE l <> 'TG']) AS tokenomicsType, coalesce(t.label, t.id) AS tokenomicsLabel, links
 ORDER BY tokenomicsType, caseLabel`;
-export const GOVERNANCE_BRIDGE_CYPHER = `MATCH (t:TG) MATCH (c:Entity {id: t.address})
+export const GOVERNANCE_BRIDGE_CYPHER = `MATCH (t:TG) MATCH (c:CaseEntity {id: t.address})
 UNWIND c.cases AS caseId
 RETURN caseId, count(DISTINCT c) AS sharedAccounts, collect(DISTINCT t.label)[0..8] AS examples, collect(DISTINCT c.label) AS entityLabels
 ORDER BY sharedAccounts DESC`;

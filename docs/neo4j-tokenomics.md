@@ -2,13 +2,24 @@
 
 The tokenomics graph projects the captured API bundle. It performs no Solana reads beyond offline fixture replay, and introduces no independent fact calculations. The graph and API therefore use the same amounts, controllers, windows, claim checks and qualifications.
 
+## Protocols
+
+Two protocols are projected, each into its own namespace label, so both can sit in one database without touching each other:
+
+| Protocol | Namespace | Built from | Queries |
+|---|---|---|---|
+| Marinade | `:TG` | the captured Marinade pack | the eight in the table below |
+| Kamino (the Sentora PYUSD kVault) | `:TGKamino` | the recorded Kamino capture, replayed offline | `who-can-change`, `upgrade-control`, `claims-vs-chain`, `vault-dependencies` |
+
+The registry is `TOKENOMICS_REGISTRY` in `src/tokenomics/registry.ts`. Everything below that says `:TG` holds for each namespace; where Kamino differs it is said.
+
 ## Namespace and loading
 
-Every node has `:TG` and exactly one type label:
+Every node has its protocol's namespace label (`:TG` or `:TGKamino`) and exactly one type label:
 
-`Governance`, `PathNode`, `Program`, `Parameter`, `Role`, `Authority`, `Controller`, `Member`, `Mint`, `TokenAccount`, `Claim`, `HolderGroup`, `Metric`.
+`Governance`, `PathNode`, `Program`, `Parameter`, `Role`, `Authority`, `Controller`, `Member`, `Mint`, `TokenAccount`, `Claim`, `HolderGroup`, `Metric`, and, used by Kamino, `Vault`, `Reserve`, `Market`, `OracleSource`.
 
-Relationships are `ROUTES_TO`, `SET_BY`, `HELD_BY`, `CONTROLLED_BY`, `MEMBER_OF`, `UPGRADE_AUTHORITY`, `MINT_AUTHORITY`, `FREEZE_AUTHORITY`, `CAN_CHANGE`, `CHECKS`, `HOLDS`, `LOCKS`, `VOTES_IN`, and `VETOES`.
+Relationships are `ROUTES_TO`, `SET_BY`, `HELD_BY`, `CONTROLLED_BY`, `MEMBER_OF`, `UPGRADE_AUTHORITY`, `MINT_AUTHORITY`, `FREEZE_AUTHORITY`, `CAN_CHANGE`, `CHECKS`, `HOLDS`, `LOCKS`, `VOTES_IN`, `VETOES`, `SAME_MEMBERS_AS`, and, used by Kamino, `ALLOCATES_TO`, `IN_MARKET` and `PRICED_BY`.
 
 Every relationship carries `basis` (an array), `evidenceIds`, `slot`, and `key`. Keys are SHA-256 of the type, endpoints and distinguishing fields such as the source link ID or setter instruction. Evidence IDs resolve through the tokenomics evidence endpoint. Raw token amounts remain strings; no floating-point sum is used. `MEMBER_OF` represents recorded multisig owners and current council owners. Unresolved groups retain address details in `detailAddresses`. `Governance` nodes preserve individual configurations; controllers reach them through `VOTES_IN` or veto-only `VETOES`, carrying per-side permissions and threshold text. Governance `CAN_CHANGE` edges identify the controlled targets.
 
@@ -16,9 +27,10 @@ Static validation rejects any other label or relationship, notably the governanc
 
 ```cypher
 CREATE CONSTRAINT tg_id IF NOT EXISTS FOR (n:TG) REQUIRE n.id IS UNIQUE
+CREATE CONSTRAINT tg_kamino_id IF NOT EXISTS FOR (n:TGKamino) REQUIRE n.id IS UNIQUE
 ```
 
-It replaces the TG namespace so removed facts cannot survive a new snapshot. The governance-case namespace is retained. Values enter Cypher exclusively through parameters, and validated type groups use `UNWIND` batches of at most 500 records. Nodes load before relationships. Replacement is sequential, not one atomic transaction; a failed load may leave an incomplete TG snapshot. The API's query parity check then falls back to its complete local graph until a successful reload.
+A load replaces only the namespace of the protocol being loaded, so removed facts cannot survive a new snapshot and the other protocol is left as it was. The governance-case namespace is retained. Values enter Cypher exclusively through parameters, and validated type groups use `UNWIND` batches of at most 500 records. Nodes load before relationships. Replacement is sequential, not one atomic transaction; a failed load may leave an incomplete TG snapshot. The API's query parity check then falls back to its complete local graph until a successful reload.
 
 Before the first write and after the last write, all four `CANNED_QUERIES` execute via `runCannedNeo4j`. Sorted normalized rows must remain equal, including duplicates. Load results report `regression: 'unchanged' | 'changed'` and `changedQueries`. A change fails the API graph envelope and the CLI exits nonzero. The governance-case queries are read-only throughout this check.
 
@@ -27,18 +39,22 @@ Before the first write and after the last write, all four `CANNED_QUERIES` execu
 Inspect the offline graph without creating a driver or accessing a network:
 
 ```sh
-bun run scripts/load-tokenomics-neo4j.ts --dry-run
+bun run scripts/load-tokenomics-neo4j.ts --dry-run                      # Marinade (the default)
+bun run scripts/load-tokenomics-neo4j.ts --dry-run --protocol kamino
 ```
 
 With `NEO4J_URI`, `NEO4J_PASSWORD` and optionally `NEO4J_USERNAME` / `NEO4J_DATABASE` already configured securely:
 
 ```sh
-bun run scripts/load-tokenomics-neo4j.ts
+bun run scripts/load-tokenomics-neo4j.ts                     # Marinade
+bun run scripts/load-tokenomics-neo4j.ts --protocol kamino
 ```
+
+`bun run db:load` loads the governance cases and Marinade only; Kamino is loaded with the second command.
 
 The loader prints counts by type, redacted host, batch totals, regression result and the eight query row counts. It exits nonzero for a changed governance-case query, a failed load, or an Aura result that differs from the captured bundle. Credentials are never printed.
 
-The server endpoint is `POST /api/tokenomics/marinade/graph/load`. It accepts same-origin requests, serializes loads, and caps a load at 120 seconds. GET requests never load the database. READ queries have a five-second deadline and a 30-second cache. The driver is created only when needed. Unavailable or stale Aura results use local rows and a scrubbed explanation.
+The server endpoint is `POST /api/tokenomics/<protocol>/graph/load` (`marinade` or `kamino`). It accepts same-origin requests, serializes loads, and caps a load at 120 seconds. GET requests never load the database. READ queries have a five-second deadline and a 30-second cache. The driver is created only when needed. Unavailable or stale Aura results use local rows and a scrubbed explanation.
 
 ## Queries
 
@@ -53,6 +69,7 @@ The server endpoint is `POST /api/tokenomics/marinade/graph/load`. It accepts sa
 | `upgrade-control` | Program → upgrade authority → controller, including the recorded multisig threshold. |
 | `who-votes-where` | Voting body → exact governance → controlled target, with classification, side and thresholds. The DAO council controls the admin governance; VSR community voting is separate. |
 | `claims-vs-chain` | Claim → checked fact, with G5 status and chain result, plus earlier decoded checks. |
+| `vault-dependencies` | Kamino only. Vault → reserve (`ALLOCATES_TO`) → lending market (`IN_MARKET`) and oracle source (`PRICED_BY`): what the vault's deposits rest on. |
 | `holders-and-float` | Holder group → mint, with exact raw amount, display and supply share. Float components, estimates and top-owner groups overlap; never sum all rows. |
 
 ## Aura console examples

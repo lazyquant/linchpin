@@ -1,0 +1,31 @@
+{
+ "version": 1,
+ "requestSha256": "5ba855a7de713bf7beaba66b28dc315040052ad6aa9ce8d33c15bb568f08d005",
+ "request": {
+  "method": "query",
+  "params": {
+   "account_id": "intents.near",
+   "request_type": "call_function",
+   "method_name": "acl_get_permissioned_accounts",
+   "args_base64": "e30=",
+   "finality": "final"
+  }
+ },
+ "endpointHost": "archival-rpc.mainnet.fastnear.com",
+ "retrievedAt": "2026-11-09T19:31:30.348Z",
+ "httpStatus": 200,
+ "outcome": "result",
+ "blockHeight": "223810509",
+ "blockHash": "2v2XwoZipWQHdrnBBQdQqBE5TzcqHnLfbCe1Giuf1idW",
+ "responseSha256": "dadecc7e3ebacff1fbd443578491a97de1316c073193b05e1867f6ce761da756",
+ "response": {
+  "jsonrpc": "2.0",
+  "result": {
+   "block_hash": "2v2XwoZipWQHdrnBBQdQqBE5TzcqHnLfbCe1Giuf1idW",
+   "block_height": 223810509,
+   "logs": []
+  },
+  "id": "near-reader"
+ },
+ "resultText": "{\"super_admins\":[\"intents.sputnik-dao.near\",\"intents.near\"],\"roles\":{\"SaltManager\":{\"admins\":[],\"grantees\":[]},\"FeesManager\":{\"admins\":[],\"grantees\":[]},\"Upgrader\":{\"admins\":[],\"grantees\":[\"ctl-intents.near\"]},\"UnrestrictedWithdrawer\":{\"admins\":[],\"grantees\":[]},\"UnrestrictedAccountUnlocker\":{\"admins\":[],\"grantees\":[]},\"GarbageCollector\":{\"admins\":[],\"grantees\":[]},\"UnrestrictedAccountManager\":{\"admins\":[],\"grantees\":[]},\"DAO\":{\"admins\":[],\"grantees\":[\"intents.sputnik-dao.near\"]},\"RelayerKeysManager\":{\"admins\":[],\"grantees\":[\"relay-key-manager.near\"]},\"UnrestrictedAccountLocker\":{\"admins\":[],\"grantees\":[\"b6be09281567fc42ee6a453c6156445deeb8f09723d769a751646216c5ea00fc\",\"ac39364aae9f15438b575f677768c2cf4a7cc74b7dcd198980e8618f003ff538\"]},\"UnpauseManager\":{\"admins\":[],\"grantees\":[]},\"PauseManager\":{\"admins\":[],\"grantees\":[\"8e69c33b572dad1f2da6f744c834705e651d3784af2471b58949f2fefd5b55d3\",\"5024319f62e6f45f1b2364e6b92c58413d5279d20730cb2e616a613967cb692c\",\"9600c0ec4de7a77f828965528c8c6028ba3aa430e4537cd25b7865d9430f63ae\",\"ac39364aae9f15438b575f677768c2cf4a7cc74b7dcd198980e8618f003ff538\",\"e33d30ea7c7b271a580bd609100d4f21a07c83f4eb643a1d151c2639471368d0\",\"c98fb45fe2941904f763ff4c2fa2b621b5eb9a57f8daf420679957c08c1a1c34\",\"pm.bridge.near\"]}}}"
+}

@@ -1,6 +1,6 @@
 {
   "name": "linchpin",
-  "version": "0.6.0",
+  "version": "0.7.0",
   "description": "The dependency engine for protocol economics: governance review and protocol research from Solana mainnet evidence.",
   "license": "Apache-2.0",
   "type": "module",
@@ -19,6 +19,7 @@
     "web:local": "bun run scripts/local-neo4j.ts web"
   },
   "dependencies": {
+    "@noble/hashes": "1.8.0",
     "@solana/spl-governance": "0.3.28",
     "@solana/spl-token": "0.4.15",
     "@solana/web3.js": "1.99.0",

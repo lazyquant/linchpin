@@ -6,8 +6,8 @@ import { isPredicate } from "./vocabulary";
 export interface EvidenceSnapshot {
   version: 1;
   id: string;
-  chain: "solana";
-  network: "mainnet-beta" | "devnet" | "testnet";
+  chain: "solana" | "near" | "ethereum";
+  network: "mainnet-beta" | "devnet" | "testnet" | "mainnet";
   constructed: boolean;
   observedFrom: string;
   observedTo: string;
@@ -52,31 +52,31 @@ function uniqueStrings(value: unknown, validate: (v: unknown) => void): string[]
   check(new Set(a).size === a.length, "duplicate entry"); return a as string[];
 }
 function oneOf(value: unknown, values: readonly unknown[]) { check(values.includes(value), "unknown enum value"); }
-function subject(value: unknown, network: unknown): asserts value is string {
-  text(value); check(SUBJECT_PATTERN.test(value) && value.startsWith(`solana:${network}:`), "malformed or incompatible subject");
+function subject(value: unknown, network: unknown, chain: unknown): asserts value is string {
+  text(value); check(SUBJECT_PATTERN.test(value) && value.startsWith(`${chain}:${network}:`), "malformed or incompatible subject");
 }
 function privacy(value: unknown) { oneOf(value, ["public", "private"]); }
 
 /** Validate at the storage boundary and return an owned copy, never the caller's mutable input. */
 export function validateSnapshot(input: unknown): EvidenceSnapshot {
   const s = object(input, ["version", "id", "chain", "network", "constructed", "observedFrom", "observedTo", "fromBlockOrSlot", "toBlockOrSlot", "freshUntil", "subjects", "readers", "names", "receipts", "facts"]);
-  check(s.version === 1 && s.chain === "solana", "unsupported snapshot version or chain");
-  id(s.id); oneOf(s.network, ["mainnet-beta", "devnet", "testnet"]);
+  check(s.version === 1 && (s.chain === "solana" || s.chain === "near" || s.chain === "ethereum"), "unsupported snapshot version or chain");
+  id(s.id); oneOf(s.network, s.chain === "near" ? ["mainnet", "testnet"] : s.chain === "ethereum" ? ["mainnet"] : ["mainnet-beta", "devnet", "testnet"]);
   check(typeof s.constructed === "boolean", "expected constructed flag");
   time(s.observedFrom); time(s.observedTo); time(s.freshUntil);
   check(Date.parse(s.observedFrom) <= Date.parse(s.observedTo), "inverted observation boundary");
   slot(s.fromBlockOrSlot); slot(s.toBlockOrSlot);
   if (s.fromBlockOrSlot !== null && s.toBlockOrSlot !== null) check(BigInt(s.fromBlockOrSlot) <= BigInt(s.toBlockOrSlot), "inverted slot boundary");
-  const subjects = uniqueStrings(s.subjects, v => subject(v, s.network));
+  const subjects = uniqueStrings(s.subjects, v => subject(v, s.network, s.chain));
   const readerIds = new Set<string>();
   for (const value of array(s.readers)) {
     const r = object(value, ["id", "status", "subjects"]); id(r.id);
     check(!readerIds.has(r.id), "duplicate reader id"); readerIds.add(r.id);
     oneOf(r.status, ["complete", "partial", "failed"]);
-    for (const member of uniqueStrings(r.subjects, v => subject(v, s.network))) check(subjects.includes(member), "reader subject outside coverage");
+    for (const member of uniqueStrings(r.subjects, v => subject(v, s.network, s.chain))) check(subjects.includes(member), "reader subject outside coverage");
   }
   const names = object(s.names);
-  for (const [key, value] of Object.entries(names)) { subject(key, s.network); text(value); }
+  for (const [key, value] of Object.entries(names)) { subject(key, s.network, s.chain); text(value); }
   const receipts = new Map<string, EvidenceReceipt>();
   for (const value of array(s.receipts)) {
     const r = object(value, ["id", "source", "responseSha256", "observation", "privacy"]);
@@ -106,10 +106,10 @@ export function validateSnapshot(input: unknown): EvidenceSnapshot {
   for (const value of array(s.facts)) {
     const f = object(value, ["id", "subject", "predicate", "object", "basis", "status", "evidenceIds", "path", "validFrom", "validTo", "privacy"]);
     id(f.id); check(!factIds.has(f.id), "duplicate fact id"); factIds.add(f.id);
-    subject(f.subject, s.network); check(subjects.includes(f.subject), "fact subject outside coverage");
+    subject(f.subject, s.network, s.chain); check(subjects.includes(f.subject), "fact subject outside coverage");
     text(f.predicate); check(isPredicate(f.predicate), "unknown predicate");
-    text(f.object); check(SUBJECT_PATTERN.test(f.object) || ["none", "unknown"].includes(f.object) || /^amount:\d+$/.test(f.object), "malformed fact object");
-    if (SUBJECT_PATTERN.test(f.object)) subject(f.object, s.network);
+    text(f.object); check(SUBJECT_PATTERN.test(f.object) || ["none", "unknown"].includes(f.object) || /^amount:\d+$/.test(f.object) || ((s.chain === "near" || s.chain === "ethereum") && f.object.length > 0 && f.object.length <= 1048576 && !/[\u0000-\u001f]/.test(f.object)), "malformed fact object");
+    if (SUBJECT_PATTERN.test(f.object)) subject(f.object, s.network, s.chain);
     oneOf(f.basis, ["claimed", "reported", "decoded", "simulated", "observed", "derived", "unknown"]);
     oneOf(f.status, ["verified", "unverified", "conflicting", "missing"]); privacy(f.privacy);
     const evidenceIds = uniqueStrings(f.evidenceIds, id);

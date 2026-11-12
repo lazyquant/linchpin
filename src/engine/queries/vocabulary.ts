@@ -2,8 +2,26 @@ export type PredicateClass = "dependency" | "backing" | "origin" | "control" | "
 const entry = (kind: PredicateClass, cardinality: "one" | "many") =>
   Object.freeze({ class: kind, direction: "subject-to-object" as const, cardinality });
 
+const nearEntry = (kind: PredicateClass, cardinality: "one" | "many", traversable = false) =>
+  Object.freeze({ ...entry(kind, cardinality), traversable });
+
 /** Exact identities only. Display names never participate in this vocabulary. */
 export const VOCABULARY = Object.freeze({
+  "supply-token": nearEntry("dependency", "one", true),
+  "debt-token": nearEntry("dependency", "one", true),
+  "interest-rate-strategy": nearEntry("dependency", "one", true),
+  "ltv": nearEntry("state", "one", false),
+  "liquidation-threshold": nearEntry("state", "one", false),
+  "liquidation-bonus": nearEntry("state", "one", false),
+  "reserve-factor": nearEntry("state", "one", false),
+  "supply-cap": nearEntry("state", "one", false),
+  "borrow-cap": nearEntry("state", "one", false),
+  "reserve-active": nearEntry("state", "one", false),
+  "reserve-frozen": nearEntry("state", "one", false),
+  "borrowing-enabled": nearEntry("state", "one", false),
+  "flash-loan-enabled": nearEntry("state", "one", false),
+  "holds-component": nearEntry("dependency", "one", true),
+  "oracle-fallback": nearEntry("dependency", "one", false),
   UPGRADE_AUTHORITY: entry("control", "one"),
   MINT_AUTHORITY: entry("control", "one"),
   FREEZE_AUTHORITY: entry("control", "one"),
@@ -14,11 +32,81 @@ export const VOCABULARY = Object.freeze({
   BACKED_BY: entry("backing", "many"),
   ORIGINATES_FROM: entry("origin", "one"),
   SUPPLY_RAW: entry("state", "one"),
+  ALLOCATES_TO: entry("dependency", "many"),
+  IN_MARKET: entry("dependency", "one"),
+  PRICED_BY: entry("dependency", "many"),
+  OWNER_PROGRAM: entry("dependency", "one"),
+  VAULT_ADMIN: entry("control", "one"),
+  ALLOCATION_ADMIN: entry("control", "one"),
+  MARKET_OWNER: entry("control", "one"),
+  CONTROLLED_BY: entry("control", "one"),
+  MULTISIG_MEMBER: entry("control", "many"),
+  MULTISIG_THRESHOLD: entry("state", "one"),
+  IDLE_RAW: entry("state", "one"),
+  AVAILABLE_LIQUIDITY_RAW: entry("state", "one"),
+  BORROWED_RAW: entry("state", "one"),
+  "owned-by": nearEntry("control", "one", true),
+  "upgraded-by": nearEntry("control", "many", true),
+  "super-admin-of": nearEntry("control", "many", true),
+  "holds-role": nearEntry("control", "many", true),
+  "priced-by": nearEntry("dependency", "many", true),
+  "legacy-oracle": nearEntry("dependency", "many", true),
+  "routes-through": nearEntry("dependency", "many", true),
+  "deployed-by": nearEntry("dependency", "one", true),
+  "has-code-hash": nearEntry("state", "one", false),
+  "proposal": nearEntry("state", "one", false),
+  "ft-metadata": nearEntry("state", "one", false),
+  "deployed-version": nearEntry("state", "many", false),
+  "claimed-document": nearEntry("state", "many", false),
+  "has-full-access-key": nearEntry("control", "many", false),
+  "has-function-call-key": nearEntry("control", "many", false),
+  "council-member": nearEntry("control", "many", false),
+  "vote-threshold": nearEntry("control", "many", false),
+  "paused": nearEntry("control", "many", false),
+  "mpc-participant": nearEntry("control", "many", false),
+  "mpc-allowed-image": nearEntry("control", "many", false),
+  "token-depositer": nearEntry("control", "many", false),
+  "proposal-period": nearEntry("control", "one", false),
+  "bond": nearEntry("control", "one", false),
+  "pause-operator": nearEntry("control", "one", false),
+  "contract-mode": nearEntry("control", "one", false),
+  "mpc-threshold": nearEntry("control", "one", false),
+  "fee-collector": nearEntry("control", "one", false),
+  ASSET_MINT: entry("dependency", "one"),
+  DECIMALS: entry("state", "one"),
+  FUNDED_BY: entry("dependency", "one"),
+  "touches-control-of": nearEntry("control", "many", true),
+  "touches-code-of": nearEntry("control", "many", true),
+  "changes-parameter-of": nearEntry("control", "many", true),
+  "moves-funds-from": nearEntry("dependency", "many", true),
+  "moves-funds-to": nearEntry("dependency", "many", true),
+  "account-kind": nearEntry("state", "one", false),
+  "proxy-implementation": nearEntry("control", "one", false),
+  "proxy-admin": nearEntry("control", "one", true),
+  "proxy-beacon": nearEntry("control", "one", false),
+  "proxy-scheme": nearEntry("state", "one", false),
+  "pending-owner": nearEntry("control", "one", true),
+  "role-admin": nearEntry("control", "one", false),
+  "role-members-unknown": nearEntry("control", "many", false),
+  "safe-owner": nearEntry("control", "many", true),
+  "safe-threshold": nearEntry("state", "one", false),
+  "timelock-delay": nearEntry("state", "one", false),
+  "deprecated": nearEntry("state", "one", false),
+  "upgraded-address": nearEntry("state", "one", false),
+  "freeze-operator": nearEntry("control", "one", false),
+  "minter-admin": nearEntry("control", "one", false),
+  // Account that may tighten emergency settings on the market.
+  EMERGENCY_AUTHORITY: entry("control", "one"),
+  // Account that may create reserves and configure them during initialisation.
+  RESERVE_PROPOSER: entry("control", "one"),
+  // Account that sets protocol-wide fee modes across lending markets.
+  GLOBAL_ADMIN: entry("control", "one"),
 });
 export type Predicate = keyof typeof VOCABULARY;
 export function isPredicate(value: string): value is Predicate {
   return Object.hasOwn(VOCABULARY, value);
 }
 export function isTraversalRelation(value: string): value is Predicate {
-  return isPredicate(value) && ["dependency", "backing", "origin"].includes(VOCABULARY[value].class);
+  return isPredicate(value) && (["dependency", "backing", "origin"].includes(VOCABULARY[value].class)
+    || ("traversable" in VOCABULARY[value] && VOCABULARY[value].traversable === true));
 }

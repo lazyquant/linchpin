@@ -128,11 +128,11 @@ describe('graph API without network access', () => {
   });
   test('Aura cache expires, but a fallback is retried on the next request', async () => {
     let calls = 0, fail = false;
-    const research = service({ config, cacheMs: 5, driverFactory: () => ({ async executeQuery() {
+    const research = service({ config, cacheMs: 200, driverFactory: () => ({ async executeQuery() {
       calls++; if (fail) throw new Error('Temporarily unavailable'); return { records: [] };
     } }) });
     await get(research); expect(calls).toBe(4); await get(research); expect(calls).toBe(4);
-    await Bun.sleep(10); fail = true; expect((await get(research)).source).toBe('local'); expect(calls).toBe(8);
+    await Bun.sleep(250); fail = true; expect((await get(research)).source).toBe('local'); expect(calls).toBe(8);
     fail = false; expect((await get(research)).source).toBe('neo4j'); expect(calls).toBe(12);
   });
   test('load returns real counts, uses write routing, rejects other origins and invalidates cached reads', async () => {

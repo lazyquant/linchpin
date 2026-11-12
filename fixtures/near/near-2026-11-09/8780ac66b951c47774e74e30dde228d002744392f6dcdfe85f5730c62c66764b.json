@@ -1,0 +1,50 @@
+{
+ "version": 1,
+ "requestSha256": "8780ac66b951c47774e74e30dde228d002744392f6dcdfe85f5730c62c66764b",
+ "request": {
+  "method": "query",
+  "params": {
+   "account_id": "sputnik-dao.near",
+   "request_type": "view_access_key_list",
+   "finality": "final"
+  }
+ },
+ "endpointHost": "archival-rpc.mainnet.fastnear.com",
+ "retrievedAt": "2026-11-09T19:31:16.343Z",
+ "httpStatus": 200,
+ "outcome": "result",
+ "blockHeight": "223810484",
+ "blockHash": "EKsCfR983mv5P8wp5gQjxn3WpusZNnaHmx3W7o5HoGtj",
+ "responseSha256": "df5d5fda616365cb36f9a3d4c7065308c36915943079d7e8f58b836cd315d237",
+ "response": {
+  "jsonrpc": "2.0",
+  "result": {
+   "block_hash": "EKsCfR983mv5P8wp5gQjxn3WpusZNnaHmx3W7o5HoGtj",
+   "block_height": 223810484,
+   "keys": [
+    {
+     "access_key": {
+      "nonce": 38875073000021,
+      "permission": "FullAccess"
+     },
+     "public_key": "ed25519:2gtDEwdLuUBawzFLAnCS9gUso3Ph76bRzMpVrtb66f3J"
+    },
+    {
+     "access_key": {
+      "nonce": 127760949000000,
+      "permission": "FullAccess"
+     },
+     "public_key": "ed25519:3z2MnvQqD3dsUPynZpV8CFtyXhFiTksjZhjDr26isEXv"
+    },
+    {
+     "access_key": {
+      "nonce": 209072444000000,
+      "permission": "FullAccess"
+     },
+     "public_key": "ed25519:7ReZXfft58fzSLyCB6A5qQ719DCaDo8etYrat75KFXp3"
+    }
+   ]
+  },
+  "id": "near-reader"
+ }
+}

@@ -5,7 +5,7 @@ export const MAX_HOPS = 8;
 export const MAX_RESULTS = 500;
 export const MAX_RELATIONS = 16;
 export const ID_PATTERN = /^[A-Za-z0-9][A-Za-z0-9._:-]{0,127}$/;
-export const SUBJECT_PATTERN = /^solana:(mainnet-beta|devnet|testnet):[1-9A-HJ-NP-Za-km-z]{32,44}$/;
+export const SUBJECT_PATTERN = /^(?:solana:(mainnet-beta|devnet|testnet):[1-9A-HJ-NP-Za-km-z]{32,44}|near:(mainnet|testnet):(?=[a-z0-9._-]{2,64}(?:#|$))[a-z0-9]+(?:[-_][a-z0-9]+)*(?:\.[a-z0-9]+(?:[-_][a-z0-9]+)*)*(?:#[a-z][a-z-]{0,31}:[A-Za-z0-9._~-]{1,128})?|ethereum:(mainnet):0x[0-9a-f]{40}(?:#[a-z][a-z-]{0,31}:0x[0-9a-f]{64})?)$/;
 export type RejectionCode = "not-object" | "unknown-name" | "extra-key" | "missing-key" | "wrong-type"
   | "nonfinite-number" | "unbounded-limit" | "malformed-identity" | "malformed-id" | "malformed-time"
   | "unknown-relation" | "duplicate-entry";

@@ -1,0 +1,7 @@
+{
+  "policyId": "fixture-exit-only",
+  "subjects": ["solana:mainnet-beta:2gc9Dm1eB6UgVYFBUN9bWks6Kes9PbWSaPaa9DqyvEiN"],
+  "rules": [
+    { "id": "exit-evidence", "kind": "min-exit-evidence", "params": { "maxAgeDays": 7 } }
+  ]
+}

@@ -1,25 +1,39 @@
 import registry from '../../packs/marinade/registry.json';
 import { sameCouncilMembers } from '../tokenomics/councils';
 import { canonical, sha256 } from '../chain/evidence';
-import type { Basis, BundleResponse, GraphData, GraphQueryResult, Provenance } from '../tokenomics/api';
+import type { Basis, BundleResponse, GraphData, GraphQueryResult, Provenance, ControlRow } from '../tokenomics/api';
 import { CANNED_QUERIES, runCannedNeo4j, type CannedQuery, type Neo4jDriverLike } from './neo4j';
 
 type Value = string | number | boolean | null | string[];
 type Props = Record<string, Value>;
-export const TG_LABELS = ['Governance', 'PathNode', 'Program', 'Parameter', 'Role', 'Authority', 'Controller', 'Member', 'Mint', 'TokenAccount', 'Claim', 'HolderGroup', 'Metric'] as const;
-export const TG_RELATIONS = ['ROUTES_TO', 'SET_BY', 'HELD_BY', 'CONTROLLED_BY', 'MEMBER_OF', 'UPGRADE_AUTHORITY', 'MINT_AUTHORITY', 'FREEZE_AUTHORITY', 'CAN_CHANGE', 'CHECKS', 'HOLDS', 'LOCKS', 'VOTES_IN', 'VETOES', 'SAME_MEMBERS_AS'] as const;
+export const TG_LABELS = ['Governance', 'PathNode', 'Program', 'Parameter', 'Role', 'Authority', 'Controller', 'Member', 'Mint', 'TokenAccount', 'Claim', 'HolderGroup', 'Metric', 'Vault', 'Reserve', 'Market', 'OracleSource'] as const;
+export const TG_RELATIONS = ['ROUTES_TO', 'SET_BY', 'HELD_BY', 'CONTROLLED_BY', 'MEMBER_OF', 'UPGRADE_AUTHORITY', 'MINT_AUTHORITY', 'FREEZE_AUTHORITY', 'CAN_CHANGE', 'CHECKS', 'HOLDS', 'LOCKS', 'VOTES_IN', 'VETOES', 'SAME_MEMBERS_AS', 'ALLOCATES_TO', 'IN_MARKET', 'PRICED_BY'] as const;
 export type TGNode = { id: string; labels: string[]; props: Props };
 export type TGRelationship = { source: string; target: string; type: string; key: string; props: Props };
 export type TokenomicsGraph = { nodes: TGNode[]; relationships: TGRelationship[] };
+export type DependencyEdge = {
+  type: 'ALLOCATES_TO' | 'IN_MARKET' | 'PRICED_BY';
+  from: { id: string; type: typeof TG_LABELS[number]; address: string };
+  to: { id: string; type: typeof TG_LABELS[number]; address: string };
+  provenance: Provenance;
+};
+export type GraphProfile = { namespace: string; mints: { id: string; label: string; address: string }[]; dependencies: DependencyEdge[]; targetFor?: (row: ControlRow) => string | null };
+export const MARINADE_GRAPH_PROFILE: GraphProfile = { namespace: 'TG',
+  mints: ['MNDE', 'mSOL'].map(label => ({ id: `mint:${label.toLowerCase()}`, label, address: registry.mints.find(m => m.id === label.toLowerCase())!.address })), dependencies: [] };
+function assertNamespace(namespace: string) {
+  if (!/^[A-Za-z][A-Za-z0-9_]*$/.test(namespace) || namespace === 'Entity') throw new Error('Invalid TG namespace');
+}
+const inNamespace = (cypher: string, namespace: string) => { assertNamespace(namespace); return cypher.replace(/:TG\b/g, `:${namespace}`).replace(/'TG'/g, `'${namespace}'`); };
 const basis = (p: Provenance) => Array.isArray(p.basis) ? p.basis : [p.basis];
 const provenance = (p: Provenance): Props => ({ basis: basis(p), evidenceIds: p.evidenceIds, slot: p.slot, asOf: p.asOf });
 const empty: Provenance = { basis: 'derived', evidenceIds: [], slot: null, asOf: null };
 
 /** Validate the complete graph before any writes or identifier interpolation. */
-export function assertTokenomicsNamespace(graph: TokenomicsGraph) {
+export function assertTokenomicsNamespace(graph: TokenomicsGraph, namespace = 'TG') {
+  assertNamespace(namespace);
   const ids = new Set<string>();
   for (const n of graph.nodes) {
-    if (n.labels.length !== 2 || n.labels[0] !== 'TG' || !TG_LABELS.includes(n.labels[1] as typeof TG_LABELS[number]) || n.labels.includes('Entity')) throw new Error('Invalid TG label; Entity is forbidden');
+    if (n.labels.length !== 2 || n.labels[0] !== namespace || !TG_LABELS.includes(n.labels[1] as typeof TG_LABELS[number]) || n.labels.includes('Entity')) throw new Error('Invalid TG label; Entity is forbidden');
     if (ids.has(n.id)) throw new Error('Duplicate TG node id'); ids.add(n.id);
   }
   const keys = new Set<string>();
@@ -30,12 +44,12 @@ export function assertTokenomicsNamespace(graph: TokenomicsGraph) {
     if (keys.has(r.key)) throw new Error('Duplicate TG relationship key'); keys.add(r.key);
   }
 }
-export function buildTokenomicsGraph(bundle: BundleResponse): TokenomicsGraph {
+export function buildTokenomicsGraph(bundle: BundleResponse, profile: GraphProfile = MARINADE_GRAPH_PROFILE): TokenomicsGraph {
   const nodes = new Map<string, TGNode>(), relationships = new Map<string, TGRelationship>();
   function node(id: string, type: typeof TG_LABELS[number], label: string, props: Props = {}, p = empty) {
     const old = nodes.get(id);
     if (old) return id;
-    nodes.set(id, { id, labels: ['TG', type], props: { id, label, type, ...provenance(p), ...props } }); return id;
+    nodes.set(id, { id, labels: [profile.namespace, type], props: { id, label, type, ...provenance(p), ...props } }); return id;
   }
   function rel(type: typeof TG_RELATIONS[number], source: string, target: string, p: Provenance, props: Props = {}, distinguish: Props = {}) {
     const key = sha256(canonical({ type, source, target, ...distinguish }));
@@ -47,6 +61,11 @@ export function buildTokenomicsGraph(bundle: BundleResponse): TokenomicsGraph {
       slot: slots.length ? Math.max(...slots) : null,
       asOf: [prior?.asOf, p.asOf].filter((s): s is string => typeof s === 'string').sort().at(-1) ?? null };
     relationships.set(key, { source, target, type, key, props: { ...combined, ...props, key } });
+  }
+  for (const edge of profile.dependencies) {
+    node(edge.from.id, edge.from.type, edge.from.address, { address: edge.from.address }, edge.provenance);
+    node(edge.to.id, edge.to.type, edge.to.address, { address: edge.to.address }, edge.provenance);
+    rel(edge.type, edge.from.id, edge.to.id, edge.provenance);
   }
   const path = bundle.path.data, control = bundle.control.data;
   for (const n of path?.nodes ?? []) node(`path:${n.id}`, 'PathNode', n.label, { address: n.address ?? null, kind: n.kind });
@@ -73,7 +92,7 @@ export function buildTokenomicsGraph(bundle: BundleResponse): TokenomicsGraph {
     }, { members: new Set(left.members!.map(m => m.address)).size, what: `Same ${left.members!.length} current council member addresses` });
   }
   for (const program of bundle.programs.data?.rows ?? []) node(`program:${program.id}`, 'Program', program.id, { address: program.address }, program);
-  for (const mint of ['MNDE', 'mSOL']) node(`mint:${mint.toLowerCase()}`, 'Mint', mint, { address: registry.mints.find(m => m.id === mint.toLowerCase())!.address });
+  for (const mint of profile.mints) node(mint.id, 'Mint', mint.label, { address: mint.address });
   for (const parameter of bundle.parameters.data?.rows ?? []) node(`parameter:${parameter.id}`, 'Parameter', parameter.label, { field: parameter.field, display: parameter.display, value: parameter.value }, parameter);
   const authority = (address: string, controller: string, p: Provenance) => {
     const id = node(`authority:${address}`, 'Authority', address, { address }, p);
@@ -84,8 +103,8 @@ export function buildTokenomicsGraph(bundle: BundleResponse): TokenomicsGraph {
     const role = node(`role:${row.id}`, 'Role', row.role, { role: row.role }, row);
     rel('HELD_BY', role, auth, row);
     const param = bundle.parameters.data?.rows.find(p => p.field === row.target);
-    const target = row.targetKind === 'program-code' ? `program:${row.id.replace('control:program:', '')}` : row.targetKind === 'mint' ? `mint:${row.id.startsWith('control:council-mint:') ? row.id.slice('control:'.length) : row.id.split(':')[1]}` : param ? `parameter:${param.id}`
-      : node(`target:${row.id}`, row.targetKind === 'treasury' ? 'TokenAccount' : 'Metric', row.target, {}, row);
+    const target = profile.targetFor?.(row) ?? (row.targetKind === 'program-code' ? `program:${row.id.replace('control:program:', '')}` : row.targetKind === 'mint' ? `mint:${row.id.startsWith('control:council-mint:') ? row.id.slice('control:'.length) : row.id.split(':')[1]}` : param ? `parameter:${param.id}`
+      : node(`target:${row.id}`, row.targetKind === 'treasury' ? 'TokenAccount' : 'Metric', row.target, {}, row));
     if (!nodes.has(target)) node(target, row.targetKind === 'program-code' ? 'Program' : row.targetKind === 'mint' ? 'Mint' : 'Metric', row.target, {}, row);
     const actingControllers = (row.controllerIds ?? [row.controllerId]).filter(id => id === row.controllerId || control?.controllers.find(c => c.id === id)?.governances?.some(g => g.address === row.governance && g.canVote));
     for (const id of actingControllers) {
@@ -142,7 +161,7 @@ export function buildTokenomicsGraph(bundle: BundleResponse): TokenomicsGraph {
       { what: 'Controls an outgoing path mechanism' });
   }
   const graph = { nodes: [...nodes.values()].sort((a, b) => a.id.localeCompare(b.id)), relationships: [...relationships.values()].sort((a, b) => a.key.localeCompare(b.key)) };
-  assertTokenomicsNamespace(graph); return graph;
+  assertTokenomicsNamespace(graph, profile.namespace); return graph;
 }
 
 const definitions: { id: string; title: string; question: string; match: string; fields: Record<string, string> }[] = [
@@ -164,16 +183,27 @@ const definitions: { id: string; title: string; question: string; match: string;
   { id: 'holders-and-float', title: 'Holders and float', question: 'Which groups hold each mint, and what custody exclusions define float?',
     match: 'MATCH (h:TG:HolderGroup)-[r:HOLDS]->(m:TG:Mint)', fields: { group: 'h.label', mint: 'm.label', amount: 'r.amount', amountRaw: 'r.amountRaw', share: 'r.share', note: 'h.note' } },
 ];
-export const TOKENOMICS_QUERIES: CannedQuery[] = definitions.map(d => ({ id: d.id, title: d.title, question: d.question, params: d.id === 'supply-control' ? { mints: ['mint:mnde', 'mint:msol'] } : {},
-  columns: Object.keys(d.fields), cypher: `${d.match}\nRETURN ${Object.entries(d.fields).map(([name, expr]) => `${expr} AS ${name}`).join(', ')}\nORDER BY ${Object.keys(d.fields).join(', ')}` }));
+const marinadeQueryIds = definitions.map(d => d.id);
+definitions.push({ id: 'vault-dependencies', title: 'Vault dependencies', question: 'What does the vault depend on: which reserves, lending markets and oracles?',
+  match: 'MATCH (a:TG)-[r:ALLOCATES_TO|IN_MARKET|PRICED_BY]->(b:TG)', fields: { relation: 'type(r)', fromType: 'a.type', from: 'a.address', toType: 'b.type', to: 'b.address' } });
+export function tokenomicsQueries(namespace: string, ids: readonly string[]): CannedQuery[] {
+  assertNamespace(namespace);
+  return ids.map(id => {
+    const d = definitions.find(d => d.id === id);
+    if (!d) throw new Error('Unknown tokenomics query');
+    return { id: d.id, title: d.title, question: d.question, params: d.id === 'supply-control' ? { mints: ['mint:mnde', 'mint:msol'] } : {},
+      columns: Object.keys(d.fields), cypher: `${inNamespace(d.match, namespace)}\nRETURN ${Object.entries(d.fields).map(([name, expr]) => `${expr} AS ${name}`).join(', ')}\nORDER BY ${Object.keys(d.fields).join(', ')}` };
+  });
+}
+export const TOKENOMICS_QUERIES: CannedQuery[] = tokenomicsQueries('TG', marinadeQueryIds);
 type Row = GraphQueryResult['rows'][number];
-const queryFor = (id: string) => { const q = TOKENOMICS_QUERIES.find(q => q.id === id); if (!q) throw new Error('Unknown tokenomics query'); return q; };
+const queryFor = (id: string, queries: CannedQuery[]) => { const q = queries.find(q => q.id === id); if (!q) throw new Error('Unknown tokenomics query'); return q; };
 function sorted(rows: Row[], columns: string[]): Row[] {
   return rows.sort((a, b) => { for (const c of columns) { if (a[c] === b[c]) continue; if (a[c] === null) return 1; if (b[c] === null) return -1;
     if (typeof a[c] === 'number' && typeof b[c] === 'number') return a[c] - b[c]; return String(a[c]) < String(b[c]) ? -1 : 1; } return 0; });
 }
-export function runTokenomicsLocal(graph: TokenomicsGraph, id: string): GraphQueryResult {
-  const q = queryFor(id), def = definitions.find(d => d.id === id)!, nodes = new Map(graph.nodes.map(n => [n.id, n])), rows: Row[] = [];
+export function runTokenomicsLocal(graph: TokenomicsGraph, id: string, queries = TOKENOMICS_QUERIES): GraphQueryResult {
+  const q = queryFor(id, queries), def = definitions.find(d => d.id === id)!, nodes = new Map(graph.nodes.map(n => [n.id, n])), rows: Row[] = [];
   const edges = (source: string, type: string) => graph.relationships.filter(r => r.source === source && r.type === type);
   const add = (bindings: Record<string, TGNode | TGRelationship>) => {
     const row: Row = {};
@@ -185,6 +215,7 @@ export function runTokenomicsLocal(graph: TokenomicsGraph, id: string): GraphQue
   };
   for (const r of graph.relationships) {
     const a = nodes.get(r.source)!, b = nodes.get(r.target)!;
+    if (id === 'vault-dependencies' && ['ALLOCATES_TO', 'IN_MARKET', 'PRICED_BY'].includes(r.type)) add({ a, r, b });
     if (id === 'path-to-holders' && r.type === 'ROUTES_TO') add({ a, r, b });
     if (id === 'who-can-change' && r.type === 'CAN_CHANGE' && a.labels.includes('Controller')) add({ c: a, r, t: b });
     if (id === 'claims-vs-chain' && r.type === 'CHECKS') add({ c: a, r, f: b });
@@ -200,17 +231,17 @@ export function runTokenomicsLocal(graph: TokenomicsGraph, id: string): GraphQue
   }
   return { ...q, rows: sorted(rows, q.columns) };
 }
-export async function runTokenomicsNeo4j(driver: Neo4jDriverLike, id: string, opts: { database: string }): Promise<GraphQueryResult> {
-  const q = queryFor(id), result = await driver.executeQuery(q.cypher, q.params, { database: opts.database, routing: 'READ' });
+export async function runTokenomicsNeo4j(driver: Neo4jDriverLike, id: string, opts: { database: string }, queries = TOKENOMICS_QUERIES): Promise<GraphQueryResult> {
+  const q = queryFor(id, queries), result = await driver.executeQuery(q.cypher, q.params, { database: opts.database, routing: 'READ' });
   const rows = result.records.map(r => { const object = r.toObject(), row: Row = {};
     for (const c of q.columns) row[c] = object[c] == null ? null : c === 'share' ? Number(String(object[c])) : String(object[c]); return row; });
   return { ...q, rows: sorted(rows, q.columns) };
 }
 export const TOKENOMICS_NODES_CYPHER = "MATCH (n:TG) RETURN n.id AS id, coalesce(n.label, n.id) AS label, head([l IN labels(n) WHERE l <> 'TG']) AS type ORDER BY id";
 export const TOKENOMICS_EDGES_CYPHER = "MATCH (a:TG)-[r]->(b:TG) RETURN r.key AS id, a.id AS from, b.id AS to, type(r) AS type, head(r.basis) AS basis, coalesce(r.mechanism, r.what, r.instruction, type(r)) AS label ORDER BY id";
-export async function readTokenomicsSubgraph(driver: Neo4jDriverLike, opts: { database: string }): Promise<GraphData['subgraph']> {
+export async function readTokenomicsSubgraph(driver: Neo4jDriverLike, opts: { database: string }, namespace = 'TG'): Promise<GraphData['subgraph']> {
   const config = { database: opts.database, routing: 'READ' as const };
-  const [nodes, edges] = await Promise.all([driver.executeQuery(TOKENOMICS_NODES_CYPHER, {}, config), driver.executeQuery(TOKENOMICS_EDGES_CYPHER, {}, config)]);
+  const [nodes, edges] = await Promise.all([driver.executeQuery(inNamespace(TOKENOMICS_NODES_CYPHER, namespace), {}, config), driver.executeQuery(inNamespace(TOKENOMICS_EDGES_CYPHER, namespace), {}, config)]);
   return {
     nodes: nodes.records.map(r => { const n = r.toObject(); return { id: String(n.id), label: String(n.label), type: String(n.type) }; }),
     edges: edges.records.map(r => { const e = r.toObject(); return { id: String(e.id), from: String(e.from), to: String(e.to), type: String(e.type), basis: String(e.basis) as Basis, label: String(e.label) }; }),
@@ -221,8 +252,9 @@ export function tokenomicsSubgraph(graph: TokenomicsGraph): GraphData['subgraph'
   return { nodes: graph.nodes.map(n => ({ id: n.id, type: n.labels[1], label: String(n.props.label) })),
     edges: selected.map(r => ({ id: r.key, from: r.source, to: r.target, type: r.type, basis: (r.props.basis as Basis[])[0], label: String(r.props.mechanism ?? r.props.what ?? r.props.instruction ?? r.type) })) };
 }
-export function tokenomicsCypherBatches(graph: TokenomicsGraph) {
-  assertTokenomicsNamespace(graph);
+export function tokenomicsCypherBatches(graph: TokenomicsGraph, namespace = 'TG') {
+  assertTokenomicsNamespace(graph, namespace);
+  const constraint = namespace === 'TG' ? 'tg_id' : `tg_${namespace.replace(/^TG/, '').replace(/([a-z0-9])([A-Z])/g, '$1_$2').toLowerCase()}_id`;
   const batches = <T>(rows: T[], group: (r: T) => string, cypher: (type: string) => string) => {
     const result: { cypher: string; params: { rows: T[] } }[] = [];
     for (const type of [...new Set(rows.map(group))].sort()) {
@@ -232,18 +264,18 @@ export function tokenomicsCypherBatches(graph: TokenomicsGraph) {
     }
     return result;
   };
-  return { constraints: ['CREATE CONSTRAINT tg_id IF NOT EXISTS FOR (n:TG) REQUIRE n.id IS UNIQUE'],
-    nodeBatches: batches(graph.nodes, n => n.labels[1], type => `UNWIND $rows AS row MERGE (n:TG {id: row.id}) SET n:${type} SET n = row.props`),
-    relBatches: batches(graph.relationships, r => r.type, type => `UNWIND $rows AS row MATCH (a:TG {id: row.source}), (b:TG {id: row.target}) MERGE (a)-[r:${type} {key: row.key}]->(b) SET r = row.props`) };
+  return { constraints: [`CREATE CONSTRAINT ${constraint} IF NOT EXISTS FOR (n:${namespace}) REQUIRE n.id IS UNIQUE`],
+    nodeBatches: batches(graph.nodes, n => n.labels[1], type => `UNWIND $rows AS row MERGE (n:${namespace} {id: row.id}) SET n:${type} SET n = row.props`),
+    relBatches: batches(graph.relationships, r => r.type, type => `UNWIND $rows AS row MATCH (a:${namespace} {id: row.source}), (b:${namespace} {id: row.target}) MERGE (a)-[r:${type} {key: row.key}]->(b) SET r = row.props`) };
 }
-export async function loadTokenomicsNeo4j(driver: Neo4jDriverLike, graph: TokenomicsGraph, opts: { database: string }) {
-  const batches = tokenomicsCypherBatches(graph);
+export async function loadTokenomicsNeo4j(driver: Neo4jDriverLike, graph: TokenomicsGraph, opts: { database: string }, namespace = 'TG') {
+  const batches = tokenomicsCypherBatches(graph, namespace);
   const snapshot = async () => { const rows = new Map<string, string>();
     for (const q of CANNED_QUERIES) rows.set(q.id, canonical((await runCannedNeo4j(driver, q.id, opts)).rows.map(r => canonical(r)).sort())); return rows; };
   const before = await snapshot(), config = { database: opts.database, routing: 'WRITE' as const };
   for (const cypher of batches.constraints) await driver.executeQuery(cypher, {}, config);
   // Replace only this namespace so removed links do not survive a newer bundle.
-  await driver.executeQuery('MATCH (n:TG) DETACH DELETE n', {}, config);
+  await driver.executeQuery(`MATCH (n:${namespace}) DETACH DELETE n`, {}, config);
   for (const batch of [...batches.nodeBatches, ...batches.relBatches]) await driver.executeQuery(batch.cypher, batch.params, config);
   const after = await snapshot(), changedQueries = CANNED_QUERIES.filter(q => before.get(q.id) !== after.get(q.id)).map(q => q.id);
   return { nodes: graph.nodes.length, relationships: graph.relationships.length, batches: 2 + batches.nodeBatches.length + batches.relBatches.length,

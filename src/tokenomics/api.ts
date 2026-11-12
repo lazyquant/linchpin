@@ -15,6 +15,8 @@ export type Basis =
   | 'reported'   // a third-party label (exchange, protocol name) with source and date
   | 'inferred';  // linked by name matching (e.g. instruction argument → state field)
 
+export type ProtocolId = 'marinade' | 'kamino';
+
 export type SectionStatus = 'ready' | 'pending' | 'failed';
 export type SectionId = 'answer' | 'path' | 'control' | 'offsets' | 'parameters' | 'programs' | 'participation' | 'holders' | 'flows' | 'claims' | 'graph';
 
@@ -23,11 +25,11 @@ export type Amount = { raw: string; decimals: number; display: string; unit: str
 export type Address = { address: string; label?: string | null; kind?: string | null; labelBasis?: Basis | null };
 
 /** GET /api/tokenomics → protocols and section readiness. */
-export type ProtocolsResponse = { protocols: { id: 'marinade'; title: string; question: string; asOf: string | null; slotRange: [number, number] | null; sections: Record<SectionId, SectionStatus> }[] };
+export type ProtocolsResponse = { protocols: { id: ProtocolId; title: string; question?: string; /* a headline view, where the protocol has one; the graph maps mechanics, not one question */ asOf: string | null; slotRange: [number, number] | null; sections: Record<SectionId, SectionStatus> }[] };
 
 /** GET /api/tokenomics/marinade/:section → one envelope; GET /api/tokenomics/marinade → all envelopes keyed by section. */
 export type SectionEnvelope<T> = {
-  protocol: 'marinade'; section: SectionId; status: SectionStatus; title: string;
+  protocol: ProtocolId; section: SectionId; status: SectionStatus; title: string;
   asOf: string | null; slotRange: [number, number] | null; evidenceCount: number;
   assumptions: string[]; notes: string[]; data: T | null; error?: string;
 };

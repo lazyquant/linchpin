@@ -1,0 +1,31 @@
+{
+ "version": 1,
+ "requestSha256": "669b3866c07ab90a59ed44590b00083cb64624f7eda3a14a39b6d71ac40aa2a0",
+ "request": {
+  "method": "query",
+  "params": {
+   "account_id": "hos-root.sputnik-dao.near",
+   "request_type": "call_function",
+   "method_name": "get_policy",
+   "args_base64": "e30=",
+   "finality": "final"
+  }
+ },
+ "endpointHost": "archival-rpc.mainnet.fastnear.com",
+ "retrievedAt": "2026-11-09T19:33:30.493Z",
+ "httpStatus": 200,
+ "outcome": "result",
+ "blockHeight": "223810717",
+ "blockHash": "FEXmZ5a7DsMgFUsW4XJZk999z8TLc1fSb1AtVeVwpZvM",
+ "responseSha256": "db8cfe34e10b3d65ee72069092315ad5656bc2ef3105544146d55a8a8973e72e",
+ "response": {
+  "jsonrpc": "2.0",
+  "result": {
+   "block_hash": "FEXmZ5a7DsMgFUsW4XJZk999z8TLc1fSb1AtVeVwpZvM",
+   "block_height": 223810717,
+   "logs": []
+  },
+  "id": "near-reader"
+ },
+ "resultText": "{\"roles\":[{\"name\":\"Admin\",\"kind\":{\"Group\":[\"anton-near-one.near\",\"c65255255d689f74ae46b0a89f04bbaab94d3a51ab9dc4b79b1e9b61e7cf6816\",\"as.near\",\"root.near\",\"norfolks.near\"]},\"permissions\":[\"*:*\"],\"vote_policy\":{}}],\"default_vote_policy\":{\"weight_kind\":\"RoleWeight\",\"quorum\":\"0\",\"threshold\":\"3\"},\"proposal_bond\":\"100000000000000000000000\",\"proposal_period\":\"604800000000000\",\"bounty_bond\":\"100000000000000000000000\",\"bounty_forgiveness_period\":\"604800000000000\"}"
+}

@@ -1,0 +1,25 @@
+{
+ "version": 1,
+ "captureId": "constructed-price-feed",
+ "constructed": true,
+ "target": {
+  "market": "7u3HeHxYDLhnCoErrtycNokbQYbWGzLs6JSDqGAv5PfF",
+  "klendProgram": "KLend2g3cP87fffoy8q1mQqGKjrxjC8boSyAYavgmjD",
+  "globalConfig": "BEe6HXZf6cByeb8iCxukjB8k74kJN3cVbBAGi49Hfi6W"
+ },
+ "startedAt": "2026-11-11T19:50:59.411Z",
+ "finishedAt": "2026-11-11T19:51:03.533Z",
+ "records": [
+  "api-reserves.json",
+  "rpc-state.json",
+  "rpc-assets.json",
+  "rpc-programs.json",
+  "rpc-control.json"
+ ],
+ "layoutSources": [
+  "Kamino-Finance/klend-sdk@6a26d6f1b5afb29953ffd139ee8c0c4ca5f26ce6/src/idl/klend.json",
+  "Kamino-Finance/klend-sdk@6a26d6f1b5afb29953ffd139ee8c0c4ca5f26ce6/src/utils/seeds.ts",
+  "Squads-Protocol/v4@af94153ff77a28b6effe46b9c94baaa93742b48c/programs/squads_multisig_program/src/state/multisig.rs",
+  "SPL Token Mint base layout (82 bytes)"
+ ]
+}

@@ -13,12 +13,14 @@ export function selectTokenomicsPicture(g: GraphData, type = 'all', query = '', 
   let nodes: Node[];
   if (type !== 'all' || q) nodes = [...matched].sort(compare).slice(0, 60);
   else {
-    const selected = new Set(g.subgraph.nodes.filter(n => n.type === 'PathNode').map(n => n.id));
+    const hasPath = g.subgraph.nodes.some(n => n.type === 'PathNode');
+    const selected = new Set(g.subgraph.nodes.filter(n => hasPath ? n.type === 'PathNode' : ['Vault', 'Controller'].includes(n.type)).map(n => n.id));
+    const expansionEdges = hasPath ? controlEdges : new Set([...controlEdges, 'ALLOCATES_TO', 'IN_MARKET', 'PRICED_BY', 'HELD_BY', 'UPGRADE_AUTHORITY']);
     // First attach the path's controllers, then their immediate governance,
     // membership and authority dependencies. Never fill with unrelated nodes.
     for (let hop = 0; hop < 2; hop++) {
       const adjacent = new Set<string>();
-      for (const edge of g.subgraph.edges) if (controlEdges.has(edge.type)) {
+      for (const edge of g.subgraph.edges) if (expansionEdges.has(edge.type)) {
         if (selected.has(edge.from)) adjacent.add(edge.to);
         if (selected.has(edge.to)) adjacent.add(edge.from);
       }

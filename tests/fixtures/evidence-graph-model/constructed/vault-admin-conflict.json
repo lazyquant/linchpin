@@ -1,0 +1,159 @@
+{
+  "note": "AC4 conflict fixture: one constructed Kamino-series snapshot holding two VAULT_ADMIN facts with different objects for the same vault. Expected: two ADMIN relationships with conflict true, latest false (constructed snapshots never set latest), and both Fact nodes keep their recorded status.",
+  "snapshot": {
+    "version": 1,
+    "id": "solana-mainnet-beta.kamino.sentora-pyusd-20261110T120000Z",
+    "chain": "solana",
+    "network": "mainnet-beta",
+    "constructed": true,
+    "observedFrom": "2026-11-09T17:04:20.763Z",
+    "observedTo": "2026-11-09T17:04:20.763Z",
+    "fromBlockOrSlot": "500",
+    "toBlockOrSlot": "500",
+    "freshUntil": "2026-11-10T17:04:20.763Z",
+    "subjects": [
+      "solana:mainnet-beta:A2wsxhA7pF4B2UKVfXocb6TAAP9ipfPJam6oMKgDE5BK"
+    ],
+    "readers": [
+      {
+        "id": "tester-conflict-reader",
+        "status": "complete",
+        "subjects": [
+          "solana:mainnet-beta:A2wsxhA7pF4B2UKVfXocb6TAAP9ipfPJam6oMKgDE5BK"
+        ]
+      }
+    ],
+    "names": {},
+    "receipts": [
+      {
+        "id": "rc-tester-conflict-a",
+        "source": "tester-fixture:vault-admin-conflict/a",
+        "responseSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "privacy": "public",
+        "observation": {
+          "chain": "solana",
+          "network": "mainnet-beta",
+          "blockOrSlot": "500",
+          "blockHash": null,
+          "observedAt": "2026-11-09T17:04:20.763Z",
+          "retrievedAt": "2026-11-09T17:04:20.763Z",
+          "historicalState": "constructed"
+        }
+      },
+      {
+        "id": "rc-tester-conflict-b",
+        "source": "tester-fixture:vault-admin-conflict/b",
+        "responseSha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "privacy": "public",
+        "observation": {
+          "chain": "solana",
+          "network": "mainnet-beta",
+          "blockOrSlot": "500",
+          "blockHash": null,
+          "observedAt": "2026-11-09T17:04:20.763Z",
+          "retrievedAt": "2026-11-09T17:04:20.763Z",
+          "historicalState": "constructed"
+        }
+      }
+    ],
+    "facts": [
+      {
+        "id": "f-tester-conflict-a",
+        "subject": "solana:mainnet-beta:A2wsxhA7pF4B2UKVfXocb6TAAP9ipfPJam6oMKgDE5BK",
+        "predicate": "VAULT_ADMIN",
+        "object": "solana:mainnet-beta:7fLxEftpppneavpueYgP2s7HhSGbWpj2jTCmAEwwqonY",
+        "basis": "decoded",
+        "status": "verified",
+        "evidenceIds": [
+          "rc-tester-conflict-a"
+        ],
+        "path": [],
+        "validFrom": "2026-11-09T00:00:00.000Z",
+        "validTo": null,
+        "privacy": "public"
+      },
+      {
+        "id": "f-tester-conflict-b",
+        "subject": "solana:mainnet-beta:A2wsxhA7pF4B2UKVfXocb6TAAP9ipfPJam6oMKgDE5BK",
+        "predicate": "VAULT_ADMIN",
+        "object": "solana:mainnet-beta:24LjDBukaUSHgPowcF2wY1XscnhChcBUDETN2UhBZMMT",
+        "basis": "decoded",
+        "status": "verified",
+        "evidenceIds": [
+          "rc-tester-conflict-b"
+        ],
+        "path": [],
+        "validFrom": "2026-11-09T00:00:00.000Z",
+        "validTo": null,
+        "privacy": "public"
+      }
+    ]
+  },
+  "protocols": [
+    {
+      "id": "protocol:kamino",
+      "title": "Kamino",
+      "series": "kamino.sentora-pyusd",
+      "source": "tests/fixtures/evidence-graph-model/constructed/vault-admin-conflict.json",
+      "memberRule": "snapshot-subjects",
+      "members": [],
+      "coverage": [
+        {
+          "mechanic": "control",
+          "status": "not-mapped",
+          "note": "Tester fixture: not mapped."
+        },
+        {
+          "mechanic": "code-upgrade",
+          "status": "not-mapped",
+          "note": "Tester fixture: not mapped."
+        },
+        {
+          "mechanic": "supply",
+          "status": "not-mapped",
+          "note": "Tester fixture: not mapped."
+        },
+        {
+          "mechanic": "dependencies",
+          "status": "not-mapped",
+          "note": "Tester fixture: not mapped."
+        },
+        {
+          "mechanic": "parameters",
+          "status": "not-mapped",
+          "note": "Tester fixture: not mapped."
+        },
+        {
+          "mechanic": "fees",
+          "status": "not-mapped",
+          "note": "Tester fixture: not mapped."
+        },
+        {
+          "mechanic": "treasury",
+          "status": "not-mapped",
+          "note": "Tester fixture: not mapped."
+        },
+        {
+          "mechanic": "governance",
+          "status": "not-mapped",
+          "note": "Tester fixture: not mapped."
+        },
+        {
+          "mechanic": "holders",
+          "status": "not-mapped",
+          "note": "Tester fixture: not mapped."
+        },
+        {
+          "mechanic": "flows",
+          "status": "not-mapped",
+          "note": "Tester fixture: not mapped."
+        },
+        {
+          "mechanic": "claims",
+          "status": "not-mapped",
+          "note": "Tester fixture: not mapped."
+        }
+      ]
+    }
+  ]
+}

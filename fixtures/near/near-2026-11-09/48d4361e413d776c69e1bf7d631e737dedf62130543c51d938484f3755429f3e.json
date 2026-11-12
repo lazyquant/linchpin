@@ -1,0 +1,31 @@
+{
+ "version": 1,
+ "requestSha256": "48d4361e413d776c69e1bf7d631e737dedf62130543c51d938484f3755429f3e",
+ "request": {
+  "method": "query",
+  "params": {
+   "account_id": "ctl-intents.near",
+   "request_type": "call_function",
+   "method_name": "get_deployments",
+   "args_base64": "e30=",
+   "finality": "final"
+  }
+ },
+ "endpointHost": "archival-rpc.mainnet.fastnear.com",
+ "retrievedAt": "2026-11-09T19:31:42.353Z",
+ "httpStatus": 200,
+ "outcome": "result",
+ "blockHeight": "223810529",
+ "blockHash": "HUDygNGqrTnvQeMgLc15Es3dUVrpBhu2xiGCLLkx5HBH",
+ "responseSha256": "120004f31da327a0bd55a5f6b3f44d3f8b5551936ae4089f2ca6ac034eef6557",
+ "response": {
+  "jsonrpc": "2.0",
+  "result": {
+   "block_hash": "HUDygNGqrTnvQeMgLc15Es3dUVrpBhu2xiGCLLkx5HBH",
+   "block_height": 223810529,
+   "logs": []
+  },
+  "id": "near-reader"
+ },
+ "resultText": "{\"intents.near\":{\"hash\":\"a1afab98916d9f213746544dcf8e4e6bdb22c0be6bc5dfbd8ea8814c9922b547\",\"version\":\"0.4.5\",\"deployment_time\":1730794858000000000,\"upgrade_times\":{\"1730896107734667690\":\"0.1.1\",\"1732300645062125214\":\"0.1.2\",\"1733833880742370863\":\"0.2.0\",\"1737536900001348197\":\"0.2.1\",\"1738597101766507223\":\"0.2.2\",\"1739913880609137110\":\"0.2.2\",\"1739916393467730096\":\"0.2.3\",\"1748290644282344785\":\"0.2.5\",\"1749464233784481012\":\"0.2.6\",\"1749500517952982829\":\"0.2.7\",\"1749583496059523536\":\"0.2.5\",\"1749585532020689557\":\"0.2.8\",\"1750859371498697674\":\"0.2.9\",\"1757578580034045513\":\"0.2.10\",\"1761725363806651961\":\"0.3.0\",\"1764759483074098641\":\"0.4.0\",\"1764796368361722610\":\"0.4.1\",\"1768500720176125593\":\"0.4.2\",\"1790973102189626775\":\"0.4.4\",\"1791402797418572403\":\"0.4.5\"},\"init_args\":\"{\\\"config\\\":{\\\"wnear_id\\\":\\\"wrap.near\\\",\\\"fees\\\":{\\\"fee\\\":0,\\\"fee_collector\\\":\\\"defuse-ops.near\\\"},\\\"roles\\\":{\\\"super_admins\\\":[\\\"defuse-ops.near\\\"],\\\"admins\\\":{\\\"DAO\\\":[\\\"defuse-ops.near\\\"]},\\\"grantees\\\":{\\\"DAO\\\":[\\\"defuse-ops.near\\\"]}}}}\"},\"staging-intents.near\":{\"hash\":\"a1afab98916d9f213746544dcf8e4e6bdb22c0be6bc5dfbd8ea8814c9922b547\",\"version\":\"0.4.5\",\"deployment_time\":1741849818239329005,\"upgrade_times\":{\"1750709944141450500\":\"0.2.8\",\"1750789158747930039\":\"0.2.9\",\"1753781577203306547\":\"0.2.10\",\"1761577340791549862\":\"0.3.0\",\"1764586761177823166\":\"0.4.0\",\"1764796251054124738\":\"0.4.1\",\"1768499690040268315\":\"0.4.2\",\"1790933874761636927\":\"0.4.3\",\"1790952786357566586\":\"0.4.4\",\"1791401700170677898\":\"0.4.5\"},\"init_args\":\"{\\\"config\\\":{\\\"fees\\\":{\\\"fee\\\":1,\\\"fee_collector\\\":\\\"bonelessimpl.near\\\"},\\\"roles\\\":{\\\"admins\\\":{},\\\"grantees\\\":{\\\"DAO\\\":[\\\"defuse-ops.near\\\"],\\\"PauseManager\\\":[\\\"8e69c33b572dad1f2da6f744c834705e651d3784af2471b58949f2fefd5b55d3\\\",\\\"5024319f62e6f45f1b2364e6b92c58413d5279d20730cb2e616a613967cb692c\\\",\\\"9600c0ec4de7a77f828965528c8c6028ba3aa430e4537cd25b7865d9430f63ae\\\",\\\"ac39364aae9f15438b575f677768c2cf4a7cc74b7dcd198980e8618f003ff538\\\",\\\"e33d30ea7c7b271a580bd609100d4f21a07c83f4eb643a1d151c2639471368d0\\\"],\\\"RelayerKeysManager\\\":[\\\"relay-key-manager.near\\\"],\\\"Upgrader\\\":[\\\"ctl-intents.near\\\"]},\\\"super_admins\\\":[\\\"defuse-ops.near\\\",\\\"staging-intents.near\\\",\\\"bonelessimpl.near\\\"]},\\\"wnear_id\\\":\\\"wrap.near\\\"}}\"}}"
+}

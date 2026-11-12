@@ -1,0 +1,155 @@
+{
+  "policyId": "quantrin-near-v1",
+  "subjects": [
+    "near:mainnet:aggregate-oracle.near",
+    "near:mainnet:burrow.sputnik-dao.near",
+    "near:mainnet:contract.main.burrow.near",
+    "near:mainnet:ctl-intents.near",
+    "near:mainnet:intents.near",
+    "near:mainnet:intents.sputnik-dao.near",
+    "near:mainnet:sputnik-dao.near",
+    "near:mainnet:v1.signer"
+  ],
+  "rules": [
+    {
+      "id": "rhea-pause-operator",
+      "kind": "pause-operator-set",
+      "params": {
+        "contract": "near:mainnet:contract.main.burrow.near"
+      }
+    },
+    {
+      "id": "dao-factory-keys",
+      "kind": "no-full-access-keys",
+      "params": {
+        "accounts": [
+          "near:mainnet:sputnik-dao.near"
+        ]
+      }
+    },
+    {
+      "id": "core-contract-keys",
+      "kind": "no-full-access-keys",
+      "params": {
+        "accounts": [
+          "near:mainnet:contract.main.burrow.near",
+          "near:mainnet:intents.near",
+          "near:mainnet:ctl-intents.near",
+          "near:mainnet:v1.signer"
+        ]
+      }
+    },
+    {
+      "id": "rhea-oracle-controller",
+      "kind": "controller-resolved",
+      "params": {
+        "account": "near:mainnet:aggregate-oracle.near"
+      }
+    },
+    {
+      "id": "rhea-oracle-enabled",
+      "kind": "oracle-enabled-is",
+      "params": {
+        "contract": "near:mainnet:contract.main.burrow.near",
+        "account": "near:mainnet:aggregate-oracle.near"
+      }
+    },
+    {
+      "id": "rhea-dao-threshold",
+      "kind": "min-threshold",
+      "params": {
+        "dao": "near:mainnet:burrow.sputnik-dao.near",
+        "num": 1,
+        "denom": 2
+      }
+    },
+    {
+      "id": "rhea-dao-open-funds",
+      "kind": "no-open-proposal-of-class",
+      "params": {
+        "dao": "near:mainnet:burrow.sputnik-dao.near",
+        "classes": [
+          "funds"
+        ]
+      }
+    },
+    {
+      "id": "rhea-open-touching",
+      "kind": "no-open-proposal-touching",
+      "params": {
+        "subject": "near:mainnet:contract.main.burrow.near"
+      }
+    },
+    {
+      "id": "intents-not-paused",
+      "kind": "pause-state-is",
+      "params": {
+        "contract": "near:mainnet:intents.near",
+        "paused": false
+      }
+    },
+    {
+      "id": "intents-locker-max",
+      "kind": "role-grantee-count-max",
+      "params": {
+        "contract": "near:mainnet:intents.near",
+        "role": "UnrestrictedAccountLocker",
+        "n": 1
+      }
+    },
+    {
+      "id": "intents-pausers-min",
+      "kind": "role-grantee-count-min",
+      "params": {
+        "contract": "near:mainnet:intents.near",
+        "role": "PauseManager",
+        "n": 2
+      }
+    },
+    {
+      "id": "intents-no-upgrade",
+      "kind": "no-upgrade-since",
+      "params": {
+        "contract": "near:mainnet:intents.near",
+        "isoDate": "2026-10-01T00:00:00.000Z"
+      }
+    },
+    {
+      "id": "intents-council-30d",
+      "kind": "max-council-change-days",
+      "params": {
+        "dao": "near:mainnet:intents.sputnik-dao.near",
+        "days": 30
+      }
+    },
+    {
+      "id": "usdc-route-family",
+      "kind": "route-family-in",
+      "params": {
+        "assetId": "nep141:17208628f84f5d6ad33f0da3bbbeb27ffcb398eac501a31bd6ad2011e36133a1",
+        "families": [
+          "near_withdrawal"
+        ]
+      }
+    },
+    {
+      "id": "mpc-threshold",
+      "kind": "mpc-threshold-min",
+      "params": {
+        "contract": "near:mainnet:v1.signer",
+        "n": 11
+      }
+    },
+    {
+      "id": "control-unchanged",
+      "kind": "unchanged-since",
+      "params": {
+        "snapshotId": "near-2026-11-09",
+        "factKeys": [
+          "near:mainnet:intents.near#role:Upgrader|holds-role",
+          "near:mainnet:contract.main.burrow.near|owned-by"
+        ]
+      }
+    }
+  ]
+}

@@ -1,0 +1,2690 @@
+{
+  "baseCommit": "339b21f",
+  "source": "runTokenomicsLocal(buildTokenomicsGraph(buildTokenomics(runPipeline(\"marinade\").bundle).bundle)) at base commit 339b21f, sorted by canonical JSON",
+  "queries": [
+    {
+      "id": "path-to-holders",
+      "rows": [
+        {
+          "amount": "0",
+          "from": "Reward fee",
+          "link": "rewards-treasury",
+          "mechanism": "Reward-fee treasury route",
+          "status": "enforced-by-code",
+          "to": "Treasury mSOL account",
+          "unit": "mSOL",
+          "windowEnd": "2026-10-06T10:12:17.000Z",
+          "windowStart": "2026-10-04T06:05:03.000Z"
+        },
+        {
+          "amount": "0.001724166",
+          "from": "LP fee",
+          "link": "lp-treasury",
+          "mechanism": "LP treasury cut",
+          "status": "enforced-by-code",
+          "to": "Treasury mSOL account",
+          "unit": "mSOL",
+          "windowEnd": "2026-10-06T10:12:17.000Z",
+          "windowStart": "2026-10-04T06:05:03.000Z"
+        },
+        {
+          "amount": "10,863,709.243289416",
+          "from": "MIP-22 buyback wallet",
+          "link": "buyback-purchases",
+          "mechanism": "Buy MNDE",
+          "status": "operated-by-accounts",
+          "to": "MNDE purchases",
+          "unit": "MNDE",
+          "windowEnd": "2026-10-05T02:00:44.000Z",
+          "windowStart": "2025-12-02T02:19:29.000Z"
+        },
+        {
+          "amount": "15,416.329929463",
+          "from": "MNDE purchases",
+          "link": "purchases-stakers",
+          "mechanism": "Observed distributor vault claims",
+          "status": "operated-by-accounts",
+          "to": "MNDE stakers",
+          "unit": "MNDE",
+          "windowEnd": "2026-10-02T09:17:29.000Z",
+          "windowStart": "2026-10-01T09:32:02.000Z"
+        },
+        {
+          "amount": "29,962.757894446",
+          "from": "MIP-22 buyback wallet",
+          "link": "buyback-recipient:7iWnBRRhBCiNXXPhqiGzvvBkKrvFSWqqmxRyu9VyYBxE",
+          "mechanism": "Observed MNDE sent from buyback wallet",
+          "status": "operated-by-accounts",
+          "to": "Account owned by program 11111111111111111111111111111111",
+          "unit": "MNDE",
+          "windowEnd": "2026-07-03T13:24:51.000Z",
+          "windowStart": "2026-07-03T13:24:51.000Z"
+        },
+        {
+          "amount": "4,244,303.363608441",
+          "from": "MIP-22 buyback wallet",
+          "link": "buyback-recipient:3HT41nesAgcoNDeGAVFKwss5mzScMH2Uik6pcP71xnhB",
+          "mechanism": "NewClaim \u00d74, NewDistributor \u00d71 in program logs for meRdrpyDCAbQxunjZSLmJ78GxQcn4fJUvqU93GoHZr1",
+          "status": "operated-by-accounts",
+          "to": "Distributor vault; NewClaim \u00d74, NewDistributor \u00d71 in program logs for meRdrpyDCAbQxunjZSLmJ78GxQcn4fJUvqU93GoHZr1",
+          "unit": "MNDE",
+          "windowEnd": "2026-10-01T09:32:13.000Z",
+          "windowStart": "2026-10-01T09:32:13.000Z"
+        },
+        {
+          "amount": "4.538696905",
+          "from": "Stake-account withdrawal fee",
+          "link": "withdraw-treasury",
+          "mechanism": "Stake-account withdrawal treasury route",
+          "status": "enforced-by-code",
+          "to": "Treasury mSOL account",
+          "unit": "mSOL",
+          "windowEnd": "2026-10-06T10:12:17.000Z",
+          "windowStart": "2026-10-04T06:05:03.000Z"
+        },
+        {
+          "amount": "6,427,106.230084395",
+          "from": "MIP-22 buyback wallet",
+          "link": "buyback-recipient:B56RWQGf9RFw7t8gxPzrRvk5VRmB5DoF94aLoJ25YtvG",
+          "mechanism": "Observed MNDE sent from buyback wallet",
+          "status": "operated-by-accounts",
+          "to": "DAO native treasury",
+          "unit": "MNDE",
+          "windowEnd": "2026-02-06T03:00:20.000Z",
+          "windowStart": "2025-12-02T03:00:24.000Z"
+        },
+        {
+          "amount": "970",
+          "from": "Treasury mSOL account",
+          "link": "treasury-onward",
+          "mechanism": "Onward transfers",
+          "status": "operated-by-accounts",
+          "to": "Protocol revenue / onward transfers",
+          "unit": "mSOL",
+          "windowEnd": "2026-10-06T10:12:17.000Z",
+          "windowStart": "2026-10-04T06:05:03.000Z"
+        },
+        {
+          "amount": null,
+          "from": "Admin authority",
+          "link": "admin-fees",
+          "mechanism": "Admin configures fees",
+          "status": "enforced-by-code",
+          "to": "Fee parameters",
+          "unit": null,
+          "windowEnd": null,
+          "windowStart": null
+        },
+        {
+          "amount": null,
+          "from": "DAO treasury governance",
+          "link": "governance-treasury",
+          "mechanism": "Governance controls native treasury",
+          "status": "enforced-by-code",
+          "to": "DAO treasury MNDE",
+          "unit": null,
+          "windowEnd": null,
+          "windowStart": null
+        },
+        {
+          "amount": null,
+          "from": "Delayed unstake",
+          "link": "delayed-fee",
+          "mechanism": "Delayed unstake fee",
+          "status": "enforced-by-code",
+          "to": "Delayed-unstake fee",
+          "unit": null,
+          "windowEnd": null,
+          "windowStart": null
+        },
+        {
+          "amount": null,
+          "from": "Delayed-unstake fee",
+          "link": "delayed-destination",
+          "mechanism": "Delayed-unstake destination",
+          "status": "pending",
+          "to": "No destination account declared",
+          "unit": null,
+          "windowEnd": null,
+          "windowStart": null
+        },
+        {
+          "amount": null,
+          "from": "Liquid unstake",
+          "link": "liquid-lp-fee",
+          "mechanism": "Liquid unstake LP fee",
+          "status": "enforced-by-code",
+          "to": "LP fee",
+          "unit": null,
+          "windowEnd": null,
+          "windowStart": null
+        },
+        {
+          "amount": null,
+          "from": "MNDE locked in VSR",
+          "link": "lock-vote",
+          "mechanism": "Registrar voting-weight configuration",
+          "status": "enforced-by-code",
+          "to": "MNDE voters (VSR)",
+          "unit": null,
+          "windowEnd": null,
+          "windowStart": null
+        },
+        {
+          "amount": null,
+          "from": "MNDE voters (VSR)",
+          "link": "vote-treasury",
+          "mechanism": "MNDE community voting",
+          "status": "enforced-by-code",
+          "to": "DAO treasury governance",
+          "unit": null,
+          "windowEnd": null,
+          "windowStart": null
+        },
+        {
+          "amount": null,
+          "from": "Marinade DAO council (5 members)",
+          "link": "council-admin",
+          "mechanism": "Council governance holds admin role",
+          "status": "enforced-by-code",
+          "to": "Admin authority",
+          "unit": null,
+          "windowEnd": null,
+          "windowStart": null
+        },
+        {
+          "amount": null,
+          "from": "Protocol revenue / onward transfers",
+          "link": "revenue-buyback",
+          "mechanism": "MIP-22 revenue allocation",
+          "status": "claimed-only",
+          "to": "MIP-22 buyback wallet",
+          "unit": null,
+          "windowEnd": null,
+          "windowStart": null
+        },
+        {
+          "amount": null,
+          "from": "Staking rewards",
+          "link": "rewards-fee",
+          "mechanism": "Reward fee",
+          "status": "enforced-by-code",
+          "to": "Reward fee",
+          "unit": null,
+          "windowEnd": null,
+          "windowStart": null
+        },
+        {
+          "amount": null,
+          "from": "Withdraw stake account",
+          "link": "withdraw-fee",
+          "mechanism": "Withdraw stake account fee",
+          "status": "enforced-by-code",
+          "to": "Stake-account withdrawal fee",
+          "unit": null,
+          "windowEnd": null,
+          "windowStart": null
+        }
+      ]
+    },
+    {
+      "id": "who-can-change",
+      "rows": [
+        {
+          "controller": "Liquid-staking program PDA (liq_mint)",
+          "holder": "HZsepB79dnpvH6qfVgvMpS738EndHw3qSHo4Gv5WX1KA",
+          "instruction": "MintTo",
+          "role": "mintAuthority",
+          "target": "MSOL-SOL-LP supply",
+          "what": "Issue tokens"
+        },
+        {
+          "controller": "Liquid-staking program PDA (st_mint)",
+          "holder": "3JLPCS1qM2zRw3Dp6V4hZnYHd4toMNPkNesXdX9tg6KM",
+          "instruction": "MintTo",
+          "role": "mintAuthority",
+          "target": "mSOL",
+          "what": "Issue tokens"
+        },
+        {
+          "controller": "Marinade DAO Emergency Council (5 members)",
+          "holder": "AjGjLWx7vbzgPNxPSQUPjLNjeavQCHVS9VoJNWpnyP6n",
+          "instruction": "pause",
+          "role": "pauseAuthority",
+          "target": "paused",
+          "what": "paused"
+        },
+        {
+          "controller": "Marinade DAO Emergency Council (5 members)",
+          "holder": "AjGjLWx7vbzgPNxPSQUPjLNjeavQCHVS9VoJNWpnyP6n",
+          "instruction": "resume",
+          "role": "pauseAuthority",
+          "target": "paused",
+          "what": "paused"
+        },
+        {
+          "controller": "Marinade DAO community \u2014 MNDE voters through VSR",
+          "holder": "2aQP7NGhktKR92EsHKSoRzcw5FfcZ8oBWgyoGdB3ouww",
+          "instruction": "Upgrade",
+          "role": "upgradeAuthority",
+          "target": "directed-stake",
+          "what": "Upgrade program code"
+        },
+        {
+          "controller": "Marinade DAO community \u2014 MNDE voters through VSR",
+          "holder": "2w6ny74cU6yRxkD6ZACh5M1JznLQ1KB6AUsB7zo2NBHX",
+          "instruction": "Upgrade",
+          "role": "upgradeAuthority",
+          "target": "vsr",
+          "what": "Upgrade program code"
+        },
+        {
+          "controller": "Marinade DAO community \u2014 MNDE voters through VSR",
+          "holder": "6egAu2HDLcSgeUYmiBvNLgp7Bd4nPk16gX9MvWuJpeX2",
+          "instruction": "Upgrade",
+          "role": "upgradeAuthority",
+          "target": "governance-program",
+          "what": "Upgrade program code"
+        },
+        {
+          "controller": "Marinade DAO community \u2014 MNDE voters through VSR",
+          "holder": "B56RWQGf9RFw7t8gxPzrRvk5VRmB5DoF94aLoJ25YtvG",
+          "instruction": "Transfer",
+          "role": "tokenAccountOwner",
+          "target": "DAO native treasury (derived) MNDE (B56RWQGf9RFw7t8gxPzrRvk5VRmB5DoF94aLoJ25YtvG)",
+          "what": "Transfer treasury MNDE"
+        },
+        {
+          "controller": "Marinade DAO council (5 members)",
+          "holder": "26Pw2qvaHgnvHPD73pWr6EUWchpTF3bEzVbEoDPLS21D",
+          "instruction": "MintTo",
+          "role": "mintAuthority",
+          "target": "COUNCIL-MINT supply",
+          "what": "Issue tokens"
+        },
+        {
+          "controller": "Marinade DAO council (5 members)",
+          "holder": "26Pw2qvaHgnvHPD73pWr6EUWchpTF3bEzVbEoDPLS21D",
+          "instruction": "MintTo",
+          "role": "mintAuthority",
+          "target": "Marinade DAO Emergency Council council mint supply",
+          "what": "Issue council tokens"
+        },
+        {
+          "controller": "Marinade DAO council (5 members)",
+          "holder": "26Pw2qvaHgnvHPD73pWr6EUWchpTF3bEzVbEoDPLS21D",
+          "instruction": "MintTo",
+          "role": "mintAuthority",
+          "target": "Marinade DAO council mint supply",
+          "what": "Issue council tokens"
+        },
+        {
+          "controller": "Marinade DAO council (5 members)",
+          "holder": "2aQP7NGhktKR92EsHKSoRzcw5FfcZ8oBWgyoGdB3ouww",
+          "instruction": "Upgrade",
+          "role": "upgradeAuthority",
+          "target": "directed-stake",
+          "what": "Upgrade program code"
+        },
+        {
+          "controller": "Marinade DAO council (5 members)",
+          "holder": "2w6ny74cU6yRxkD6ZACh5M1JznLQ1KB6AUsB7zo2NBHX",
+          "instruction": "Upgrade",
+          "role": "upgradeAuthority",
+          "target": "vsr",
+          "what": "Upgrade program code"
+        },
+        {
+          "controller": "Marinade DAO council (5 members)",
+          "holder": "3cBS14yanCZPRKgdCLnmxHWXFfGjW8bid5zxj7UPqWW5",
+          "instruction": "Upgrade",
+          "role": "upgradeAuthority",
+          "target": "liquidity-gauges",
+          "what": "Upgrade program code"
+        },
+        {
+          "controller": "Marinade DAO council (5 members)",
+          "holder": "42VJbDihcS81YJPbuhHnHgvo1ehu42j8VK9sNwrnAarR",
+          "instruction": "changeAuthority",
+          "role": "adminAuthority",
+          "target": "adminAuthority",
+          "what": "admin Authority"
+        },
+        {
+          "controller": "Marinade DAO council (5 members)",
+          "holder": "42VJbDihcS81YJPbuhHnHgvo1ehu42j8VK9sNwrnAarR",
+          "instruction": "changeAuthority",
+          "role": "adminAuthority",
+          "target": "operationalSolAccount",
+          "what": "operational Sol Account"
+        },
+        {
+          "controller": "Marinade DAO council (5 members)",
+          "holder": "42VJbDihcS81YJPbuhHnHgvo1ehu42j8VK9sNwrnAarR",
+          "instruction": "changeAuthority",
+          "role": "adminAuthority",
+          "target": "pauseAuthority",
+          "what": "pause Authority"
+        },
+        {
+          "controller": "Marinade DAO council (5 members)",
+          "holder": "42VJbDihcS81YJPbuhHnHgvo1ehu42j8VK9sNwrnAarR",
+          "instruction": "changeAuthority",
+          "role": "adminAuthority",
+          "target": "treasuryMsolAccount",
+          "what": "treasury Msol Account"
+        },
+        {
+          "controller": "Marinade DAO council (5 members)",
+          "holder": "42VJbDihcS81YJPbuhHnHgvo1ehu42j8VK9sNwrnAarR",
+          "instruction": "changeAuthority",
+          "role": "adminAuthority",
+          "target": "validatorSystem.managerAuthority",
+          "what": "validator System / manager Authority"
+        },
+        {
+          "controller": "Marinade DAO council (5 members)",
+          "holder": "42VJbDihcS81YJPbuhHnHgvo1ehu42j8VK9sNwrnAarR",
+          "instruction": "configLp",
+          "role": "adminAuthority",
+          "target": "liq Pool / treasury Cut",
+          "what": "liq Pool / treasury Cut"
+        },
+        {
+          "controller": "Marinade DAO council (5 members)",
+          "holder": "42VJbDihcS81YJPbuhHnHgvo1ehu42j8VK9sNwrnAarR",
+          "instruction": "configMarinade",
+          "role": "adminAuthority",
+          "target": "delayed Unstake Fee",
+          "what": "delayed Unstake Fee"
+        },
+        {
+          "controller": "Marinade DAO council (5 members)",
+          "holder": "42VJbDihcS81YJPbuhHnHgvo1ehu42j8VK9sNwrnAarR",
+          "instruction": "configMarinade",
+          "role": "adminAuthority",
+          "target": "deposit Sol Fee",
+          "what": "deposit Sol Fee"
+        },
+        {
+          "controller": "Marinade DAO council (5 members)",
+          "holder": "42VJbDihcS81YJPbuhHnHgvo1ehu42j8VK9sNwrnAarR",
+          "instruction": "configMarinade",
+          "role": "adminAuthority",
+          "target": "deposit Stake Account Fee",
+          "what": "deposit Stake Account Fee"
+        },
+        {
+          "controller": "Marinade DAO council (5 members)",
+          "holder": "42VJbDihcS81YJPbuhHnHgvo1ehu42j8VK9sNwrnAarR",
+          "instruction": "configMarinade",
+          "role": "adminAuthority",
+          "target": "liq Pool / liquidity Sol Cap",
+          "what": "liq Pool / liquidity Sol Cap"
+        },
+        {
+          "controller": "Marinade DAO council (5 members)",
+          "holder": "42VJbDihcS81YJPbuhHnHgvo1ehu42j8VK9sNwrnAarR",
+          "instruction": "configMarinade",
+          "role": "adminAuthority",
+          "target": "max Stake Moved Per Epoch",
+          "what": "max Stake Moved Per Epoch"
+        },
+        {
+          "controller": "Marinade DAO council (5 members)",
+          "holder": "42VJbDihcS81YJPbuhHnHgvo1ehu42j8VK9sNwrnAarR",
+          "instruction": "configMarinade",
+          "role": "adminAuthority",
+          "target": "min Deposit",
+          "what": "min Deposit"
+        },
+        {
+          "controller": "Marinade DAO council (5 members)",
+          "holder": "42VJbDihcS81YJPbuhHnHgvo1ehu42j8VK9sNwrnAarR",
+          "instruction": "configMarinade",
+          "role": "adminAuthority",
+          "target": "min Withdraw",
+          "what": "min Withdraw"
+        },
+        {
+          "controller": "Marinade DAO council (5 members)",
+          "holder": "42VJbDihcS81YJPbuhHnHgvo1ehu42j8VK9sNwrnAarR",
+          "instruction": "configMarinade",
+          "role": "adminAuthority",
+          "target": "reward Fee",
+          "what": "reward Fee"
+        },
+        {
+          "controller": "Marinade DAO council (5 members)",
+          "holder": "42VJbDihcS81YJPbuhHnHgvo1ehu42j8VK9sNwrnAarR",
+          "instruction": "configMarinade",
+          "role": "adminAuthority",
+          "target": "stakeSystem.minStake",
+          "what": "stake System / min Stake"
+        },
+        {
+          "controller": "Marinade DAO council (5 members)",
+          "holder": "42VJbDihcS81YJPbuhHnHgvo1ehu42j8VK9sNwrnAarR",
+          "instruction": "configMarinade",
+          "role": "adminAuthority",
+          "target": "stakeSystem.slotsForStakeDelta",
+          "what": "stake System / slots For Stake Delta"
+        },
+        {
+          "controller": "Marinade DAO council (5 members)",
+          "holder": "42VJbDihcS81YJPbuhHnHgvo1ehu42j8VK9sNwrnAarR",
+          "instruction": "configMarinade",
+          "role": "adminAuthority",
+          "target": "staking Sol Cap",
+          "what": "staking Sol Cap"
+        },
+        {
+          "controller": "Marinade DAO council (5 members)",
+          "holder": "42VJbDihcS81YJPbuhHnHgvo1ehu42j8VK9sNwrnAarR",
+          "instruction": "configMarinade",
+          "role": "adminAuthority",
+          "target": "withdraw Stake Account Fee",
+          "what": "withdraw Stake Account Fee"
+        },
+        {
+          "controller": "Marinade DAO council (5 members)",
+          "holder": "42VJbDihcS81YJPbuhHnHgvo1ehu42j8VK9sNwrnAarR",
+          "instruction": "configMarinade",
+          "role": "adminAuthority",
+          "target": "withdrawStakeAccountEnabled",
+          "what": "withdraw Stake Account Enabled"
+        },
+        {
+          "controller": "Marinade DAO council (5 members)",
+          "holder": "6XQFdWeogb5C8c1KsSCkK6rzzxLxzxsPQqoXge9oJ9xR",
+          "instruction": "Upgrade",
+          "role": "upgradeAuthority",
+          "target": "referral",
+          "what": "Upgrade program code"
+        },
+        {
+          "controller": "Marinade DAO council (5 members)",
+          "holder": "6YAju4nd4t7kyuHV6NvVpMepMk11DgWyYjKVJUak2EEm",
+          "instruction": "Upgrade",
+          "role": "upgradeAuthority",
+          "target": "native-staking-proxy",
+          "what": "Upgrade program code"
+        },
+        {
+          "controller": "Marinade DAO council (5 members)",
+          "holder": "6egAu2HDLcSgeUYmiBvNLgp7Bd4nPk16gX9MvWuJpeX2",
+          "instruction": "Upgrade",
+          "role": "upgradeAuthority",
+          "target": "governance-program",
+          "what": "Upgrade program code"
+        },
+        {
+          "controller": "Marinade DAO council (5 members)",
+          "holder": "AEej7Lywu8EzMznXnxhb1493yCVnmLNXaCKYfUNvQQaJ",
+          "instruction": "Upgrade",
+          "role": "upgradeAuthority",
+          "target": "escrow-relocker",
+          "what": "Upgrade program code"
+        },
+        {
+          "controller": "Marinade DAO council (5 members)",
+          "holder": "B56RWQGf9RFw7t8gxPzrRvk5VRmB5DoF94aLoJ25YtvG",
+          "instruction": "Transfer",
+          "role": "tokenAccountOwner",
+          "target": "DAO native treasury (derived) MNDE (B56RWQGf9RFw7t8gxPzrRvk5VRmB5DoF94aLoJ25YtvG)",
+          "what": "Transfer treasury MNDE"
+        },
+        {
+          "controller": "Marinade DAO council (5 members)",
+          "holder": "CLydpgqZty5HQq1uMtbXpH1vtmN7erhdBSPbn12NGLmb",
+          "instruction": "Upgrade",
+          "role": "upgradeAuthority",
+          "target": "validator-gauges",
+          "what": "Upgrade program code"
+        },
+        {
+          "controller": "Marinade DAO council (5 members)",
+          "holder": "CWRgRr4udD66JbVtS9u2Gu7LHBi5m6SM3ytvmWobThEQ",
+          "instruction": "Upgrade",
+          "role": "upgradeAuthority",
+          "target": "tokadapt",
+          "what": "Upgrade program code"
+        },
+        {
+          "controller": "Marinade DAO council (5 members)",
+          "holder": "J5BEceL5z1EQ7JBqEFu4BfPN4PYCeQaW3GXrzXFfCzhs",
+          "instruction": "Transfer",
+          "role": "tokenAccountOwner",
+          "target": "DAO native treasury (derived); Labs treasury (claimed) MNDE (J5BEceL5z1EQ7JBqEFu4BfPN4PYCeQaW3GXrzXFfCzhs)",
+          "what": "Transfer treasury MNDE"
+        },
+        {
+          "controller": "Marinade Native alternate-staker authorities (39, unresolved)",
+          "holder": "EX1Fs34ajye3BTMSjTkMdZ8P4hb99vQFWzmueqhKGpH6",
+          "instruction": "",
+          "role": "alternateStaker",
+          "target": "Native/Select roots: AKkmXYkQR1vdepMjWopSwBzjHf9cYTbAVNF6HkUmEz9a",
+          "what": "Exercise the declared alternateStaker role"
+        },
+        {
+          "controller": "Marinade Native alternate-staker authorities (39, unresolved)",
+          "holder": "ExPsrC88dVCUozsuHFXYYpVGytsvwB9vWhwicuaFiypb",
+          "instruction": "",
+          "role": "alternateStaker",
+          "target": "Native/Select roots: AMnSEoa7Wz7buQNiWrwcyBvUguNFWW6zTCX9un4yNBGJ",
+          "what": "Exercise the declared alternateStaker role"
+        },
+        {
+          "controller": "Marinade Native alternate-staker authorities (39, unresolved)",
+          "holder": "STNi1NHDUi6Hvibvonawgze8fM83PFLeJhuGMEXyGps",
+          "instruction": "",
+          "role": "alternateStaker",
+          "target": "Native/Select roots: HcEYdJyNFV4odvC6goUApRSuippQL5EzGPaZux4j9eDV",
+          "what": "Exercise the declared alternateStaker role"
+        },
+        {
+          "controller": "Marinade Native alternate-staker authorities (39, unresolved)",
+          "holder": "ex9CfkBZZd6Nv9XdnoDmmB45ymbu4arXVk7g5pWnt3N",
+          "instruction": "",
+          "role": "alternateStaker",
+          "target": "Native/Select roots: 4TNsDg9aHCyDt5axK8aDuhgrengnDBGzyHHzKGnTiGtW",
+          "what": "Exercise the declared alternateStaker role"
+        },
+        {
+          "controller": "Marinade Native alternate-staker authorities (39, unresolved)",
+          "holder": "exR11K5sE7F16vhuxDMMY6EXG4JG3EcfHF8XJux6QYo",
+          "instruction": "",
+          "role": "alternateStaker",
+          "target": "Native/Select roots: 5n6NWQi24wWmCTaj4UWigfaGLXsGzYPyVyoiLCMe4XMc",
+          "what": "Exercise the declared alternateStaker role"
+        },
+        {
+          "controller": "Marinade Native alternate-staker authorities (39, unresolved)",
+          "holder": "exR12sYSsg9FGBmCtSaL87nyj9QmogFzKwruskCQvMq",
+          "instruction": "",
+          "role": "alternateStaker",
+          "target": "Native/Select roots: quLcDxwAZGFLqVPMnDcudNPLto3CKLpJ5DD993hqh4N, FP3Qbx7Eq8R1imVqQBEjDwJJmBUM7win9nhH51DwMDXA",
+          "what": "Exercise the declared alternateStaker role"
+        },
+        {
+          "controller": "Marinade Native alternate-staker authorities (39, unresolved)",
+          "holder": "exR13NAr2iy5HAhKWU8gaqkDABVqU59K6MeZcURMgJy",
+          "instruction": "",
+          "role": "alternateStaker",
+          "target": "Native/Select roots: Gj4iW8XwbMiTepSyLxKkkHwaxB5GDZDn9xcAwGtNApK3",
+          "what": "Exercise the declared alternateStaker role"
+        },
+        {
+          "controller": "Marinade Native alternate-staker authorities (39, unresolved)",
+          "holder": "exR14Hzv4CXVFZHzL779ytkg1TmfTvmTj53xNYYeRRJ",
+          "instruction": "",
+          "role": "alternateStaker",
+          "target": "Native/Select roots: EH2KiD8qLhZgRjXVtqJRHyYmcfdp7iE7oR96XeQag11F",
+          "what": "Exercise the declared alternateStaker role"
+        },
+        {
+          "controller": "Marinade Native alternate-staker authorities (39, unresolved)",
+          "holder": "exR15Qy447CgVPgKXFUYQ6iiB7nAiUf7HPivhbgLwmM",
+          "instruction": "",
+          "role": "alternateStaker",
+          "target": "Native/Select roots: G849MNzckHstXtMm6FifLVZvSXYh4sEVqpQNLaPToJZC",
+          "what": "Exercise the declared alternateStaker role"
+        },
+        {
+          "controller": "Marinade Native alternate-staker authorities (39, unresolved)",
+          "holder": "exR16rhTwR5qkwRBZov5PGf4Qk8Z5JbPAxZRHG7pdqu",
+          "instruction": "",
+          "role": "alternateStaker",
+          "target": "Native/Select roots: FaeoA73XSJsspUSKFSzSpZwY6ZxCywbFg3UTiJfsYfXq",
+          "what": "Exercise the declared alternateStaker role"
+        },
+        {
+          "controller": "Marinade Native alternate-staker authorities (39, unresolved)",
+          "holder": "exR17N2xmYzRsNLojKSafRNgVUCN6BfZbHrFaN5nz6g",
+          "instruction": "",
+          "role": "alternateStaker",
+          "target": "Native/Select roots: 5hzu5cq6iSKeE5K7zxybo41vHUwLA2gKddjDPvQ7CKdS",
+          "what": "Exercise the declared alternateStaker role"
+        },
+        {
+          "controller": "Marinade Native alternate-staker authorities (39, unresolved)",
+          "holder": "exR18AkWhHkELUmuTDVDJs5zvij67V7jMZiiLNVjAy1",
+          "instruction": "",
+          "role": "alternateStaker",
+          "target": "Native/Select roots: 4ZiRdumJQEbXv3WTStCL3HvYNYabESY5v7qBEVJ2ciVk",
+          "what": "Exercise the declared alternateStaker role"
+        },
+        {
+          "controller": "Marinade Native alternate-staker authorities (39, unresolved)",
+          "holder": "exR1Y3me8gsUdxuGqmrcDJkVdt9hMGC3nHgBFtzapvm",
+          "instruction": "",
+          "role": "alternateStaker",
+          "target": "Native/Select roots: Go8uJDWSpsX1Cm4W9uJdqMYmH3GrEr3y9dJNcmy6h43A",
+          "what": "Exercise the declared alternateStaker role"
+        },
+        {
+          "controller": "Marinade Native alternate-staker authorities (39, unresolved)",
+          "holder": "exR2ztcMWLhV18GHMfiCn68CFt9ZnZonecpRsBhDGcE",
+          "instruction": "",
+          "role": "alternateStaker",
+          "target": "Native/Select roots: 5Uxj7YcMEbrhFvsPx9Ltnfqzyiho3cKChMKid1naCryN",
+          "what": "Exercise the declared alternateStaker role"
+        },
+        {
+          "controller": "Marinade Native alternate-staker authorities (39, unresolved)",
+          "holder": "exR3ZmPorepiVAfiisqu1KUyKw4qoxREVP7UPdFnnXQ",
+          "instruction": "",
+          "role": "alternateStaker",
+          "target": "Native/Select roots: BtMjAaY8FgoCtLYWRN4MrJd6ifQawmxY5L4s6dmCTqDx",
+          "what": "Exercise the declared alternateStaker role"
+        },
+        {
+          "controller": "Marinade Native alternate-staker authorities (39, unresolved)",
+          "holder": "exR4Kf3Qnx3wBeQsBGBkpAy2gpKmGd28HLWE5kUFryJ",
+          "instruction": "",
+          "role": "alternateStaker",
+          "target": "Native/Select roots: DbBM8qwwaLP8qhvASXwQGHNpf7EcAacQmJLAEhxnoR2C",
+          "what": "Exercise the declared alternateStaker role"
+        },
+        {
+          "controller": "Marinade Native alternate-staker authorities (39, unresolved)",
+          "holder": "exR5Rx9yS4Jje1L5wqaW1U7KYpsjDRe3KboG3ukk5v4",
+          "instruction": "",
+          "role": "alternateStaker",
+          "target": "Native/Select roots: 14Rb4TmWMZGRqELvQdeCAiz866VoXFx7KHh6pTc7MVgu",
+          "what": "Exercise the declared alternateStaker role"
+        },
+        {
+          "controller": "Marinade Native alternate-staker authorities (39, unresolved)",
+          "holder": "exR6vZMxb5Cuuq38BYvm6dSPiwid7mcvKuuKxtStVYQ",
+          "instruction": "",
+          "role": "alternateStaker",
+          "target": "Native/Select roots: 4Ft58AoawBWfLWuNpi4jogtadGuRAhjBtms5EBxCYw1S",
+          "what": "Exercise the declared alternateStaker role"
+        },
+        {
+          "controller": "Marinade Native alternate-staker authorities (39, unresolved)",
+          "holder": "exR7pPDNFR8A6bfjdPEsYyEALV9HAGu5borsK3V9WkQ",
+          "instruction": "",
+          "role": "alternateStaker",
+          "target": "Native/Select roots: 4Q2z6bHzDFs7TAdoBi1QLsVMZ71Z2v3aQhSC6rUSz2WJ",
+          "what": "Exercise the declared alternateStaker role"
+        },
+        {
+          "controller": "Marinade Native alternate-staker authorities (39, unresolved)",
+          "holder": "exR8RhsxYt8FHMA3rQdjytWBECFVspzeiFyJ9xZUMUN",
+          "instruction": "",
+          "role": "alternateStaker",
+          "target": "Native/Select roots: 5PLyQEvFKPYNmt5AGThnfhYiziLaD7Ho3e3gjc9GBSgS",
+          "what": "Exercise the declared alternateStaker role"
+        },
+        {
+          "controller": "Marinade Native alternate-staker authorities (39, unresolved)",
+          "holder": "exR9Bxcr7ED5faWoCFvTSv5xkU8jE2ivCKHRVg4bfBe",
+          "instruction": "",
+          "role": "alternateStaker",
+          "target": "Native/Select roots: EaPCy7nbpgLD3DLz6TaJhrc28RV5AMR6eyapBEGtFJmz",
+          "what": "Exercise the declared alternateStaker role"
+        },
+        {
+          "controller": "Marinade Native alternate-staker authorities (39, unresolved)",
+          "holder": "psrStL2hNx4c7hLUUks8SmDngeYriB8pF7uyHFhM8ir",
+          "instruction": "",
+          "role": "alternateStaker",
+          "target": "Native/Select roots: 3SvhocFq3X8ejrek2nYVpU64uPVZz7XX4z8VKQPVb7RC",
+          "what": "Exercise the declared alternateStaker role"
+        },
+        {
+          "controller": "Marinade Native alternate-staker authorities (39, unresolved)",
+          "holder": "stR11wetfbi7wDiZR87QedUy2KssSnJwkWrW51QKCDf",
+          "instruction": "",
+          "role": "alternateStaker",
+          "target": "Native/Select roots: Cpk4QffyXWUskpaceG6LCJasMeXvwc26d53jw7YYiNxZ",
+          "what": "Exercise the declared alternateStaker role"
+        },
+        {
+          "controller": "Marinade Native alternate-staker authorities (39, unresolved)",
+          "holder": "stR1332dviHe1raS7aPCzmQv82We2W2e2wydkKPwPbs",
+          "instruction": "",
+          "role": "alternateStaker",
+          "target": "Native/Select roots: BxGkrx8Q9WRnHSms83yzd2mAsW7J4JJMpsQi5orL95iP",
+          "what": "Exercise the declared alternateStaker role"
+        },
+        {
+          "controller": "Marinade Native alternate-staker authorities (39, unresolved)",
+          "holder": "stR14nwbmQiQcrdqkHtKubrEuf4MZedLg5sC9YZKLKP",
+          "instruction": "",
+          "role": "alternateStaker",
+          "target": "Native/Select roots: 9EQ4EzPuDjRyHVeG5s1759rUWcPcTVDzC1eQy3PjqMZP",
+          "what": "Exercise the declared alternateStaker role"
+        },
+        {
+          "controller": "Marinade Native alternate-staker authorities (39, unresolved)",
+          "holder": "stR151fCocsYxEZxxZ3CmA4vGiMUPb2QcnmuQ27USUM",
+          "instruction": "",
+          "role": "alternateStaker",
+          "target": "Native/Select roots: A4A4DNNfMo9uap9GxLqKDMMHNYPUAcCpkFBssukrZst",
+          "what": "Exercise the declared alternateStaker role"
+        },
+        {
+          "controller": "Marinade Native alternate-staker authorities (39, unresolved)",
+          "holder": "stR16rLDGgzqJaMxuk9TVuABW4eGpNJHXJzT7d369BD",
+          "instruction": "",
+          "role": "alternateStaker",
+          "target": "Native/Select roots: DXg8xS2qURqkD12gQAp4SSjfQTbq7qrEg8cyvyvizdtr",
+          "what": "Exercise the declared alternateStaker role"
+        },
+        {
+          "controller": "Marinade Native alternate-staker authorities (39, unresolved)",
+          "holder": "stR17rZvoU7bFedgSW1y7sujv31psfXr8EQrW4xf87U",
+          "instruction": "",
+          "role": "alternateStaker",
+          "target": "Native/Select roots: 2xwY94Df4siPjZnbSzSh8QBK11DQFQcGWY4Qf4aeRA9w",
+          "what": "Exercise the declared alternateStaker role"
+        },
+        {
+          "controller": "Marinade Native alternate-staker authorities (39, unresolved)",
+          "holder": "stR18xi6SkPQ3NvpPYKozD8UBaMfeFur3sXXTWCdoxv",
+          "instruction": "",
+          "role": "alternateStaker",
+          "target": "Native/Select roots: 39JLxVNQ7RVgKhf2jkXcjCtYawcZTL4CSdHRFeMLPAPf",
+          "what": "Exercise the declared alternateStaker role"
+        },
+        {
+          "controller": "Marinade Native alternate-staker authorities (39, unresolved)",
+          "holder": "stR1qFUyKtBjAJs8mJMxrptTY5mimWCQ8NrQ3S397e3",
+          "instruction": "",
+          "role": "alternateStaker",
+          "target": "Native/Select roots: 2483Bwawws4j6rkd7Pb9wjse2r5tBm8RYKJMAvZF86uN",
+          "what": "Exercise the declared alternateStaker role"
+        },
+        {
+          "controller": "Marinade Native alternate-staker authorities (39, unresolved)",
+          "holder": "stR2tjGBbERCAseKhJCggQpQgtgCw92kftUSVbU1ZRW",
+          "instruction": "",
+          "role": "alternateStaker",
+          "target": "Native/Select roots: AR1fr2w8fM4CzxZMrGY7AeL3tvV36GHMUcFaPheLNvzf",
+          "what": "Exercise the declared alternateStaker role"
+        },
+        {
+          "controller": "Marinade Native alternate-staker authorities (39, unresolved)",
+          "holder": "stR3WD27HKwAonD3gouEAm7XCdJxh2ebLaooNXChU9G",
+          "instruction": "",
+          "role": "alternateStaker",
+          "target": "Native/Select roots: GsuuU3Jas8bBc4iYTRa2K8XEPtF8AQAFNsfkWc3LFQ1m",
+          "what": "Exercise the declared alternateStaker role"
+        },
+        {
+          "controller": "Marinade Native alternate-staker authorities (39, unresolved)",
+          "holder": "stR4sFJqmHdnYNQtqWEYm9tbyzCH5eTB7kcspdVkame",
+          "instruction": "",
+          "role": "alternateStaker",
+          "target": "Native/Select roots: FNoezdT6iQqW5DD1HJUFAsYWSHvVGEnTB8QmsaKdHXyV",
+          "what": "Exercise the declared alternateStaker role"
+        },
+        {
+          "controller": "Marinade Native alternate-staker authorities (39, unresolved)",
+          "holder": "stR5EteY3weahyMY5BHkagLaEX13Q8qJHTcPAJjvUCU",
+          "instruction": "",
+          "role": "alternateStaker",
+          "target": "Native/Select roots: 9oXDumSJMJ9qUcLywsViwWxnnE7wHD8aU7HGLBtgyZtd",
+          "what": "Exercise the declared alternateStaker role"
+        },
+        {
+          "controller": "Marinade Native alternate-staker authorities (39, unresolved)",
+          "holder": "stR6sP3VggwwNBW7ewbqiug3oyGgX5kbjq3NMRAaNqM",
+          "instruction": "",
+          "role": "alternateStaker",
+          "target": "Native/Select roots: 4GgQHVCnqHNF6zgXWzew4FLWFXBtFvRAgAr3X2rfrs83",
+          "what": "Exercise the declared alternateStaker role"
+        },
+        {
+          "controller": "Marinade Native alternate-staker authorities (39, unresolved)",
+          "holder": "stR7SJrkJCXXSJC9qgeid7rRn8zEqrjqYrNGW69udbE",
+          "instruction": "",
+          "role": "alternateStaker",
+          "target": "Native/Select roots: 23wUaCWSB7W6CY5hnoqxhh4zcaSFuXwGmko5tYCeMguo",
+          "what": "Exercise the declared alternateStaker role"
+        },
+        {
+          "controller": "Marinade Native alternate-staker authorities (39, unresolved)",
+          "holder": "stR8PFqvusPHD9q4G3ctahq5ruDfHhabw5E8z6iacmk",
+          "instruction": "",
+          "role": "alternateStaker",
+          "target": "Native/Select roots: 7xDipd8TZCZyuckE7pnCjCCiZfbWN18Eg6jeQ9LArv9y",
+          "what": "Exercise the declared alternateStaker role"
+        },
+        {
+          "controller": "Marinade Native alternate-staker authorities (39, unresolved)",
+          "holder": "stR9fP62sxg3jF3dKWoQyoDmZnMAbMUqJeMXQFQeMFy",
+          "instruction": "",
+          "role": "alternateStaker",
+          "target": "Native/Select roots: 4e1B5aNAgxJjY8Efon2cWpMCRVh3ZUedNeEpVPUSByEa",
+          "what": "Exercise the declared alternateStaker role"
+        },
+        {
+          "controller": "Marinade Native alternate-staker authorities (39, unresolved)",
+          "holder": "stWirqFCf2Uts1JBL1Jsd3r6VBWhgnpdPxCTe1MFjrq",
+          "instruction": "",
+          "role": "alternateStaker",
+          "target": "Native/Select roots: 2F9jWSs8zVFLXZx4DFLRJY5rpVSZoK7veU4n1VoUbvqG",
+          "what": "Exercise the declared alternateStaker role"
+        },
+        {
+          "controller": "Marinade Native operator authorities (19, unresolved)",
+          "holder": "opP5Re9Hi3veRPVBqnhqB747EBbd8dgHnbGR6h8h8qd",
+          "instruction": "merge, split, deactivate, delegate, redelegate, switchStaker",
+          "role": "operator",
+          "target": "Native/Select roots: 3SvhocFq3X8ejrek2nYVpU64uPVZz7XX4z8VKQPVb7RC, AMnSEoa7Wz7buQNiWrwcyBvUguNFWW6zTCX9un4yNBGJ",
+          "what": "Exercise the declared operator role"
+        },
+        {
+          "controller": "Marinade Native operator authorities (19, unresolved)",
+          "holder": "opR11mZYuhmUzE7rUBbDMd2A6PiYRth4jZ26ZM7t8bu",
+          "instruction": "merge, split, deactivate, delegate, redelegate, switchStaker",
+          "role": "operator",
+          "target": "Native/Select roots: 5n6NWQi24wWmCTaj4UWigfaGLXsGzYPyVyoiLCMe4XMc, Cpk4QffyXWUskpaceG6LCJasMeXvwc26d53jw7YYiNxZ",
+          "what": "Exercise the declared operator role"
+        },
+        {
+          "controller": "Marinade Native operator authorities (19, unresolved)",
+          "holder": "opR12ScuoY8S8zu4n1eoFNvqZWeyAUsMq7k2en4THM4",
+          "instruction": "merge, split, deactivate, delegate, redelegate, switchStaker",
+          "role": "operator",
+          "target": "Native/Select roots: quLcDxwAZGFLqVPMnDcudNPLto3CKLpJ5DD993hqh4N, FP3Qbx7Eq8R1imVqQBEjDwJJmBUM7win9nhH51DwMDXA",
+          "what": "Exercise the declared operator role"
+        },
+        {
+          "controller": "Marinade Native operator authorities (19, unresolved)",
+          "holder": "opR13Y9otVNLem5hLA5GtyWCjXQ8hfUDMTwX6DzLhLv",
+          "instruction": "merge, split, deactivate, delegate, redelegate, switchStaker",
+          "role": "operator",
+          "target": "Native/Select roots: BxGkrx8Q9WRnHSms83yzd2mAsW7J4JJMpsQi5orL95iP, Gj4iW8XwbMiTepSyLxKkkHwaxB5GDZDn9xcAwGtNApK3",
+          "what": "Exercise the declared operator role"
+        },
+        {
+          "controller": "Marinade Native operator authorities (19, unresolved)",
+          "holder": "opR14b8AJtxcZZuadd3xgn8sQZbxf4DKh7nCSHSRpXZ",
+          "instruction": "merge, split, deactivate, delegate, redelegate, switchStaker",
+          "role": "operator",
+          "target": "Native/Select roots: 9EQ4EzPuDjRyHVeG5s1759rUWcPcTVDzC1eQy3PjqMZP, EH2KiD8qLhZgRjXVtqJRHyYmcfdp7iE7oR96XeQag11F",
+          "what": "Exercise the declared operator role"
+        },
+        {
+          "controller": "Marinade Native operator authorities (19, unresolved)",
+          "holder": "opR15b2UhjmVdPWemUHWnUanjkiF1nXBS94NqV5k482",
+          "instruction": "merge, split, deactivate, delegate, redelegate, switchStaker",
+          "role": "operator",
+          "target": "Native/Select roots: A4A4DNNfMo9uap9GxLqKDMMHNYPUAcCpkFBssukrZst, G849MNzckHstXtMm6FifLVZvSXYh4sEVqpQNLaPToJZC",
+          "what": "Exercise the declared operator role"
+        },
+        {
+          "controller": "Marinade Native operator authorities (19, unresolved)",
+          "holder": "opR16REiXuLYTwcLmpbeFuB7w9LYEFLz62ZtNwaFhCc",
+          "instruction": "merge, split, deactivate, delegate, redelegate, switchStaker",
+          "role": "operator",
+          "target": "Native/Select roots: DXg8xS2qURqkD12gQAp4SSjfQTbq7qrEg8cyvyvizdtr, FaeoA73XSJsspUSKFSzSpZwY6ZxCywbFg3UTiJfsYfXq",
+          "what": "Exercise the declared operator role"
+        },
+        {
+          "controller": "Marinade Native operator authorities (19, unresolved)",
+          "holder": "opR17G6BSuuQM6wQBN99sT2VqTHWfzoSGxRqhfkRcik",
+          "instruction": "merge, split, deactivate, delegate, redelegate, switchStaker",
+          "role": "operator",
+          "target": "Native/Select roots: 2xwY94Df4siPjZnbSzSh8QBK11DQFQcGWY4Qf4aeRA9w, 5hzu5cq6iSKeE5K7zxybo41vHUwLA2gKddjDPvQ7CKdS",
+          "what": "Exercise the declared operator role"
+        },
+        {
+          "controller": "Marinade Native operator authorities (19, unresolved)",
+          "holder": "opR185Y6Pmm2QSCYi3oQnorBEHtDkK7tKbxyqiqd6VH",
+          "instruction": "merge, split, deactivate, delegate, redelegate, switchStaker",
+          "role": "operator",
+          "target": "Native/Select roots: 39JLxVNQ7RVgKhf2jkXcjCtYawcZTL4CSdHRFeMLPAPf, 4ZiRdumJQEbXv3WTStCL3HvYNYabESY5v7qBEVJ2ciVk",
+          "what": "Exercise the declared operator role"
+        },
+        {
+          "controller": "Marinade Native operator authorities (19, unresolved)",
+          "holder": "opR1fAvGk2E3a4z8WvGtCfEKVZ3kVFHSv1s8UheVN5o",
+          "instruction": "merge, split, deactivate, delegate, redelegate, switchStaker",
+          "role": "operator",
+          "target": "Native/Select roots: 2483Bwawws4j6rkd7Pb9wjse2r5tBm8RYKJMAvZF86uN, Go8uJDWSpsX1Cm4W9uJdqMYmH3GrEr3y9dJNcmy6h43A",
+          "what": "Exercise the declared operator role"
+        },
+        {
+          "controller": "Marinade Native operator authorities (19, unresolved)",
+          "holder": "opR2AfvtWeVsK1t7xPGuMG6rnMXhqPo1C116AbNMfJd",
+          "instruction": "merge, split, deactivate, delegate, redelegate, switchStaker",
+          "role": "operator",
+          "target": "Native/Select roots: 5Uxj7YcMEbrhFvsPx9Ltnfqzyiho3cKChMKid1naCryN, AR1fr2w8fM4CzxZMrGY7AeL3tvV36GHMUcFaPheLNvzf",
+          "what": "Exercise the declared operator role"
+        },
+        {
+          "controller": "Marinade Native operator authorities (19, unresolved)",
+          "holder": "opR3WtbAyoLtCdhwd11wzbUcH5yqv1LxDEkGdR7vvPv",
+          "instruction": "merge, split, deactivate, delegate, redelegate, switchStaker",
+          "role": "operator",
+          "target": "Native/Select roots: BtMjAaY8FgoCtLYWRN4MrJd6ifQawmxY5L4s6dmCTqDx, GsuuU3Jas8bBc4iYTRa2K8XEPtF8AQAFNsfkWc3LFQ1m",
+          "what": "Exercise the declared operator role"
+        },
+        {
+          "controller": "Marinade Native operator authorities (19, unresolved)",
+          "holder": "opR4rR9dXagwi6tngtqvfuEwJAG6N2oFG6N6Pded5go",
+          "instruction": "merge, split, deactivate, delegate, redelegate, switchStaker",
+          "role": "operator",
+          "target": "Native/Select roots: DbBM8qwwaLP8qhvASXwQGHNpf7EcAacQmJLAEhxnoR2C, FNoezdT6iQqW5DD1HJUFAsYWSHvVGEnTB8QmsaKdHXyV",
+          "what": "Exercise the declared operator role"
+        },
+        {
+          "controller": "Marinade Native operator authorities (19, unresolved)",
+          "holder": "opR5M5xa7dkk5NL9QLUrLPv2LB4j616xfRZXVY5KRA6",
+          "instruction": "merge, split, deactivate, delegate, redelegate, switchStaker",
+          "role": "operator",
+          "target": "Native/Select roots: 14Rb4TmWMZGRqELvQdeCAiz866VoXFx7KHh6pTc7MVgu, 9oXDumSJMJ9qUcLywsViwWxnnE7wHD8aU7HGLBtgyZtd",
+          "what": "Exercise the declared operator role"
+        },
+        {
+          "controller": "Marinade Native operator authorities (19, unresolved)",
+          "holder": "opR6CkKjQ19NM1v8vBYkffBA3QhaVmLgY58EZDVa3sm",
+          "instruction": "merge, split, deactivate, delegate, redelegate, switchStaker",
+          "role": "operator",
+          "target": "Native/Select roots: 4Ft58AoawBWfLWuNpi4jogtadGuRAhjBtms5EBxCYw1S, 4GgQHVCnqHNF6zgXWzew4FLWFXBtFvRAgAr3X2rfrs83",
+          "what": "Exercise the declared operator role"
+        },
+        {
+          "controller": "Marinade Native operator authorities (19, unresolved)",
+          "holder": "opR7j6A2p6z5YkSB2ASA56LT4Bw1KHmD2XcXnLFhfvg",
+          "instruction": "merge, split, deactivate, delegate, redelegate, switchStaker",
+          "role": "operator",
+          "target": "Native/Select roots: 23wUaCWSB7W6CY5hnoqxhh4zcaSFuXwGmko5tYCeMguo, 4Q2z6bHzDFs7TAdoBi1QLsVMZ71Z2v3aQhSC6rUSz2WJ",
+          "what": "Exercise the declared operator role"
+        },
+        {
+          "controller": "Marinade Native operator authorities (19, unresolved)",
+          "holder": "opR8L1fPbQuLzZ9xAb89ic1aGpcC413ch1ppve6KWdo",
+          "instruction": "merge, split, deactivate, delegate, redelegate, switchStaker",
+          "role": "operator",
+          "target": "Native/Select roots: 5PLyQEvFKPYNmt5AGThnfhYiziLaD7Ho3e3gjc9GBSgS, 7xDipd8TZCZyuckE7pnCjCCiZfbWN18Eg6jeQ9LArv9y",
+          "what": "Exercise the declared operator role"
+        },
+        {
+          "controller": "Marinade Native operator authorities (19, unresolved)",
+          "holder": "opR9Vg6DgXrbH3wCZu61gjS6DA1A1YgyW7wjhaBGNZr",
+          "instruction": "merge, split, deactivate, delegate, redelegate, switchStaker",
+          "role": "operator",
+          "target": "Native/Select roots: 4e1B5aNAgxJjY8Efon2cWpMCRVh3ZUedNeEpVPUSByEa, EaPCy7nbpgLD3DLz6TaJhrc28RV5AMR6eyapBEGtFJmz",
+          "what": "Exercise the declared operator role"
+        },
+        {
+          "controller": "Marinade Native operator authorities (19, unresolved)",
+          "holder": "opiNSvKm1aPkbuSjnZfY5vyJUmaVxuQyTJt6jnNTW1L",
+          "instruction": "merge, split, deactivate, delegate, redelegate, switchStaker",
+          "role": "operator",
+          "target": "Native/Select roots: AKkmXYkQR1vdepMjWopSwBzjHf9cYTbAVNF6HkUmEz9a, HcEYdJyNFV4odvC6goUApRSuippQL5EzGPaZux4j9eDV",
+          "what": "Exercise the declared operator role"
+        },
+        {
+          "controller": "No authority",
+          "holder": "none",
+          "instruction": "FreezeAccount",
+          "role": "freezeAuthority",
+          "target": "COUNCIL-MINT freeze authority",
+          "what": "Freeze token accounts"
+        },
+        {
+          "controller": "No authority",
+          "holder": "none",
+          "instruction": "FreezeAccount",
+          "role": "freezeAuthority",
+          "target": "MNDE",
+          "what": "Freeze token accounts"
+        },
+        {
+          "controller": "No authority",
+          "holder": "none",
+          "instruction": "FreezeAccount",
+          "role": "freezeAuthority",
+          "target": "MSOL-SOL-LP supply",
+          "what": "Freeze token accounts"
+        },
+        {
+          "controller": "No authority",
+          "holder": "none",
+          "instruction": "FreezeAccount",
+          "role": "freezeAuthority",
+          "target": "mSOL",
+          "what": "Freeze token accounts"
+        },
+        {
+          "controller": "No authority",
+          "holder": "none",
+          "instruction": "MintTo",
+          "role": "mintAuthority",
+          "target": "MNDE",
+          "what": "Issue tokens"
+        },
+        {
+          "controller": "Serum multisig",
+          "holder": "551FBXSXdhcRDDkdcb3ThDRg84Mwe5Zs6YjJ1EEoyzBp",
+          "instruction": "Upgrade",
+          "role": "upgradeAuthority",
+          "target": "liquid-staking",
+          "what": "Upgrade program code"
+        },
+        {
+          "controller": "Validator manager wallet",
+          "holder": "opLSF7LdfyWNBby5o6FT8UFsr2A4UGKteECgtLSYrSm",
+          "instruction": "addValidator",
+          "role": "managerAuthority",
+          "target": "Validator management",
+          "what": "add Validator"
+        },
+        {
+          "controller": "Validator manager wallet",
+          "holder": "opLSF7LdfyWNBby5o6FT8UFsr2A4UGKteECgtLSYrSm",
+          "instruction": "configValidatorSystem",
+          "role": "managerAuthority",
+          "target": "Validator management",
+          "what": "config Validator System"
+        },
+        {
+          "controller": "Validator manager wallet",
+          "holder": "opLSF7LdfyWNBby5o6FT8UFsr2A4UGKteECgtLSYrSm",
+          "instruction": "emergencyUnstake",
+          "role": "validatorManagerAuthority",
+          "target": "Validator management",
+          "what": "emergency Unstake"
+        },
+        {
+          "controller": "Validator manager wallet",
+          "holder": "opLSF7LdfyWNBby5o6FT8UFsr2A4UGKteECgtLSYrSm",
+          "instruction": "partialUnstake",
+          "role": "validatorManagerAuthority",
+          "target": "Validator management",
+          "what": "partial Unstake"
+        },
+        {
+          "controller": "Validator manager wallet",
+          "holder": "opLSF7LdfyWNBby5o6FT8UFsr2A4UGKteECgtLSYrSm",
+          "instruction": "removeValidator",
+          "role": "managerAuthority",
+          "target": "Validator management",
+          "what": "remove Validator"
+        },
+        {
+          "controller": "Validator manager wallet",
+          "holder": "opLSF7LdfyWNBby5o6FT8UFsr2A4UGKteECgtLSYrSm",
+          "instruction": "setValidatorScore",
+          "role": "managerAuthority",
+          "target": "Validator management",
+          "what": "set Validator Score"
+        },
+        {
+          "controller": "Wallet 89SrbjbuNyqSqAALKBsKBqMSh463eLvzS4iVWCeArBgB",
+          "holder": "89SrbjbuNyqSqAALKBsKBqMSh463eLvzS4iVWCeArBgB",
+          "instruction": "Transfer",
+          "role": "tokenAccountOwner",
+          "target": "Treasury mSOL account funds",
+          "what": "Transfer treasury mSOL"
+        },
+        {
+          "controller": "Wallet opNS8ENpEMWdXcJUgJCsJTDp7arTXayoBEeBUg6UezP",
+          "holder": "opNS8ENpEMWdXcJUgJCsJTDp7arTXayoBEeBUg6UezP",
+          "instruction": "merge, split, deactivate, delegate, redelegate, switchStaker",
+          "role": "operator",
+          "target": "Native/Select roots: 2F9jWSs8zVFLXZx4DFLRJY5rpVSZoK7veU4n1VoUbvqG, 4TNsDg9aHCyDt5axK8aDuhgrengnDBGzyHHzKGnTiGtW",
+          "what": "Exercise the declared operator role"
+        }
+      ]
+    },
+    {
+      "id": "parameter-control",
+      "rows": [
+        {
+          "controller": "Marinade DAO Emergency Council (5 members)",
+          "holder": "AjGjLWx7vbzgPNxPSQUPjLNjeavQCHVS9VoJNWpnyP6n",
+          "instruction": "pause",
+          "parameter": "paused",
+          "role": "pauseAuthority",
+          "value": "false"
+        },
+        {
+          "controller": "Marinade DAO Emergency Council (5 members)",
+          "holder": "AjGjLWx7vbzgPNxPSQUPjLNjeavQCHVS9VoJNWpnyP6n",
+          "instruction": "resume",
+          "parameter": "paused",
+          "role": "pauseAuthority",
+          "value": "false"
+        },
+        {
+          "controller": "Marinade DAO council (5 members)",
+          "holder": "42VJbDihcS81YJPbuhHnHgvo1ehu42j8VK9sNwrnAarR",
+          "instruction": "configLp",
+          "parameter": "liq Pool / treasury Cut",
+          "role": "adminAuthority",
+          "value": "50.00 %"
+        },
+        {
+          "controller": "Marinade DAO council (5 members)",
+          "holder": "42VJbDihcS81YJPbuhHnHgvo1ehu42j8VK9sNwrnAarR",
+          "instruction": "configMarinade",
+          "parameter": "delayed Unstake Fee",
+          "role": "adminAuthority",
+          "value": "0.20 %"
+        },
+        {
+          "controller": "Marinade DAO council (5 members)",
+          "holder": "42VJbDihcS81YJPbuhHnHgvo1ehu42j8VK9sNwrnAarR",
+          "instruction": "configMarinade",
+          "parameter": "deposit Sol Fee",
+          "role": "adminAuthority",
+          "value": "0.00 %"
+        },
+        {
+          "controller": "Marinade DAO council (5 members)",
+          "holder": "42VJbDihcS81YJPbuhHnHgvo1ehu42j8VK9sNwrnAarR",
+          "instruction": "configMarinade",
+          "parameter": "deposit Stake Account Fee",
+          "role": "adminAuthority",
+          "value": "0.00 %"
+        },
+        {
+          "controller": "Marinade DAO council (5 members)",
+          "holder": "42VJbDihcS81YJPbuhHnHgvo1ehu42j8VK9sNwrnAarR",
+          "instruction": "configMarinade",
+          "parameter": "liq Pool / liquidity Sol Cap",
+          "role": "adminAuthority",
+          "value": "18,446,744,073.709551615 SOL"
+        },
+        {
+          "controller": "Marinade DAO council (5 members)",
+          "holder": "42VJbDihcS81YJPbuhHnHgvo1ehu42j8VK9sNwrnAarR",
+          "instruction": "configMarinade",
+          "parameter": "max Stake Moved Per Epoch",
+          "role": "adminAuthority",
+          "value": "100.00 %"
+        },
+        {
+          "controller": "Marinade DAO council (5 members)",
+          "holder": "42VJbDihcS81YJPbuhHnHgvo1ehu42j8VK9sNwrnAarR",
+          "instruction": "configMarinade",
+          "parameter": "min Deposit",
+          "role": "adminAuthority",
+          "value": "0.000000001 SOL"
+        },
+        {
+          "controller": "Marinade DAO council (5 members)",
+          "holder": "42VJbDihcS81YJPbuhHnHgvo1ehu42j8VK9sNwrnAarR",
+          "instruction": "configMarinade",
+          "parameter": "min Withdraw",
+          "role": "adminAuthority",
+          "value": "0.000000001 SOL"
+        },
+        {
+          "controller": "Marinade DAO council (5 members)",
+          "holder": "42VJbDihcS81YJPbuhHnHgvo1ehu42j8VK9sNwrnAarR",
+          "instruction": "configMarinade",
+          "parameter": "reward Fee",
+          "role": "adminAuthority",
+          "value": "0.00 %"
+        },
+        {
+          "controller": "Marinade DAO council (5 members)",
+          "holder": "42VJbDihcS81YJPbuhHnHgvo1ehu42j8VK9sNwrnAarR",
+          "instruction": "configMarinade",
+          "parameter": "staking Sol Cap",
+          "role": "adminAuthority",
+          "value": "18,446,744,073.709551615 SOL"
+        },
+        {
+          "controller": "Marinade DAO council (5 members)",
+          "holder": "42VJbDihcS81YJPbuhHnHgvo1ehu42j8VK9sNwrnAarR",
+          "instruction": "configMarinade",
+          "parameter": "withdraw Stake Account Fee",
+          "role": "adminAuthority",
+          "value": "0.20 %"
+        }
+      ]
+    },
+    {
+      "id": "supply-control",
+      "rows": [
+        {
+          "authority": "3JLPCS1qM2zRw3Dp6V4hZnYHd4toMNPkNesXdX9tg6KM",
+          "authorityType": "MINT_AUTHORITY",
+          "controller": "Liquid-staking program PDA (st_mint)",
+          "mint": "mSOL"
+        },
+        {
+          "authority": "none",
+          "authorityType": "FREEZE_AUTHORITY",
+          "controller": "No authority",
+          "mint": "MNDE"
+        },
+        {
+          "authority": "none",
+          "authorityType": "FREEZE_AUTHORITY",
+          "controller": "No authority",
+          "mint": "mSOL"
+        },
+        {
+          "authority": "none",
+          "authorityType": "MINT_AUTHORITY",
+          "controller": "No authority",
+          "mint": "MNDE"
+        }
+      ]
+    },
+    {
+      "id": "upgrade-control",
+      "rows": [
+        {
+          "authority": "2aQP7NGhktKR92EsHKSoRzcw5FfcZ8oBWgyoGdB3ouww",
+          "controller": "Marinade DAO community \u2014 MNDE voters through VSR",
+          "program": "directed-stake",
+          "threshold": "MNDE vote 2.00 % in the DAO treasury governance; council veto 50.00 %"
+        },
+        {
+          "authority": "2aQP7NGhktKR92EsHKSoRzcw5FfcZ8oBWgyoGdB3ouww",
+          "controller": "Marinade DAO council (5 members)",
+          "program": "directed-stake",
+          "threshold": "50.00 % of council votes (3 of 5); council veto 40.00\u201350.00 % where enabled"
+        },
+        {
+          "authority": "2w6ny74cU6yRxkD6ZACh5M1JznLQ1KB6AUsB7zo2NBHX",
+          "controller": "Marinade DAO community \u2014 MNDE voters through VSR",
+          "program": "vsr",
+          "threshold": "MNDE vote 2.00 % in the DAO treasury governance; council veto 50.00 %"
+        },
+        {
+          "authority": "2w6ny74cU6yRxkD6ZACh5M1JznLQ1KB6AUsB7zo2NBHX",
+          "controller": "Marinade DAO council (5 members)",
+          "program": "vsr",
+          "threshold": "50.00 % of council votes (3 of 5); council veto 40.00\u201350.00 % where enabled"
+        },
+        {
+          "authority": "3cBS14yanCZPRKgdCLnmxHWXFfGjW8bid5zxj7UPqWW5",
+          "controller": "Marinade DAO council (5 members)",
+          "program": "liquidity-gauges",
+          "threshold": "50.00 % of council votes (3 of 5); council veto 40.00\u201350.00 % where enabled"
+        },
+        {
+          "authority": "551FBXSXdhcRDDkdcb3ThDRg84Mwe5Zs6YjJ1EEoyzBp",
+          "controller": "Serum multisig",
+          "program": "liquid-staking",
+          "threshold": "6"
+        },
+        {
+          "authority": "6XQFdWeogb5C8c1KsSCkK6rzzxLxzxsPQqoXge9oJ9xR",
+          "controller": "Marinade DAO council (5 members)",
+          "program": "referral",
+          "threshold": "50.00 % of council votes (3 of 5); council veto 40.00\u201350.00 % where enabled"
+        },
+        {
+          "authority": "6YAju4nd4t7kyuHV6NvVpMepMk11DgWyYjKVJUak2EEm",
+          "controller": "Marinade DAO council (5 members)",
+          "program": "native-staking-proxy",
+          "threshold": "50.00 % of council votes (3 of 5); council veto 40.00\u201350.00 % where enabled"
+        },
+        {
+          "authority": "6egAu2HDLcSgeUYmiBvNLgp7Bd4nPk16gX9MvWuJpeX2",
+          "controller": "Marinade DAO community \u2014 MNDE voters through VSR",
+          "program": "governance-program",
+          "threshold": "MNDE vote 2.00 % in the DAO treasury governance; council veto 50.00 %"
+        },
+        {
+          "authority": "6egAu2HDLcSgeUYmiBvNLgp7Bd4nPk16gX9MvWuJpeX2",
+          "controller": "Marinade DAO council (5 members)",
+          "program": "governance-program",
+          "threshold": "50.00 % of council votes (3 of 5); council veto 40.00\u201350.00 % where enabled"
+        },
+        {
+          "authority": "AEej7Lywu8EzMznXnxhb1493yCVnmLNXaCKYfUNvQQaJ",
+          "controller": "Marinade DAO council (5 members)",
+          "program": "escrow-relocker",
+          "threshold": "50.00 % of council votes (3 of 5); council veto 40.00\u201350.00 % where enabled"
+        },
+        {
+          "authority": "CLydpgqZty5HQq1uMtbXpH1vtmN7erhdBSPbn12NGLmb",
+          "controller": "Marinade DAO council (5 members)",
+          "program": "validator-gauges",
+          "threshold": "50.00 % of council votes (3 of 5); council veto 40.00\u201350.00 % where enabled"
+        },
+        {
+          "authority": "CWRgRr4udD66JbVtS9u2Gu7LHBi5m6SM3ytvmWobThEQ",
+          "controller": "Marinade DAO council (5 members)",
+          "program": "tokadapt",
+          "threshold": "50.00 % of council votes (3 of 5); council veto 40.00\u201350.00 % where enabled"
+        }
+      ]
+    },
+    {
+      "id": "who-votes-where",
+      "rows": [
+        {
+          "classification": "community-and-council",
+          "governance": "2aQP7NGhktKR92EsHKSoRzcw5FfcZ8oBWgyoGdB3ouww",
+          "side": "community",
+          "target": "directed-stake",
+          "thresholds": "community vote 50 %; cannot propose; council vote 50 %; 1 council token to propose; community veto disabled; council veto 50 %",
+          "votingBody": "Marinade DAO community \u2014 MNDE voters through VSR",
+          "what": "Upgrade program code"
+        },
+        {
+          "classification": "community-and-council",
+          "governance": "2aQP7NGhktKR92EsHKSoRzcw5FfcZ8oBWgyoGdB3ouww",
+          "side": "council",
+          "target": "directed-stake",
+          "thresholds": "community vote 50 %; cannot propose; council vote 50 %; 1 council token to propose; community veto disabled; council veto 50 %",
+          "votingBody": "Marinade DAO council (5 members)",
+          "what": "Upgrade program code"
+        },
+        {
+          "classification": "community-and-council",
+          "governance": "2w6ny74cU6yRxkD6ZACh5M1JznLQ1KB6AUsB7zo2NBHX",
+          "side": "community",
+          "target": "vsr",
+          "thresholds": "community vote 2 %; 1,000,000 community tokens to propose; council vote 50 %; 1 council token to propose; community veto disabled; council veto 50 %",
+          "votingBody": "Marinade DAO community \u2014 MNDE voters through VSR",
+          "what": "Upgrade program code"
+        },
+        {
+          "classification": "community-and-council",
+          "governance": "2w6ny74cU6yRxkD6ZACh5M1JznLQ1KB6AUsB7zo2NBHX",
+          "side": "council",
+          "target": "vsr",
+          "thresholds": "community vote 2 %; 1,000,000 community tokens to propose; council vote 50 %; 1 council token to propose; community veto disabled; council veto 50 %",
+          "votingBody": "Marinade DAO council (5 members)",
+          "what": "Upgrade program code"
+        },
+        {
+          "classification": "community-and-council",
+          "governance": "6egAu2HDLcSgeUYmiBvNLgp7Bd4nPk16gX9MvWuJpeX2",
+          "side": "community",
+          "target": "governance-program",
+          "thresholds": "community vote 2 %; 1,000,000 community tokens to propose; council vote 50 %; 1 council token to propose; community veto disabled; council veto 50 %",
+          "votingBody": "Marinade DAO community \u2014 MNDE voters through VSR",
+          "what": "Upgrade program code"
+        },
+        {
+          "classification": "community-and-council",
+          "governance": "6egAu2HDLcSgeUYmiBvNLgp7Bd4nPk16gX9MvWuJpeX2",
+          "side": "council",
+          "target": "governance-program",
+          "thresholds": "community vote 2 %; 1,000,000 community tokens to propose; council vote 50 %; 1 council token to propose; community veto disabled; council veto 50 %",
+          "votingBody": "Marinade DAO council (5 members)",
+          "what": "Upgrade program code"
+        },
+        {
+          "classification": "community-and-council",
+          "governance": "8z6A4qSfL9FFvwX12zqt6HrbzaWthGUqBe4czCn9iXtq",
+          "side": "community",
+          "target": "DAO native treasury (derived) MNDE (B56RWQGf9RFw7t8gxPzrRvk5VRmB5DoF94aLoJ25YtvG)",
+          "thresholds": "community vote 2 %; 200,000 community tokens to propose; council vote 50 %; 1 council token to propose; community veto disabled; council veto 50 %",
+          "votingBody": "Marinade DAO community \u2014 MNDE voters through VSR",
+          "what": "Transfer treasury MNDE"
+        },
+        {
+          "classification": "community-and-council",
+          "governance": "8z6A4qSfL9FFvwX12zqt6HrbzaWthGUqBe4czCn9iXtq",
+          "side": "council",
+          "target": "DAO native treasury (derived) MNDE (B56RWQGf9RFw7t8gxPzrRvk5VRmB5DoF94aLoJ25YtvG)",
+          "thresholds": "community vote 2 %; 200,000 community tokens to propose; council vote 50 %; 1 council token to propose; community veto disabled; council veto 50 %",
+          "votingBody": "Marinade DAO council (5 members)",
+          "what": "Transfer treasury MNDE"
+        },
+        {
+          "classification": "council-only",
+          "governance": "3cBS14yanCZPRKgdCLnmxHWXFfGjW8bid5zxj7UPqWW5",
+          "side": "council",
+          "target": "liquidity-gauges",
+          "thresholds": "community vote disabled; cannot propose; council vote 50 %; 1 council token to propose; community veto disabled; council veto 40 %",
+          "votingBody": "Marinade DAO council (5 members)",
+          "what": "Upgrade program code"
+        },
+        {
+          "classification": "council-only",
+          "governance": "6XQFdWeogb5C8c1KsSCkK6rzzxLxzxsPQqoXge9oJ9xR",
+          "side": "council",
+          "target": "referral",
+          "thresholds": "community vote disabled; cannot propose; council vote 50 %; 1 council token to propose; community veto disabled; council veto 40 %",
+          "votingBody": "Marinade DAO council (5 members)",
+          "what": "Upgrade program code"
+        },
+        {
+          "classification": "council-only",
+          "governance": "7iUtTuZAh2Len8LiC1u68gUMPMsKh9kce9bcbdGwtBZY",
+          "side": "council",
+          "target": "native-staking-proxy",
+          "thresholds": "community vote disabled; cannot propose; council vote 50 %; 1 council token to propose; community veto disabled; council veto 40 %",
+          "votingBody": "Marinade DAO council (5 members)",
+          "what": "Upgrade program code"
+        },
+        {
+          "classification": "council-only",
+          "governance": "A8tioq6Joznftd2b6GLY8rrgCka6F81vVztFciWDxEAe",
+          "side": "council",
+          "target": "DAO native treasury (derived); Labs treasury (claimed) MNDE (J5BEceL5z1EQ7JBqEFu4BfPN4PYCeQaW3GXrzXFfCzhs)",
+          "thresholds": "community vote disabled; cannot propose; council vote 50 %; 1 council token to propose; community veto disabled; council veto disabled",
+          "votingBody": "Marinade DAO council (5 members)",
+          "what": "Transfer treasury MNDE"
+        },
+        {
+          "classification": "council-only",
+          "governance": "AEej7Lywu8EzMznXnxhb1493yCVnmLNXaCKYfUNvQQaJ",
+          "side": "council",
+          "target": "escrow-relocker",
+          "thresholds": "community vote disabled; cannot propose; council vote 50 %; 1 council token to propose; community veto disabled; council veto 40 %",
+          "votingBody": "Marinade DAO council (5 members)",
+          "what": "Upgrade program code"
+        },
+        {
+          "classification": "council-only",
+          "governance": "AnLvKtpy8Z3GWKgpZsCHuo2kykGKj1VoZBLVfthqfZx3",
+          "side": "council",
+          "target": "paused",
+          "thresholds": "community vote disabled; cannot propose; council vote 50 %; 1 council token to propose; community veto disabled; council veto disabled",
+          "votingBody": "Marinade DAO Emergency Council (5 members)",
+          "what": "paused"
+        },
+        {
+          "classification": "council-only",
+          "governance": "AnLvKtpy8Z3GWKgpZsCHuo2kykGKj1VoZBLVfthqfZx3",
+          "side": "council",
+          "target": "paused",
+          "thresholds": "community vote disabled; cannot propose; council vote 50 %; 1 council token to propose; community veto disabled; council veto disabled",
+          "votingBody": "Marinade DAO Emergency Council (5 members)",
+          "what": "paused"
+        },
+        {
+          "classification": "council-only",
+          "governance": "CLydpgqZty5HQq1uMtbXpH1vtmN7erhdBSPbn12NGLmb",
+          "side": "council",
+          "target": "validator-gauges",
+          "thresholds": "community vote disabled; cannot propose; council vote 50 %; 1 council token to propose; community veto disabled; council veto 40 %",
+          "votingBody": "Marinade DAO council (5 members)",
+          "what": "Upgrade program code"
+        },
+        {
+          "classification": "council-only",
+          "governance": "CWRgRr4udD66JbVtS9u2Gu7LHBi5m6SM3ytvmWobThEQ",
+          "side": "council",
+          "target": "tokadapt",
+          "thresholds": "community vote disabled; cannot propose; council vote 50 %; 1 council token to propose; community veto disabled; council veto 40 %",
+          "votingBody": "Marinade DAO council (5 members)",
+          "what": "Upgrade program code"
+        },
+        {
+          "classification": "council-only",
+          "governance": "FsrqQfLGdFVtySSSsyZJUzVBA9bvGZSKyhp7nsJCqgJe",
+          "side": "council",
+          "target": "COUNCIL-MINT supply",
+          "thresholds": "community vote disabled; cannot propose; council vote 50 %; 1 council token to propose; community veto disabled; council veto 40 %",
+          "votingBody": "Marinade DAO council (5 members)",
+          "what": "Issue tokens"
+        },
+        {
+          "classification": "council-only",
+          "governance": "FsrqQfLGdFVtySSSsyZJUzVBA9bvGZSKyhp7nsJCqgJe",
+          "side": "council",
+          "target": "Marinade DAO Emergency Council council mint supply",
+          "thresholds": "community vote disabled; cannot propose; council vote 50 %; 1 council token to propose; community veto disabled; council veto 40 %",
+          "votingBody": "Marinade DAO council (5 members)",
+          "what": "Issue council tokens"
+        },
+        {
+          "classification": "council-only",
+          "governance": "FsrqQfLGdFVtySSSsyZJUzVBA9bvGZSKyhp7nsJCqgJe",
+          "side": "council",
+          "target": "Marinade DAO council mint supply",
+          "thresholds": "community vote disabled; cannot propose; council vote 50 %; 1 council token to propose; community veto disabled; council veto 40 %",
+          "votingBody": "Marinade DAO council (5 members)",
+          "what": "Issue council tokens"
+        },
+        {
+          "classification": "council-only",
+          "governance": "M5Fg6GipNvPzWgXNr5wj1EDcp8GB9J53cgyE7YGYLbL",
+          "side": "council",
+          "target": "adminAuthority",
+          "thresholds": "community vote disabled; cannot propose; council vote 50 %; 1 council token to propose; community veto disabled; council veto 40 %",
+          "votingBody": "Marinade DAO council (5 members)",
+          "what": "admin Authority"
+        },
+        {
+          "classification": "council-only",
+          "governance": "M5Fg6GipNvPzWgXNr5wj1EDcp8GB9J53cgyE7YGYLbL",
+          "side": "council",
+          "target": "delayed Unstake Fee",
+          "thresholds": "community vote disabled; cannot propose; council vote 50 %; 1 council token to propose; community veto disabled; council veto 40 %",
+          "votingBody": "Marinade DAO council (5 members)",
+          "what": "delayed Unstake Fee"
+        },
+        {
+          "classification": "council-only",
+          "governance": "M5Fg6GipNvPzWgXNr5wj1EDcp8GB9J53cgyE7YGYLbL",
+          "side": "council",
+          "target": "deposit Sol Fee",
+          "thresholds": "community vote disabled; cannot propose; council vote 50 %; 1 council token to propose; community veto disabled; council veto 40 %",
+          "votingBody": "Marinade DAO council (5 members)",
+          "what": "deposit Sol Fee"
+        },
+        {
+          "classification": "council-only",
+          "governance": "M5Fg6GipNvPzWgXNr5wj1EDcp8GB9J53cgyE7YGYLbL",
+          "side": "council",
+          "target": "deposit Stake Account Fee",
+          "thresholds": "community vote disabled; cannot propose; council vote 50 %; 1 council token to propose; community veto disabled; council veto 40 %",
+          "votingBody": "Marinade DAO council (5 members)",
+          "what": "deposit Stake Account Fee"
+        },
+        {
+          "classification": "council-only",
+          "governance": "M5Fg6GipNvPzWgXNr5wj1EDcp8GB9J53cgyE7YGYLbL",
+          "side": "council",
+          "target": "liq Pool / liquidity Sol Cap",
+          "thresholds": "community vote disabled; cannot propose; council vote 50 %; 1 council token to propose; community veto disabled; council veto 40 %",
+          "votingBody": "Marinade DAO council (5 members)",
+          "what": "liq Pool / liquidity Sol Cap"
+        },
+        {
+          "classification": "council-only",
+          "governance": "M5Fg6GipNvPzWgXNr5wj1EDcp8GB9J53cgyE7YGYLbL",
+          "side": "council",
+          "target": "liq Pool / treasury Cut",
+          "thresholds": "community vote disabled; cannot propose; council vote 50 %; 1 council token to propose; community veto disabled; council veto 40 %",
+          "votingBody": "Marinade DAO council (5 members)",
+          "what": "liq Pool / treasury Cut"
+        },
+        {
+          "classification": "council-only",
+          "governance": "M5Fg6GipNvPzWgXNr5wj1EDcp8GB9J53cgyE7YGYLbL",
+          "side": "council",
+          "target": "max Stake Moved Per Epoch",
+          "thresholds": "community vote disabled; cannot propose; council vote 50 %; 1 council token to propose; community veto disabled; council veto 40 %",
+          "votingBody": "Marinade DAO council (5 members)",
+          "what": "max Stake Moved Per Epoch"
+        },
+        {
+          "classification": "council-only",
+          "governance": "M5Fg6GipNvPzWgXNr5wj1EDcp8GB9J53cgyE7YGYLbL",
+          "side": "council",
+          "target": "min Deposit",
+          "thresholds": "community vote disabled; cannot propose; council vote 50 %; 1 council token to propose; community veto disabled; council veto 40 %",
+          "votingBody": "Marinade DAO council (5 members)",
+          "what": "min Deposit"
+        },
+        {
+          "classification": "council-only",
+          "governance": "M5Fg6GipNvPzWgXNr5wj1EDcp8GB9J53cgyE7YGYLbL",
+          "side": "council",
+          "target": "min Withdraw",
+          "thresholds": "community vote disabled; cannot propose; council vote 50 %; 1 council token to propose; community veto disabled; council veto 40 %",
+          "votingBody": "Marinade DAO council (5 members)",
+          "what": "min Withdraw"
+        },
+        {
+          "classification": "council-only",
+          "governance": "M5Fg6GipNvPzWgXNr5wj1EDcp8GB9J53cgyE7YGYLbL",
+          "side": "council",
+          "target": "operationalSolAccount",
+          "thresholds": "community vote disabled; cannot propose; council vote 50 %; 1 council token to propose; community veto disabled; council veto 40 %",
+          "votingBody": "Marinade DAO council (5 members)",
+          "what": "operational Sol Account"
+        },
+        {
+          "classification": "council-only",
+          "governance": "M5Fg6GipNvPzWgXNr5wj1EDcp8GB9J53cgyE7YGYLbL",
+          "side": "council",
+          "target": "pauseAuthority",
+          "thresholds": "community vote disabled; cannot propose; council vote 50 %; 1 council token to propose; community veto disabled; council veto 40 %",
+          "votingBody": "Marinade DAO council (5 members)",
+          "what": "pause Authority"
+        },
+        {
+          "classification": "council-only",
+          "governance": "M5Fg6GipNvPzWgXNr5wj1EDcp8GB9J53cgyE7YGYLbL",
+          "side": "council",
+          "target": "reward Fee",
+          "thresholds": "community vote disabled; cannot propose; council vote 50 %; 1 council token to propose; community veto disabled; council veto 40 %",
+          "votingBody": "Marinade DAO council (5 members)",
+          "what": "reward Fee"
+        },
+        {
+          "classification": "council-only",
+          "governance": "M5Fg6GipNvPzWgXNr5wj1EDcp8GB9J53cgyE7YGYLbL",
+          "side": "council",
+          "target": "stakeSystem.minStake",
+          "thresholds": "community vote disabled; cannot propose; council vote 50 %; 1 council token to propose; community veto disabled; council veto 40 %",
+          "votingBody": "Marinade DAO council (5 members)",
+          "what": "stake System / min Stake"
+        },
+        {
+          "classification": "council-only",
+          "governance": "M5Fg6GipNvPzWgXNr5wj1EDcp8GB9J53cgyE7YGYLbL",
+          "side": "council",
+          "target": "stakeSystem.slotsForStakeDelta",
+          "thresholds": "community vote disabled; cannot propose; council vote 50 %; 1 council token to propose; community veto disabled; council veto 40 %",
+          "votingBody": "Marinade DAO council (5 members)",
+          "what": "stake System / slots For Stake Delta"
+        },
+        {
+          "classification": "council-only",
+          "governance": "M5Fg6GipNvPzWgXNr5wj1EDcp8GB9J53cgyE7YGYLbL",
+          "side": "council",
+          "target": "staking Sol Cap",
+          "thresholds": "community vote disabled; cannot propose; council vote 50 %; 1 council token to propose; community veto disabled; council veto 40 %",
+          "votingBody": "Marinade DAO council (5 members)",
+          "what": "staking Sol Cap"
+        },
+        {
+          "classification": "council-only",
+          "governance": "M5Fg6GipNvPzWgXNr5wj1EDcp8GB9J53cgyE7YGYLbL",
+          "side": "council",
+          "target": "treasuryMsolAccount",
+          "thresholds": "community vote disabled; cannot propose; council vote 50 %; 1 council token to propose; community veto disabled; council veto 40 %",
+          "votingBody": "Marinade DAO council (5 members)",
+          "what": "treasury Msol Account"
+        },
+        {
+          "classification": "council-only",
+          "governance": "M5Fg6GipNvPzWgXNr5wj1EDcp8GB9J53cgyE7YGYLbL",
+          "side": "council",
+          "target": "validatorSystem.managerAuthority",
+          "thresholds": "community vote disabled; cannot propose; council vote 50 %; 1 council token to propose; community veto disabled; council veto 40 %",
+          "votingBody": "Marinade DAO council (5 members)",
+          "what": "validator System / manager Authority"
+        },
+        {
+          "classification": "council-only",
+          "governance": "M5Fg6GipNvPzWgXNr5wj1EDcp8GB9J53cgyE7YGYLbL",
+          "side": "council",
+          "target": "withdraw Stake Account Fee",
+          "thresholds": "community vote disabled; cannot propose; council vote 50 %; 1 council token to propose; community veto disabled; council veto 40 %",
+          "votingBody": "Marinade DAO council (5 members)",
+          "what": "withdraw Stake Account Fee"
+        },
+        {
+          "classification": "council-only",
+          "governance": "M5Fg6GipNvPzWgXNr5wj1EDcp8GB9J53cgyE7YGYLbL",
+          "side": "council",
+          "target": "withdrawStakeAccountEnabled",
+          "thresholds": "community vote disabled; cannot propose; council vote 50 %; 1 council token to propose; community veto disabled; council veto 40 %",
+          "votingBody": "Marinade DAO council (5 members)",
+          "what": "withdraw Stake Account Enabled"
+        }
+      ]
+    },
+    {
+      "id": "claims-vs-chain",
+      "rows": [
+        {
+          "chainResult": "0 DAO MNDE transfer candidates within 1% of 10,000,000 in B.1; pool-seed purpose requires proposal and receipt review.",
+          "claim": "MIP-22 also seeded the MNDE-mSOL pool with 10M MNDE from the DAO treasury.",
+          "claimId": "v7",
+          "status": "unresolved"
+        },
+        {
+          "chainResult": "0 of 0 sampled distributor claimants (unknown % of observed claimed MNDE) are current VSR voter authorities; window 1790847122\u20131790932649 (Unix seconds). Direct recipient share: 0. Current overlap does not establish historical eligibility, subsequent locking, or tracing of fungible bought MNDE through a funded vault. IDL-free vault observations: 4 of 4 known claimants (100.00 %), 100.00 % of 15,416.329929463 observed claimed MNDE go to current VSR voter authorities; window 1790847122\u20131790932649 (Unix seconds). Eligibility rules are off-chain and remain unverified.",
+          "claim": "The MNDE bought is distributed to eligible MNDE stakers in Marinade Realms through the MNDE Staking Rewards Program.",
+          "claimId": "v6",
+          "status": "partly"
+        },
+        {
+          "chainResult": "3 proposal names match MIP-17, MIP-11 or MIP-13; names provide claimed context, not execution semantics.",
+          "claim": "This is a different program from the earlier MIP-11 buybacks, which MIP-17 paused in favour of protocol-owned liquidity, and from MIP-13 Active Staking Rewards, which is closed.",
+          "claimId": "v8",
+          "status": "unresolved"
+        },
+        {
+          "chainResult": "899YG3yk4F66ZgbNWLHriZHTXSKk9e1kvsKEquW7L6Mo; expected 899YG3yk4F66ZgbNWLHriZHTXSKk9e1kvsKEquW7L6Mo",
+          "claim": "Registrar.realm matches the declared registry",
+          "claimId": "g1:Registrar.realm",
+          "status": "verified"
+        },
+        {
+          "chainResult": "Chain: mint authority 3JLPCS1qM2zRw3Dp6V4hZnYHd4toMNPkNesXdX9tg6KM; address comparison only, PDA controller identity not established.",
+          "claim": "mSOL auth (PDA) 3JLPCS1qM2zRw3Dp6V4hZnYHd4toMNPkNesXdX9tg6KM",
+          "claimId": "pack:msol-claim-1",
+          "status": "verified"
+        },
+        {
+          "chainResult": "Chain: mint authority HZsepB79dnpvH6qfVgvMpS738EndHw3qSHo4Gv5WX1KA; address comparison only, PDA controller identity not established.",
+          "claim": "Liquidity-Pool mSOL-SOL-LP mint; auth PDA HZsepB79dnpvH6qfVgvMpS738EndHw3qSHo4Gv5WX1KA",
+          "claimId": "pack:msol-sol-lp-claim-1",
+          "status": "verified"
+        },
+        {
+          "chainResult": "Chain: supply 5 raw, decimals 0.",
+          "claim": "the DAO's council mint has a supply of exactly 5, at zero decimals",
+          "claimId": "pack:council-mint-claim-1",
+          "status": "verified"
+        },
+        {
+          "chainResult": "Chain: upgrade authority 3cBS14yanCZPRKgdCLnmxHWXFfGjW8bid5zxj7UPqWW5 is dao-governance-account. Disagrees with claim: \u201cUpgrade authority: None (as listed near this entry)\u201d (docs:contract-addresses). Source attachment uncertainty: needs re-read.",
+          "claim": "Upgrade authority: None (as listed near this entry)",
+          "claimId": "pack:liquidity-gauges-claim-1",
+          "status": "contradiction"
+        },
+        {
+          "chainResult": "Chain: upgrade authority 551FBXSXdhcRDDkdcb3ThDRg84Mwe5Zs6YjJ1EEoyzBp is pda-no-account. authority has no on-chain account; identity unknown Claim identity cannot be checked. Source attachment uncertainty: needs re-read of the page layout.",
+          "claim": "Upgrade authority: Marinade council (3/5) (as listed near this entry)",
+          "claimId": "pack:liquid-staking-claim-2",
+          "status": "unresolved"
+        },
+        {
+          "chainResult": "Chain: upgrade authority 551FBXSXdhcRDDkdcb3ThDRg84Mwe5Zs6YjJ1EEoyzBp is pda-no-account. authority has no on-chain account; identity unknown Claim identity cannot be checked.",
+          "claim": "mSOL program upgrade authority sits with an ecosystem multisig, not the DAO",
+          "claimId": "pack:liquid-staking-claim-1",
+          "status": "unresolved"
+        },
+        {
+          "chainResult": "Chain: upgrade authority 6YAju4nd4t7kyuHV6NvVpMepMk11DgWyYjKVJUak2EEm is native-treasury-pda. Agrees with claim: \u201cDAO holds upgrade authority for Marinade Native\u201d (docs:governance).",
+          "claim": "DAO holds upgrade authority for Marinade Native",
+          "claimId": "pack:native-staking-proxy-claim-1",
+          "status": "verified"
+        },
+        {
+          "chainResult": "Chain: upgrade authority CLydpgqZty5HQq1uMtbXpH1vtmN7erhdBSPbn12NGLmb is dao-governance-account. Agrees with claim: \u201cDAO holds upgrade authority for gauges\u201d (docs:governance).",
+          "claim": "DAO holds upgrade authority for gauges",
+          "claimId": "pack:validator-gauges-claim-1",
+          "status": "verified"
+        },
+        {
+          "chainResult": "Chain: upgrade authority CLydpgqZty5HQq1uMtbXpH1vtmN7erhdBSPbn12NGLmb is dao-governance-account. Disagrees with claim: \u201cMarinade council (3/5) listed as upgrade authority\u201d (docs:contract-addresses). Source attachment uncertainty: needs re-read.",
+          "claim": "Marinade council (3/5) listed as upgrade authority",
+          "claimId": "pack:validator-gauges-claim-2",
+          "status": "contradiction"
+        },
+        {
+          "chainResult": "Decoded delayedUnstakeFee = 20 basis points.",
+          "claim": "Delayed unstaking of mSOL carries a 0.2% protocol fee.",
+          "claimId": "fee-statement:3",
+          "status": "verified"
+        },
+        {
+          "chainResult": "Decoded delayedUnstakeFee = 2000 FeeCents = 0.2 %.",
+          "claim": "Delayed unstaking of mSOL carries a 0.2 % protocol fee.",
+          "claimId": "delayed-unstake-fee",
+          "status": "verified"
+        },
+        {
+          "chainResult": "Decoded rewardFee = 0 basis points.",
+          "claim": "Marinade takes 0% of the rewards the pool earns",
+          "claimId": "fee-statement:2",
+          "status": "verified"
+        },
+        {
+          "chainResult": "Decoded rewardFee.basisPoints = 0 basis points. Agrees with the registry claim that reward_fee is 0.",
+          "claim": "On-chain, the stake pool's reward_fee parameter is set to 0 .",
+          "claimId": "v1",
+          "status": "verified"
+        },
+        {
+          "chainResult": "Dominant Constant MNDE lockup period by used deposit count: 2592000 seconds. This checks stored periods, not an unlock execution.",
+          "claim": "Unlocking your tokens to get back your MNDE will start a 30-day unlock process.",
+          "claimId": "v9",
+          "status": "verified"
+        },
+        {
+          "chainResult": "LPmSozJJ8Jh69ut2WP3XmVohTjL4ipR18yiCzxrUmVj; expected LPmSozJJ8Jh69ut2WP3XmVohTjL4ipR18yiCzxrUmVj",
+          "claim": "State.liqPool.lpMint matches the declared registry",
+          "claimId": "g1:State.liqPool.lpMint",
+          "status": "verified"
+        },
+        {
+          "chainResult": "MNDEFzGvMt87ueuHvVU9VcTqsAP5b3fTGPsHuuPA5ey; expected MNDEFzGvMt87ueuHvVU9VcTqsAP5b3fTGPsHuuPA5ey",
+          "claim": "Registrar.realmGoverningTokenMint matches the declared registry",
+          "claimId": "g1:Registrar.realmGoverningTokenMint",
+          "status": "verified"
+        },
+        {
+          "chainResult": "MNDEFzGvMt87ueuHvVU9VcTqsAP5b3fTGPsHuuPA5ey; expected MNDEFzGvMt87ueuHvVU9VcTqsAP5b3fTGPsHuuPA5ey",
+          "claim": "Registrar.votingMints includes MNDE matches the declared registry",
+          "claimId": "g1:Registrar.votingMints includes MNDE",
+          "status": "verified"
+        },
+        {
+          "chainResult": "No decoded revenue destination or observed collection established.",
+          "claim": "It is a lending vault, so Marinade takes a 5% performance fee on the net interest earned.",
+          "claimId": "v4",
+          "status": "unresolved"
+        },
+        {
+          "chainResult": "No decoded revenue destination or observed collection established.",
+          "claim": "Native and Liquid (mSOL): Validators bid for stake allocation through the Stake Auction Market (SAM).",
+          "claimId": "v2",
+          "status": "unresolved"
+        },
+        {
+          "chainResult": "No decoded revenue destination or observed collection established.",
+          "claim": "Select: Validators pay protocol fees through a bilateral agreement booked against the Select bond: 20 bps to Marinade plus up to 10 bps to the validator, on TVL annually.",
+          "claimId": "v3",
+          "status": "unresolved"
+        },
+        {
+          "chainResult": "No unique decoded parameter match.",
+          "claim": "It is a lending vault, so Marinade takes a 5% performance fee on the net interest earned.",
+          "claimId": "fee-statement:1",
+          "status": "unresolved"
+        },
+        {
+          "chainResult": "No unique decoded parameter match.",
+          "claim": "Select: Validators pay protocol fees through a bilateral agreement booked against the Select bond: 20 bps to Marinade plus up to 10 bps to the validator, on TVL annually.",
+          "claimId": "fee-statement:0",
+          "status": "unresolved"
+        },
+        {
+          "chainResult": "Not checked in this slice.",
+          "claim": "Fully issued date: None (distribution based on DAO votes)",
+          "claimId": "pack:mnde-claim-2",
+          "status": "claimed"
+        },
+        {
+          "chainResult": "Not checked in this slice.",
+          "claim": "Marinade Council - a set of 5 contributors elected internally, holding a 3-of-5 multisig on Realms",
+          "claimId": "pack:governance-claim-2",
+          "status": "claimed"
+        },
+        {
+          "chainResult": "Not checked in this slice.",
+          "claim": "Marinade Governance (MNDE token holders + ecosystem council): main program upgrade, MNDE treasury",
+          "claimId": "pack:governance-claim-1",
+          "status": "claimed"
+        },
+        {
+          "chainResult": "Sample windows differ or are unknown; no ratio computed. Observed funding sources: 91pBhsSxkE7YXQvd8f5VcCQWthqwUM4cwKvrw79yr7Zh (classified account): 1 raw SOL; Cwdtgx8crPfNHcqxjW4m7uPJpfHPYajhXh16J6n5eMRb (classified account): 1 raw SOL; A69GHEjnyEN8Y4rturidqobtoPGCLu8vMtdfAhQzykvY (classified account): 44775714 raw 46WkXcYgkrARoQeBJJvqWDCQiUTFG9m5najUKbwvbM6C; Uc5ioGWnSes4UxWGnTPLHukbr8HspWHqEVn2B1hSamK (classified account): 2180763909399 raw SOL; Cp87xnr5HfBnGxHMMtUaPhRsHvG79aergcHyP7nDqxYT (classified account): 1 raw SOL; EK79DH7sufPaznN3jh9UPe1n9kUR3J1YbgvbvACfzzsD (classified account): 1 raw SOL; Gb1sFniqW33JQDunXeHSAZSYH1hcEb9NwrnAWek5uUms (classified account): 10000 raw SOL; 2VjBLHsqyxCdAxx9HL1UWAH7GqybEkFu2YqgPJ2PFbZg (classified account): 1 raw SOL; 7YPj6smwyrKgpo6ve9o8uReFbgwpsyHeYXDqLMjBHmzz (classified account): 1 raw SOL; 5raswgDs9kjBZ6YbGmj2C5ud5emCKm5xSALSzSFHxKd6 (classified account): 1 raw SOL; 2efN4TeDFTbAQxwpANZETC9PWsK42fz3uMzijJdw7w5c (classified account): 1 raw SOL; 9T9oGKGYtGoak2CgkcX342yTE2md8j3FiSgrj2fMBGAQ (classified account): 1 raw SOL; 9JFnxWhrAgu8EPxX48qPjMcmy6HVJqyrFTose2XzvTVh (classified account): 1 raw SOL; 5WFUHZCwUMNLbpW1GkVdvqsMqS2SejRbDcRdkwpAoBko (classified account): 1 raw SOL; 2URNqsC5UkTnGpgm3PA5PUmhhA4gnpMMvyH4WPg6Ybk7 (classified account): 1 raw SOL; 4QGHbcoZic3EAEWALLrYFZBmMtTCdeTYLsQKMtkW6SRm (classified account): 1 raw SOL; 2YKgnKVmYk9BDDo8rGCXJ69nnKzbp1CqZFAGcPeZKJZu (classified account): 1168574 raw FXpxpBwUeSzkT3ruuGteZhLQq54AP5wFuwJdjJdT3eig; 4355BfMZWaC9gFXH83QbJW1DXXNvvMJnC66XWYTGKsui (classified account): 1 raw SOL; 4ivw31t6A4GVWzYQaL8a4iDDHDnwvyowqAByrkQQ11Cm (classified account): 1 raw SOL; 4sQekcAZ7hX99gU8gkEiDK8k4QJUxWAturjVR1Y48R6f (classified account): 1 raw SOL; EJ6d3ciiL1uitqaMxheF6i3qNdeQFrSMYFy4jhAycfNX (classified account): 1 raw SOL; 3MdTWhLXBgernHCV49NBFKBdb5MHmGgFwXeroyNQqWnK (classified account): 1 raw SOL; 9YDbCjNMoTkSc8rz4NvhiEfjxc72Pn5GjtGYz2XtPHN8 (classified account): 1 raw SOL; FC8XHLTVnaYHXyRpUweaucwZ1czWGGjgRjfCU4iVxJeZ (classified account): 1 raw SOL; GbuWug54gehUZ1UNUKJDqkrT7FjaeYjdq5zGHGQvrEYM (classified account): 1 raw SOL; 8kkU9RLzbv3nU9EqrG9sbHxH5uAF2ddE58zekTV4aFsh (classified account): 1 raw SOL; 12VDJ2U2e92h1UEfhPrVRr4AmQnmwabjndHfs9k4vN1N (classified account): 1 raw SOL; C53SWSpxGkeQny73NoBYHMhLfcXwygXdSDGCL2ttuyma (classified account): 1 raw SOL; 3fEi3SPEjLvDpmnbcmX3xaE4iBgEeGawvrmTvdtkNm48 (classified account): 1 raw SOL; 22R73oMoF2XYbkzPfhYfw5EG9gYkMrdfquGABZCjq2dY (classified account): 1 raw SOL; 9nSxVbaNNeA8qGuntGawo3NXfSJDvtkeLGuiu8QZyC2U (classified account): 1 raw SOL; unresolved (classified account): 7024449588 raw SOL; 9mEEs1dHUTzWp8kbvG6dVYXMtjzRvzk5jqaaNNa6tRau (classified account): 1 raw SOL; 2i79TxHsJv3mMQEMQu8cbBeQmhmavWBkn2hQsPbzLWTq (classified account): 1 raw SOL; 4WzyMyjrYTUVgdGn5Px3Ni9ZAwRkrYLFxmq9nmooEGuz (classified account): 1 raw SOL; 9rCNoSuGBw8UAayoDaonpZry8sadYTphpvqwqCQzqhWj (classified account): 1 raw SOL; 6iqdZrcECTmyTMCi38L89Q7pQCuAiehP1EmYAWRFYNNJ (classified account): 1 raw SOL; BYRKN3j44uq3GyBFb3BVVdmHcno2n7bmJs5n8BRSrFSz (classified account): 2 raw SOL; 8WNB1uFEZiAVH8iuLZx7fFjhUbdSvWPgUK81Y4WubweL (classified account): 2 raw SOL; 8znA7Fy32VCoydp6oXSkH42DK7w71ys6dTMyKzFCWVa (classified account): 1 raw SOL; 5A431HFoZXtSdiHNyxRZGmkUAawosM5BdicbSpLcHu8k (classified account): 1 raw SOL; 6dYbb2RkFiTec3Tz7y2XwnnFK9XhfwZ1L7LBjVGBuDKn (classified account): 2 raw SOL; 6iqqFm3ahXT7bTtQfd5NSA3Cj6d67ZShAcQGiyNUh6mX (classified account): 1 raw SOL; 3pnUACbHWA9i6pCg7BbsrRHxFUog94w6qDG1KQarzBSE (classified account): 1 raw SOL; A2wM92XRTBYYPoFtZh3cvxpPuDj286Dh6JRDTrK4VEwf (classified account): 1 raw SOL; p5CLszUKsjyrcB4n2pfZX6XusMryqsAyQJLY2qLzwwU (classified account): 1 raw SOL; 3ZKjmsNoTwwSkxtjXdNoMo2z5bxxg2VGuy1w62SCutRn (classified account): 1 raw SOL; FLipG6PYMcsDJ1xziqczTMpEwsdD9V3nH3LkW23u9YoY (classified account): 1 raw SOL; FLiPqXc5tehaJY98SKfuv9KX5334oEtjG6MHGEs2d4Tx (classified account): 1 raw SOL; FLip7fXKLYyq3frS9vVLCKn99oUxonWrNuxKBpC3UWn3 (classified account): 2 raw SOL; FLiPtS5X5N8FxtWQrqYZASv7guoAsjyusLfv4ZbHqrdj (classified account): 1 raw SOL. No same-window protocol revenue figure established.",
+          "claim": "Revenue Allocation Under MIP-22 , 10% of protocol revenue is allocated to programmatic open-market MNDE buybacks .",
+          "claimId": "v5",
+          "status": "unresolved"
+        },
+        {
+          "chainResult": "Supply 699,997,047.676966299; known burns 300,000,000; implied pre-burn supply 999,997,047.676966299. Cap claim consistent: difference 2,952.323033701 tokens unexplained; other burns not enumerated. no further issuance possible under the current mint state (verified at slot 453696294). The historical cap remains a claim; consistency does not verify it.",
+          "claim": "MNDE has a hard cap of 1 billion tokens and minting is permanently disabled.",
+          "claimId": "pack:mnde-claim-1",
+          "status": "claimed"
+        },
+        {
+          "chainResult": "This claim is not established by the upgrade-authority read.",
+          "claim": "Marinade Core Team (team council): main program params, DAO program, fees",
+          "claimId": "pack:governance-program-claim-1",
+          "status": "claimed"
+        },
+        {
+          "chainResult": "This claim is not established by the upgrade-authority read.",
+          "claim": "Marinade Native charges no deposit or management fee; Marinade holds only the stake authority",
+          "claimId": "pack:native-staking-proxy-claim-2",
+          "status": "claimed"
+        },
+        {
+          "chainResult": "This claim is not established by the upgrade-authority read.",
+          "claim": "veMNDE from locked MNDE; 30-day unlock; voting power from remaining lock time up to 30 days",
+          "claimId": "pack:vsr-claim-1",
+          "status": "claimed"
+        },
+        {
+          "chainResult": "mSoLzYCxHdYgdzU16g5QSh3i5K3z3KZK7ytfqcJm7So; expected mSoLzYCxHdYgdzU16g5QSh3i5K3z3KZK7ytfqcJm7So",
+          "claim": "State.msolMint matches the declared registry",
+          "claimId": "g1:State.msolMint",
+          "status": "verified"
+        }
+      ]
+    },
+    {
+      "id": "holders-and-float",
+      "rows": [
+        {
+          "amount": "0",
+          "amountRaw": "0",
+          "group": "Labs treasury (claimed label)",
+          "mint": "MNDE",
+          "note": null,
+          "share": 0
+        },
+        {
+          "amount": "1,000,000",
+          "amountRaw": "1000000000000000",
+          "group": "GqRQMnM5qpyRqe4HVSqKGqtFbDDHk5VtHEGWNo8XA4Vp",
+          "mint": "MNDE",
+          "note": null,
+          "share": 0.001428577454
+        },
+        {
+          "amount": "1,000,000",
+          "amountRaw": "1000000000000000",
+          "group": "escrow relocker account (decoded)",
+          "mint": "MNDE",
+          "note": null,
+          "share": 0.001428577454
+        },
+        {
+          "amount": "1,005,238.537806143",
+          "amountRaw": "1005238537806143",
+          "group": "89SrbjbuNyqSqAALKBsKBqMSh463eLvzS4iVWCeArBgB",
+          "mint": "MNDE",
+          "note": null,
+          "share": 0.001436061111
+        },
+        {
+          "amount": "1,097,118.901983233",
+          "amountRaw": "1097118901983233",
+          "group": "3HWcojnC1ruEMmsE92Ez1BoebdDXzYQa4USaeWX7eTuM",
+          "mint": "MNDE",
+          "note": null,
+          "share": 0.001567319328
+        },
+        {
+          "amount": "1,099,319.736015643",
+          "amountRaw": "1099319736015643",
+          "group": "FhTtxoWPze25MdLZE7mzAwThtU8dgx6mEBtcoeK9puQr",
+          "mint": "MNDE",
+          "note": null,
+          "share": 0.00157046339
+        },
+        {
+          "amount": "1,102,864.401891843",
+          "amountRaw": "1102864401891843",
+          "group": "9i77zr976LcdnfBi12PP9aypef39fRXiKjWbJF4rHnhV",
+          "mint": "MNDE",
+          "note": null,
+          "share": 0.001575527219
+        },
+        {
+          "amount": "1,215,657.589668688",
+          "amountRaw": "1215657589668688",
+          "group": "2AQdpHJ2JpcEgPiATUXjQxA8QmafFegfQwSLWSprPicm",
+          "mint": "MNDE",
+          "note": null,
+          "share": 0.001736661024
+        },
+        {
+          "amount": "1,216,417.987555522",
+          "amountRaw": "1216417987555522",
+          "group": "H8sMJSCQxfKiFTCfDR3DUMLPwcRbM61LGFJ8N4dK3WjS",
+          "mint": "MNDE",
+          "note": null,
+          "share": 0.001737747312
+        },
+        {
+          "amount": "1,218,161.951098104",
+          "amountRaw": "1218161951098104",
+          "group": "4NyK1AdJBNbgaJ9EsKz3J4rfeHsuYdjkTPg3JaNdLeFw",
+          "mint": "MNDE",
+          "note": null,
+          "share": 0.001740238699
+        },
+        {
+          "amount": "1,221,191.879574949",
+          "amountRaw": "1221191879574949",
+          "group": "GJRs4FwHtemZ5ZE9x3FNvJ8TMwitKTh21yxdRPqn7npE",
+          "mint": "MNDE",
+          "note": null,
+          "share": 0.001744567186
+        },
+        {
+          "amount": "1,233,111.420525096",
+          "amountRaw": "1233111420525096",
+          "group": "DPqsobysNf5iA9w7zrQM8HLzCKZEDMkZsWbiidsAt1xo",
+          "mint": "MNDE",
+          "note": null,
+          "share": 0.001761595174
+        },
+        {
+          "amount": "1,245,053.745127362",
+          "amountRaw": "1245053745127362",
+          "group": "D89hHJT5Aqyx1trP6EnGY9jJUB3whgnq3aUvvCqedvzf",
+          "mint": "MNDE",
+          "note": null,
+          "share": 0.001778655709
+        },
+        {
+          "amount": "1,249,039.508136728",
+          "amountRaw": "1249039508136728",
+          "group": "FpwQQhQQoEaVu3WU2qZMfF1hx48YyfwsLoRgXG83E99Q",
+          "mint": "MNDE",
+          "note": null,
+          "share": 0.001784349681
+        },
+        {
+          "amount": "1,250,000",
+          "amountRaw": "1250000000000000",
+          "group": "escrow relocker account (decoded)",
+          "mint": "MNDE",
+          "note": null,
+          "share": 0.001785721818
+        },
+        {
+          "amount": "1,252,044.184751733",
+          "amountRaw": "1252044184751733",
+          "group": "5g7yNHyGLJ7fiQ9SN9mf47opDnMjc585kqXWt6d7aBWs",
+          "mint": "MNDE",
+          "note": null,
+          "share": 0.001788642094
+        },
+        {
+          "amount": "1,281,698.630434972",
+          "amountRaw": "1281698630434972",
+          "group": "9obNtb5GyUegcs3a1CbBkLuc5hEWynWfJC6gjz5uWQkE",
+          "mint": "MNDE",
+          "note": null,
+          "share": 0.001831005766
+        },
+        {
+          "amount": "1,299,187.636114265",
+          "amountRaw": "1299187636114265",
+          "group": "6FEVkH17P9y8Q9aCkDdPcMDjvj7SVxrTETaYEm8f51Jy",
+          "mint": "MNDE",
+          "note": null,
+          "share": 0.001855990166
+        },
+        {
+          "amount": "1,303,597.066684007",
+          "amountRaw": "1303597066684007",
+          "group": "C1WdfWVrYNwJTZyv5zUA9Cv6tQpLWGANtTEGPi3MUb6X",
+          "mint": "MNDE",
+          "note": null,
+          "share": 0.001862289379
+        },
+        {
+          "amount": "1,531,904.458910646",
+          "amountRaw": "1531904458910646",
+          "group": "3vxheE5C46XzK4XftziRhwAf8QAfipD7HXXWj25mgkom",
+          "mint": "MNDE",
+          "note": null,
+          "share": 0.002188444172
+        },
+        {
+          "amount": "1,589,837.104825464",
+          "amountRaw": "1589837104825464",
+          "group": "4uCm3rvtjT7zrvj9VqkMgJTvEbySfzHWZP2EHXcqL5YH",
+          "mint": "MNDE",
+          "note": null,
+          "share": 0.002271205444
+        },
+        {
+          "amount": "1,683,069",
+          "amountRaw": "1683069000000000",
+          "group": "J5s4GqPn76AvzMfCjojqsr7fkLazVf6dqMSuwSiE65Lu",
+          "mint": "MNDE",
+          "note": null,
+          "share": 0.002404394427
+        },
+        {
+          "amount": "1,693,431.130461273",
+          "amountRaw": "1693431130461273",
+          "group": "22Wnk8PwyWZV7BfkZGJEKT9jGGdtvu7xY6EXeRh7zkBa",
+          "mint": "MNDE",
+          "note": null,
+          "share": 0.002419197533
+        },
+        {
+          "amount": "1,820,728.409167152",
+          "amountRaw": "1820728409167152",
+          "group": "VSR voter account (decoded)",
+          "mint": "MNDE",
+          "note": null,
+          "share": 0.002601051556
+        },
+        {
+          "amount": "1,857,144",
+          "amountRaw": "1857144000000000",
+          "group": "AyDSEF8N6YN6oEbUhVnWgwgK5UJrLTmpAZRUucdmarav",
+          "mint": "MNDE",
+          "note": null,
+          "share": 0.002653074048
+        },
+        {
+          "amount": "1,933,367.910895017",
+          "amountRaw": "1933367910895017",
+          "group": "EvmyQ5Q5CH5r28YzpvEETSdfjgUcD1BbSreQ6ZohrkbU",
+          "mint": "MNDE",
+          "note": null,
+          "share": 0.002761965808
+        },
+        {
+          "amount": "10,000,000",
+          "amountRaw": "10000000000000000",
+          "group": "VSR voter account (decoded)",
+          "mint": "MNDE",
+          "note": null,
+          "share": 0.014285774544
+        },
+        {
+          "amount": "10,000,140.382316768",
+          "amountRaw": "10000140382316768",
+          "group": "E662YnSzFiQWPvkJfQWXrXjHyh8nStFVpYfY9jfBFWW2",
+          "mint": "MNDE",
+          "note": null,
+          "share": 0.014285975091
+        },
+        {
+          "amount": "10,160.026229014",
+          "amountRaw": "10160026229014",
+          "group": "24Uqj9JCLxUeoC3hGfh5W3s9FM9uCHDS2SG3LYwBpyTi",
+          "mint": "mSOL",
+          "note": "Top-account downstream groups can overlap.",
+          "share": 0.006348673548
+        },
+        {
+          "amount": "10,500,001",
+          "amountRaw": "10500001000000000",
+          "group": "GvXGNmHHdeop2VQtSt7K5MSWxbNNz3JUJ8eMwEzTTJME",
+          "mint": "MNDE",
+          "note": null,
+          "share": 0.0150000647
+        },
+        {
+          "amount": "10,956,000",
+          "amountRaw": "10956000000000000",
+          "group": "BDQa7n9v85ngnZZ3gL5cprMDpiPdeZvsrfb9SFhPRafa",
+          "mint": "MNDE",
+          "note": null,
+          "share": 0.01565149459
+        },
+        {
+          "amount": "11,652.256705942",
+          "amountRaw": "11652256705942",
+          "group": "6vsrhfNWmfVg15KrvTMQC5eXXcAUdjzhXEwsAbd3JzYQ",
+          "mint": "mSOL",
+          "note": "Top-account downstream groups can overlap.",
+          "share": 0.007281120369
+        },
+        {
+          "amount": "11,677.313546845",
+          "amountRaw": "11677313546845",
+          "group": "Bpj1Gqdtt4gpPZMHyzqq2rfwoSwMJPySGmCZ3QgLMETn",
+          "mint": "mSOL",
+          "note": "Top-account downstream groups can overlap.",
+          "share": 0.007296777583
+        },
+        {
+          "amount": "114,566,527.320051433",
+          "amountRaw": "114566527320051433",
+          "group": "VSR custody",
+          "mint": "MNDE",
+          "note": null,
+          "share": 0.163667157964
+        },
+        {
+          "amount": "117,197,586.95469729",
+          "amountRaw": "117197586954697290",
+          "group": "DAO native treasury (derived); Labs treasury (claimed)",
+          "mint": "MNDE",
+          "note": null,
+          "share": 0.167425830439
+        },
+        {
+          "amount": "12,485.32",
+          "amountRaw": "12485320000000",
+          "group": "6xWyUnyZLsBXQWKfk1pf3sRJNoq512ksNSqXJQ73NKMw",
+          "mint": "mSOL",
+          "note": "Top-account downstream groups can overlap.",
+          "share": 0.007801674822
+        },
+        {
+          "amount": "12,981.630685156",
+          "amountRaw": "12981630685156",
+          "group": "6LY1JzAFVZsP2a2xKrtU6znQMQ5h4i7tocWdgrkZzkzF",
+          "mint": "mSOL",
+          "note": "Top-account downstream groups can overlap.",
+          "share": 0.008111803403
+        },
+        {
+          "amount": "13,289,719.790680963",
+          "amountRaw": "13289719790680963",
+          "group": "VSR voter account (decoded)",
+          "mint": "MNDE",
+          "note": null,
+          "share": 0.018985394068
+        },
+        {
+          "amount": "130,503.647441213",
+          "amountRaw": "130503647441213",
+          "group": "9DrvZvyWh1HuAoZxvYWMvkf2XCzryCpGgHqrMjyDWpmo",
+          "mint": "mSOL",
+          "note": "Top-account downstream groups can overlap.",
+          "share": 0.081547531061
+        },
+        {
+          "amount": "14,195.703913839",
+          "amountRaw": "14195703913839",
+          "group": "2JaTqKftSp3y1bMy33WK3X7EqzXtgntPFHr4HUgJbnHN",
+          "mint": "mSOL",
+          "note": "Top-account downstream groups can overlap.",
+          "share": 0.008870438708
+        },
+        {
+          "amount": "14,663.534431096",
+          "amountRaw": "14663534431096",
+          "group": "AHfnp5tYqKE3XQoYdLYVYJ2N7FwX8PBspVVuUU1iNPCC",
+          "mint": "mSOL",
+          "note": "Top-account downstream groups can overlap.",
+          "share": 0.009162770948
+        },
+        {
+          "amount": "15,532.955963819",
+          "amountRaw": "15532955963819",
+          "group": "HJFqQxBinDTPzYwGNoBTCvbbBafKQuizu4LSw4pZCBQo",
+          "mint": "mSOL",
+          "note": "Top-account downstream groups can overlap.",
+          "share": 0.009706044495
+        },
+        {
+          "amount": "16,526.416569763",
+          "amountRaw": "16526416569763",
+          "group": "J6DV46TYWk359ym6Uks5FT7ehfnWhcjVrHYowCbYLfXR",
+          "mint": "mSOL",
+          "note": "Top-account downstream groups can overlap.",
+          "share": 0.010326826069
+        },
+        {
+          "amount": "16,934.447795885",
+          "amountRaw": "16934447795885",
+          "group": "jupeiUmn818Jg1ekPURTpr4mFo29p46vygyykFJ3wZC",
+          "mint": "mSOL",
+          "note": "Top-account downstream groups can overlap.",
+          "share": 0.010581791656
+        },
+        {
+          "amount": "17,556,468.832025876",
+          "amountRaw": "17556468832025876",
+          "group": "2SZ2TkuEJg3H79kFNLJ9Lg1g74VJiZLhHrJvmAnm49vw",
+          "mint": "MNDE",
+          "note": null,
+          "share": 0.025080775553
+        },
+        {
+          "amount": "18,030,908.840545433",
+          "amountRaw": "18030908840545433",
+          "group": "2so7BVGAQNK2wB8ju8a85aMa2EZSuWbjssvTi5FqLvcV",
+          "mint": "MNDE",
+          "note": null,
+          "share": 0.025758549852
+        },
+        {
+          "amount": "18,236.121459392",
+          "amountRaw": "18236121459392",
+          "group": "5Nct5Ksz8ebb9mZMMgyx8t16eqV3GEUNBKTxmMJzsdCj",
+          "mint": "mSOL",
+          "note": "Top-account downstream groups can overlap.",
+          "share": 0.011395165654
+        },
+        {
+          "amount": "184,675.418133194",
+          "amountRaw": "184675418133194",
+          "group": "DdZR6zRFiUt4S5mg7AV1uKB2z1f1WzcNYCaTEEWPAuby",
+          "mint": "mSOL",
+          "note": "Top-account downstream groups can overlap.",
+          "share": 0.115397727893
+        },
+        {
+          "amount": "189,716,232.892874812",
+          "amountRaw": "189716232892874812",
+          "group": "DAO treasury MNDE",
+          "mint": "MNDE",
+          "note": null,
+          "share": 0.271024333054
+        },
+        {
+          "amount": "19,475.881004451",
+          "amountRaw": "19475881004451",
+          "group": "Fr8JaD1Q8aFCfcBsfixcrRTzygWshmbehAjgQKEFs48P",
+          "mint": "mSOL",
+          "note": "Top-account downstream groups can overlap.",
+          "share": 0.012169851512
+        },
+        {
+          "amount": "19,499.634987162",
+          "amountRaw": "19499634987162",
+          "group": "KLend2g3cP87fffoy8q1mQqGKjrxjC8boSyAYavgmjD",
+          "mint": "mSOL",
+          "note": "Top-account downstream groups can overlap.",
+          "share": 0.012184694611
+        },
+        {
+          "amount": "19,733,933.286044906",
+          "amountRaw": "19733933286044906",
+          "group": "ByiAbN9MJhfQKGK5WJrfgko6XS88qqERQVRLWZTsvyTf",
+          "mint": "MNDE",
+          "note": null,
+          "share": 0.02819145218
+        },
+        {
+          "amount": "2,002,168",
+          "amountRaw": "2002168000000000",
+          "group": "VSR voter account (decoded)",
+          "mint": "MNDE",
+          "note": null,
+          "share": 0.002860252064
+        },
+        {
+          "amount": "2,200,892",
+          "amountRaw": "2200892000000000",
+          "group": "BAMa8EMFADkzkXfji69vhUTj1UHQzxoFPgDXWV8KDcFv",
+          "mint": "MNDE",
+          "note": null,
+          "share": 0.00314414469
+        },
+        {
+          "amount": "2,539,424.939592763",
+          "amountRaw": "2539424939592763",
+          "group": "AFfDcPZTduGWuZzV8YgS3Fdbbpea5nRX6BJxpDJTa6Kj",
+          "mint": "MNDE",
+          "note": null,
+          "share": 0.003627765215
+        },
+        {
+          "amount": "2,565,864",
+          "amountRaw": "2565864000000000",
+          "group": "AVPKzX2QZ8E23SWR728yhMTnnqr9UjAZdgemfaE3qHg5",
+          "mint": "MNDE",
+          "note": null,
+          "share": 0.003665535461
+        },
+        {
+          "amount": "2,733,333",
+          "amountRaw": "2733333000000000",
+          "group": "8EsXPZ2roFgVCUzxXVyP8Hudd8RwB9Pqu5zvKgiHy98r",
+          "mint": "MNDE",
+          "note": null,
+          "share": 0.003904777899
+        },
+        {
+          "amount": "2,836,004.029935288",
+          "amountRaw": "2836004029935288",
+          "group": "VSR voter account (decoded)",
+          "mint": "MNDE",
+          "note": null,
+          "share": 0.004051451417
+        },
+        {
+          "amount": "21,946,372.766875876",
+          "amountRaw": "21946372766875876",
+          "group": "VSR voter account (decoded)",
+          "mint": "MNDE",
+          "note": null,
+          "share": 0.031352093341
+        },
+        {
+          "amount": "24,411.344016811",
+          "amountRaw": "24411344016811",
+          "group": "5ocnV1qiCgaQR8Jb8xWnVbApfaygJ8tNoZfgPwsgx9kx",
+          "mint": "mSOL",
+          "note": "Top-account downstream groups can overlap.",
+          "share": 0.015253863577
+        },
+        {
+          "amount": "27,931.464255918",
+          "amountRaw": "27931464255918",
+          "group": "Hd9s4t9pdJJFsJ98WXmk6pB1VNpuXke5NXNohoLtkV6P",
+          "mint": "mSOL",
+          "note": "Top-account downstream groups can overlap.",
+          "share": 0.017453473475
+        },
+        {
+          "amount": "274,214,751.701699063",
+          "amountRaw": "274214751701699063",
+          "group": "Float also excluding claimed Labs treasury",
+          "mint": "MNDE",
+          "note": "VSR custody includes used deposits that are unlocked; timeLockedMnde is shown separately. This remainder measures custody exclusions, not market liquidity. Escrow stored amounts can survive exit; only balances in MNDE token accounts named by decoded escrows of MNDE realms are subtracted. Exclusions are disjoint: DAO, VSR, escrow, Labs. Missing vaults, mismatched slots and negative remainders are reported, never clamped.",
+          "share": 0.391737011958
+        },
+        {
+          "amount": "274,214,751.701699063",
+          "amountRaw": "274214751701699063",
+          "group": "Float excluding verified custody",
+          "mint": "MNDE",
+          "note": "VSR custody includes used deposits that are unlocked; timeLockedMnde is shown separately. This remainder measures custody exclusions, not market liquidity. Escrow stored amounts can survive exit; only balances in MNDE token accounts named by decoded escrows of MNDE realms are subtracted. Exclusions are disjoint: DAO, VSR, escrow, Labs. Missing vaults, mismatched slots and negative remainders are reported, never clamped.",
+          "share": 0.391737011958
+        },
+        {
+          "amount": "3,000,000",
+          "amountRaw": "3000000000000000",
+          "group": "VSR voter account (decoded)",
+          "mint": "MNDE",
+          "note": null,
+          "share": 0.004285732363
+        },
+        {
+          "amount": "3,113,121.254114717",
+          "amountRaw": "3113121254114717",
+          "group": "87n2LcaGQSezAKpLcf3xnUJV9k1BrHSpYf8sprZ7PJcc",
+          "mint": "MNDE",
+          "note": null,
+          "share": 0.004447334836
+        },
+        {
+          "amount": "3,140,905.843553988",
+          "amountRaw": "3140905843553988",
+          "group": "ESBFuxC737cw6zNxxYDEqTCMHQGAhbGjZnbzjkiQ9Spg",
+          "mint": "MNDE",
+          "note": null,
+          "share": 0.004487027274
+        },
+        {
+          "amount": "30,366.687552055",
+          "amountRaw": "30366687552055",
+          "group": "6YxGd65JbXzgFGWjE44jsyVeCnZp7Bb1wfL9jDia1n8w",
+          "mint": "mSOL",
+          "note": "Top-account downstream groups can overlap.",
+          "share": 0.018975166173
+        },
+        {
+          "amount": "30,654,345",
+          "amountRaw": "30654345000000000",
+          "group": "VSR voter account (decoded)",
+          "mint": "MNDE",
+          "note": null,
+          "share": 0.043792106147
+        },
+        {
+          "amount": "306,913,819.847572102",
+          "amountRaw": "306913819847572102",
+          "group": "DAO-controlled",
+          "mint": "MNDE",
+          "note": null,
+          "share": 0.438450163493
+        },
+        {
+          "amount": "4,112,051.972348953",
+          "amountRaw": "4112051972348953",
+          "group": "FJ1EXbzdsZLydqVnPox3HtRQM57RuNNTpuXftAvDnZY4",
+          "mint": "MNDE",
+          "note": null,
+          "share": 0.005874384739
+        },
+        {
+          "amount": "4,156,846",
+          "amountRaw": "4156846000000000",
+          "group": "2wTKk2dRy1F5x8nZLvcC23bfNbcuWQH6k3YjrM8DAB1V",
+          "mint": "MNDE",
+          "note": null,
+          "share": 0.005938376477
+        },
+        {
+          "amount": "4,228,887.033678978",
+          "amountRaw": "4228887033678978",
+          "group": "Gb1RjdVr869FYpLGJSPYzmkTuA8T162hvcSdurQAuUms",
+          "mint": "MNDE",
+          "note": null,
+          "share": 0.006041292673
+        },
+        {
+          "amount": "4,301,948.462025809",
+          "amountRaw": "4301948462025809",
+          "group": "escrow MNDE vault balances",
+          "mint": "MNDE",
+          "note": null,
+          "share": 0.006145666583
+        },
+        {
+          "amount": "4,679,511.188702577",
+          "amountRaw": "4679511188702577",
+          "group": "GDmSxpPzLkfxxr6dHLNRnCoYVGzvgc41tozkrr4pHTjB",
+          "mint": "MNDE",
+          "note": null,
+          "share": 0.006685044182
+        },
+        {
+          "amount": "4,753,781.75861306",
+          "amountRaw": "4753781758613060",
+          "group": "BrBTM61YFAAYJwCxxYuDv2nej5vNx2wjDJEWLcVjmbur",
+          "mint": "MNDE",
+          "note": null,
+          "share": 0.006791145443
+        },
+        {
+          "amount": "49,786,114.127667098",
+          "amountRaw": "49786114127667098",
+          "group": "8PrhRaSgggvyfx23H2QHGiuYqZjTwVPCkPtCrq3aqp9n",
+          "mint": "MNDE",
+          "note": null,
+          "share": 0.071123320187
+        },
+        {
+          "amount": "57,548.691537177",
+          "amountRaw": "57548691537177",
+          "group": "AkbDjkVX9zXWUzRpfbD8pZh7ZHcyZEDSTV3FDwyZgqxf",
+          "mint": "mSOL",
+          "note": "Top-account downstream groups can overlap.",
+          "share": 0.035960326034
+        },
+        {
+          "amount": "6,465,629.000855722",
+          "amountRaw": "6465629000855722",
+          "group": "H9eMeFLkhpRDJ3Lvai5zxPovUwBsGnS7SApoQP8HWy7E",
+          "mint": "MNDE",
+          "note": null,
+          "share": 0.009236651819
+        },
+        {
+          "amount": "6,792,477.484969529",
+          "amountRaw": "6792477484969529",
+          "group": "u6PJ8DtQuPFnfmwHbGFULQ4u4EgjDiyYKjVEsynXq2w",
+          "mint": "MNDE",
+          "note": null,
+          "share": 0.009703580194
+        },
+        {
+          "amount": "699,997,047.331348407",
+          "amountRaw": "699997047331348407",
+          "group": "supply",
+          "mint": "MNDE",
+          "note": null,
+          "share": 1
+        },
+        {
+          "amount": "70,001.000033922",
+          "amountRaw": "70001000033922",
+          "group": "KMhcqNpDomyUVSK9WDr8uve29oeSoA4TZPGV34EA3JB",
+          "mint": "mSOL",
+          "note": "Top-account downstream groups can overlap.",
+          "share": 0.04374137303
+        },
+        {
+          "amount": "763,167.829681119",
+          "amountRaw": "763167829681119",
+          "group": "GRowGA1cq9abztLhXJykXoD7sAnxUARQap2sRX2CZgpv",
+          "mint": "MNDE",
+          "note": null,
+          "share": 0.001090244355
+        },
+        {
+          "amount": "764,385.828509215",
+          "amountRaw": "764385828509215",
+          "group": "BoxA8HfL21eC7utFiBM3Jj8uMUjPCW4pJsAd2dR9uTXT",
+          "mint": "MNDE",
+          "note": null,
+          "share": 0.001091984361
+        },
+        {
+          "amount": "8,901,105.517165462",
+          "amountRaw": "8901105517165462",
+          "group": "VSR voter account (decoded)",
+          "mint": "MNDE",
+          "note": null,
+          "share": 0.012715918661
+        },
+        {
+          "amount": "848,586.634071442",
+          "amountRaw": "848586634071442",
+          "group": "CmUotS5LRTEtFGxcqS8yK3Newvtjd5EzmZbahP8uvrkQ",
+          "mint": "MNDE",
+          "note": null,
+          "share": 0.001212271733
+        },
+        {
+          "amount": "880,450.624429377",
+          "amountRaw": "880450624429377",
+          "group": "A3xgq9f2UQSq89stRZuAApAdgM9v1ZXg6trWFDH6v1qv",
+          "mint": "MNDE",
+          "note": null,
+          "share": 0.001257791911
+        },
+        {
+          "amount": "885,454",
+          "amountRaw": "885454000000000",
+          "group": "FmfCjcqynojAWbfGs9wntKCrjF6mJpc8sH16tnQADQ2S",
+          "mint": "MNDE",
+          "note": null,
+          "share": 0.001264939621
+        },
+        {
+          "amount": "893,887.818745638",
+          "amountRaw": "893887818745638",
+          "group": "VSR voter account (decoded)",
+          "mint": "MNDE",
+          "note": null,
+          "share": 0.001276987984
+        },
+        {
+          "amount": "9,217,036.66537649",
+          "amountRaw": "9217036665376490",
+          "group": "E89QFGfFZELAmsEpJnCmP6WLCD1MbSiULjTVKxTkTebp",
+          "mint": "MNDE",
+          "note": null,
+          "share": 0.013167250777
+        },
+        {
+          "amount": "9,897,093.19662421",
+          "amountRaw": "9897093196624210",
+          "group": "VSR voter account (decoded)",
+          "mint": "MNDE",
+          "note": null,
+          "share": 0.014138764205
+        },
+        {
+          "amount": "924,785.042471139",
+          "amountRaw": "924785042471139",
+          "group": "DUHvDxvzPrP5WzGyLqKz6zHPf1o8QbFthCGmqYUhcoyQ",
+          "mint": "MNDE",
+          "note": null,
+          "share": 0.001321127061
+        },
+        {
+          "amount": "951,840",
+          "amountRaw": "951840000000000",
+          "group": "GE4TrkWNemTcQvLcYeV6uFBmVj3QGzKZmd4CWS928kWT",
+          "mint": "MNDE",
+          "note": null,
+          "share": 0.001359777164
+        },
+        {
+          "amount": "958,000",
+          "amountRaw": "958000000000000",
+          "group": "VSR voter account (decoded)",
+          "mint": "MNDE",
+          "note": null,
+          "share": 0.001368577201
+        },
+        {
+          "amount": "965,710.08308029",
+          "amountRaw": "965710083080290",
+          "group": "4vscYwjrwhRTJnFqJgqZRQguz6wA4mhBcc4DeoLamA4n",
+          "mint": "MNDE",
+          "note": null,
+          "share": 0.001379591652
+        }
+      ]
+    }
+  ],
+  "bundleSha256": "9e6fe9f8b0ef727a99eb93b529a396ab76072e08ede7067c787bc7d8bd605840"
+}

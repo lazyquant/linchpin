@@ -1,0 +1,48 @@
+{
+ "version": 1,
+ "snapshotId": "near-probe-unknown-block",
+ "endpointHost": "archival-rpc.mainnet.fastnear.com",
+ "archivalHost": "archival-rpc.mainnet.fastnear.com",
+ "requestBlockId": "999999999999",
+ "historyReceipt": {
+  "id": "nr:near-probe-unknown-block:f24282bb5ad9f70a9767747983998480fa96e80b",
+  "source": "near-rpc:archival-rpc.mainnet.fastnear.com",
+  "responseSha256": "bfe450cb8ab485daf587bd0555ce52a3c910082aae6d6338081a90a93f7635a5",
+  "privacy": "public",
+  "observation": {
+   "chain": "near",
+   "network": "mainnet",
+   "blockOrSlot": null,
+   "blockHash": null,
+   "observedAt": "2026-11-09T19:17:43.353Z",
+   "retrievedAt": "2026-11-09T19:17:43.353Z",
+   "historicalState": "unknown"
+  }
+ },
+ "receipt": {
+  "id": "nr:near-probe-unknown-block:cba4d016e6ef8994405a33e21c1e49e928994ae6",
+  "source": "near-rpc:archival-rpc.mainnet.fastnear.com",
+  "responseSha256": "5c9d1f8f57f47b652cec5e26b58ca006e7612dd4fec760dc921bb116d7b1cff7",
+  "privacy": "public",
+  "observation": {
+   "chain": "near",
+   "network": "mainnet",
+   "blockOrSlot": "223809092",
+   "blockHash": "C5mgq5C8cCyVHipGhMGvk6WjX4yhmdgQYvRmW4EKMUsN",
+   "observedAt": "2026-11-09T19:17:43.491Z",
+   "retrievedAt": "2026-11-09T19:17:43.491Z",
+   "historicalState": "current-only"
+  }
+ },
+ "reasons": [
+  {
+   "code": "missing-history",
+   "subject": "near:mainnet:intents.near",
+   "ref": "nr:near-probe-unknown-block:f24282bb5ad9f70a9767747983998480fa96e80b"
+  }
+ ],
+ "files": {
+  "f24282bb5ad9f70a9767747983998480fa96e80bbfd5b9c500c1ff4d1e80c708.json": "5f7704d502abc4d6f9187cef2e79a386a629fa33358e5307fc5dfe2554e7be4f",
+  "cba4d016e6ef8994405a33e21c1e49e928994ae636aa58408d285ebe63bd2085.json": "9d05bc40c61f05e673f80e6b254e86295ba9926bd65f3f863c148c2b9d6a186e"
+ }
+}

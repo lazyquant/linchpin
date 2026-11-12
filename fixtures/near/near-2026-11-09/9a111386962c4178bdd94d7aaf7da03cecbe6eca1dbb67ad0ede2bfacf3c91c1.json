@@ -1,0 +1,31 @@
+{
+ "version": 1,
+ "requestSha256": "9a111386962c4178bdd94d7aaf7da03cecbe6eca1dbb67ad0ede2bfacf3c91c1",
+ "request": {
+  "method": "query",
+  "params": {
+   "account_id": "omni.bridge.near",
+   "request_type": "call_function",
+   "method_name": "acl_get_permissioned_accounts",
+   "args_base64": "e30=",
+   "finality": "final"
+  }
+ },
+ "endpointHost": "archival-rpc.mainnet.fastnear.com",
+ "retrievedAt": "2026-11-09T19:32:44.485Z",
+ "httpStatus": 200,
+ "outcome": "result",
+ "blockHeight": "223810635",
+ "blockHash": "oNJzMJgzX7dVaeuFngsebRCXZkiS1KteafYCJgseEqM",
+ "responseSha256": "452fc3b933118fe0480e41212ea6d27c76f3e84d6881f40c4d2d6e74ee082316",
+ "response": {
+  "jsonrpc": "2.0",
+  "result": {
+   "block_hash": "oNJzMJgzX7dVaeuFngsebRCXZkiS1KteafYCJgseEqM",
+   "block_height": 223810635,
+   "logs": []
+  },
+  "id": "near-reader"
+ },
+ "resultText": "{\"super_admins\":[\"rainbowbridge.sputnik-dao.near\"],\"roles\":{\"PauseManager\":{\"admins\":[],\"grantees\":[\"bridge-ops.near\",\"rainbowbridge.sputnik-dao.near\"]},\"UpgradableCodeStager\":{\"admins\":[],\"grantees\":[\"bridge-ops.near\"]},\"MetadataManager\":{\"admins\":[],\"grantees\":[\"bridge-ops.near\"]},\"RelayerManager\":{\"admins\":[],\"grantees\":[]},\"RbfOperator\":{\"admins\":[],\"grantees\":[\"bridge-ops.near\"]},\"UnpauseManager\":{\"admins\":[],\"grantees\":[]},\"DAO\":{\"admins\":[],\"grantees\":[\"omni.bridge.near\",\"rainbowbridge.sputnik-dao.near\"]},\"NativeFeeRestricted\":{\"admins\":[],\"grantees\":[\"relay.aurora\"]},\"UnrestrictedRelayer\":{\"admins\":[],\"grantees\":[\"omni-relayer.bridge.near\",\"b35bca448dbd81f5f4db70f46d7f99ee04e1e66900c05a908ba61e0e16bc0efe\",\"intents-relayer.near\"]},\"UnrestrictedDeposit\":{\"admins\":[],\"grantees\":[]},\"TokenDeployer\":{\"admins\":[],\"grantees\":[\"bridge-ops.near\"]},\"UpgradableCodeDeployer\":{\"admins\":[],\"grantees\":[]},\"TokenControllerUpdater\":{\"admins\":[],\"grantees\":[]},\"TokenLockController\":{\"admins\":[],\"grantees\":[]},\"TokenUpgrader\":{\"admins\":[],\"grantees\":[]}}}"
+}

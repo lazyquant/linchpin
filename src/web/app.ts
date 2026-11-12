@@ -1,5 +1,7 @@
+import { isProtocolId, PROTOCOL_VIEW } from '../tokenomics/protocols';
+import { renderTokenomicsNavigation } from './tokenomics-view';
 import { evidenceIds } from '../tokenomics/evidence';
-import type { BundleResponse } from '../tokenomics/api';
+import type { BundleResponse, ProtocolsResponse } from '../tokenomics/api';
 import type { ProposalBridge } from './graph-overview';
 import { graphBadge, refreshGraphOverview, proposalBridgeCard } from './graph-overview-view';
 import { TokenomicsWorkspace } from './tokenomics-ui';
@@ -21,6 +23,7 @@ const runs = new Map<CaseId, Run>();
 const selections = new Map<CaseId, 'captured' | 'live'>();
 const selectedSource = () => selections.get(active) ?? 'captured';
 let viewRequest = 0, homeActive = false;
+let tokenomicsIndex: { protocols: Pick<ProtocolsResponse['protocols'][number], 'id' | 'title'>[]; message?: string } = { protocols: [] };
 let bridge: ProposalBridge | undefined, bridgeCase: CaseId | undefined, bridgeError = '', bridgeRequest = 0;
 const caseOrder: CaseId[] = ['marinade', 'mip-14', 'mip-14-opinion', 'bonk-bip76'];
 let graph: GraphAnswer | null = null, graphLoading = false, graphError = '', graphLoadBusy = false;
@@ -61,7 +64,7 @@ async function openHome() {
   document.body.classList.add('home-mode'); $('#home-panel').hidden = false;
   $('#case-kind').textContent = 'Research workspace'; renderCases();
   const button = (id: CaseId) => { const c = scopes.find(c => c.id === id); return c ? `<button class="home-case secondary" data-case="${id}" title="${esc(c.label)}">${esc(homeLabels[id])}<small>${esc(c.question)}</small></button>` : ''; };
-  $('#home-panel').innerHTML = `<header class="home-heading"><h1>Linchpin</h1><p class="home-subtitle">The dependency engine for protocol economics</p><p>Reads a protocol's programs, state and transactions from Solana mainnet and keeps what is claimed, what the code allows and what happened side by side.</p></header><div class="home-cards"><article class="home-card"><span class="number">01</span><h2>Protocol research</h2><p>A token, its flows and the protocol's mechanics.</p><button class="primary" data-tg-open>Marinade tokenomics</button>${button('marinade')}<p id="home-research-status" class="map-note">Reading captured research…</p></article><article class="home-card"><span class="number">02</span><h2>Governance review</h2><p>Proposals, their dependencies and their impact on the protocol.</p>${caseOrder.slice(1).map(button).join('')}</article></div><p class="home-graph">Evidence graph · ${graphBadge()}</p>`;
+  $('#home-panel').innerHTML = `<header class="home-heading"><h1>Linchpin</h1><p class="home-subtitle">The dependency engine for protocol economics</p><p>Reads a protocol's programs, state and transactions from Solana mainnet and keeps what is claimed, what the code allows and what happened side by side.</p></header><div class="home-cards"><article class="home-card"><span class="number">01</span><h2>Protocol research</h2><p>A token, its flows and the protocol's mechanics.</p>${renderTokenomicsNavigation(tokenomicsIndex, 'primary')}${tokenomicsIndex.message ? `<p class="map-note">${esc(tokenomicsIndex.message)}</p>` : ''}${button('marinade')}<p id="home-research-status" class="map-note">Reading captured research…</p></article><article class="home-card"><span class="number">02</span><h2>Governance review</h2><p>Proposals, their dependencies and their impact on the protocol.</p>${caseOrder.slice(1).map(button).join('')}</article></div><p class="home-graph">Evidence graph · ${graphBadge()}</p>`;
   void refreshGraphOverview();
   try { const b = await api<BundleResponse>('/api/tokenomics/marinade'); if (homeActive) $('#home-research-status').textContent = `${b.answer.data?.shortAnswer.status ?? b.answer.status} · ${Object.keys(b).length} sections · ${evidenceIds(b).length.toLocaleString('en-US')} evidence records`; }
   catch (e) { if (homeActive) $('#home-research-status').textContent = (e as Error).message; }
@@ -70,6 +73,7 @@ async function routeHash() {
   const hash = location.hash.slice(1);
   if (hash.startsWith('walkthrough-')) return; // owned by case-walkthrough.ts
   if (hash === 'tokenomics') await tokenomics.open();
+  else if (hash.startsWith('tokenomics/') && isProtocolId(hash.slice('tokenomics/'.length))) await tokenomics.open(hash.slice('tokenomics/'.length) as import('../tokenomics/api').ProtocolId);
   else if (scopes.some(c => c.id === hash)) await load(hash as CaseId);
   else await openHome();
 }
@@ -324,5 +328,7 @@ let searchTimer: ReturnType<typeof setTimeout>;
 document.addEventListener('input', e => { const el = e.target as HTMLInputElement; if (el.id === 'ledger-search') { ledgerQuery = el.value; const pos = el.selectionStart; renderTimeline(); $('#ledger-search').focus(); ($('#ledger-search') as HTMLInputElement).setSelectionRange(pos,pos); } if (el.id === 'source-search') { sourceQuery = el.value; clearTimeout(searchTimer); searchTimer = setTimeout(() => void browseSources(sourceQuery), 180); } });
 const tokenomics = new TokenomicsWorkspace(() => { leaveHome(); ++viewRequest; ++sourceRequest; view = null; renderCases(); }, notice);
 window.addEventListener('hashchange', () => { void routeHash(); });
+try { tokenomicsIndex = await api<ProtocolsResponse & { message?: string }>('/api/tokenomics'); $('#tg-protocols').innerHTML = renderTokenomicsNavigation(tokenomicsIndex); }
+catch { tokenomicsIndex = { protocols: [{ id: 'marinade', title: PROTOCOL_VIEW.marinade.title }] }; $('#tg-protocols').innerHTML = renderTokenomicsNavigation(tokenomicsIndex); }
 try { scopes = await api<Scope[]>('/api/cases'); renderCases(); await routeHash(); }
 catch (e) { await openHome(); notice((e as Error).message); }

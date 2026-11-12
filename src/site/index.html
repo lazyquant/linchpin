@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<title>Linchpin · Dependency risk management for DeFi</title>
+<meta content="Code audits cover the code. Linchpin covers what the code depends on. Open source, built at NEAR Hackathon 2026." name="description"/>
+
+
+<link href="./site.css" rel="stylesheet"/><link href="./assets/linchpin-mark.svg" rel="icon" type="image/svg+xml"/><meta content="Linchpin · Dependency risk management for DeFi" property="og:title"/><meta content="Code audits cover the code. Linchpin covers what the code depends on. Open source, built at NEAR Hackathon 2026." property="og:description"/><meta content="summary" name="twitter:card"/></head>
+<body>
+<a class="skip" data-slot="a11y.skip" href="#main"></a>
+
+<header class="masthead">
+<div class="wrap">
+<a aria-label="Linchpin, top of page" class="brand" href="#top">
+
+<svg aria-hidden="true" focusable="false" viewBox="36 34 184 186">
+<defs><mask id="gap-head"><rect fill="#fff" height="256" width="256" x="0" y="0"></rect><circle cx="70" cy="186" fill="#000" r="47"></circle></mask></defs>
+<g fill="none" mask="url(#gap-head)" stroke="var(--ink)" stroke-linecap="round" stroke-width="22"><path d="M70 54V186"></path><path d="M70 186H200"></path></g>
+<circle cx="70" cy="54" fill="var(--ink)" r="20"></circle><circle cx="200" cy="186" fill="var(--ink)" r="20"></circle><circle cx="70" cy="186" fill="var(--green)" r="34"></circle>
+</svg>
+<span>Linchpin</span>
+</a>
+<nav aria-label="Sections" class="nav">
+<a class="opt" data-slot="nav.problem" href="#problem"></a>
+<a class="opt" data-slot="nav.questions" href="#questions"></a>
+<a class="opt" data-slot="nav.reviews" href="#reviews"></a>
+<a class="opt" data-slot="nav.how" href="#how"></a>
+<a data-slot="nav.run" href="#run"></a>
+<a data-slot="nav.github" href="https://github.com/lazyquant/linchpin"></a>
+</nav>
+</div>
+</header>
+<main id="main">
+
+<section aria-labelledby="hero-title" class="hero" id="top">
+<div class="wrap hero-grid">
+<div class="hero-copy">
+<p class="badge rise" data-slot="hero.badge"></p>
+<h1 class="rise d1" data-slot="hero.headline" id="hero-title"></h1>
+<p class="subline rise d2" data-slot="hero.subline"></p>
+<p class="support rise d3" data-slot="hero.support"></p>
+<p class="lede rise d3" data-slot="hero.lede"></p>
+<div class="actions rise d3">
+<a class="btn" data-slot="hero.action.run" href="#run"></a>
+<a class="link-arrow" data-config="demoVideoUrl" data-slot="hero.action.demo" href="#demo-video-url"></a>
+
+</div>
+</div>
+<aside aria-labelledby="ev-title" class="evidence on-dark rise d3">
+<div class="ev-head">
+<p class="label" data-slot="hero.card.kicker"></p>
+<p class="label ident" data-fact="near.snapshot.id"></p>
+</div>
+<h2 class="ev-title" data-slot="hero.card.title" id="ev-title"></h2>
+<div class="ev-figure">
+<span class="num" data-fact="intents.role.pause-manager.count"></span>
+<p data-slot="hero.card.figure"></p>
+</div>
+<dl class="ev-rows">
+<div><dt>contract</dt><dd><code>intents.near</code></dd></div>
+<div><dt><code>UnrestrictedAccountLocker</code></dt><dd><span data-fact="intents.role.account-locker.count"></span> accounts</dd></div>
+<div><dt><code>Upgrader</code></dt><dd><code data-fact="intents.role.upgrader"></code></dd></div>
+<div><dt><code>DAO</code></dt><dd><code data-fact="intents.role.dao"></code></dd></div>
+</dl>
+<div class="ev-receipt">
+<span>block <b data-fact="intents.role.pause-manager.count#block"></b></span>
+<span>receipt <b data-fact="intents.role.pause-manager.count#receipt"></b> · sha256 <b data-fact="intents.role.pause-manager.count#sha256"></b></span>
+</div>
+<div class="ev-links">
+<a data-fact-link="intents.role.pause-manager.count#explorer" href="#">Explorer <span aria-hidden="true">↗</span></a>
+<a data-fact-link="intents.role.pause-manager.count#file" href="#">Receipt file <span aria-hidden="true">↗</span></a>
+</div>
+<p class="ev-note" data-slot="hero.card.note"></p>
+</aside>
+</div>
+</section>
+
+<section aria-labelledby="problem-title" class="section" id="problem">
+<div class="wrap sec-grid">
+<div class="sec-main">
+<div class="sec-head">
+<p class="label" data-slot="problem.label"></p>
+<h2 data-slot="problem.title" id="problem-title"></h2>
+<p data-slot="problem.intro"></p>
+</div>
+<div class="problems sec-body">
+<article class="problem">
+<p class="figure"><span data-fact="intents-dao.council.threshold"></span><small>of</small><span data-fact="intents-dao.council.size"></span></p>
+<p class="flabel" data-slot="problem.1.label"></p>
+<p class="text" data-slot="problem.1.text"></p>
+</article>
+<article class="problem">
+<p class="figure" data-fact="burrow.pause-operator"></p>
+<p class="flabel" data-slot="problem.2.label"></p>
+<p class="text" data-slot="problem.2.text"></p>
+</article>
+<article class="problem">
+<p class="figure" data-slot="problem.3.figure"></p>
+<p class="flabel" data-slot="problem.3.label"></p>
+<p class="text" data-slot="problem.3.text"></p>
+</article>
+</div>
+</div>
+<aside aria-labelledby="rail-problem" class="rail">
+<h3 data-slot="rail.title" id="rail-problem"></h3>
+<ol data-rail="problem"></ol>
+</aside>
+</div>
+</section>
+
+<section aria-labelledby="questions-title" class="section" id="questions">
+<div class="wrap">
+<div class="sec-head">
+<p class="label" data-slot="questions.label"></p>
+<h2 data-slot="questions.title" id="questions-title"></h2>
+<p data-slot="questions.intro"></p>
+</div>
+<ol class="questions sec-body">
+<li class="q"><span class="n">Q1</span><h3 data-slot="q.1.title"></h3><p class="risk" data-slot="q.1.risk"></p><p class="by" data-slot="q.1.by"></p></li>
+<li class="q"><span class="n">Q2</span><h3 data-slot="q.2.title"></h3><p class="risk" data-slot="q.2.risk"></p><p class="by" data-slot="q.2.by"></p></li>
+<li class="q"><span class="n">Q3</span><h3 data-slot="q.3.title"></h3><p class="risk" data-slot="q.3.risk"></p><p class="by" data-slot="q.3.by"></p></li>
+<li class="q"><span class="n">Q4</span><h3 data-slot="q.4.title"></h3><p class="risk" data-slot="q.4.risk"></p><p class="by" data-slot="q.4.by"></p></li>
+<li class="q"><span class="n">Q5</span><h3 data-slot="q.5.title"></h3><p class="risk" data-slot="q.5.risk"></p><p class="by" data-slot="q.5.by"></p></li>
+</ol>
+</div>
+</section>
+
+<section aria-labelledby="reviews-title" class="section" id="reviews">
+<div class="wrap">
+<div class="sec-head">
+<p class="label" data-slot="reviews.label"></p>
+<h2 data-slot="reviews.title" id="reviews-title"></h2>
+<p data-slot="reviews.intro"></p>
+</div>
+<div class="reviews sec-body">
+<article class="card">
+<p class="label"><span data-slot="reviews.intent.kicker"></span><span class="muted">NEAR Intents</span></p>
+<h3 data-slot="reviews.intent.title"></h3>
+<p class="ask" data-slot="reviews.intent.ask"></p>
+<pre aria-label="Excerpt of intent review output" class="excerpt" data-excerpt="intent-review"></pre>
+<code class="cmd" data-slot="reviews.intent.cmd"></code>
+</article>
+<article class="card">
+<p class="label"><span data-slot="reviews.governance.kicker"></span><span class="muted">Sputnik DAO</span></p>
+<h3 data-slot="reviews.governance.title"></h3>
+<p class="ask" data-slot="reviews.governance.ask"></p>
+<pre aria-label="Excerpt of governance review output" class="excerpt" data-excerpt="governance-review"></pre>
+<code class="cmd" data-slot="reviews.governance.cmd"></code>
+</article>
+<article class="card">
+<p class="label"><span data-slot="reviews.risk.kicker"></span><span class="muted">Policy · MCP</span></p>
+<h3 data-slot="reviews.risk.title"></h3>
+<p class="ask" data-slot="reviews.risk.ask"></p>
+<pre aria-label="Excerpt of policy verdict output" class="excerpt" data-excerpt="risk-review"></pre>
+<p class="privacy" data-slot="reviews.risk.privacy"></p>
+<code class="cmd" data-slot="reviews.risk.cmd"></code>
+</article>
+<article class="card solana">
+<div>
+<p class="label"><span data-slot="reviews.solana.kicker"></span></p>
+<h3 data-slot="reviews.solana.title"></h3>
+</div>
+<p class="facts-line" data-slot="reviews.solana.fact"></p>
+<code class="cmd" data-slot="reviews.solana.cmd"></code>
+</article>
+</div>
+</div>
+</section>
+
+<section aria-labelledby="how-title" class="section" id="how">
+<div class="wrap">
+<div class="sec-head">
+<p class="label" data-slot="how.label"></p>
+<h2 data-slot="how.title" id="how-title"></h2>
+<p data-slot="how.intro"></p>
+</div>
+<figure class="diagram sec-body">
+<svg aria-labelledby="dg-wide-title dg-wide-desc" class="wide" role="img" viewBox="0 0 1120 300">
+<title id="dg-wide-title">How Linchpin works</title>
+<desc id="dg-wide-desc">NEAR mainnet view calls go to the reader, which writes snapshots with receipts. The facts form one evidence graph. Four queries, dependencies, control, changes and evidence, serve three reviews: intent, governance and the private risk manager. Results leave as a CLI report, a Markdown or HTML report, and tools on an MCP server.</desc>
+
+<path class="dg-edge" d="M60 150H500"></path>
+<path class="dg-edge" d="M500 150H590C630 150 630 60 670 60M590 150H670M590 150C630 150 630 240 670 240"></path>
+<path class="dg-edge" d="M670 60H830M670 150H850M670 240H850M830 60C880 60 890 150 940 150M850 150H940M850 240C880 240 890 150 940 150"></path>
+<path class="dg-edge" d="M940 150C980 150 990 70 1040 70M940 150H1040M940 150C980 150 990 230 1040 230"></path>
+
+<circle class="dg-node" cx="60" cy="150" r="10"></circle>
+<text class="dg-stage" text-anchor="middle" x="60" y="110">NEAR mainnet</text>
+<text class="dg-text" text-anchor="middle" x="60" y="190">view calls</text>
+<text class="dg-text" text-anchor="middle" x="60" y="206">final blocks</text>
+
+<circle class="dg-node" cx="200" cy="150" r="10"></circle>
+<text class="dg-stage" text-anchor="middle" x="200" y="110">Reader</text>
+<text class="dg-text" text-anchor="middle" x="200" y="190">snapshots</text>
+<text class="dg-text" text-anchor="middle" x="200" y="206">one file per read</text>
+
+<circle class="dg-pin" cx="360" cy="150" r="26"></circle>
+<circle class="dg-ring" cx="360" cy="150" r="31"></circle>
+<text class="dg-stage" text-anchor="middle" x="360" y="100">Evidence graph</text>
+<text class="dg-green" text-anchor="middle" x="360" y="204">fact + receipt</text>
+<text class="dg-text" text-anchor="middle" x="360" y="220">block · sha256</text>
+
+<circle class="dg-node" cx="500" cy="150" r="7"></circle>
+<text class="dg-stage" text-anchor="middle" x="500" y="110">Four queries</text>
+<text class="dg-text" text-anchor="middle" x="500" y="186">dependencies · control</text>
+<text class="dg-text" text-anchor="middle" x="500" y="202">changes · evidence</text>
+
+<circle class="dg-node" cx="670" cy="60" r="7"></circle><circle class="dg-node" cx="670" cy="150" r="7"></circle><circle class="dg-node" cx="670" cy="240" r="7"></circle>
+<text class="dg-stage" x="690" y="44">Intent</text>
+<text class="dg-stage" x="690" y="134">Governance</text>
+<text class="dg-stage" x="690" y="224">Risk manager</text>
+
+<circle class="dg-node" cx="940" cy="150" r="7"></circle>
+<circle class="dg-node" cx="1040" cy="70" r="5"></circle><circle class="dg-node" cx="1040" cy="150" r="5"></circle><circle class="dg-node" cx="1040" cy="230" r="5"></circle>
+<text class="dg-text" x="1052" y="74">CLI</text>
+<text class="dg-text" x="1052" y="154">report</text>
+<text class="dg-text" x="1052" y="234">MCP</text>
+<text class="dg-text" data-ironclaw="" x="1052" y="250">IronClaw</text>
+</svg>
+<svg aria-labelledby="dg-tall-title dg-tall-desc" class="tall" role="img" viewBox="0 0 340 640">
+<title id="dg-tall-title">How Linchpin works</title>
+<desc id="dg-tall-desc">From top to bottom: NEAR mainnet view calls, the reader writing snapshots, the evidence graph of facts and receipts, four queries, three reviews, and the outputs: CLI, report, and MCP.</desc>
+<path class="dg-edge" d="M40 30V560"></path>
+<path class="dg-edge" d="M40 410H70M40 450H70M40 490H70"></path>
+<circle class="dg-node" cx="40" cy="30" r="9"></circle>
+<text class="dg-stage" x="72" y="36">NEAR mainnet</text><text class="dg-text" x="72" y="54">view calls, final blocks</text>
+<circle class="dg-node" cx="40" cy="120" r="9"></circle>
+<text class="dg-stage" x="72" y="126">Reader</text><text class="dg-text" x="72" y="144">snapshots, one file per read</text>
+<circle class="dg-ring" cx="40" cy="220" r="27"></circle><circle class="dg-pin" cx="40" cy="220" r="22"></circle>
+<text class="dg-stage" x="80" y="216">Evidence graph</text><text class="dg-green" x="80" y="234">fact + receipt, block, sha256</text>
+<circle class="dg-node" cx="40" cy="320" r="7"></circle>
+<text class="dg-stage" x="72" y="314">Four queries</text><text class="dg-text" x="72" y="332">dependencies · control</text><text class="dg-text" x="72" y="348">changes · evidence</text>
+<circle class="dg-node" cx="76" cy="410" r="5"></circle><circle class="dg-node" cx="76" cy="450" r="5"></circle><circle class="dg-node" cx="76" cy="490" r="5"></circle>
+<text class="dg-stage" x="92" y="416">Intent</text><text class="dg-stage" x="92" y="456">Governance</text><text class="dg-stage" x="92" y="496">Risk manager</text>
+<circle class="dg-node" cx="40" cy="560" r="7"></circle>
+<text class="dg-text" data-slot="diagram.outputs" x="72" y="566"></text>
+</svg>
+<figcaption data-slot="how.caption"></figcaption>
+</figure>
+<div class="principles">
+<div class="principle"><h3 data-slot="how.p1.title"></h3><p data-slot="how.p1.text"></p></div>
+<div class="principle"><h3 data-slot="how.p2.title"></h3><p data-slot="how.p2.text"></p></div>
+<div class="principle"><h3 data-slot="how.p3.title"></h3><p data-slot="how.p3.text"></p></div>
+</div>
+<p class="privacy-line" data-slot="how.privacy"></p>
+</div>
+</section>
+
+<section aria-labelledby="run-title" class="section" id="run">
+<div class="wrap">
+<div class="sec-head">
+<p class="label" data-slot="run.label"></p>
+<h2 data-slot="run.title" id="run-title"></h2>
+<p data-slot="run.intro"></p>
+</div>
+<ol class="steps sec-body">
+<li class="step"><div><code class="cmd" data-slot="run.1.cmd"></code><p class="see" data-slot="run.1.see"></p></div></li>
+<li class="step"><div><code class="cmd" data-slot="run.2.cmd"></code><p class="see" data-slot="run.2.see"></p></div></li>
+<li class="step"><div><code class="cmd" data-slot="run.3.cmd"></code><p class="see">First line: <b data-excerpt-line="intent-review"></b></p></div></li>
+<li class="step"><div><code class="cmd" data-slot="run.4.cmd"></code><p class="see">First line: <b data-excerpt-line="governance-review"></b></p></div></li>
+<li class="step"><div><code class="cmd" data-slot="run.5.cmd"></code><p class="see">First line: <b data-excerpt-line="risk-review"></b></p></div></li>
+</ol>
+<p class="also" data-slot="run.also"></p>
+</div>
+</section>
+</main>
+
+<footer aria-labelledby="footer-title" class="footer on-dark">
+<div class="wrap">
+<div class="footer-grid">
+<div>
+<p class="brand" id="footer-title">
+<svg aria-hidden="true" focusable="false" viewBox="36 34 184 186">
+<defs><mask id="gap-foot"><rect fill="#fff" height="256" width="256" x="0" y="0"></rect><circle cx="70" cy="186" fill="#000" r="47"></circle></mask></defs>
+<g fill="none" mask="url(#gap-foot)" stroke="var(--paper)" stroke-linecap="round" stroke-width="22"><path d="M70 54V186"></path><path d="M70 186H200"></path></g>
+<circle cx="70" cy="54" fill="var(--paper)" r="20"></circle><circle cx="200" cy="186" fill="var(--paper)" r="20"></circle><circle cx="70" cy="186" fill="var(--green-on-dark)" r="34"></circle>
+</svg>
+<span>Linchpin</span>
+</p>
+<p class="footer-tagline" data-slot="footer.tagline"></p>
+</div>
+<nav aria-label="Project">
+<ul>
+<li><a data-slot="footer.github" href="https://github.com/lazyquant/linchpin"></a></li>
+<li><a data-slot="footer.licence" href="https://github.com/lazyquant/linchpin/blob/main/LICENSE"></a></li>
+<li><a data-config="xPostUrl" data-slot="footer.x" href="#x-post-url"></a> </li>
+</ul>
+</nav>
+<p class="footer-nocookies" data-slot="footer.nocookies"></p>
+</div>
+<div class="dated">
+<p data-slot="footer.near-range"></p>
+<p data-slot="footer.solana-range"></p>
+</div>
+</div>
+</footer>
+</body>
+</html>
+

@@ -1,0 +1,53 @@
+{
+  "version": 1,
+  "id": "solana-min",
+  "chain": "solana",
+  "network": "mainnet-beta",
+  "constructed": false,
+  "observedFrom": "2026-01-01T00:00:00.000Z",
+  "observedTo": "2026-01-01T00:00:00.000Z",
+  "fromBlockOrSlot": "500",
+  "toBlockOrSlot": "500",
+  "freshUntil": "2027-01-01T00:00:00.000Z",
+  "subjects": ["solana:mainnet-beta:So11111111111111111111111111111111111111112"],
+  "readers": [
+    {
+      "id": "reader.solana-min",
+      "status": "complete",
+      "subjects": ["solana:mainnet-beta:So11111111111111111111111111111111111111112"]
+    }
+  ],
+  "names": {},
+  "receipts": [
+    {
+      "id": "receipt.solana-min",
+      "source": "fixture:near-reader/solana-min",
+      "responseSha256": "1111111111111111111111111111111111111111111111111111111111111111",
+      "observation": {
+        "chain": "solana",
+        "network": "mainnet-beta",
+        "blockOrSlot": "500",
+        "blockHash": null,
+        "observedAt": "2026-01-01T00:00:00.000Z",
+        "retrievedAt": "2026-01-01T00:00:00.000Z",
+        "historicalState": "current-only"
+      },
+      "privacy": "public"
+    }
+  ],
+  "facts": [
+    {
+      "id": "fact.solana-min",
+      "subject": "solana:mainnet-beta:So11111111111111111111111111111111111111112",
+      "predicate": "DEPENDS_ON",
+      "object": "solana:mainnet-beta:EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+      "basis": "observed",
+      "status": "verified",
+      "evidenceIds": ["receipt.solana-min"],
+      "path": [],
+      "validFrom": null,
+      "validTo": null,
+      "privacy": "public"
+    }
+  ]
+}

@@ -1,0 +1,31 @@
+{
+ "version": 1,
+ "requestSha256": "232a22f258642a86799758734aeb59e6c0c594d006a6523598132a3447c408aa",
+ "request": {
+  "method": "query",
+  "params": {
+   "account_id": "ref-finance.sputnik-dao.near",
+   "request_type": "call_function",
+   "method_name": "get_policy",
+   "args_base64": "e30=",
+   "finality": "final"
+  }
+ },
+ "endpointHost": "archival-rpc.mainnet.fastnear.com",
+ "retrievedAt": "2026-11-09T19:31:06.326Z",
+ "httpStatus": 200,
+ "outcome": "result",
+ "blockHeight": "223810466",
+ "blockHash": "7DA94SrBKRehtrrfNAqoTy9CUG9ztgUpU87TByktdS9S",
+ "responseSha256": "276bc26c8a5f473c3939645f52c08a73c0892f4aff040ff0bfe30bce0178054e",
+ "response": {
+  "jsonrpc": "2.0",
+  "result": {
+   "block_hash": "7DA94SrBKRehtrrfNAqoTy9CUG9ztgUpU87TByktdS9S",
+   "block_height": 223810466,
+   "logs": []
+  },
+  "id": "near-reader"
+ },
+ "resultText": "{\"roles\":[{\"name\":\"council\",\"kind\":{\"Group\":[\"farbread8025.near\",\"nicktrust.near\",\"zzxbzz.near\",\"refchef.near\",\"wannamakeit.near\"]},\"permissions\":[\"*:VoteReject\",\"*:VoteRemove\",\"*:VoteApprove\",\"*:AddProposal\",\"*:Finalize\"],\"vote_policy\":{}}],\"default_vote_policy\":{\"weight_kind\":\"RoleWeight\",\"quorum\":\"0\",\"threshold\":[1,2]},\"proposal_bond\":\"1000000000000000000000000\",\"proposal_period\":\"604800000000000\",\"bounty_bond\":\"1000000000000000000000000\",\"bounty_forgiveness_period\":\"86400000000000\"}"
+}

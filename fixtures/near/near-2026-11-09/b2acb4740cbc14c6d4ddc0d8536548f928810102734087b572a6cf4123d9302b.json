@@ -1,0 +1,92 @@
+{
+ "version": 1,
+ "requestSha256": "b2acb4740cbc14c6d4ddc0d8536548f928810102734087b572a6cf4123d9302b",
+ "request": {
+  "method": "query",
+  "params": {
+   "account_id": "bridge-ops.near",
+   "request_type": "view_access_key_list",
+   "finality": "final"
+  }
+ },
+ "endpointHost": "archival-rpc.mainnet.fastnear.com",
+ "retrievedAt": "2026-11-09T19:32:10.397Z",
+ "httpStatus": 200,
+ "outcome": "result",
+ "blockHeight": "223810579",
+ "blockHash": "ACHNmYVUHMepxFazuR8pvBqN82hgNm7S81nzc73KZeq7",
+ "responseSha256": "c2033b1ede53cde0306f3c372dbe8cf028b448ce829f26ff6601ddae6e39562d",
+ "response": {
+  "jsonrpc": "2.0",
+  "result": {
+   "block_hash": "ACHNmYVUHMepxFazuR8pvBqN82hgNm7S81nzc73KZeq7",
+   "block_height": 223810579,
+   "keys": [
+    {
+     "access_key": {
+      "nonce": 213831521000017,
+      "permission": {
+       "FunctionCall": {
+        "allowance": "9824067867985943800000000",
+        "method_names": [],
+        "receiver_id": "zcash-connector.bridge.near"
+       }
+      }
+     },
+     "public_key": "ed25519:6vUjqpo23zVVLyemakHJFsHgdVaj1713sHKK12TBNjZe"
+    },
+    {
+     "access_key": {
+      "nonce": 197133013000115,
+      "permission": "FullAccess"
+     },
+     "public_key": "ed25519:9dgapftKa4JFvVwKb1u8mVZMYP7dkzPJHQQSUxidt7Eq"
+    },
+    {
+     "access_key": {
+      "nonce": 197134362000000,
+      "permission": {
+       "FunctionCall": {
+        "allowance": "0",
+        "method_names": [
+         "__wallet__metadata"
+        ],
+        "receiver_id": "bridge-ops.near"
+       }
+      }
+     },
+     "public_key": "ed25519:BRa5Eidg5m3aZt5GdpQ83zCijPbM1aRqyNc2KyXzicTS"
+    },
+    {
+     "access_key": {
+      "nonce": 197132575000000,
+      "permission": "FullAccess"
+     },
+     "public_key": "ed25519:DCJ5iNy3j6hQM21WvUGQAWNmTGz32LW7P5XbXtpWRz2x"
+    },
+    {
+     "access_key": {
+      "nonce": 197132637000012,
+      "permission": "FullAccess"
+     },
+     "public_key": "ed25519:DUJwSzYbFgYdkCNPoPvSwcywz4whQbdxjkRtusF6QgJy"
+    },
+    {
+     "access_key": {
+      "nonce": 197132731000000,
+      "permission": "FullAccess"
+     },
+     "public_key": "ed25519:GQV12iogS5FUvpk9YTNYnzqjLZQFGtRfpikdzWPtqtwp"
+    },
+    {
+     "access_key": {
+      "nonce": 197132772000000,
+      "permission": "FullAccess"
+     },
+     "public_key": "ed25519:GtVHcVFpCwh2WW5egqfEURRVgxeFEjS24ECFJSqrbsZ7"
+    }
+   ]
+  },
+  "id": "near-reader"
+ }
+}

@@ -1,0 +1,7451 @@
+[
+ {
+  "version": 1,
+  "request": {
+   "method": "query",
+   "params": {
+    "account_id": "sol-57d087fd8c460f612f8701f5499ad8b2eec5ab68.omft.near",
+    "finality": "final",
+    "request_type": "view_account"
+   }
+  },
+  "requestSha256": "161bc65cec4e57da0210672f0e4550e18836929e8314eec68af6b3ae6c9cd090",
+  "endpointHost": "archival-rpc.mainnet.fastnear.com",
+  "retrievedAt": "2026-11-09T21:40:37.397Z",
+  "httpStatus": 200,
+  "outcome": "result",
+  "response": {
+   "jsonrpc": "2.0",
+   "result": {
+    "amount": "3082620815141311600001058",
+    "block_hash": "8jwfxMvaTsaQcBNi13uPZFkHgQGziv6GrmWuNHHF2AUq",
+    "block_height": 223823979,
+    "code_hash": "Ba6uZKxsuRPW5X7XVQrSnYEYScEjFLJLMqMWvZ1aS3tC",
+    "locked": "0",
+    "storage_paid_at": 0,
+    "storage_usage": 231046
+   },
+   "id": "intent-route"
+  },
+  "responseSha256": "abe9ee9bcabd091d80c3afdff0f77be5a1f13992de843feda09059e0f25ab4c6",
+  "blockHeight": "223823979",
+  "blockHash": "8jwfxMvaTsaQcBNi13uPZFkHgQGziv6GrmWuNHHF2AUq"
+ },
+ {
+  "version": 1,
+  "request": {
+   "method": "query",
+   "params": {
+    "account_id": "sol-57d087fd8c460f612f8701f5499ad8b2eec5ab68.omft.near",
+    "finality": "final",
+    "request_type": "call_function",
+    "method_name": "contract_source_metadata",
+    "args_base64": "e30="
+   }
+  },
+  "requestSha256": "cefe62bae7656af5ab22d58d4e0da35f5571fece0ef662d5f958a3677f4883cd",
+  "endpointHost": "archival-rpc.mainnet.fastnear.com",
+  "retrievedAt": "2026-11-09T21:40:37.447Z",
+  "httpStatus": 200,
+  "outcome": "result",
+  "response": {
+   "jsonrpc": "2.0",
+   "result": {
+    "block_hash": "8jwfxMvaTsaQcBNi13uPZFkHgQGziv6GrmWuNHHF2AUq",
+    "block_height": 223823979,
+    "logs": [],
+    "result": [
+     123,
+     34,
+     118,
+     101,
+     114,
+     115,
+     105,
+     111,
+     110,
+     34,
+     58,
+     34,
+     48,
+     46,
+     52,
+     46,
+     51,
+     34,
+     44,
+     34,
+     108,
+     105,
+     110,
+     107,
+     34,
+     58,
+     34,
+     104,
+     116,
+     116,
+     112,
+     115,
+     58,
+     47,
+     47,
+     103,
+     105,
+     116,
+     104,
+     117,
+     98,
+     46,
+     99,
+     111,
+     109,
+     47,
+     78,
+     101,
+     97,
+     114,
+     45,
+     79,
+     110,
+     101,
+     47,
+     111,
+     109,
+     110,
+     105,
+     45,
+     98,
+     114,
+     105,
+     100,
+     103,
+     101,
+     47,
+     116,
+     114,
+     101,
+     101,
+     47,
+     57,
+     102,
+     48,
+     98,
+     102,
+     48,
+     53,
+     54,
+     56,
+     49,
+     52,
+     50,
+     54,
+     53,
+     99,
+     48,
+     98,
+     48,
+     102,
+     56,
+     53,
+     102,
+     53,
+     56,
+     50,
+     48,
+     99,
+     100,
+     52,
+     98,
+     52,
+     99,
+     102,
+     102,
+     55,
+     101,
+     57,
+     48,
+     97,
+     49,
+     34,
+     44,
+     34,
+     115,
+     116,
+     97,
+     110,
+     100,
+     97,
+     114,
+     100,
+     115,
+     34,
+     58,
+     91,
+     123,
+     34,
+     115,
+     116,
+     97,
+     110,
+     100,
+     97,
+     114,
+     100,
+     34,
+     58,
+     34,
+     110,
+     101,
+     112,
+     51,
+     51,
+     48,
+     34,
+     44,
+     34,
+     118,
+     101,
+     114,
+     115,
+     105,
+     111,
+     110,
+     34,
+     58,
+     34,
+     49,
+     46,
+     51,
+     46,
+     48,
+     34,
+     125,
+     93,
+     44,
+     34,
+     98,
+     117,
+     105,
+     108,
+     100,
+     95,
+     105,
+     110,
+     102,
+     111,
+     34,
+     58,
+     123,
+     34,
+     98,
+     117,
+     105,
+     108,
+     100,
+     95,
+     101,
+     110,
+     118,
+     105,
+     114,
+     111,
+     110,
+     109,
+     101,
+     110,
+     116,
+     34,
+     58,
+     34,
+     115,
+     111,
+     117,
+     114,
+     99,
+     101,
+     115,
+     99,
+     97,
+     110,
+     47,
+     99,
+     97,
+     114,
+     103,
+     111,
+     45,
+     110,
+     101,
+     97,
+     114,
+     58,
+     48,
+     46,
+     49,
+     54,
+     46,
+     48,
+     45,
+     114,
+     117,
+     115,
+     116,
+     45,
+     49,
+     46,
+     56,
+     54,
+     46,
+     48,
+     64,
+     115,
+     104,
+     97,
+     50,
+     53,
+     54,
+     58,
+     51,
+     50,
+     50,
+     48,
+     51,
+     48,
+     50,
+     101,
+     98,
+     98,
+     55,
+     48,
+     51,
+     54,
+     99,
+     49,
+     57,
+     52,
+     50,
+     101,
+     55,
+     55,
+     50,
+     56,
+     49,
+     48,
+     102,
+     50,
+     49,
+     101,
+     100,
+     100,
+     57,
+     51,
+     56,
+     49,
+     101,
+     100,
+     102,
+     57,
+     97,
+     51,
+     51,
+     57,
+     57,
+     56,
+     51,
+     100,
+     97,
+     52,
+     51,
+     52,
+     56,
+     55,
+     99,
+     55,
+     55,
+     102,
+     98,
+     97,
+     100,
+     52,
+     56,
+     56,
+     34,
+     44,
+     34,
+     98,
+     117,
+     105,
+     108,
+     100,
+     95,
+     99,
+     111,
+     109,
+     109,
+     97,
+     110,
+     100,
+     34,
+     58,
+     91,
+     34,
+     99,
+     97,
+     114,
+     103,
+     111,
+     34,
+     44,
+     34,
+     110,
+     101,
+     97,
+     114,
+     34,
+     44,
+     34,
+     98,
+     117,
+     105,
+     108,
+     100,
+     34,
+     44,
+     34,
+     110,
+     111,
+     110,
+     45,
+     114,
+     101,
+     112,
+     114,
+     111,
+     100,
+     117,
+     99,
+     105,
+     98,
+     108,
+     101,
+     45,
+     119,
+     97,
+     115,
+     109,
+     34,
+     44,
+     34,
+     45,
+     45,
+     108,
+     111,
+     99,
+     107,
+     101,
+     100,
+     34,
+     93,
+     44,
+     34,
+     99,
+     111,
+     110,
+     116,
+     114,
+     97,
+     99,
+     116,
+     95,
+     112,
+     97,
+     116,
+     104,
+     34,
+     58,
+     34,
+     110,
+     101,
+     97,
+     114,
+     47,
+     111,
+     109,
+     110,
+     105,
+     45,
+     116,
+     111,
+     107,
+     101,
+     110,
+     34,
+     44,
+     34,
+     115,
+     111,
+     117,
+     114,
+     99,
+     101,
+     95,
+     99,
+     111,
+     100,
+     101,
+     95,
+     115,
+     110,
+     97,
+     112,
+     115,
+     104,
+     111,
+     116,
+     34,
+     58,
+     34,
+     103,
+     105,
+     116,
+     43,
+     104,
+     116,
+     116,
+     112,
+     115,
+     58,
+     47,
+     47,
+     103,
+     105,
+     116,
+     104,
+     117,
+     98,
+     46,
+     99,
+     111,
+     109,
+     47,
+     78,
+     101,
+     97,
+     114,
+     45,
+     79,
+     110,
+     101,
+     47,
+     111,
+     109,
+     110,
+     105,
+     45,
+     98,
+     114,
+     105,
+     100,
+     103,
+     101,
+     63,
+     114,
+     101,
+     118,
+     61,
+     57,
+     102,
+     48,
+     98,
+     102,
+     48,
+     53,
+     54,
+     56,
+     49,
+     52,
+     50,
+     54,
+     53,
+     99,
+     48,
+     98,
+     48,
+     102,
+     56,
+     53,
+     102,
+     53,
+     56,
+     50,
+     48,
+     99,
+     100,
+     52,
+     98,
+     52,
+     99,
+     102,
+     102,
+     55,
+     101,
+     57,
+     48,
+     97,
+     49,
+     34,
+     44,
+     34,
+     111,
+     117,
+     116,
+     112,
+     117,
+     116,
+     95,
+     119,
+     97,
+     115,
+     109,
+     95,
+     112,
+     97,
+     116,
+     104,
+     34,
+     58,
+     34,
+     47,
+     104,
+     111,
+     109,
+     101,
+     47,
+     110,
+     101,
+     97,
+     114,
+     47,
+     99,
+     111,
+     100,
+     101,
+     47,
+     110,
+     101,
+     97,
+     114,
+     47,
+     116,
+     97,
+     114,
+     103,
+     101,
+     116,
+     47,
+     110,
+     101,
+     97,
+     114,
+     47,
+     111,
+     109,
+     110,
+     105,
+     95,
+     116,
+     111,
+     107,
+     101,
+     110,
+     47,
+     111,
+     109,
+     110,
+     105,
+     95,
+     116,
+     111,
+     107,
+     101,
+     110,
+     46,
+     119,
+     97,
+     115,
+     109,
+     34,
+     125,
+     125
+    ]
+   },
+   "id": "intent-route"
+  },
+  "responseSha256": "5d342a7dcc0d21922ae8615a9d1777db56d6586809e6863a01d1b8f7ff6bc492",
+  "blockHeight": "223823979",
+  "blockHash": "8jwfxMvaTsaQcBNi13uPZFkHgQGziv6GrmWuNHHF2AUq"
+ },
+ {
+  "version": 1,
+  "request": {
+   "method": "query",
+   "params": {
+    "account_id": "sol-57d087fd8c460f612f8701f5499ad8b2eec5ab68.omft.near",
+    "finality": "final",
+    "request_type": "call_function",
+    "method_name": "owner_get",
+    "args_base64": "e30="
+   }
+  },
+  "requestSha256": "a191b656b1788a25b9d1c0990f9c37f07cd798e366bea810540b3d410eb7e94c",
+  "endpointHost": "archival-rpc.mainnet.fastnear.com",
+  "retrievedAt": "2026-11-09T21:40:37.517Z",
+  "httpStatus": 200,
+  "outcome": "call-error",
+  "response": {
+   "jsonrpc": "2.0",
+   "result": {
+    "block_hash": "8p4EqtLy3g1Ao3oksA6wgXZfYu2BhwoAJEayThGS51mT",
+    "block_height": 223823980,
+    "error": "wasm execution failed with error: MethodResolveError(MethodNotFound)",
+    "logs": []
+   },
+   "id": "intent-route"
+  },
+  "responseSha256": "61892cfa0f6a60ccc7b494cc92627849e25af9cd070f2f4dd38663723e544dc3",
+  "blockHeight": "223823980",
+  "blockHash": "8p4EqtLy3g1Ao3oksA6wgXZfYu2BhwoAJEayThGS51mT"
+ },
+ {
+  "version": 1,
+  "request": {
+   "method": "query",
+   "params": {
+    "account_id": "sol-57d087fd8c460f612f8701f5499ad8b2eec5ab68.omft.near",
+    "finality": "final",
+    "request_type": "view_state",
+    "prefix_base64": "U1RBVEU=",
+    "include_proof": false
+   }
+  },
+  "requestSha256": "fd0bb7018eb1f5193e76faae5704b6089efa8b83a02c6c79c5df9c34f45fcb98",
+  "endpointHost": "archival-rpc.mainnet.fastnear.com",
+  "retrievedAt": "2026-11-09T21:40:37.566Z",
+  "httpStatus": 200,
+  "outcome": "result",
+  "response": {
+   "jsonrpc": "2.0",
+   "result": {
+    "block_hash": "8p4EqtLy3g1Ao3oksA6wgXZfYu2BhwoAJEayThGS51mT",
+    "block_height": 223823980,
+    "values": [
+     {
+      "key": "U1RBVEU=",
+      "value": "EAAAAG9tbmkuYnJpZGdlLm5lYXIBAAAAADrT6KehBAAAAAAAAAAAAAB9AAAAAAAAAAEAAABt"
+     }
+    ]
+   },
+   "id": "intent-route"
+  },
+  "responseSha256": "16a5079b88f93d7426534a3f27ab25d096d840b19b04e5b4499a9b91e258ff91",
+  "blockHeight": "223823980",
+  "blockHash": "8p4EqtLy3g1Ao3oksA6wgXZfYu2BhwoAJEayThGS51mT"
+ },
+ {
+  "version": 1,
+  "request": {
+   "method": "query",
+   "params": {
+    "account_id": "sol-57d087fd8c460f612f8701f5499ad8b2eec5ab68.omft.near",
+    "finality": "final",
+    "request_type": "view_state",
+    "prefix_base64": "V0lUSERSQVdfUkVMQVlFUl9BRERSRVNT",
+    "include_proof": false
+   }
+  },
+  "requestSha256": "ba3ee248f2ec9c725781ac5006dc56b9b1ea480630463bd26f37689e5aa70ffb",
+  "endpointHost": "archival-rpc.mainnet.fastnear.com",
+  "retrievedAt": "2026-11-09T21:40:37.625Z",
+  "httpStatus": 200,
+  "outcome": "result",
+  "response": {
+   "jsonrpc": "2.0",
+   "result": {
+    "block_hash": "8p4EqtLy3g1Ao3oksA6wgXZfYu2BhwoAJEayThGS51mT",
+    "block_height": 223823980,
+    "values": [
+     {
+      "key": "V0lUSERSQVdfUkVMQVlFUl9BRERSRVNT",
+      "value": "QAAAADJkNDFmNjhhZjEyMDdlZTZiOTZkNTAwMmJmNjA2NzE2ODZmYWNlZmI1YTUwZTY5ZTdhOGFmZjI0MzFkZWRjNTY="
+     }
+    ]
+   },
+   "id": "intent-route"
+  },
+  "responseSha256": "f040cebb3476ff69e4fb2a167af0f115968b2da88f78d70dbd3d2d279bf7761d",
+  "blockHeight": "223823980",
+  "blockHash": "8p4EqtLy3g1Ao3oksA6wgXZfYu2BhwoAJEayThGS51mT"
+ },
+ {
+  "version": 1,
+  "request": {
+   "method": "query",
+   "params": {
+    "account_id": "omni.bridge.near",
+    "finality": "final",
+    "request_type": "call_function",
+    "method_name": "get_token_address",
+    "args_base64": "eyJjaGFpbl9raW5kIjoiU29sIiwidG9rZW4iOiJzb2wtNTdkMDg3ZmQ4YzQ2MGY2MTJmODcwMWY1NDk5YWQ4YjJlZWM1YWI2OC5vbWZ0Lm5lYXIifQ=="
+   }
+  },
+  "requestSha256": "23846f79d8048f6b1492b88c0f679990c4b16532ef6bac55ccedc07729c2b76c",
+  "endpointHost": "archival-rpc.mainnet.fastnear.com",
+  "retrievedAt": "2026-11-09T21:40:37.681Z",
+  "httpStatus": 200,
+  "outcome": "result",
+  "response": {
+   "jsonrpc": "2.0",
+   "result": {
+    "block_hash": "8p4EqtLy3g1Ao3oksA6wgXZfYu2BhwoAJEayThGS51mT",
+    "block_height": 223823980,
+    "logs": [],
+    "result": [
+     34,
+     115,
+     111,
+     108,
+     58,
+     117,
+     107,
+     72,
+     72,
+     54,
+     99,
+     55,
+     109,
+     77,
+     121,
+     105,
+     87,
+     67,
+     102,
+     49,
+     98,
+     57,
+     112,
+     110,
+     87,
+     101,
+     50,
+     53,
+     84,
+     83,
+     112,
+     107,
+     68,
+     68,
+     116,
+     51,
+     72,
+     53,
+     112,
+     81,
+     90,
+     103,
+     90,
+     55,
+     52,
+     74,
+     56,
+     50,
+     34
+    ]
+   },
+   "id": "intent-route"
+  },
+  "responseSha256": "0ff6195bbb967c5737eaabeaec769b5bf8382519172a9c161691f3f9ba0d8683",
+  "blockHeight": "223823980",
+  "blockHash": "8p4EqtLy3g1Ao3oksA6wgXZfYu2BhwoAJEayThGS51mT"
+ },
+ {
+  "version": 1,
+  "request": {
+   "method": "query",
+   "params": {
+    "account_id": "omni.bridge.near",
+    "finality": "final",
+    "request_type": "call_function",
+    "method_name": "get_bridged_token",
+    "args_base64": "eyJhZGRyZXNzIjoic29sOnVrSEg2YzdtTXlpV0NmMWI5cG5XZTI1VFNwa0REdDNINXBRWmdaNzRKODIiLCJjaGFpbiI6Ik5lYXIifQ=="
+   }
+  },
+  "requestSha256": "656a8a302c9550206672d18703c233aa3261711f9453abd0bea0e86bf8344160",
+  "endpointHost": "archival-rpc.mainnet.fastnear.com",
+  "retrievedAt": "2026-11-09T21:40:37.736Z",
+  "httpStatus": 200,
+  "outcome": "result",
+  "response": {
+   "jsonrpc": "2.0",
+   "result": {
+    "block_hash": "8p4EqtLy3g1Ao3oksA6wgXZfYu2BhwoAJEayThGS51mT",
+    "block_height": 223823980,
+    "logs": [],
+    "result": [
+     34,
+     110,
+     101,
+     97,
+     114,
+     58,
+     115,
+     111,
+     108,
+     45,
+     53,
+     55,
+     100,
+     48,
+     56,
+     55,
+     102,
+     100,
+     56,
+     99,
+     52,
+     54,
+     48,
+     102,
+     54,
+     49,
+     50,
+     102,
+     56,
+     55,
+     48,
+     49,
+     102,
+     53,
+     52,
+     57,
+     57,
+     97,
+     100,
+     56,
+     98,
+     50,
+     101,
+     101,
+     99,
+     53,
+     97,
+     98,
+     54,
+     56,
+     46,
+     111,
+     109,
+     102,
+     116,
+     46,
+     110,
+     101,
+     97,
+     114,
+     34
+    ]
+   },
+   "id": "intent-route"
+  },
+  "responseSha256": "b33395bfc2b41efad7c38e82376472a4155d50ec2afe6a911c8c2fa7aca2aa8a",
+  "blockHeight": "223823980",
+  "blockHash": "8p4EqtLy3g1Ao3oksA6wgXZfYu2BhwoAJEayThGS51mT"
+ },
+ {
+  "version": 1,
+  "request": {
+   "method": "query",
+   "params": {
+    "account_id": "sol-c58e6539c2f2e097c251f8edf11f9c03e581f8d4.omft.near",
+    "finality": "final",
+    "request_type": "view_account"
+   }
+  },
+  "requestSha256": "fdbed3540e9f896039d089f89be2016a7856ca2674d9c4ba887e0d11ac16a8a1",
+  "endpointHost": "archival-rpc.mainnet.fastnear.com",
+  "retrievedAt": "2026-11-09T21:40:37.787Z",
+  "httpStatus": 200,
+  "outcome": "result",
+  "response": {
+   "jsonrpc": "2.0",
+   "result": {
+    "amount": "3486518572788541700005918",
+    "block_hash": "8p4EqtLy3g1Ao3oksA6wgXZfYu2BhwoAJEayThGS51mT",
+    "block_height": 223823980,
+    "code_hash": "Ba6uZKxsuRPW5X7XVQrSnYEYScEjFLJLMqMWvZ1aS3tC",
+    "locked": "0",
+    "storage_paid_at": 0,
+    "storage_usage": 232422
+   },
+   "id": "intent-route"
+  },
+  "responseSha256": "ca77acfb8c0ca4a5b30e90ee2a394c9b6d0c6ecacd21f9920c33a2ad919a7a41",
+  "blockHeight": "223823980",
+  "blockHash": "8p4EqtLy3g1Ao3oksA6wgXZfYu2BhwoAJEayThGS51mT"
+ },
+ {
+  "version": 1,
+  "request": {
+   "method": "query",
+   "params": {
+    "account_id": "sol-c58e6539c2f2e097c251f8edf11f9c03e581f8d4.omft.near",
+    "finality": "final",
+    "request_type": "call_function",
+    "method_name": "contract_source_metadata",
+    "args_base64": "e30="
+   }
+  },
+  "requestSha256": "943ac3f6606c85affc1743193cc2138de4aabb353669b7a9ac48466f0df809d3",
+  "endpointHost": "archival-rpc.mainnet.fastnear.com",
+  "retrievedAt": "2026-11-09T21:40:37.851Z",
+  "httpStatus": 200,
+  "outcome": "result",
+  "response": {
+   "jsonrpc": "2.0",
+   "result": {
+    "block_hash": "8p4EqtLy3g1Ao3oksA6wgXZfYu2BhwoAJEayThGS51mT",
+    "block_height": 223823980,
+    "logs": [],
+    "result": [
+     123,
+     34,
+     118,
+     101,
+     114,
+     115,
+     105,
+     111,
+     110,
+     34,
+     58,
+     34,
+     48,
+     46,
+     52,
+     46,
+     51,
+     34,
+     44,
+     34,
+     108,
+     105,
+     110,
+     107,
+     34,
+     58,
+     34,
+     104,
+     116,
+     116,
+     112,
+     115,
+     58,
+     47,
+     47,
+     103,
+     105,
+     116,
+     104,
+     117,
+     98,
+     46,
+     99,
+     111,
+     109,
+     47,
+     78,
+     101,
+     97,
+     114,
+     45,
+     79,
+     110,
+     101,
+     47,
+     111,
+     109,
+     110,
+     105,
+     45,
+     98,
+     114,
+     105,
+     100,
+     103,
+     101,
+     47,
+     116,
+     114,
+     101,
+     101,
+     47,
+     57,
+     102,
+     48,
+     98,
+     102,
+     48,
+     53,
+     54,
+     56,
+     49,
+     52,
+     50,
+     54,
+     53,
+     99,
+     48,
+     98,
+     48,
+     102,
+     56,
+     53,
+     102,
+     53,
+     56,
+     50,
+     48,
+     99,
+     100,
+     52,
+     98,
+     52,
+     99,
+     102,
+     102,
+     55,
+     101,
+     57,
+     48,
+     97,
+     49,
+     34,
+     44,
+     34,
+     115,
+     116,
+     97,
+     110,
+     100,
+     97,
+     114,
+     100,
+     115,
+     34,
+     58,
+     91,
+     123,
+     34,
+     115,
+     116,
+     97,
+     110,
+     100,
+     97,
+     114,
+     100,
+     34,
+     58,
+     34,
+     110,
+     101,
+     112,
+     51,
+     51,
+     48,
+     34,
+     44,
+     34,
+     118,
+     101,
+     114,
+     115,
+     105,
+     111,
+     110,
+     34,
+     58,
+     34,
+     49,
+     46,
+     51,
+     46,
+     48,
+     34,
+     125,
+     93,
+     44,
+     34,
+     98,
+     117,
+     105,
+     108,
+     100,
+     95,
+     105,
+     110,
+     102,
+     111,
+     34,
+     58,
+     123,
+     34,
+     98,
+     117,
+     105,
+     108,
+     100,
+     95,
+     101,
+     110,
+     118,
+     105,
+     114,
+     111,
+     110,
+     109,
+     101,
+     110,
+     116,
+     34,
+     58,
+     34,
+     115,
+     111,
+     117,
+     114,
+     99,
+     101,
+     115,
+     99,
+     97,
+     110,
+     47,
+     99,
+     97,
+     114,
+     103,
+     111,
+     45,
+     110,
+     101,
+     97,
+     114,
+     58,
+     48,
+     46,
+     49,
+     54,
+     46,
+     48,
+     45,
+     114,
+     117,
+     115,
+     116,
+     45,
+     49,
+     46,
+     56,
+     54,
+     46,
+     48,
+     64,
+     115,
+     104,
+     97,
+     50,
+     53,
+     54,
+     58,
+     51,
+     50,
+     50,
+     48,
+     51,
+     48,
+     50,
+     101,
+     98,
+     98,
+     55,
+     48,
+     51,
+     54,
+     99,
+     49,
+     57,
+     52,
+     50,
+     101,
+     55,
+     55,
+     50,
+     56,
+     49,
+     48,
+     102,
+     50,
+     49,
+     101,
+     100,
+     100,
+     57,
+     51,
+     56,
+     49,
+     101,
+     100,
+     102,
+     57,
+     97,
+     51,
+     51,
+     57,
+     57,
+     56,
+     51,
+     100,
+     97,
+     52,
+     51,
+     52,
+     56,
+     55,
+     99,
+     55,
+     55,
+     102,
+     98,
+     97,
+     100,
+     52,
+     56,
+     56,
+     34,
+     44,
+     34,
+     98,
+     117,
+     105,
+     108,
+     100,
+     95,
+     99,
+     111,
+     109,
+     109,
+     97,
+     110,
+     100,
+     34,
+     58,
+     91,
+     34,
+     99,
+     97,
+     114,
+     103,
+     111,
+     34,
+     44,
+     34,
+     110,
+     101,
+     97,
+     114,
+     34,
+     44,
+     34,
+     98,
+     117,
+     105,
+     108,
+     100,
+     34,
+     44,
+     34,
+     110,
+     111,
+     110,
+     45,
+     114,
+     101,
+     112,
+     114,
+     111,
+     100,
+     117,
+     99,
+     105,
+     98,
+     108,
+     101,
+     45,
+     119,
+     97,
+     115,
+     109,
+     34,
+     44,
+     34,
+     45,
+     45,
+     108,
+     111,
+     99,
+     107,
+     101,
+     100,
+     34,
+     93,
+     44,
+     34,
+     99,
+     111,
+     110,
+     116,
+     114,
+     97,
+     99,
+     116,
+     95,
+     112,
+     97,
+     116,
+     104,
+     34,
+     58,
+     34,
+     110,
+     101,
+     97,
+     114,
+     47,
+     111,
+     109,
+     110,
+     105,
+     45,
+     116,
+     111,
+     107,
+     101,
+     110,
+     34,
+     44,
+     34,
+     115,
+     111,
+     117,
+     114,
+     99,
+     101,
+     95,
+     99,
+     111,
+     100,
+     101,
+     95,
+     115,
+     110,
+     97,
+     112,
+     115,
+     104,
+     111,
+     116,
+     34,
+     58,
+     34,
+     103,
+     105,
+     116,
+     43,
+     104,
+     116,
+     116,
+     112,
+     115,
+     58,
+     47,
+     47,
+     103,
+     105,
+     116,
+     104,
+     117,
+     98,
+     46,
+     99,
+     111,
+     109,
+     47,
+     78,
+     101,
+     97,
+     114,
+     45,
+     79,
+     110,
+     101,
+     47,
+     111,
+     109,
+     110,
+     105,
+     45,
+     98,
+     114,
+     105,
+     100,
+     103,
+     101,
+     63,
+     114,
+     101,
+     118,
+     61,
+     57,
+     102,
+     48,
+     98,
+     102,
+     48,
+     53,
+     54,
+     56,
+     49,
+     52,
+     50,
+     54,
+     53,
+     99,
+     48,
+     98,
+     48,
+     102,
+     56,
+     53,
+     102,
+     53,
+     56,
+     50,
+     48,
+     99,
+     100,
+     52,
+     98,
+     52,
+     99,
+     102,
+     102,
+     55,
+     101,
+     57,
+     48,
+     97,
+     49,
+     34,
+     44,
+     34,
+     111,
+     117,
+     116,
+     112,
+     117,
+     116,
+     95,
+     119,
+     97,
+     115,
+     109,
+     95,
+     112,
+     97,
+     116,
+     104,
+     34,
+     58,
+     34,
+     47,
+     104,
+     111,
+     109,
+     101,
+     47,
+     110,
+     101,
+     97,
+     114,
+     47,
+     99,
+     111,
+     100,
+     101,
+     47,
+     110,
+     101,
+     97,
+     114,
+     47,
+     116,
+     97,
+     114,
+     103,
+     101,
+     116,
+     47,
+     110,
+     101,
+     97,
+     114,
+     47,
+     111,
+     109,
+     110,
+     105,
+     95,
+     116,
+     111,
+     107,
+     101,
+     110,
+     47,
+     111,
+     109,
+     110,
+     105,
+     95,
+     116,
+     111,
+     107,
+     101,
+     110,
+     46,
+     119,
+     97,
+     115,
+     109,
+     34,
+     125,
+     125
+    ]
+   },
+   "id": "intent-route"
+  },
+  "responseSha256": "d3085d95b86de6cb94bc19b365c3c5f4dae3f86807202629fdb6298b5f50bc52",
+  "blockHeight": "223823980",
+  "blockHash": "8p4EqtLy3g1Ao3oksA6wgXZfYu2BhwoAJEayThGS51mT"
+ },
+ {
+  "version": 1,
+  "request": {
+   "method": "query",
+   "params": {
+    "account_id": "sol-c58e6539c2f2e097c251f8edf11f9c03e581f8d4.omft.near",
+    "finality": "final",
+    "request_type": "call_function",
+    "method_name": "owner_get",
+    "args_base64": "e30="
+   }
+  },
+  "requestSha256": "0ec0e10bcb0f4eec76be2a6230e67ed3395c86807615128e958120e23c990900",
+  "endpointHost": "archival-rpc.mainnet.fastnear.com",
+  "retrievedAt": "2026-11-09T21:40:37.900Z",
+  "httpStatus": 200,
+  "outcome": "call-error",
+  "response": {
+   "jsonrpc": "2.0",
+   "result": {
+    "block_hash": "8p4EqtLy3g1Ao3oksA6wgXZfYu2BhwoAJEayThGS51mT",
+    "block_height": 223823980,
+    "error": "wasm execution failed with error: MethodResolveError(MethodNotFound)",
+    "logs": []
+   },
+   "id": "intent-route"
+  },
+  "responseSha256": "61892cfa0f6a60ccc7b494cc92627849e25af9cd070f2f4dd38663723e544dc3",
+  "blockHeight": "223823980",
+  "blockHash": "8p4EqtLy3g1Ao3oksA6wgXZfYu2BhwoAJEayThGS51mT"
+ },
+ {
+  "version": 1,
+  "request": {
+   "method": "query",
+   "params": {
+    "account_id": "sol-c58e6539c2f2e097c251f8edf11f9c03e581f8d4.omft.near",
+    "finality": "final",
+    "request_type": "view_state",
+    "prefix_base64": "U1RBVEU=",
+    "include_proof": false
+   }
+  },
+  "requestSha256": "7e14376435d38edf14eba296ed7d1bd1aab860d42bac250a6ba89cc4d677b0e9",
+  "endpointHost": "archival-rpc.mainnet.fastnear.com",
+  "retrievedAt": "2026-11-09T21:40:37.953Z",
+  "httpStatus": 200,
+  "outcome": "result",
+  "response": {
+   "jsonrpc": "2.0",
+   "result": {
+    "block_hash": "8p4EqtLy3g1Ao3oksA6wgXZfYu2BhwoAJEayThGS51mT",
+    "block_height": 223823980,
+    "values": [
+     {
+      "key": "U1RBVEU=",
+      "value": "EAAAAG9tbmkuYnJpZGdlLm5lYXIBAAAAAG/2aOYAAAAAAAAAAAAAAAB9AAAAAAAAAAEAAABt"
+     }
+    ]
+   },
+   "id": "intent-route"
+  },
+  "responseSha256": "970262a61fc6fda75383b553b273cf3e8fdf05775c165fede228e2b6141d10ad",
+  "blockHeight": "223823980",
+  "blockHash": "8p4EqtLy3g1Ao3oksA6wgXZfYu2BhwoAJEayThGS51mT"
+ },
+ {
+  "version": 1,
+  "request": {
+   "method": "query",
+   "params": {
+    "account_id": "sol-c58e6539c2f2e097c251f8edf11f9c03e581f8d4.omft.near",
+    "finality": "final",
+    "request_type": "view_state",
+    "prefix_base64": "V0lUSERSQVdfUkVMQVlFUl9BRERSRVNT",
+    "include_proof": false
+   }
+  },
+  "requestSha256": "931e323b092f4758b8996903252e188224f3ebf66c251be0905990cc66cc3869",
+  "endpointHost": "archival-rpc.mainnet.fastnear.com",
+  "retrievedAt": "2026-11-09T21:40:38.015Z",
+  "httpStatus": 200,
+  "outcome": "result",
+  "response": {
+   "jsonrpc": "2.0",
+   "result": {
+    "block_hash": "HLEgT4xs9StW2L5ZebnaocgraGdoJyizoS9bNvUbxVmv",
+    "block_height": 223823981,
+    "values": [
+     {
+      "key": "V0lUSERSQVdfUkVMQVlFUl9BRERSRVNT",
+      "value": "QAAAADJkNDFmNjhhZjEyMDdlZTZiOTZkNTAwMmJmNjA2NzE2ODZmYWNlZmI1YTUwZTY5ZTdhOGFmZjI0MzFkZWRjNTY="
+     }
+    ]
+   },
+   "id": "intent-route"
+  },
+  "responseSha256": "8093842377bfb272108686dfeaf89b5d4f06131039a41f0562d70f309897119e",
+  "blockHeight": "223823981",
+  "blockHash": "HLEgT4xs9StW2L5ZebnaocgraGdoJyizoS9bNvUbxVmv"
+ },
+ {
+  "version": 1,
+  "request": {
+   "method": "query",
+   "params": {
+    "account_id": "omni.bridge.near",
+    "finality": "final",
+    "request_type": "call_function",
+    "method_name": "get_token_address",
+    "args_base64": "eyJjaGFpbl9raW5kIjoiU29sIiwidG9rZW4iOiJzb2wtYzU4ZTY1MzljMmYyZTA5N2MyNTFmOGVkZjExZjljMDNlNTgxZjhkNC5vbWZ0Lm5lYXIifQ=="
+   }
+  },
+  "requestSha256": "22d878d3de6f9d8543da6d0ee3f92937d85537b32e2e9192f4a6d87fc7d6e921",
+  "endpointHost": "archival-rpc.mainnet.fastnear.com",
+  "retrievedAt": "2026-11-09T21:40:38.086Z",
+  "httpStatus": 200,
+  "outcome": "result",
+  "response": {
+   "jsonrpc": "2.0",
+   "result": {
+    "block_hash": "HLEgT4xs9StW2L5ZebnaocgraGdoJyizoS9bNvUbxVmv",
+    "block_height": 223823981,
+    "logs": [],
+    "result": [
+     34,
+     115,
+     111,
+     108,
+     58,
+     54,
+     112,
+     54,
+     120,
+     103,
+     72,
+     121,
+     70,
+     55,
+     65,
+     101,
+     69,
+     54,
+     84,
+     90,
+     107,
+     83,
+     109,
+     70,
+     115,
+     107,
+     111,
+     52,
+     52,
+     52,
+     119,
+     113,
+     111,
+     80,
+     49,
+     53,
+     105,
+     99,
+     85,
+     83,
+     113,
+     105,
+     50,
+     106,
+     102,
+     71,
+     105,
+     80,
+     78,
+     34
+    ]
+   },
+   "id": "intent-route"
+  },
+  "responseSha256": "1fbcb9cfe576023120aa03e82121a84389d320a24c41679206ef8c2828f26d29",
+  "blockHeight": "223823981",
+  "blockHash": "HLEgT4xs9StW2L5ZebnaocgraGdoJyizoS9bNvUbxVmv"
+ },
+ {
+  "version": 1,
+  "request": {
+   "method": "query",
+   "params": {
+    "account_id": "omni.bridge.near",
+    "finality": "final",
+    "request_type": "call_function",
+    "method_name": "get_bridged_token",
+    "args_base64": "eyJhZGRyZXNzIjoic29sOjZwNnhnSHlGN0FlRTZUWmtTbUZza280NDR3cW9QMTVpY1VTcWkyamZHaVBOIiwiY2hhaW4iOiJOZWFyIn0="
+   }
+  },
+  "requestSha256": "d5236c26b15467a2bb76f0871b03f237ac43c828571c0b87a159e5f767e708f9",
+  "endpointHost": "archival-rpc.mainnet.fastnear.com",
+  "retrievedAt": "2026-11-09T21:40:38.157Z",
+  "httpStatus": 200,
+  "outcome": "result",
+  "response": {
+   "jsonrpc": "2.0",
+   "result": {
+    "block_hash": "HLEgT4xs9StW2L5ZebnaocgraGdoJyizoS9bNvUbxVmv",
+    "block_height": 223823981,
+    "logs": [],
+    "result": [
+     34,
+     110,
+     101,
+     97,
+     114,
+     58,
+     115,
+     111,
+     108,
+     45,
+     99,
+     53,
+     56,
+     101,
+     54,
+     53,
+     51,
+     57,
+     99,
+     50,
+     102,
+     50,
+     101,
+     48,
+     57,
+     55,
+     99,
+     50,
+     53,
+     49,
+     102,
+     56,
+     101,
+     100,
+     102,
+     49,
+     49,
+     102,
+     57,
+     99,
+     48,
+     51,
+     101,
+     53,
+     56,
+     49,
+     102,
+     56,
+     100,
+     52,
+     46,
+     111,
+     109,
+     102,
+     116,
+     46,
+     110,
+     101,
+     97,
+     114,
+     34
+    ]
+   },
+   "id": "intent-route"
+  },
+  "responseSha256": "11b09ba6788edd8f90f0d0d9bb832e46c7e92dc6b9d320a5dfb17678e9c30a90",
+  "blockHeight": "223823981",
+  "blockHash": "HLEgT4xs9StW2L5ZebnaocgraGdoJyizoS9bNvUbxVmv"
+ },
+ {
+  "version": 1,
+  "request": {
+   "method": "query",
+   "params": {
+    "account_id": "sol-b9c68f94ec8fd160137af8cdfe5e61cd68e2afba.omft.near",
+    "finality": "final",
+    "request_type": "view_account"
+   }
+  },
+  "requestSha256": "0352b5ad79a570101406a87844be3c0eb3f42ac9b72fa48f0dbbde37ad1927fb",
+  "endpointHost": "archival-rpc.mainnet.fastnear.com",
+  "retrievedAt": "2026-11-09T21:40:38.222Z",
+  "httpStatus": 200,
+  "outcome": "result",
+  "response": {
+   "jsonrpc": "2.0",
+   "result": {
+    "amount": "3142091557802365400001871",
+    "block_hash": "HLEgT4xs9StW2L5ZebnaocgraGdoJyizoS9bNvUbxVmv",
+    "block_height": 223823981,
+    "code_hash": "Ba6uZKxsuRPW5X7XVQrSnYEYScEjFLJLMqMWvZ1aS3tC",
+    "locked": "0",
+    "storage_paid_at": 0,
+    "storage_usage": 230913
+   },
+   "id": "intent-route"
+  },
+  "responseSha256": "51a2f17b6318e1e1d01626ec43b4f8a18d75b3f711dada0eda81c3ee5a00effc",
+  "blockHeight": "223823981",
+  "blockHash": "HLEgT4xs9StW2L5ZebnaocgraGdoJyizoS9bNvUbxVmv"
+ },
+ {
+  "version": 1,
+  "request": {
+   "method": "query",
+   "params": {
+    "account_id": "sol-b9c68f94ec8fd160137af8cdfe5e61cd68e2afba.omft.near",
+    "finality": "final",
+    "request_type": "call_function",
+    "method_name": "contract_source_metadata",
+    "args_base64": "e30="
+   }
+  },
+  "requestSha256": "39a75c2d02aab032ed7c4c409506141947f6ef77d517be3408e7c002ebccf86a",
+  "endpointHost": "archival-rpc.mainnet.fastnear.com",
+  "retrievedAt": "2026-11-09T21:40:38.275Z",
+  "httpStatus": 200,
+  "outcome": "result",
+  "response": {
+   "jsonrpc": "2.0",
+   "result": {
+    "block_hash": "HLEgT4xs9StW2L5ZebnaocgraGdoJyizoS9bNvUbxVmv",
+    "block_height": 223823981,
+    "logs": [],
+    "result": [
+     123,
+     34,
+     118,
+     101,
+     114,
+     115,
+     105,
+     111,
+     110,
+     34,
+     58,
+     34,
+     48,
+     46,
+     52,
+     46,
+     51,
+     34,
+     44,
+     34,
+     108,
+     105,
+     110,
+     107,
+     34,
+     58,
+     34,
+     104,
+     116,
+     116,
+     112,
+     115,
+     58,
+     47,
+     47,
+     103,
+     105,
+     116,
+     104,
+     117,
+     98,
+     46,
+     99,
+     111,
+     109,
+     47,
+     78,
+     101,
+     97,
+     114,
+     45,
+     79,
+     110,
+     101,
+     47,
+     111,
+     109,
+     110,
+     105,
+     45,
+     98,
+     114,
+     105,
+     100,
+     103,
+     101,
+     47,
+     116,
+     114,
+     101,
+     101,
+     47,
+     57,
+     102,
+     48,
+     98,
+     102,
+     48,
+     53,
+     54,
+     56,
+     49,
+     52,
+     50,
+     54,
+     53,
+     99,
+     48,
+     98,
+     48,
+     102,
+     56,
+     53,
+     102,
+     53,
+     56,
+     50,
+     48,
+     99,
+     100,
+     52,
+     98,
+     52,
+     99,
+     102,
+     102,
+     55,
+     101,
+     57,
+     48,
+     97,
+     49,
+     34,
+     44,
+     34,
+     115,
+     116,
+     97,
+     110,
+     100,
+     97,
+     114,
+     100,
+     115,
+     34,
+     58,
+     91,
+     123,
+     34,
+     115,
+     116,
+     97,
+     110,
+     100,
+     97,
+     114,
+     100,
+     34,
+     58,
+     34,
+     110,
+     101,
+     112,
+     51,
+     51,
+     48,
+     34,
+     44,
+     34,
+     118,
+     101,
+     114,
+     115,
+     105,
+     111,
+     110,
+     34,
+     58,
+     34,
+     49,
+     46,
+     51,
+     46,
+     48,
+     34,
+     125,
+     93,
+     44,
+     34,
+     98,
+     117,
+     105,
+     108,
+     100,
+     95,
+     105,
+     110,
+     102,
+     111,
+     34,
+     58,
+     123,
+     34,
+     98,
+     117,
+     105,
+     108,
+     100,
+     95,
+     101,
+     110,
+     118,
+     105,
+     114,
+     111,
+     110,
+     109,
+     101,
+     110,
+     116,
+     34,
+     58,
+     34,
+     115,
+     111,
+     117,
+     114,
+     99,
+     101,
+     115,
+     99,
+     97,
+     110,
+     47,
+     99,
+     97,
+     114,
+     103,
+     111,
+     45,
+     110,
+     101,
+     97,
+     114,
+     58,
+     48,
+     46,
+     49,
+     54,
+     46,
+     48,
+     45,
+     114,
+     117,
+     115,
+     116,
+     45,
+     49,
+     46,
+     56,
+     54,
+     46,
+     48,
+     64,
+     115,
+     104,
+     97,
+     50,
+     53,
+     54,
+     58,
+     51,
+     50,
+     50,
+     48,
+     51,
+     48,
+     50,
+     101,
+     98,
+     98,
+     55,
+     48,
+     51,
+     54,
+     99,
+     49,
+     57,
+     52,
+     50,
+     101,
+     55,
+     55,
+     50,
+     56,
+     49,
+     48,
+     102,
+     50,
+     49,
+     101,
+     100,
+     100,
+     57,
+     51,
+     56,
+     49,
+     101,
+     100,
+     102,
+     57,
+     97,
+     51,
+     51,
+     57,
+     57,
+     56,
+     51,
+     100,
+     97,
+     52,
+     51,
+     52,
+     56,
+     55,
+     99,
+     55,
+     55,
+     102,
+     98,
+     97,
+     100,
+     52,
+     56,
+     56,
+     34,
+     44,
+     34,
+     98,
+     117,
+     105,
+     108,
+     100,
+     95,
+     99,
+     111,
+     109,
+     109,
+     97,
+     110,
+     100,
+     34,
+     58,
+     91,
+     34,
+     99,
+     97,
+     114,
+     103,
+     111,
+     34,
+     44,
+     34,
+     110,
+     101,
+     97,
+     114,
+     34,
+     44,
+     34,
+     98,
+     117,
+     105,
+     108,
+     100,
+     34,
+     44,
+     34,
+     110,
+     111,
+     110,
+     45,
+     114,
+     101,
+     112,
+     114,
+     111,
+     100,
+     117,
+     99,
+     105,
+     98,
+     108,
+     101,
+     45,
+     119,
+     97,
+     115,
+     109,
+     34,
+     44,
+     34,
+     45,
+     45,
+     108,
+     111,
+     99,
+     107,
+     101,
+     100,
+     34,
+     93,
+     44,
+     34,
+     99,
+     111,
+     110,
+     116,
+     114,
+     97,
+     99,
+     116,
+     95,
+     112,
+     97,
+     116,
+     104,
+     34,
+     58,
+     34,
+     110,
+     101,
+     97,
+     114,
+     47,
+     111,
+     109,
+     110,
+     105,
+     45,
+     116,
+     111,
+     107,
+     101,
+     110,
+     34,
+     44,
+     34,
+     115,
+     111,
+     117,
+     114,
+     99,
+     101,
+     95,
+     99,
+     111,
+     100,
+     101,
+     95,
+     115,
+     110,
+     97,
+     112,
+     115,
+     104,
+     111,
+     116,
+     34,
+     58,
+     34,
+     103,
+     105,
+     116,
+     43,
+     104,
+     116,
+     116,
+     112,
+     115,
+     58,
+     47,
+     47,
+     103,
+     105,
+     116,
+     104,
+     117,
+     98,
+     46,
+     99,
+     111,
+     109,
+     47,
+     78,
+     101,
+     97,
+     114,
+     45,
+     79,
+     110,
+     101,
+     47,
+     111,
+     109,
+     110,
+     105,
+     45,
+     98,
+     114,
+     105,
+     100,
+     103,
+     101,
+     63,
+     114,
+     101,
+     118,
+     61,
+     57,
+     102,
+     48,
+     98,
+     102,
+     48,
+     53,
+     54,
+     56,
+     49,
+     52,
+     50,
+     54,
+     53,
+     99,
+     48,
+     98,
+     48,
+     102,
+     56,
+     53,
+     102,
+     53,
+     56,
+     50,
+     48,
+     99,
+     100,
+     52,
+     98,
+     52,
+     99,
+     102,
+     102,
+     55,
+     101,
+     57,
+     48,
+     97,
+     49,
+     34,
+     44,
+     34,
+     111,
+     117,
+     116,
+     112,
+     117,
+     116,
+     95,
+     119,
+     97,
+     115,
+     109,
+     95,
+     112,
+     97,
+     116,
+     104,
+     34,
+     58,
+     34,
+     47,
+     104,
+     111,
+     109,
+     101,
+     47,
+     110,
+     101,
+     97,
+     114,
+     47,
+     99,
+     111,
+     100,
+     101,
+     47,
+     110,
+     101,
+     97,
+     114,
+     47,
+     116,
+     97,
+     114,
+     103,
+     101,
+     116,
+     47,
+     110,
+     101,
+     97,
+     114,
+     47,
+     111,
+     109,
+     110,
+     105,
+     95,
+     116,
+     111,
+     107,
+     101,
+     110,
+     47,
+     111,
+     109,
+     110,
+     105,
+     95,
+     116,
+     111,
+     107,
+     101,
+     110,
+     46,
+     119,
+     97,
+     115,
+     109,
+     34,
+     125,
+     125
+    ]
+   },
+   "id": "intent-route"
+  },
+  "responseSha256": "8bf7d065fc346d6a0bc7b421090cbc56fa9fa4998705e2fa94eed8c9210dfeca",
+  "blockHeight": "223823981",
+  "blockHash": "HLEgT4xs9StW2L5ZebnaocgraGdoJyizoS9bNvUbxVmv"
+ },
+ {
+  "version": 1,
+  "request": {
+   "method": "query",
+   "params": {
+    "account_id": "sol-b9c68f94ec8fd160137af8cdfe5e61cd68e2afba.omft.near",
+    "finality": "final",
+    "request_type": "call_function",
+    "method_name": "owner_get",
+    "args_base64": "e30="
+   }
+  },
+  "requestSha256": "d8d042aa13d97a2bafd6751ab9925aa5b19d961e8e6890b0cc7931c3a29d5ec1",
+  "endpointHost": "archival-rpc.mainnet.fastnear.com",
+  "retrievedAt": "2026-11-09T21:40:38.322Z",
+  "httpStatus": 200,
+  "outcome": "call-error",
+  "response": {
+   "jsonrpc": "2.0",
+   "result": {
+    "block_hash": "HLEgT4xs9StW2L5ZebnaocgraGdoJyizoS9bNvUbxVmv",
+    "block_height": 223823981,
+    "error": "wasm execution failed with error: MethodResolveError(MethodNotFound)",
+    "logs": []
+   },
+   "id": "intent-route"
+  },
+  "responseSha256": "45f4bf211a0dca0612852f359a89ae05de4b782ce5ac88aa86d698e3efba1ac9",
+  "blockHeight": "223823981",
+  "blockHash": "HLEgT4xs9StW2L5ZebnaocgraGdoJyizoS9bNvUbxVmv"
+ },
+ {
+  "version": 1,
+  "request": {
+   "method": "query",
+   "params": {
+    "account_id": "sol-b9c68f94ec8fd160137af8cdfe5e61cd68e2afba.omft.near",
+    "finality": "final",
+    "request_type": "view_state",
+    "prefix_base64": "U1RBVEU=",
+    "include_proof": false
+   }
+  },
+  "requestSha256": "4af24b8fef9ec356481f2f6eccf3d928c11770dab687086931e0b7612270b9c0",
+  "endpointHost": "archival-rpc.mainnet.fastnear.com",
+  "retrievedAt": "2026-11-09T21:40:38.369Z",
+  "httpStatus": 200,
+  "outcome": "result",
+  "response": {
+   "jsonrpc": "2.0",
+   "result": {
+    "block_hash": "HLEgT4xs9StW2L5ZebnaocgraGdoJyizoS9bNvUbxVmv",
+    "block_height": 223823981,
+    "values": [
+     {
+      "key": "U1RBVEU=",
+      "value": "EAAAAG9tbmkuYnJpZGdlLm5lYXIBAAAAAOaXteYFAAAAAAAAAAAAAAB9AAAAAAAAAAEAAABt"
+     }
+    ]
+   },
+   "id": "intent-route"
+  },
+  "responseSha256": "dfa56fa84affeb42943e11ce3883b44d7b5923a916e457d5c8edbe9587accd9d",
+  "blockHeight": "223823981",
+  "blockHash": "HLEgT4xs9StW2L5ZebnaocgraGdoJyizoS9bNvUbxVmv"
+ },
+ {
+  "version": 1,
+  "request": {
+   "method": "query",
+   "params": {
+    "account_id": "sol-b9c68f94ec8fd160137af8cdfe5e61cd68e2afba.omft.near",
+    "finality": "final",
+    "request_type": "view_state",
+    "prefix_base64": "V0lUSERSQVdfUkVMQVlFUl9BRERSRVNT",
+    "include_proof": false
+   }
+  },
+  "requestSha256": "7027f1c014b32839decaac135cbdbc052b62413348b22f286cec39228dedfad4",
+  "endpointHost": "archival-rpc.mainnet.fastnear.com",
+  "retrievedAt": "2026-11-09T21:40:38.424Z",
+  "httpStatus": 200,
+  "outcome": "result",
+  "response": {
+   "jsonrpc": "2.0",
+   "result": {
+    "block_hash": "HLEgT4xs9StW2L5ZebnaocgraGdoJyizoS9bNvUbxVmv",
+    "block_height": 223823981,
+    "values": [
+     {
+      "key": "V0lUSERSQVdfUkVMQVlFUl9BRERSRVNT",
+      "value": "QAAAADJkNDFmNjhhZjEyMDdlZTZiOTZkNTAwMmJmNjA2NzE2ODZmYWNlZmI1YTUwZTY5ZTdhOGFmZjI0MzFkZWRjNTY="
+     }
+    ]
+   },
+   "id": "intent-route"
+  },
+  "responseSha256": "8093842377bfb272108686dfeaf89b5d4f06131039a41f0562d70f309897119e",
+  "blockHeight": "223823981",
+  "blockHash": "HLEgT4xs9StW2L5ZebnaocgraGdoJyizoS9bNvUbxVmv"
+ },
+ {
+  "version": 1,
+  "request": {
+   "method": "query",
+   "params": {
+    "account_id": "omni.bridge.near",
+    "finality": "final",
+    "request_type": "call_function",
+    "method_name": "get_token_address",
+    "args_base64": "eyJjaGFpbl9raW5kIjoiU29sIiwidG9rZW4iOiJzb2wtYjljNjhmOTRlYzhmZDE2MDEzN2FmOGNkZmU1ZTYxY2Q2OGUyYWZiYS5vbWZ0Lm5lYXIifQ=="
+   }
+  },
+  "requestSha256": "c4c88460a6811a5740f2882c519eff2720ea2fc4841de2d8a96fc5cc79e987ae",
+  "endpointHost": "archival-rpc.mainnet.fastnear.com",
+  "retrievedAt": "2026-11-09T21:40:38.480Z",
+  "httpStatus": 200,
+  "outcome": "result",
+  "response": {
+   "jsonrpc": "2.0",
+   "result": {
+    "block_hash": "HLEgT4xs9StW2L5ZebnaocgraGdoJyizoS9bNvUbxVmv",
+    "block_height": 223823981,
+    "logs": [],
+    "result": [
+     34,
+     115,
+     111,
+     108,
+     58,
+     69,
+     75,
+     112,
+     81,
+     71,
+     83,
+     74,
+     116,
+     106,
+     77,
+     70,
+     113,
+     75,
+     90,
+     57,
+     75,
+     81,
+     97,
+     110,
+     83,
+     113,
+     89,
+     88,
+     82,
+     99,
+     70,
+     56,
+     102,
+     66,
+     111,
+     112,
+     122,
+     76,
+     72,
+     89,
+     120,
+     100,
+     77,
+     54,
+     53,
+     122,
+     99,
+     106,
+     109,
+     34
+    ]
+   },
+   "id": "intent-route"
+  },
+  "responseSha256": "927fb9835c70879ec3e78bc0db237cf3e56945825ffd61d93afd51ca580a2cbd",
+  "blockHeight": "223823981",
+  "blockHash": "HLEgT4xs9StW2L5ZebnaocgraGdoJyizoS9bNvUbxVmv"
+ },
+ {
+  "version": 1,
+  "request": {
+   "method": "query",
+   "params": {
+    "account_id": "omni.bridge.near",
+    "finality": "final",
+    "request_type": "call_function",
+    "method_name": "get_bridged_token",
+    "args_base64": "eyJhZGRyZXNzIjoic29sOkVLcFFHU0p0ak1GcUtaOUtRYW5TcVlYUmNGOGZCb3B6TEhZeGRNNjV6Y2ptIiwiY2hhaW4iOiJOZWFyIn0="
+   }
+  },
+  "requestSha256": "16a7d80effe8ac77b34c116236794b14d18b5bd1ddeda7b8b5dd3e2cca8aa20c",
+  "endpointHost": "archival-rpc.mainnet.fastnear.com",
+  "retrievedAt": "2026-11-09T21:40:38.535Z",
+  "httpStatus": 200,
+  "outcome": "result",
+  "response": {
+   "jsonrpc": "2.0",
+   "result": {
+    "block_hash": "HLEgT4xs9StW2L5ZebnaocgraGdoJyizoS9bNvUbxVmv",
+    "block_height": 223823981,
+    "logs": [],
+    "result": [
+     34,
+     110,
+     101,
+     97,
+     114,
+     58,
+     115,
+     111,
+     108,
+     45,
+     98,
+     57,
+     99,
+     54,
+     56,
+     102,
+     57,
+     52,
+     101,
+     99,
+     56,
+     102,
+     100,
+     49,
+     54,
+     48,
+     49,
+     51,
+     55,
+     97,
+     102,
+     56,
+     99,
+     100,
+     102,
+     101,
+     53,
+     101,
+     54,
+     49,
+     99,
+     100,
+     54,
+     56,
+     101,
+     50,
+     97,
+     102,
+     98,
+     97,
+     46,
+     111,
+     109,
+     102,
+     116,
+     46,
+     110,
+     101,
+     97,
+     114,
+     34
+    ]
+   },
+   "id": "intent-route"
+  },
+  "responseSha256": "90302c3c4758a5f08b3beb4f39016242d8fc9f71bb82b2c2598345f32825ea9c",
+  "blockHeight": "223823981",
+  "blockHash": "HLEgT4xs9StW2L5ZebnaocgraGdoJyizoS9bNvUbxVmv"
+ },
+ {
+  "version": 1,
+  "request": {
+   "method": "query",
+   "params": {
+    "account_id": "sol-bb27241c87aa401cc963c360c175dd7ca7035873.omft.near",
+    "finality": "final",
+    "request_type": "view_account"
+   }
+  },
+  "requestSha256": "3c5b216bf1582b3a015944453d59de4a4fdb57024b6bc342a6d6c02b03a29eb4",
+  "endpointHost": "archival-rpc.mainnet.fastnear.com",
+  "retrievedAt": "2026-11-09T21:40:38.589Z",
+  "httpStatus": 200,
+  "outcome": "result",
+  "response": {
+   "jsonrpc": "2.0",
+   "result": {
+    "amount": "3010916361258128900000048",
+    "block_hash": "7wjoCWcaxfPMe1KNMPztxH8myVzSZZtsL6FpVDxHyrUD",
+    "block_height": 223823982,
+    "code_hash": "Ba6uZKxsuRPW5X7XVQrSnYEYScEjFLJLMqMWvZ1aS3tC",
+    "locked": "0",
+    "storage_paid_at": 0,
+    "storage_usage": 230925
+   },
+   "id": "intent-route"
+  },
+  "responseSha256": "12fcadd6efccecace8910c936d27494dd6160a6aa68bf9dc1d5a513a3fb68093",
+  "blockHeight": "223823982",
+  "blockHash": "7wjoCWcaxfPMe1KNMPztxH8myVzSZZtsL6FpVDxHyrUD"
+ },
+ {
+  "version": 1,
+  "request": {
+   "method": "query",
+   "params": {
+    "account_id": "sol-bb27241c87aa401cc963c360c175dd7ca7035873.omft.near",
+    "finality": "final",
+    "request_type": "call_function",
+    "method_name": "contract_source_metadata",
+    "args_base64": "e30="
+   }
+  },
+  "requestSha256": "b39a28a072548871a244a72250f1a9fa83da89ad800ffa61b64f9549c6ddc615",
+  "endpointHost": "archival-rpc.mainnet.fastnear.com",
+  "retrievedAt": "2026-11-09T21:40:38.668Z",
+  "httpStatus": 200,
+  "outcome": "result",
+  "response": {
+   "jsonrpc": "2.0",
+   "result": {
+    "block_hash": "7wjoCWcaxfPMe1KNMPztxH8myVzSZZtsL6FpVDxHyrUD",
+    "block_height": 223823982,
+    "logs": [],
+    "result": [
+     123,
+     34,
+     118,
+     101,
+     114,
+     115,
+     105,
+     111,
+     110,
+     34,
+     58,
+     34,
+     48,
+     46,
+     52,
+     46,
+     51,
+     34,
+     44,
+     34,
+     108,
+     105,
+     110,
+     107,
+     34,
+     58,
+     34,
+     104,
+     116,
+     116,
+     112,
+     115,
+     58,
+     47,
+     47,
+     103,
+     105,
+     116,
+     104,
+     117,
+     98,
+     46,
+     99,
+     111,
+     109,
+     47,
+     78,
+     101,
+     97,
+     114,
+     45,
+     79,
+     110,
+     101,
+     47,
+     111,
+     109,
+     110,
+     105,
+     45,
+     98,
+     114,
+     105,
+     100,
+     103,
+     101,
+     47,
+     116,
+     114,
+     101,
+     101,
+     47,
+     57,
+     102,
+     48,
+     98,
+     102,
+     48,
+     53,
+     54,
+     56,
+     49,
+     52,
+     50,
+     54,
+     53,
+     99,
+     48,
+     98,
+     48,
+     102,
+     56,
+     53,
+     102,
+     53,
+     56,
+     50,
+     48,
+     99,
+     100,
+     52,
+     98,
+     52,
+     99,
+     102,
+     102,
+     55,
+     101,
+     57,
+     48,
+     97,
+     49,
+     34,
+     44,
+     34,
+     115,
+     116,
+     97,
+     110,
+     100,
+     97,
+     114,
+     100,
+     115,
+     34,
+     58,
+     91,
+     123,
+     34,
+     115,
+     116,
+     97,
+     110,
+     100,
+     97,
+     114,
+     100,
+     34,
+     58,
+     34,
+     110,
+     101,
+     112,
+     51,
+     51,
+     48,
+     34,
+     44,
+     34,
+     118,
+     101,
+     114,
+     115,
+     105,
+     111,
+     110,
+     34,
+     58,
+     34,
+     49,
+     46,
+     51,
+     46,
+     48,
+     34,
+     125,
+     93,
+     44,
+     34,
+     98,
+     117,
+     105,
+     108,
+     100,
+     95,
+     105,
+     110,
+     102,
+     111,
+     34,
+     58,
+     123,
+     34,
+     98,
+     117,
+     105,
+     108,
+     100,
+     95,
+     101,
+     110,
+     118,
+     105,
+     114,
+     111,
+     110,
+     109,
+     101,
+     110,
+     116,
+     34,
+     58,
+     34,
+     115,
+     111,
+     117,
+     114,
+     99,
+     101,
+     115,
+     99,
+     97,
+     110,
+     47,
+     99,
+     97,
+     114,
+     103,
+     111,
+     45,
+     110,
+     101,
+     97,
+     114,
+     58,
+     48,
+     46,
+     49,
+     54,
+     46,
+     48,
+     45,
+     114,
+     117,
+     115,
+     116,
+     45,
+     49,
+     46,
+     56,
+     54,
+     46,
+     48,
+     64,
+     115,
+     104,
+     97,
+     50,
+     53,
+     54,
+     58,
+     51,
+     50,
+     50,
+     48,
+     51,
+     48,
+     50,
+     101,
+     98,
+     98,
+     55,
+     48,
+     51,
+     54,
+     99,
+     49,
+     57,
+     52,
+     50,
+     101,
+     55,
+     55,
+     50,
+     56,
+     49,
+     48,
+     102,
+     50,
+     49,
+     101,
+     100,
+     100,
+     57,
+     51,
+     56,
+     49,
+     101,
+     100,
+     102,
+     57,
+     97,
+     51,
+     51,
+     57,
+     57,
+     56,
+     51,
+     100,
+     97,
+     52,
+     51,
+     52,
+     56,
+     55,
+     99,
+     55,
+     55,
+     102,
+     98,
+     97,
+     100,
+     52,
+     56,
+     56,
+     34,
+     44,
+     34,
+     98,
+     117,
+     105,
+     108,
+     100,
+     95,
+     99,
+     111,
+     109,
+     109,
+     97,
+     110,
+     100,
+     34,
+     58,
+     91,
+     34,
+     99,
+     97,
+     114,
+     103,
+     111,
+     34,
+     44,
+     34,
+     110,
+     101,
+     97,
+     114,
+     34,
+     44,
+     34,
+     98,
+     117,
+     105,
+     108,
+     100,
+     34,
+     44,
+     34,
+     110,
+     111,
+     110,
+     45,
+     114,
+     101,
+     112,
+     114,
+     111,
+     100,
+     117,
+     99,
+     105,
+     98,
+     108,
+     101,
+     45,
+     119,
+     97,
+     115,
+     109,
+     34,
+     44,
+     34,
+     45,
+     45,
+     108,
+     111,
+     99,
+     107,
+     101,
+     100,
+     34,
+     93,
+     44,
+     34,
+     99,
+     111,
+     110,
+     116,
+     114,
+     97,
+     99,
+     116,
+     95,
+     112,
+     97,
+     116,
+     104,
+     34,
+     58,
+     34,
+     110,
+     101,
+     97,
+     114,
+     47,
+     111,
+     109,
+     110,
+     105,
+     45,
+     116,
+     111,
+     107,
+     101,
+     110,
+     34,
+     44,
+     34,
+     115,
+     111,
+     117,
+     114,
+     99,
+     101,
+     95,
+     99,
+     111,
+     100,
+     101,
+     95,
+     115,
+     110,
+     97,
+     112,
+     115,
+     104,
+     111,
+     116,
+     34,
+     58,
+     34,
+     103,
+     105,
+     116,
+     43,
+     104,
+     116,
+     116,
+     112,
+     115,
+     58,
+     47,
+     47,
+     103,
+     105,
+     116,
+     104,
+     117,
+     98,
+     46,
+     99,
+     111,
+     109,
+     47,
+     78,
+     101,
+     97,
+     114,
+     45,
+     79,
+     110,
+     101,
+     47,
+     111,
+     109,
+     110,
+     105,
+     45,
+     98,
+     114,
+     105,
+     100,
+     103,
+     101,
+     63,
+     114,
+     101,
+     118,
+     61,
+     57,
+     102,
+     48,
+     98,
+     102,
+     48,
+     53,
+     54,
+     56,
+     49,
+     52,
+     50,
+     54,
+     53,
+     99,
+     48,
+     98,
+     48,
+     102,
+     56,
+     53,
+     102,
+     53,
+     56,
+     50,
+     48,
+     99,
+     100,
+     52,
+     98,
+     52,
+     99,
+     102,
+     102,
+     55,
+     101,
+     57,
+     48,
+     97,
+     49,
+     34,
+     44,
+     34,
+     111,
+     117,
+     116,
+     112,
+     117,
+     116,
+     95,
+     119,
+     97,
+     115,
+     109,
+     95,
+     112,
+     97,
+     116,
+     104,
+     34,
+     58,
+     34,
+     47,
+     104,
+     111,
+     109,
+     101,
+     47,
+     110,
+     101,
+     97,
+     114,
+     47,
+     99,
+     111,
+     100,
+     101,
+     47,
+     110,
+     101,
+     97,
+     114,
+     47,
+     116,
+     97,
+     114,
+     103,
+     101,
+     116,
+     47,
+     110,
+     101,
+     97,
+     114,
+     47,
+     111,
+     109,
+     110,
+     105,
+     95,
+     116,
+     111,
+     107,
+     101,
+     110,
+     47,
+     111,
+     109,
+     110,
+     105,
+     95,
+     116,
+     111,
+     107,
+     101,
+     110,
+     46,
+     119,
+     97,
+     115,
+     109,
+     34,
+     125,
+     125
+    ]
+   },
+   "id": "intent-route"
+  },
+  "responseSha256": "57cdeaac24b5b0b16b25010d3537de887c0ceecad0976289433e3459cf661192",
+  "blockHeight": "223823982",
+  "blockHash": "7wjoCWcaxfPMe1KNMPztxH8myVzSZZtsL6FpVDxHyrUD"
+ },
+ {
+  "version": 1,
+  "request": {
+   "method": "query",
+   "params": {
+    "account_id": "sol-bb27241c87aa401cc963c360c175dd7ca7035873.omft.near",
+    "finality": "final",
+    "request_type": "call_function",
+    "method_name": "owner_get",
+    "args_base64": "e30="
+   }
+  },
+  "requestSha256": "c2a36f2843368b01130ddb3e2405c5803f34a30c16931eb57bbf33616b4e6283",
+  "endpointHost": "archival-rpc.mainnet.fastnear.com",
+  "retrievedAt": "2026-11-09T21:40:38.685Z",
+  "httpStatus": 429,
+  "outcome": "rpc-error",
+  "response": {
+   "error": {
+    "name": "HTTP_OR_INVALID_RESPONSE",
+    "status": 429
+   }
+  },
+  "responseSha256": "61237278c9352f8451d67184c95ac9c89f629ae114b838d1b4fd481f22f73853",
+  "blockHeight": null,
+  "blockHash": null
+ },
+ {
+  "version": 1,
+  "request": {
+   "method": "query",
+   "params": {
+    "account_id": "sol-bb27241c87aa401cc963c360c175dd7ca7035873.omft.near",
+    "finality": "final",
+    "request_type": "view_state",
+    "prefix_base64": "U1RBVEU=",
+    "include_proof": false
+   }
+  },
+  "requestSha256": "694f349c468f4e502648c7043c00b2acdc0d3a0db3e0fc1bc1b7d97acf0161f8",
+  "endpointHost": "archival-rpc.mainnet.fastnear.com",
+  "retrievedAt": "2026-11-09T21:40:38.700Z",
+  "httpStatus": 429,
+  "outcome": "rpc-error",
+  "response": {
+   "error": {
+    "name": "HTTP_OR_INVALID_RESPONSE",
+    "status": 429
+   }
+  },
+  "responseSha256": "61237278c9352f8451d67184c95ac9c89f629ae114b838d1b4fd481f22f73853",
+  "blockHeight": null,
+  "blockHash": null
+ },
+ {
+  "version": 1,
+  "request": {
+   "method": "query",
+   "params": {
+    "account_id": "sol-bb27241c87aa401cc963c360c175dd7ca7035873.omft.near",
+    "finality": "final",
+    "request_type": "view_state",
+    "prefix_base64": "U1RBVEU=",
+    "include_proof": false
+   }
+  },
+  "requestSha256": "694f349c468f4e502648c7043c00b2acdc0d3a0db3e0fc1bc1b7d97acf0161f8",
+  "endpointHost": "rpc.mainnet.fastnear.com",
+  "retrievedAt": "2026-11-09T21:40:38.780Z",
+  "httpStatus": 200,
+  "outcome": "result",
+  "response": {
+   "jsonrpc": "2.0",
+   "result": {
+    "block_hash": "7wjoCWcaxfPMe1KNMPztxH8myVzSZZtsL6FpVDxHyrUD",
+    "block_height": 223823982,
+    "values": [
+     {
+      "key": "U1RBVEU=",
+      "value": "EAAAAG9tbmkuYnJpZGdlLm5lYXIBAAAAABKyiIULAAAAAAAAAAAAAAB9AAAAAAAAAAEAAABt"
+     }
+    ]
+   },
+   "id": "intent-route"
+  },
+  "responseSha256": "87c64ad30a8500a2add532024e25aea22bc8edf5dd1a85ddf631d63905f74294",
+  "blockHeight": "223823982",
+  "blockHash": "7wjoCWcaxfPMe1KNMPztxH8myVzSZZtsL6FpVDxHyrUD"
+ },
+ {
+  "version": 1,
+  "request": {
+   "method": "query",
+   "params": {
+    "account_id": "sol-bb27241c87aa401cc963c360c175dd7ca7035873.omft.near",
+    "finality": "final",
+    "request_type": "view_state",
+    "prefix_base64": "V0lUSERSQVdfUkVMQVlFUl9BRERSRVNT",
+    "include_proof": false
+   }
+  },
+  "requestSha256": "25715110962450e9084a2974a6b0caf6f66486e6b2e170b053d3f643b6200460",
+  "endpointHost": "archival-rpc.mainnet.fastnear.com",
+  "retrievedAt": "2026-11-09T21:40:38.798Z",
+  "httpStatus": 429,
+  "outcome": "rpc-error",
+  "response": {
+   "error": {
+    "name": "HTTP_OR_INVALID_RESPONSE",
+    "status": 429
+   }
+  },
+  "responseSha256": "61237278c9352f8451d67184c95ac9c89f629ae114b838d1b4fd481f22f73853",
+  "blockHeight": null,
+  "blockHash": null
+ },
+ {
+  "version": 1,
+  "request": {
+   "method": "query",
+   "params": {
+    "account_id": "sol-bb27241c87aa401cc963c360c175dd7ca7035873.omft.near",
+    "finality": "final",
+    "request_type": "view_state",
+    "prefix_base64": "V0lUSERSQVdfUkVMQVlFUl9BRERSRVNT",
+    "include_proof": false
+   }
+  },
+  "requestSha256": "25715110962450e9084a2974a6b0caf6f66486e6b2e170b053d3f643b6200460",
+  "endpointHost": "rpc.mainnet.fastnear.com",
+  "retrievedAt": "2026-11-09T21:40:38.844Z",
+  "httpStatus": 200,
+  "outcome": "result",
+  "response": {
+   "jsonrpc": "2.0",
+   "result": {
+    "block_hash": "7wjoCWcaxfPMe1KNMPztxH8myVzSZZtsL6FpVDxHyrUD",
+    "block_height": 223823982,
+    "values": [
+     {
+      "key": "V0lUSERSQVdfUkVMQVlFUl9BRERSRVNT",
+      "value": "QAAAADJkNDFmNjhhZjEyMDdlZTZiOTZkNTAwMmJmNjA2NzE2ODZmYWNlZmI1YTUwZTY5ZTdhOGFmZjI0MzFkZWRjNTY="
+     }
+    ]
+   },
+   "id": "intent-route"
+  },
+  "responseSha256": "311bef83f4c5fc31ff727fd75a394d88ded771e52ea440f59f9570ab5675a478",
+  "blockHeight": "223823982",
+  "blockHash": "7wjoCWcaxfPMe1KNMPztxH8myVzSZZtsL6FpVDxHyrUD"
+ },
+ {
+  "version": 1,
+  "request": {
+   "method": "query",
+   "params": {
+    "account_id": "omni.bridge.near",
+    "finality": "final",
+    "request_type": "call_function",
+    "method_name": "get_token_address",
+    "args_base64": "eyJjaGFpbl9raW5kIjoiU29sIiwidG9rZW4iOiJzb2wtYmIyNzI0MWM4N2FhNDAxY2M5NjNjMzYwYzE3NWRkN2NhNzAzNTg3My5vbWZ0Lm5lYXIifQ=="
+   }
+  },
+  "requestSha256": "8bb3cbc58b2170c20860cf73ced0720e16164bde7a705cc328ded0e1457eb796",
+  "endpointHost": "archival-rpc.mainnet.fastnear.com",
+  "retrievedAt": "2026-11-09T21:40:38.862Z",
+  "httpStatus": 429,
+  "outcome": "rpc-error",
+  "response": {
+   "error": {
+    "name": "HTTP_OR_INVALID_RESPONSE",
+    "status": 429
+   }
+  },
+  "responseSha256": "61237278c9352f8451d67184c95ac9c89f629ae114b838d1b4fd481f22f73853",
+  "blockHeight": null,
+  "blockHash": null
+ },
+ {
+  "version": 1,
+  "request": {
+   "method": "query",
+   "params": {
+    "account_id": "omni.bridge.near",
+    "finality": "final",
+    "request_type": "call_function",
+    "method_name": "get_bridged_token",
+    "args_base64": "eyJhZGRyZXNzIjoibmVhcjpzb2wtYmIyNzI0MWM4N2FhNDAxY2M5NjNjMzYwYzE3NWRkN2NhNzAzNTg3My5vbWZ0Lm5lYXIiLCJjaGFpbiI6IlNvbCJ9"
+   }
+  },
+  "requestSha256": "736163e9e5702fe9155ca90bee49f1f4deadf86d2e29808630e4e7d6e19824f3",
+  "endpointHost": "archival-rpc.mainnet.fastnear.com",
+  "retrievedAt": "2026-11-09T21:40:38.879Z",
+  "httpStatus": 429,
+  "outcome": "rpc-error",
+  "response": {
+   "error": {
+    "name": "HTTP_OR_INVALID_RESPONSE",
+    "status": 429
+   }
+  },
+  "responseSha256": "61237278c9352f8451d67184c95ac9c89f629ae114b838d1b4fd481f22f73853",
+  "blockHeight": null,
+  "blockHash": null
+ },
+ {
+  "version": 1,
+  "request": {
+   "method": "query",
+   "params": {
+    "account_id": "sol-c800a4bd850783ccb82c2b2c7e84175443606352.omft.near",
+    "finality": "final",
+    "request_type": "view_account"
+   }
+  },
+  "requestSha256": "5e6178c231ee8bef1961938c380c9e554e4c12f7107d7a7d5760c2e360c0db5a",
+  "endpointHost": "archival-rpc.mainnet.fastnear.com",
+  "retrievedAt": "2026-11-09T21:40:38.895Z",
+  "httpStatus": 429,
+  "outcome": "rpc-error",
+  "response": {
+   "error": {
+    "name": "HTTP_OR_INVALID_RESPONSE",
+    "status": 429
+   }
+  },
+  "responseSha256": "61237278c9352f8451d67184c95ac9c89f629ae114b838d1b4fd481f22f73853",
+  "blockHeight": null,
+  "blockHash": null
+ },
+ {
+  "version": 1,
+  "request": {
+   "method": "query",
+   "params": {
+    "account_id": "sol-c800a4bd850783ccb82c2b2c7e84175443606352.omft.near",
+    "finality": "final",
+    "request_type": "call_function",
+    "method_name": "contract_source_metadata",
+    "args_base64": "e30="
+   }
+  },
+  "requestSha256": "494ebbc22b3d0c8b95004f9d084feb0567a60634ca7d2dda7d7b6700f6294a24",
+  "endpointHost": "archival-rpc.mainnet.fastnear.com",
+  "retrievedAt": "2026-11-09T21:40:38.913Z",
+  "httpStatus": 429,
+  "outcome": "rpc-error",
+  "response": {
+   "error": {
+    "name": "HTTP_OR_INVALID_RESPONSE",
+    "status": 429
+   }
+  },
+  "responseSha256": "61237278c9352f8451d67184c95ac9c89f629ae114b838d1b4fd481f22f73853",
+  "blockHeight": null,
+  "blockHash": null
+ },
+ {
+  "version": 1,
+  "request": {
+   "method": "query",
+   "params": {
+    "account_id": "sol-c800a4bd850783ccb82c2b2c7e84175443606352.omft.near",
+    "finality": "final",
+    "request_type": "call_function",
+    "method_name": "owner_get",
+    "args_base64": "e30="
+   }
+  },
+  "requestSha256": "228ba4be45025b11d13a89353616970fb484e2d1494dc31221e925475b1e3272",
+  "endpointHost": "archival-rpc.mainnet.fastnear.com",
+  "retrievedAt": "2026-11-09T21:40:38.935Z",
+  "httpStatus": 429,
+  "outcome": "rpc-error",
+  "response": {
+   "error": {
+    "name": "HTTP_OR_INVALID_RESPONSE",
+    "status": 429
+   }
+  },
+  "responseSha256": "61237278c9352f8451d67184c95ac9c89f629ae114b838d1b4fd481f22f73853",
+  "blockHeight": null,
+  "blockHash": null
+ },
+ {
+  "version": 1,
+  "request": {
+   "method": "query",
+   "params": {
+    "account_id": "sol-c800a4bd850783ccb82c2b2c7e84175443606352.omft.near",
+    "finality": "final",
+    "request_type": "view_state",
+    "prefix_base64": "U1RBVEU=",
+    "include_proof": false
+   }
+  },
+  "requestSha256": "76a16585d235343cece1394bd767a25fc70255e5b06c777f745e0124935b20c8",
+  "endpointHost": "archival-rpc.mainnet.fastnear.com",
+  "retrievedAt": "2026-11-09T21:40:38.949Z",
+  "httpStatus": 429,
+  "outcome": "rpc-error",
+  "response": {
+   "error": {
+    "name": "HTTP_OR_INVALID_RESPONSE",
+    "status": 429
+   }
+  },
+  "responseSha256": "61237278c9352f8451d67184c95ac9c89f629ae114b838d1b4fd481f22f73853",
+  "blockHeight": null,
+  "blockHash": null
+ },
+ {
+  "version": 1,
+  "request": {
+   "method": "query",
+   "params": {
+    "account_id": "sol-c800a4bd850783ccb82c2b2c7e84175443606352.omft.near",
+    "finality": "final",
+    "request_type": "view_state",
+    "prefix_base64": "U1RBVEU=",
+    "include_proof": false
+   }
+  },
+  "requestSha256": "76a16585d235343cece1394bd767a25fc70255e5b06c777f745e0124935b20c8",
+  "endpointHost": "rpc.mainnet.fastnear.com",
+  "retrievedAt": "2026-11-09T21:40:39.011Z",
+  "httpStatus": 200,
+  "outcome": "result",
+  "response": {
+   "jsonrpc": "2.0",
+   "result": {
+    "block_hash": "7wjoCWcaxfPMe1KNMPztxH8myVzSZZtsL6FpVDxHyrUD",
+    "block_height": 223823982,
+    "values": [
+     {
+      "key": "U1RBVEU=",
+      "value": "EAAAAG9tbmkuYnJpZGdlLm5lYXIBAAAAAEq0KVmLAAAAAAAAAAAAAAB9AAAAAAAAAAEAAABt"
+     }
+    ]
+   },
+   "id": "intent-route"
+  },
+  "responseSha256": "77313da361f9e82bd58ca4207448893f0c2035dd4c8a1b595e28cda0f4c11148",
+  "blockHeight": "223823982",
+  "blockHash": "7wjoCWcaxfPMe1KNMPztxH8myVzSZZtsL6FpVDxHyrUD"
+ },
+ {
+  "version": 1,
+  "request": {
+   "method": "query",
+   "params": {
+    "account_id": "sol-c800a4bd850783ccb82c2b2c7e84175443606352.omft.near",
+    "finality": "final",
+    "request_type": "view_state",
+    "prefix_base64": "V0lUSERSQVdfUkVMQVlFUl9BRERSRVNT",
+    "include_proof": false
+   }
+  },
+  "requestSha256": "b6aea08c1fbaa6de7fc77b9f0a8365cec44bf66b34758755a69bc262db82d3ef",
+  "endpointHost": "archival-rpc.mainnet.fastnear.com",
+  "retrievedAt": "2026-11-09T21:40:39.068Z",
+  "httpStatus": 200,
+  "outcome": "result",
+  "response": {
+   "jsonrpc": "2.0",
+   "result": {
+    "block_hash": "92NqHkr9ryUsJYH9X6xJqVByUTSaUbtD43Vt9bbdCL7w",
+    "block_height": 223823983,
+    "values": [
+     {
+      "key": "V0lUSERSQVdfUkVMQVlFUl9BRERSRVNT",
+      "value": "QAAAADJkNDFmNjhhZjEyMDdlZTZiOTZkNTAwMmJmNjA2NzE2ODZmYWNlZmI1YTUwZTY5ZTdhOGFmZjI0MzFkZWRjNTY="
+     }
+    ]
+   },
+   "id": "intent-route"
+  },
+  "responseSha256": "3616fb89bb22e80e0cf8ad3da3e1c1f61bb9ccd4315c9dd500e4e901e78a74d3",
+  "blockHeight": "223823983",
+  "blockHash": "92NqHkr9ryUsJYH9X6xJqVByUTSaUbtD43Vt9bbdCL7w"
+ },
+ {
+  "version": 1,
+  "request": {
+   "method": "query",
+   "params": {
+    "account_id": "omni.bridge.near",
+    "finality": "final",
+    "request_type": "call_function",
+    "method_name": "get_token_address",
+    "args_base64": "eyJjaGFpbl9raW5kIjoiU29sIiwidG9rZW4iOiJzb2wtYzgwMGE0YmQ4NTA3ODNjY2I4MmMyYjJjN2U4NDE3NTQ0MzYwNjM1Mi5vbWZ0Lm5lYXIifQ=="
+   }
+  },
+  "requestSha256": "0f5559ccb6b60a8c90887ec6516c3d3bc3379072e04dd319b974cd098a0ce8b2",
+  "endpointHost": "archival-rpc.mainnet.fastnear.com",
+  "retrievedAt": "2026-11-09T21:40:39.086Z",
+  "httpStatus": 429,
+  "outcome": "rpc-error",
+  "response": {
+   "error": {
+    "name": "HTTP_OR_INVALID_RESPONSE",
+    "status": 429
+   }
+  },
+  "responseSha256": "61237278c9352f8451d67184c95ac9c89f629ae114b838d1b4fd481f22f73853",
+  "blockHeight": null,
+  "blockHash": null
+ },
+ {
+  "version": 1,
+  "request": {
+   "method": "query",
+   "params": {
+    "account_id": "omni.bridge.near",
+    "finality": "final",
+    "request_type": "call_function",
+    "method_name": "get_bridged_token",
+    "args_base64": "eyJhZGRyZXNzIjoibmVhcjpzb2wtYzgwMGE0YmQ4NTA3ODNjY2I4MmMyYjJjN2U4NDE3NTQ0MzYwNjM1Mi5vbWZ0Lm5lYXIiLCJjaGFpbiI6IlNvbCJ9"
+   }
+  },
+  "requestSha256": "d1ef3bf04055d2a519c9a2afa58d5df0cebe2c5869185b2546a432e1080b9617",
+  "endpointHost": "archival-rpc.mainnet.fastnear.com",
+  "retrievedAt": "2026-11-09T21:40:39.100Z",
+  "httpStatus": 429,
+  "outcome": "rpc-error",
+  "response": {
+   "error": {
+    "name": "HTTP_OR_INVALID_RESPONSE",
+    "status": 429
+   }
+  },
+  "responseSha256": "61237278c9352f8451d67184c95ac9c89f629ae114b838d1b4fd481f22f73853",
+  "blockHeight": null,
+  "blockHash": null
+ },
+ {
+  "version": 1,
+  "request": {
+   "method": "query",
+   "params": {
+    "account_id": "sol-91914f13d3b54f8126a2824d71632d4b078d7403.omft.near",
+    "finality": "final",
+    "request_type": "view_account"
+   }
+  },
+  "requestSha256": "ff178bd76f3dba0a0b5cab4563c71bcbc034316eb9be0994d139b4b1adb43802",
+  "endpointHost": "archival-rpc.mainnet.fastnear.com",
+  "retrievedAt": "2026-11-09T21:40:39.117Z",
+  "httpStatus": 429,
+  "outcome": "rpc-error",
+  "response": {
+   "error": {
+    "name": "HTTP_OR_INVALID_RESPONSE",
+    "status": 429
+   }
+  },
+  "responseSha256": "61237278c9352f8451d67184c95ac9c89f629ae114b838d1b4fd481f22f73853",
+  "blockHeight": null,
+  "blockHash": null
+ },
+ {
+  "version": 1,
+  "request": {
+   "method": "query",
+   "params": {
+    "account_id": "sol-91914f13d3b54f8126a2824d71632d4b078d7403.omft.near",
+    "finality": "final",
+    "request_type": "call_function",
+    "method_name": "contract_source_metadata",
+    "args_base64": "e30="
+   }
+  },
+  "requestSha256": "c7c07497ea8007520fbc4d871c579ae71b23b84ff493e2bda0ea65ae0ff3aa19",
+  "endpointHost": "archival-rpc.mainnet.fastnear.com",
+  "retrievedAt": "2026-11-09T21:40:39.132Z",
+  "httpStatus": 429,
+  "outcome": "rpc-error",
+  "response": {
+   "error": {
+    "name": "HTTP_OR_INVALID_RESPONSE",
+    "status": 429
+   }
+  },
+  "responseSha256": "61237278c9352f8451d67184c95ac9c89f629ae114b838d1b4fd481f22f73853",
+  "blockHeight": null,
+  "blockHash": null
+ },
+ {
+  "version": 1,
+  "request": {
+   "method": "query",
+   "params": {
+    "account_id": "sol-91914f13d3b54f8126a2824d71632d4b078d7403.omft.near",
+    "finality": "final",
+    "request_type": "call_function",
+    "method_name": "owner_get",
+    "args_base64": "e30="
+   }
+  },
+  "requestSha256": "751fe308e95bbd7ee6a4da41ea2117c9b3f46cb4289775b2519a074042845d94",
+  "endpointHost": "archival-rpc.mainnet.fastnear.com",
+  "retrievedAt": "2026-11-09T21:40:39.148Z",
+  "httpStatus": 429,
+  "outcome": "rpc-error",
+  "response": {
+   "error": {
+    "name": "HTTP_OR_INVALID_RESPONSE",
+    "status": 429
+   }
+  },
+  "responseSha256": "61237278c9352f8451d67184c95ac9c89f629ae114b838d1b4fd481f22f73853",
+  "blockHeight": null,
+  "blockHash": null
+ },
+ {
+  "version": 1,
+  "request": {
+   "method": "query",
+   "params": {
+    "account_id": "sol-91914f13d3b54f8126a2824d71632d4b078d7403.omft.near",
+    "finality": "final",
+    "request_type": "view_state",
+    "prefix_base64": "U1RBVEU=",
+    "include_proof": false
+   }
+  },
+  "requestSha256": "2dacc270ef8e8f40606a5b97eae85b4f89d71a04da45ecb20cf96cdb663fd33a",
+  "endpointHost": "archival-rpc.mainnet.fastnear.com",
+  "retrievedAt": "2026-11-09T21:40:39.168Z",
+  "httpStatus": 429,
+  "outcome": "rpc-error",
+  "response": {
+   "error": {
+    "name": "HTTP_OR_INVALID_RESPONSE",
+    "status": 429
+   }
+  },
+  "responseSha256": "61237278c9352f8451d67184c95ac9c89f629ae114b838d1b4fd481f22f73853",
+  "blockHeight": null,
+  "blockHash": null
+ },
+ {
+  "version": 1,
+  "request": {
+   "method": "query",
+   "params": {
+    "account_id": "sol-91914f13d3b54f8126a2824d71632d4b078d7403.omft.near",
+    "finality": "final",
+    "request_type": "view_state",
+    "prefix_base64": "U1RBVEU=",
+    "include_proof": false
+   }
+  },
+  "requestSha256": "2dacc270ef8e8f40606a5b97eae85b4f89d71a04da45ecb20cf96cdb663fd33a",
+  "endpointHost": "rpc.mainnet.fastnear.com",
+  "retrievedAt": "2026-11-09T21:40:39.219Z",
+  "httpStatus": 200,
+  "outcome": "result",
+  "response": {
+   "jsonrpc": "2.0",
+   "result": {
+    "block_hash": "92NqHkr9ryUsJYH9X6xJqVByUTSaUbtD43Vt9bbdCL7w",
+    "block_height": 223823983,
+    "values": [
+     {
+      "key": "U1RBVEU=",
+      "value": "EAAAAG9tbmkuYnJpZGdlLm5lYXIBAAAAAHFbXQAAAAAAAAAAAAAAAAB9AAAAAAAAAAEAAABt"
+     }
+    ]
+   },
+   "id": "intent-route"
+  },
+  "responseSha256": "710b10e72949f715eb306a651b8c8a396666e4024945ad947afc1497e51b4fc3",
+  "blockHeight": "223823983",
+  "blockHash": "92NqHkr9ryUsJYH9X6xJqVByUTSaUbtD43Vt9bbdCL7w"
+ },
+ {
+  "version": 1,
+  "request": {
+   "method": "query",
+   "params": {
+    "account_id": "sol-91914f13d3b54f8126a2824d71632d4b078d7403.omft.near",
+    "finality": "final",
+    "request_type": "view_state",
+    "prefix_base64": "V0lUSERSQVdfUkVMQVlFUl9BRERSRVNT",
+    "include_proof": false
+   }
+  },
+  "requestSha256": "19104c12bf10ac6fa0c63c64451e50ee3f057ea27a856a63ceef9c84e8e2bcba",
+  "endpointHost": "archival-rpc.mainnet.fastnear.com",
+  "retrievedAt": "2026-11-09T21:40:39.234Z",
+  "httpStatus": 429,
+  "outcome": "rpc-error",
+  "response": {
+   "error": {
+    "name": "HTTP_OR_INVALID_RESPONSE",
+    "status": 429
+   }
+  },
+  "responseSha256": "61237278c9352f8451d67184c95ac9c89f629ae114b838d1b4fd481f22f73853",
+  "blockHeight": null,
+  "blockHash": null
+ },
+ {
+  "version": 1,
+  "request": {
+   "method": "query",
+   "params": {
+    "account_id": "sol-91914f13d3b54f8126a2824d71632d4b078d7403.omft.near",
+    "finality": "final",
+    "request_type": "view_state",
+    "prefix_base64": "V0lUSERSQVdfUkVMQVlFUl9BRERSRVNT",
+    "include_proof": false
+   }
+  },
+  "requestSha256": "19104c12bf10ac6fa0c63c64451e50ee3f057ea27a856a63ceef9c84e8e2bcba",
+  "endpointHost": "rpc.mainnet.fastnear.com",
+  "retrievedAt": "2026-11-09T21:40:39.282Z",
+  "httpStatus": 200,
+  "outcome": "result",
+  "response": {
+   "jsonrpc": "2.0",
+   "result": {
+    "block_hash": "92NqHkr9ryUsJYH9X6xJqVByUTSaUbtD43Vt9bbdCL7w",
+    "block_height": 223823983,
+    "values": [
+     {
+      "key": "V0lUSERSQVdfUkVMQVlFUl9BRERSRVNT",
+      "value": "QAAAADJkNDFmNjhhZjEyMDdlZTZiOTZkNTAwMmJmNjA2NzE2ODZmYWNlZmI1YTUwZTY5ZTdhOGFmZjI0MzFkZWRjNTY="
+     }
+    ]
+   },
+   "id": "intent-route"
+  },
+  "responseSha256": "3616fb89bb22e80e0cf8ad3da3e1c1f61bb9ccd4315c9dd500e4e901e78a74d3",
+  "blockHeight": "223823983",
+  "blockHash": "92NqHkr9ryUsJYH9X6xJqVByUTSaUbtD43Vt9bbdCL7w"
+ },
+ {
+  "version": 1,
+  "request": {
+   "method": "query",
+   "params": {
+    "account_id": "omni.bridge.near",
+    "finality": "final",
+    "request_type": "call_function",
+    "method_name": "get_token_address",
+    "args_base64": "eyJjaGFpbl9raW5kIjoiU29sIiwidG9rZW4iOiJzb2wtOTE5MTRmMTNkM2I1NGY4MTI2YTI4MjRkNzE2MzJkNGIwNzhkNzQwMy5vbWZ0Lm5lYXIifQ=="
+   }
+  },
+  "requestSha256": "1cc3e1a9a0fe02f13d49d6cf6e99a59a0a355cea8339fc595799c1d87d828d6a",
+  "endpointHost": "archival-rpc.mainnet.fastnear.com",
+  "retrievedAt": "2026-11-09T21:40:39.302Z",
+  "httpStatus": 429,
+  "outcome": "rpc-error",
+  "response": {
+   "error": {
+    "name": "HTTP_OR_INVALID_RESPONSE",
+    "status": 429
+   }
+  },
+  "responseSha256": "61237278c9352f8451d67184c95ac9c89f629ae114b838d1b4fd481f22f73853",
+  "blockHeight": null,
+  "blockHash": null
+ },
+ {
+  "version": 1,
+  "request": {
+   "method": "query",
+   "params": {
+    "account_id": "omni.bridge.near",
+    "finality": "final",
+    "request_type": "call_function",
+    "method_name": "get_bridged_token",
+    "args_base64": "eyJhZGRyZXNzIjoibmVhcjpzb2wtOTE5MTRmMTNkM2I1NGY4MTI2YTI4MjRkNzE2MzJkNGIwNzhkNzQwMy5vbWZ0Lm5lYXIiLCJjaGFpbiI6IlNvbCJ9"
+   }
+  },
+  "requestSha256": "bfa375ad8d53f348099286697aff1f749d8afd234d994821ff343c3c45110c20",
+  "endpointHost": "archival-rpc.mainnet.fastnear.com",
+  "retrievedAt": "2026-11-09T21:40:39.328Z",
+  "httpStatus": 429,
+  "outcome": "rpc-error",
+  "response": {
+   "error": {
+    "name": "HTTP_OR_INVALID_RESPONSE",
+    "status": 429
+   }
+  },
+  "responseSha256": "61237278c9352f8451d67184c95ac9c89f629ae114b838d1b4fd481f22f73853",
+  "blockHeight": null,
+  "blockHash": null
+ },
+ {
+  "version": 1,
+  "request": {
+   "method": "query",
+   "params": {
+    "account_id": "sol-5ce3bf3a31af18be40ba30f721101b4341690186.omft.near",
+    "finality": "final",
+    "request_type": "view_account"
+   }
+  },
+  "requestSha256": "f4b9cf3abe314ba42979fb2364e4a40cfb767eaef1afdf50c4187a875cd918cc",
+  "endpointHost": "archival-rpc.mainnet.fastnear.com",
+  "retrievedAt": "2026-11-09T21:40:39.344Z",
+  "httpStatus": 429,
+  "outcome": "rpc-error",
+  "response": {
+   "error": {
+    "name": "HTTP_OR_INVALID_RESPONSE",
+    "status": 429
+   }
+  },
+  "responseSha256": "61237278c9352f8451d67184c95ac9c89f629ae114b838d1b4fd481f22f73853",
+  "blockHeight": null,
+  "blockHash": null
+ },
+ {
+  "version": 1,
+  "request": {
+   "method": "query",
+   "params": {
+    "account_id": "sol-5ce3bf3a31af18be40ba30f721101b4341690186.omft.near",
+    "finality": "final",
+    "request_type": "call_function",
+    "method_name": "contract_source_metadata",
+    "args_base64": "e30="
+   }
+  },
+  "requestSha256": "319d2b51ee86059a95ed0474ee2df622f89d9ad0f56b44b2130d7f15032512f7",
+  "endpointHost": "archival-rpc.mainnet.fastnear.com",
+  "retrievedAt": "2026-11-09T21:40:39.364Z",
+  "httpStatus": 429,
+  "outcome": "rpc-error",
+  "response": {
+   "error": {
+    "name": "HTTP_OR_INVALID_RESPONSE",
+    "status": 429
+   }
+  },
+  "responseSha256": "61237278c9352f8451d67184c95ac9c89f629ae114b838d1b4fd481f22f73853",
+  "blockHeight": null,
+  "blockHash": null
+ },
+ {
+  "version": 1,
+  "request": {
+   "method": "query",
+   "params": {
+    "account_id": "sol-5ce3bf3a31af18be40ba30f721101b4341690186.omft.near",
+    "finality": "final",
+    "request_type": "call_function",
+    "method_name": "owner_get",
+    "args_base64": "e30="
+   }
+  },
+  "requestSha256": "4a5cd4d84eb40cca96ecf9621937d9fb6e8cfb55b163d48661541beb8d87e415",
+  "endpointHost": "archival-rpc.mainnet.fastnear.com",
+  "retrievedAt": "2026-11-09T21:40:39.381Z",
+  "httpStatus": 429,
+  "outcome": "rpc-error",
+  "response": {
+   "error": {
+    "name": "HTTP_OR_INVALID_RESPONSE",
+    "status": 429
+   }
+  },
+  "responseSha256": "61237278c9352f8451d67184c95ac9c89f629ae114b838d1b4fd481f22f73853",
+  "blockHeight": null,
+  "blockHash": null
+ },
+ {
+  "version": 1,
+  "request": {
+   "method": "query",
+   "params": {
+    "account_id": "sol-5ce3bf3a31af18be40ba30f721101b4341690186.omft.near",
+    "finality": "final",
+    "request_type": "view_state",
+    "prefix_base64": "U1RBVEU=",
+    "include_proof": false
+   }
+  },
+  "requestSha256": "00f4ef82719ed27140541761ec3db2a3ddf39bd984296e4397369a7160e4d205",
+  "endpointHost": "archival-rpc.mainnet.fastnear.com",
+  "retrievedAt": "2026-11-09T21:40:39.402Z",
+  "httpStatus": 429,
+  "outcome": "rpc-error",
+  "response": {
+   "error": {
+    "name": "HTTP_OR_INVALID_RESPONSE",
+    "status": 429
+   }
+  },
+  "responseSha256": "61237278c9352f8451d67184c95ac9c89f629ae114b838d1b4fd481f22f73853",
+  "blockHeight": null,
+  "blockHash": null
+ },
+ {
+  "version": 1,
+  "request": {
+   "method": "query",
+   "params": {
+    "account_id": "sol-5ce3bf3a31af18be40ba30f721101b4341690186.omft.near",
+    "finality": "final",
+    "request_type": "view_state",
+    "prefix_base64": "U1RBVEU=",
+    "include_proof": false
+   }
+  },
+  "requestSha256": "00f4ef82719ed27140541761ec3db2a3ddf39bd984296e4397369a7160e4d205",
+  "endpointHost": "rpc.mainnet.fastnear.com",
+  "retrievedAt": "2026-11-09T21:40:39.455Z",
+  "httpStatus": 200,
+  "outcome": "result",
+  "response": {
+   "jsonrpc": "2.0",
+   "result": {
+    "block_hash": "92NqHkr9ryUsJYH9X6xJqVByUTSaUbtD43Vt9bbdCL7w",
+    "block_height": 223823983,
+    "values": [
+     {
+      "key": "U1RBVEU=",
+      "value": "EAAAAG9tbmkuYnJpZGdlLm5lYXIBAAAAALY8CYaNAgAAAAAAAAAAAAB9AAAAAAAAAAEAAABt"
+     }
+    ]
+   },
+   "id": "intent-route"
+  },
+  "responseSha256": "b4b0f0c31668da3d08a001a0efb99bc026c51cb71a7db77a04b9bfa0ba27a01e",
+  "blockHeight": "223823983",
+  "blockHash": "92NqHkr9ryUsJYH9X6xJqVByUTSaUbtD43Vt9bbdCL7w"
+ },
+ {
+  "version": 1,
+  "request": {
+   "method": "query",
+   "params": {
+    "account_id": "sol-5ce3bf3a31af18be40ba30f721101b4341690186.omft.near",
+    "finality": "final",
+    "request_type": "view_state",
+    "prefix_base64": "V0lUSERSQVdfUkVMQVlFUl9BRERSRVNT",
+    "include_proof": false
+   }
+  },
+  "requestSha256": "56fb07123f46f99fef62db4ff5c9b83916ef509363dfcc2ec8d9fa8c6e920fb6",
+  "endpointHost": "archival-rpc.mainnet.fastnear.com",
+  "retrievedAt": "2026-11-09T21:40:39.469Z",
+  "httpStatus": 429,
+  "outcome": "rpc-error",
+  "response": {
+   "error": {
+    "name": "HTTP_OR_INVALID_RESPONSE",
+    "status": 429
+   }
+  },
+  "responseSha256": "61237278c9352f8451d67184c95ac9c89f629ae114b838d1b4fd481f22f73853",
+  "blockHeight": null,
+  "blockHash": null
+ },
+ {
+  "version": 1,
+  "request": {
+   "method": "query",
+   "params": {
+    "account_id": "sol-5ce3bf3a31af18be40ba30f721101b4341690186.omft.near",
+    "finality": "final",
+    "request_type": "view_state",
+    "prefix_base64": "V0lUSERSQVdfUkVMQVlFUl9BRERSRVNT",
+    "include_proof": false
+   }
+  },
+  "requestSha256": "56fb07123f46f99fef62db4ff5c9b83916ef509363dfcc2ec8d9fa8c6e920fb6",
+  "endpointHost": "rpc.mainnet.fastnear.com",
+  "retrievedAt": "2026-11-09T21:40:39.517Z",
+  "httpStatus": 200,
+  "outcome": "result",
+  "response": {
+   "jsonrpc": "2.0",
+   "result": {
+    "block_hash": "GMYsqBGceYhBMSjtpRS3txaSdQWncvbS1K2uB5Eeo6UM",
+    "block_height": 223823984,
+    "values": [
+     {
+      "key": "V0lUSERSQVdfUkVMQVlFUl9BRERSRVNT",
+      "value": "QAAAADJkNDFmNjhhZjEyMDdlZTZiOTZkNTAwMmJmNjA2NzE2ODZmYWNlZmI1YTUwZTY5ZTdhOGFmZjI0MzFkZWRjNTY="
+     }
+    ]
+   },
+   "id": "intent-route"
+  },
+  "responseSha256": "778bcbdaed757cff88ea94d0eb8140e7dbd29ece704e217223dbeef70fb22295",
+  "blockHeight": "223823984",
+  "blockHash": "GMYsqBGceYhBMSjtpRS3txaSdQWncvbS1K2uB5Eeo6UM"
+ },
+ {
+  "version": 1,
+  "request": {
+   "method": "query",
+   "params": {
+    "account_id": "omni.bridge.near",
+    "finality": "final",
+    "request_type": "call_function",
+    "method_name": "get_token_address",
+    "args_base64": "eyJjaGFpbl9raW5kIjoiU29sIiwidG9rZW4iOiJzb2wtNWNlM2JmM2EzMWFmMThiZTQwYmEzMGY3MjExMDFiNDM0MTY5MDE4Ni5vbWZ0Lm5lYXIifQ=="
+   }
+  },
+  "requestSha256": "5f2c12ecbb69807c71ef3c52fe896a54b486c0748d8d0c0e89753420ccc1329c",
+  "endpointHost": "archival-rpc.mainnet.fastnear.com",
+  "retrievedAt": "2026-11-09T21:40:39.531Z",
+  "httpStatus": 429,
+  "outcome": "rpc-error",
+  "response": {
+   "error": {
+    "name": "HTTP_OR_INVALID_RESPONSE",
+    "status": 429
+   }
+  },
+  "responseSha256": "61237278c9352f8451d67184c95ac9c89f629ae114b838d1b4fd481f22f73853",
+  "blockHeight": null,
+  "blockHash": null
+ },
+ {
+  "version": 1,
+  "request": {
+   "method": "query",
+   "params": {
+    "account_id": "omni.bridge.near",
+    "finality": "final",
+    "request_type": "call_function",
+    "method_name": "get_bridged_token",
+    "args_base64": "eyJhZGRyZXNzIjoibmVhcjpzb2wtNWNlM2JmM2EzMWFmMThiZTQwYmEzMGY3MjExMDFiNDM0MTY5MDE4Ni5vbWZ0Lm5lYXIiLCJjaGFpbiI6IlNvbCJ9"
+   }
+  },
+  "requestSha256": "a2cd7b557b2ee54b10473b9d1601c4f8959903e856b14ba45892ed7bce661df2",
+  "endpointHost": "archival-rpc.mainnet.fastnear.com",
+  "retrievedAt": "2026-11-09T21:40:39.546Z",
+  "httpStatus": 429,
+  "outcome": "rpc-error",
+  "response": {
+   "error": {
+    "name": "HTTP_OR_INVALID_RESPONSE",
+    "status": 429
+   }
+  },
+  "responseSha256": "61237278c9352f8451d67184c95ac9c89f629ae114b838d1b4fd481f22f73853",
+  "blockHeight": null,
+  "blockHash": null
+ },
+ {
+  "version": 1,
+  "request": {
+   "method": "query",
+   "params": {
+    "account_id": "sol-df27d7abcc1c656d4ac3b1399bbfbba1994e6d8c.omft.near",
+    "finality": "final",
+    "request_type": "view_account"
+   }
+  },
+  "requestSha256": "51b3efb58758ef3f789a05505cf02e78a6c578dd827b22e248f7c235e1fd20fa",
+  "endpointHost": "archival-rpc.mainnet.fastnear.com",
+  "retrievedAt": "2026-11-09T21:40:39.563Z",
+  "httpStatus": 429,
+  "outcome": "rpc-error",
+  "response": {
+   "error": {
+    "name": "HTTP_OR_INVALID_RESPONSE",
+    "status": 429
+   }
+  },
+  "responseSha256": "61237278c9352f8451d67184c95ac9c89f629ae114b838d1b4fd481f22f73853",
+  "blockHeight": null,
+  "blockHash": null
+ },
+ {
+  "version": 1,
+  "request": {
+   "method": "query",
+   "params": {
+    "account_id": "sol-df27d7abcc1c656d4ac3b1399bbfbba1994e6d8c.omft.near",
+    "finality": "final",
+    "request_type": "call_function",
+    "method_name": "contract_source_metadata",
+    "args_base64": "e30="
+   }
+  },
+  "requestSha256": "5dadda06c3dc2933f5df4cc733650dfeb36e70301e76c3593566837ba6fa54b1",
+  "endpointHost": "archival-rpc.mainnet.fastnear.com",
+  "retrievedAt": "2026-11-09T21:40:39.579Z",
+  "httpStatus": 429,
+  "outcome": "rpc-error",
+  "response": {
+   "error": {
+    "name": "HTTP_OR_INVALID_RESPONSE",
+    "status": 429
+   }
+  },
+  "responseSha256": "61237278c9352f8451d67184c95ac9c89f629ae114b838d1b4fd481f22f73853",
+  "blockHeight": null,
+  "blockHash": null
+ },
+ {
+  "version": 1,
+  "request": {
+   "method": "query",
+   "params": {
+    "account_id": "sol-df27d7abcc1c656d4ac3b1399bbfbba1994e6d8c.omft.near",
+    "finality": "final",
+    "request_type": "call_function",
+    "method_name": "owner_get",
+    "args_base64": "e30="
+   }
+  },
+  "requestSha256": "45641cd8ab0e698a94e3cd574c8dfbf33682b2a29dbc990a06aaceb8359a2950",
+  "endpointHost": "archival-rpc.mainnet.fastnear.com",
+  "retrievedAt": "2026-11-09T21:40:39.593Z",
+  "httpStatus": 429,
+  "outcome": "rpc-error",
+  "response": {
+   "error": {
+    "name": "HTTP_OR_INVALID_RESPONSE",
+    "status": 429
+   }
+  },
+  "responseSha256": "61237278c9352f8451d67184c95ac9c89f629ae114b838d1b4fd481f22f73853",
+  "blockHeight": null,
+  "blockHash": null
+ },
+ {
+  "version": 1,
+  "request": {
+   "method": "query",
+   "params": {
+    "account_id": "sol-df27d7abcc1c656d4ac3b1399bbfbba1994e6d8c.omft.near",
+    "finality": "final",
+    "request_type": "view_state",
+    "prefix_base64": "U1RBVEU=",
+    "include_proof": false
+   }
+  },
+  "requestSha256": "cd8967be1ebce46ab68f7dab4c253f0fbb72e63dc7a3437e24b7436aa37b9345",
+  "endpointHost": "archival-rpc.mainnet.fastnear.com",
+  "retrievedAt": "2026-11-09T21:40:39.609Z",
+  "httpStatus": 429,
+  "outcome": "rpc-error",
+  "response": {
+   "error": {
+    "name": "HTTP_OR_INVALID_RESPONSE",
+    "status": 429
+   }
+  },
+  "responseSha256": "61237278c9352f8451d67184c95ac9c89f629ae114b838d1b4fd481f22f73853",
+  "blockHeight": null,
+  "blockHash": null
+ },
+ {
+  "version": 1,
+  "request": {
+   "method": "query",
+   "params": {
+    "account_id": "sol-df27d7abcc1c656d4ac3b1399bbfbba1994e6d8c.omft.near",
+    "finality": "final",
+    "request_type": "view_state",
+    "prefix_base64": "U1RBVEU=",
+    "include_proof": false
+   }
+  },
+  "requestSha256": "cd8967be1ebce46ab68f7dab4c253f0fbb72e63dc7a3437e24b7436aa37b9345",
+  "endpointHost": "rpc.mainnet.fastnear.com",
+  "retrievedAt": "2026-11-09T21:40:39.669Z",
+  "httpStatus": 200,
+  "outcome": "result",
+  "response": {
+   "jsonrpc": "2.0",
+   "result": {
+    "block_hash": "GMYsqBGceYhBMSjtpRS3txaSdQWncvbS1K2uB5Eeo6UM",
+    "block_height": 223823984,
+    "values": [
+     {
+      "key": "U1RBVEU=",
+      "value": "EAAAAG9tbmkuYnJpZGdlLm5lYXIBAAAAAPPC+sRFUQAAAAAAAAAAAAB9AAAAAAAAAAEAAABt"
+     }
+    ]
+   },
+   "id": "intent-route"
+  },
+  "responseSha256": "359adbd7eb770d840a7e4200dce10672878fcfd19d8d9c44f625713b21994ab3",
+  "blockHeight": "223823984",
+  "blockHash": "GMYsqBGceYhBMSjtpRS3txaSdQWncvbS1K2uB5Eeo6UM"
+ },
+ {
+  "version": 1,
+  "request": {
+   "method": "query",
+   "params": {
+    "account_id": "sol-df27d7abcc1c656d4ac3b1399bbfbba1994e6d8c.omft.near",
+    "finality": "final",
+    "request_type": "view_state",
+    "prefix_base64": "V0lUSERSQVdfUkVMQVlFUl9BRERSRVNT",
+    "include_proof": false
+   }
+  },
+  "requestSha256": "6b37d620b310fd61acf28b7a0f841e70fac901d33d2187bfcabad9210d21b5c8",
+  "endpointHost": "archival-rpc.mainnet.fastnear.com",
+  "retrievedAt": "2026-11-09T21:40:39.684Z",
+  "httpStatus": 429,
+  "outcome": "rpc-error",
+  "response": {
+   "error": {
+    "name": "HTTP_OR_INVALID_RESPONSE",
+    "status": 429
+   }
+  },
+  "responseSha256": "61237278c9352f8451d67184c95ac9c89f629ae114b838d1b4fd481f22f73853",
+  "blockHeight": null,
+  "blockHash": null
+ },
+ {
+  "version": 1,
+  "request": {
+   "method": "query",
+   "params": {
+    "account_id": "sol-df27d7abcc1c656d4ac3b1399bbfbba1994e6d8c.omft.near",
+    "finality": "final",
+    "request_type": "view_state",
+    "prefix_base64": "V0lUSERSQVdfUkVMQVlFUl9BRERSRVNT",
+    "include_proof": false
+   }
+  },
+  "requestSha256": "6b37d620b310fd61acf28b7a0f841e70fac901d33d2187bfcabad9210d21b5c8",
+  "endpointHost": "rpc.mainnet.fastnear.com",
+  "retrievedAt": "2026-11-09T21:40:39.757Z",
+  "httpStatus": 200,
+  "outcome": "result",
+  "response": {
+   "jsonrpc": "2.0",
+   "result": {
+    "block_hash": "GMYsqBGceYhBMSjtpRS3txaSdQWncvbS1K2uB5Eeo6UM",
+    "block_height": 223823984,
+    "values": [
+     {
+      "key": "V0lUSERSQVdfUkVMQVlFUl9BRERSRVNT",
+      "value": "QAAAADJkNDFmNjhhZjEyMDdlZTZiOTZkNTAwMmJmNjA2NzE2ODZmYWNlZmI1YTUwZTY5ZTdhOGFmZjI0MzFkZWRjNTY="
+     }
+    ]
+   },
+   "id": "intent-route"
+  },
+  "responseSha256": "778bcbdaed757cff88ea94d0eb8140e7dbd29ece704e217223dbeef70fb22295",
+  "blockHeight": "223823984",
+  "blockHash": "GMYsqBGceYhBMSjtpRS3txaSdQWncvbS1K2uB5Eeo6UM"
+ },
+ {
+  "version": 1,
+  "request": {
+   "method": "query",
+   "params": {
+    "account_id": "omni.bridge.near",
+    "finality": "final",
+    "request_type": "call_function",
+    "method_name": "get_token_address",
+    "args_base64": "eyJjaGFpbl9raW5kIjoiU29sIiwidG9rZW4iOiJzb2wtZGYyN2Q3YWJjYzFjNjU2ZDRhYzNiMTM5OWJiZmJiYTE5OTRlNmQ4Yy5vbWZ0Lm5lYXIifQ=="
+   }
+  },
+  "requestSha256": "39168999facf46d6b65f48f77e52a1b78a253bde77bfa76f55bfb750f1a49eee",
+  "endpointHost": "archival-rpc.mainnet.fastnear.com",
+  "retrievedAt": "2026-11-09T21:40:39.772Z",
+  "httpStatus": 429,
+  "outcome": "rpc-error",
+  "response": {
+   "error": {
+    "name": "HTTP_OR_INVALID_RESPONSE",
+    "status": 429
+   }
+  },
+  "responseSha256": "61237278c9352f8451d67184c95ac9c89f629ae114b838d1b4fd481f22f73853",
+  "blockHeight": null,
+  "blockHash": null
+ },
+ {
+  "version": 1,
+  "request": {
+   "method": "query",
+   "params": {
+    "account_id": "omni.bridge.near",
+    "finality": "final",
+    "request_type": "call_function",
+    "method_name": "get_bridged_token",
+    "args_base64": "eyJhZGRyZXNzIjoibmVhcjpzb2wtZGYyN2Q3YWJjYzFjNjU2ZDRhYzNiMTM5OWJiZmJiYTE5OTRlNmQ4Yy5vbWZ0Lm5lYXIiLCJjaGFpbiI6IlNvbCJ9"
+   }
+  },
+  "requestSha256": "44d927f1d010f9733b7941fffc96e055e6f96ef83a8a56423a695e6bfb7194e0",
+  "endpointHost": "archival-rpc.mainnet.fastnear.com",
+  "retrievedAt": "2026-11-09T21:40:39.790Z",
+  "httpStatus": 429,
+  "outcome": "rpc-error",
+  "response": {
+   "error": {
+    "name": "HTTP_OR_INVALID_RESPONSE",
+    "status": 429
+   }
+  },
+  "responseSha256": "61237278c9352f8451d67184c95ac9c89f629ae114b838d1b4fd481f22f73853",
+  "blockHeight": null,
+  "blockHash": null
+ },
+ {
+  "version": 1,
+  "request": {
+   "method": "query",
+   "params": {
+    "account_id": "sol-1f00bb36e75cfc8e1274c1507cc3054f5b3f3ce1.omft.near",
+    "finality": "final",
+    "request_type": "view_account"
+   }
+  },
+  "requestSha256": "9d534d4457a7876150741078b7fb35d7e0d8494627699756ca4e5fc17d6f2225",
+  "endpointHost": "archival-rpc.mainnet.fastnear.com",
+  "retrievedAt": "2026-11-09T21:40:39.805Z",
+  "httpStatus": 429,
+  "outcome": "rpc-error",
+  "response": {
+   "error": {
+    "name": "HTTP_OR_INVALID_RESPONSE",
+    "status": 429
+   }
+  },
+  "responseSha256": "61237278c9352f8451d67184c95ac9c89f629ae114b838d1b4fd481f22f73853",
+  "blockHeight": null,
+  "blockHash": null
+ },
+ {
+  "version": 1,
+  "request": {
+   "method": "query",
+   "params": {
+    "account_id": "sol-1f00bb36e75cfc8e1274c1507cc3054f5b3f3ce1.omft.near",
+    "finality": "final",
+    "request_type": "call_function",
+    "method_name": "contract_source_metadata",
+    "args_base64": "e30="
+   }
+  },
+  "requestSha256": "1ab39fda1104a06736958084c6b17dde35004bb9b4093855e468b88bdc91ceb3",
+  "endpointHost": "archival-rpc.mainnet.fastnear.com",
+  "retrievedAt": "2026-11-09T21:40:39.820Z",
+  "httpStatus": 429,
+  "outcome": "rpc-error",
+  "response": {
+   "error": {
+    "name": "HTTP_OR_INVALID_RESPONSE",
+    "status": 429
+   }
+  },
+  "responseSha256": "61237278c9352f8451d67184c95ac9c89f629ae114b838d1b4fd481f22f73853",
+  "blockHeight": null,
+  "blockHash": null
+ },
+ {
+  "version": 1,
+  "request": {
+   "method": "query",
+   "params": {
+    "account_id": "sol-1f00bb36e75cfc8e1274c1507cc3054f5b3f3ce1.omft.near",
+    "finality": "final",
+    "request_type": "call_function",
+    "method_name": "owner_get",
+    "args_base64": "e30="
+   }
+  },
+  "requestSha256": "a68f23b151e55d75f7f0d27ab0dbf346ec730c8838c5bbfd686938b2191727a1",
+  "endpointHost": "archival-rpc.mainnet.fastnear.com",
+  "retrievedAt": "2026-11-09T21:40:39.838Z",
+  "httpStatus": 429,
+  "outcome": "rpc-error",
+  "response": {
+   "error": {
+    "name": "HTTP_OR_INVALID_RESPONSE",
+    "status": 429
+   }
+  },
+  "responseSha256": "61237278c9352f8451d67184c95ac9c89f629ae114b838d1b4fd481f22f73853",
+  "blockHeight": null,
+  "blockHash": null
+ },
+ {
+  "version": 1,
+  "request": {
+   "method": "query",
+   "params": {
+    "account_id": "sol-1f00bb36e75cfc8e1274c1507cc3054f5b3f3ce1.omft.near",
+    "finality": "final",
+    "request_type": "view_state",
+    "prefix_base64": "U1RBVEU=",
+    "include_proof": false
+   }
+  },
+  "requestSha256": "dad8c9979afc1b43b98c81b24f67e0d0c6fac2b28a8e8bd667210e8bcb4d112d",
+  "endpointHost": "archival-rpc.mainnet.fastnear.com",
+  "retrievedAt": "2026-11-09T21:40:39.856Z",
+  "httpStatus": 429,
+  "outcome": "rpc-error",
+  "response": {
+   "error": {
+    "name": "HTTP_OR_INVALID_RESPONSE",
+    "status": 429
+   }
+  },
+  "responseSha256": "61237278c9352f8451d67184c95ac9c89f629ae114b838d1b4fd481f22f73853",
+  "blockHeight": null,
+  "blockHash": null
+ },
+ {
+  "version": 1,
+  "request": {
+   "method": "query",
+   "params": {
+    "account_id": "sol-1f00bb36e75cfc8e1274c1507cc3054f5b3f3ce1.omft.near",
+    "finality": "final",
+    "request_type": "view_state",
+    "prefix_base64": "U1RBVEU=",
+    "include_proof": false
+   }
+  },
+  "requestSha256": "dad8c9979afc1b43b98c81b24f67e0d0c6fac2b28a8e8bd667210e8bcb4d112d",
+  "endpointHost": "rpc.mainnet.fastnear.com",
+  "retrievedAt": "2026-11-09T21:40:39.916Z",
+  "httpStatus": 200,
+  "outcome": "result",
+  "response": {
+   "jsonrpc": "2.0",
+   "result": {
+    "block_hash": "GMYsqBGceYhBMSjtpRS3txaSdQWncvbS1K2uB5Eeo6UM",
+    "block_height": 223823984,
+    "values": [
+     {
+      "key": "U1RBVEU=",
+      "value": "AQAAAABg0j4Inu0DAAAAAAAAAAAAfQAAAAAAAAABAAAAAQ=="
+     }
+    ]
+   },
+   "id": "intent-route"
+  },
+  "responseSha256": "3799cf2f356eab03d6aa1773717e24e34d9de90712a9c0c4d0b7c5a6ac97f348",
+  "blockHeight": "223823984",
+  "blockHash": "GMYsqBGceYhBMSjtpRS3txaSdQWncvbS1K2uB5Eeo6UM"
+ },
+ {
+  "version": 1,
+  "request": {
+   "method": "query",
+   "params": {
+    "account_id": "sol-1f00bb36e75cfc8e1274c1507cc3054f5b3f3ce1.omft.near",
+    "finality": "final",
+    "request_type": "view_state",
+    "prefix_base64": "V0lUSERSQVdfUkVMQVlFUl9BRERSRVNT",
+    "include_proof": false
+   }
+  },
+  "requestSha256": "04641c7ab848554589ad11852c2ad1467d2b7bfe1b1f164a22a65a89fb4311db",
+  "endpointHost": "archival-rpc.mainnet.fastnear.com",
+  "retrievedAt": "2026-11-09T21:40:39.931Z",
+  "httpStatus": 429,
+  "outcome": "rpc-error",
+  "response": {
+   "error": {
+    "name": "HTTP_OR_INVALID_RESPONSE",
+    "status": 429
+   }
+  },
+  "responseSha256": "61237278c9352f8451d67184c95ac9c89f629ae114b838d1b4fd481f22f73853",
+  "blockHeight": null,
+  "blockHash": null
+ },
+ {
+  "version": 1,
+  "request": {
+   "method": "query",
+   "params": {
+    "account_id": "sol-1f00bb36e75cfc8e1274c1507cc3054f5b3f3ce1.omft.near",
+    "finality": "final",
+    "request_type": "view_state",
+    "prefix_base64": "V0lUSERSQVdfUkVMQVlFUl9BRERSRVNT",
+    "include_proof": false
+   }
+  },
+  "requestSha256": "04641c7ab848554589ad11852c2ad1467d2b7bfe1b1f164a22a65a89fb4311db",
+  "endpointHost": "rpc.mainnet.fastnear.com",
+  "retrievedAt": "2026-11-09T21:40:39.997Z",
+  "httpStatus": 200,
+  "outcome": "result",
+  "response": {
+   "jsonrpc": "2.0",
+   "result": {
+    "block_hash": "GMYsqBGceYhBMSjtpRS3txaSdQWncvbS1K2uB5Eeo6UM",
+    "block_height": 223823984,
+    "values": []
+   },
+   "id": "intent-route"
+  },
+  "responseSha256": "cf44da486abe2484c1ae75d600036b8d43ba72d1b2b45ba1228aea5123185673",
+  "blockHeight": "223823984",
+  "blockHash": "GMYsqBGceYhBMSjtpRS3txaSdQWncvbS1K2uB5Eeo6UM"
+ },
+ {
+  "version": 1,
+  "request": {
+   "method": "query",
+   "params": {
+    "account_id": "omni.bridge.near",
+    "finality": "final",
+    "request_type": "call_function",
+    "method_name": "get_token_address",
+    "args_base64": "eyJjaGFpbl9raW5kIjoiU29sIiwidG9rZW4iOiJzb2wtMWYwMGJiMzZlNzVjZmM4ZTEyNzRjMTUwN2NjMzA1NGY1YjNmM2NlMS5vbWZ0Lm5lYXIifQ=="
+   }
+  },
+  "requestSha256": "8d65d66e880f5e80890237e415b4908a2f5f16a3fa2e37e219368006afcb7a48",
+  "endpointHost": "archival-rpc.mainnet.fastnear.com",
+  "retrievedAt": "2026-11-09T21:40:40.052Z",
+  "httpStatus": 200,
+  "outcome": "result",
+  "response": {
+   "jsonrpc": "2.0",
+   "result": {
+    "block_hash": "GMYsqBGceYhBMSjtpRS3txaSdQWncvbS1K2uB5Eeo6UM",
+    "block_height": 223823984,
+    "logs": [],
+    "result": [
+     110,
+     117,
+     108,
+     108
+    ]
+   },
+   "id": "intent-route"
+  },
+  "responseSha256": "b6f6aa77c2b1787bce70344bacc20f7355997fe2fca2f207331b8c44031a9abf",
+  "blockHeight": "223823984",
+  "blockHash": "GMYsqBGceYhBMSjtpRS3txaSdQWncvbS1K2uB5Eeo6UM"
+ },
+ {
+  "version": 1,
+  "request": {
+   "method": "query",
+   "params": {
+    "account_id": "omni.bridge.near",
+    "finality": "final",
+    "request_type": "call_function",
+    "method_name": "get_bridged_token",
+    "args_base64": "eyJhZGRyZXNzIjoibmVhcjpzb2wtMWYwMGJiMzZlNzVjZmM4ZTEyNzRjMTUwN2NjMzA1NGY1YjNmM2NlMS5vbWZ0Lm5lYXIiLCJjaGFpbiI6IlNvbCJ9"
+   }
+  },
+  "requestSha256": "820830601dbf1b2facb63af789bec48f45748b868bf2e00494c290f4b2caeb25",
+  "endpointHost": "archival-rpc.mainnet.fastnear.com",
+  "retrievedAt": "2026-11-09T21:40:40.068Z",
+  "httpStatus": 429,
+  "outcome": "rpc-error",
+  "response": {
+   "error": {
+    "name": "HTTP_OR_INVALID_RESPONSE",
+    "status": 429
+   }
+  },
+  "responseSha256": "61237278c9352f8451d67184c95ac9c89f629ae114b838d1b4fd481f22f73853",
+  "blockHeight": null,
+  "blockHash": null
+ },
+ {
+  "version": 1,
+  "request": {
+   "method": "query",
+   "params": {
+    "account_id": "sol-c634d063ceff771aff0c972ec396fd915a6bbd0e.omft.near",
+    "finality": "final",
+    "request_type": "view_account"
+   }
+  },
+  "requestSha256": "e138d8b36ea0e128ef5f2f07c26ecde00c6feba883662c056219914a456df345",
+  "endpointHost": "archival-rpc.mainnet.fastnear.com",
+  "retrievedAt": "2026-11-09T21:40:40.091Z",
+  "httpStatus": 429,
+  "outcome": "rpc-error",
+  "response": {
+   "error": {
+    "name": "HTTP_OR_INVALID_RESPONSE",
+    "status": 429
+   }
+  },
+  "responseSha256": "61237278c9352f8451d67184c95ac9c89f629ae114b838d1b4fd481f22f73853",
+  "blockHeight": null,
+  "blockHash": null
+ },
+ {
+  "version": 1,
+  "request": {
+   "method": "query",
+   "params": {
+    "account_id": "sol-c634d063ceff771aff0c972ec396fd915a6bbd0e.omft.near",
+    "finality": "final",
+    "request_type": "call_function",
+    "method_name": "contract_source_metadata",
+    "args_base64": "e30="
+   }
+  },
+  "requestSha256": "4a96640054a015e528371a0f1fb93b783d4e917619281d0991e5bd33b7a6de12",
+  "endpointHost": "archival-rpc.mainnet.fastnear.com",
+  "retrievedAt": "2026-11-09T21:40:40.104Z",
+  "httpStatus": 429,
+  "outcome": "rpc-error",
+  "response": {
+   "error": {
+    "name": "HTTP_OR_INVALID_RESPONSE",
+    "status": 429
+   }
+  },
+  "responseSha256": "61237278c9352f8451d67184c95ac9c89f629ae114b838d1b4fd481f22f73853",
+  "blockHeight": null,
+  "blockHash": null
+ },
+ {
+  "version": 1,
+  "request": {
+   "method": "query",
+   "params": {
+    "account_id": "sol-c634d063ceff771aff0c972ec396fd915a6bbd0e.omft.near",
+    "finality": "final",
+    "request_type": "call_function",
+    "method_name": "owner_get",
+    "args_base64": "e30="
+   }
+  },
+  "requestSha256": "4b85f332e775205613c9ad2f79971ae7abb84b93fd6ab4accf88a071babd52c1",
+  "endpointHost": "archival-rpc.mainnet.fastnear.com",
+  "retrievedAt": "2026-11-09T21:40:40.120Z",
+  "httpStatus": 429,
+  "outcome": "rpc-error",
+  "response": {
+   "error": {
+    "name": "HTTP_OR_INVALID_RESPONSE",
+    "status": 429
+   }
+  },
+  "responseSha256": "61237278c9352f8451d67184c95ac9c89f629ae114b838d1b4fd481f22f73853",
+  "blockHeight": null,
+  "blockHash": null
+ },
+ {
+  "version": 1,
+  "request": {
+   "method": "query",
+   "params": {
+    "account_id": "sol-c634d063ceff771aff0c972ec396fd915a6bbd0e.omft.near",
+    "finality": "final",
+    "request_type": "view_state",
+    "prefix_base64": "U1RBVEU=",
+    "include_proof": false
+   }
+  },
+  "requestSha256": "710579c89ff13e6199fa8fc5617cb8ed1a75e9feacb208a0fb3244b626ff6041",
+  "endpointHost": "archival-rpc.mainnet.fastnear.com",
+  "retrievedAt": "2026-11-09T21:40:40.136Z",
+  "httpStatus": 429,
+  "outcome": "rpc-error",
+  "response": {
+   "error": {
+    "name": "HTTP_OR_INVALID_RESPONSE",
+    "status": 429
+   }
+  },
+  "responseSha256": "61237278c9352f8451d67184c95ac9c89f629ae114b838d1b4fd481f22f73853",
+  "blockHeight": null,
+  "blockHash": null
+ },
+ {
+  "version": 1,
+  "request": {
+   "method": "query",
+   "params": {
+    "account_id": "sol-c634d063ceff771aff0c972ec396fd915a6bbd0e.omft.near",
+    "finality": "final",
+    "request_type": "view_state",
+    "prefix_base64": "U1RBVEU=",
+    "include_proof": false
+   }
+  },
+  "requestSha256": "710579c89ff13e6199fa8fc5617cb8ed1a75e9feacb208a0fb3244b626ff6041",
+  "endpointHost": "rpc.mainnet.fastnear.com",
+  "retrievedAt": "2026-11-09T21:40:40.207Z",
+  "httpStatus": 200,
+  "outcome": "result",
+  "response": {
+   "jsonrpc": "2.0",
+   "result": {
+    "block_hash": "EFebaXpKF41xSqyEk7yt6tiD3g3bfCJ9CGfJKwWyJdcZ",
+    "block_height": 223823985,
+    "values": [
+     {
+      "key": "U1RBVEU=",
+      "value": "EAAAAG9tbmkuYnJpZGdlLm5lYXIBAAAAAEncMpBFAAAAAAAAAAAAAAB9AAAAAAAAAAEAAABt"
+     }
+    ]
+   },
+   "id": "intent-route"
+  },
+  "responseSha256": "1b963eb1c2e07e45220a62eef7787f3345b0c0c7fd63146e7c209967ffbd23ff",
+  "blockHeight": "223823985",
+  "blockHash": "EFebaXpKF41xSqyEk7yt6tiD3g3bfCJ9CGfJKwWyJdcZ"
+ },
+ {
+  "version": 1,
+  "request": {
+   "method": "query",
+   "params": {
+    "account_id": "sol-c634d063ceff771aff0c972ec396fd915a6bbd0e.omft.near",
+    "finality": "final",
+    "request_type": "view_state",
+    "prefix_base64": "V0lUSERSQVdfUkVMQVlFUl9BRERSRVNT",
+    "include_proof": false
+   }
+  },
+  "requestSha256": "3286ce57ca408458d90d835d0bc4aed97c0e986300136209dd1ecdee5b88ab82",
+  "endpointHost": "archival-rpc.mainnet.fastnear.com",
+  "retrievedAt": "2026-11-09T21:40:40.222Z",
+  "httpStatus": 429,
+  "outcome": "rpc-error",
+  "response": {
+   "error": {
+    "name": "HTTP_OR_INVALID_RESPONSE",
+    "status": 429
+   }
+  },
+  "responseSha256": "61237278c9352f8451d67184c95ac9c89f629ae114b838d1b4fd481f22f73853",
+  "blockHeight": null,
+  "blockHash": null
+ },
+ {
+  "version": 1,
+  "request": {
+   "method": "query",
+   "params": {
+    "account_id": "sol-c634d063ceff771aff0c972ec396fd915a6bbd0e.omft.near",
+    "finality": "final",
+    "request_type": "view_state",
+    "prefix_base64": "V0lUSERSQVdfUkVMQVlFUl9BRERSRVNT",
+    "include_proof": false
+   }
+  },
+  "requestSha256": "3286ce57ca408458d90d835d0bc4aed97c0e986300136209dd1ecdee5b88ab82",
+  "endpointHost": "rpc.mainnet.fastnear.com",
+  "retrievedAt": "2026-11-09T21:40:40.281Z",
+  "httpStatus": 200,
+  "outcome": "result",
+  "response": {
+   "jsonrpc": "2.0",
+   "result": {
+    "block_hash": "EFebaXpKF41xSqyEk7yt6tiD3g3bfCJ9CGfJKwWyJdcZ",
+    "block_height": 223823985,
+    "values": [
+     {
+      "key": "V0lUSERSQVdfUkVMQVlFUl9BRERSRVNT",
+      "value": "QAAAADJkNDFmNjhhZjEyMDdlZTZiOTZkNTAwMmJmNjA2NzE2ODZmYWNlZmI1YTUwZTY5ZTdhOGFmZjI0MzFkZWRjNTY="
+     }
+    ]
+   },
+   "id": "intent-route"
+  },
+  "responseSha256": "ee048ff0a21e43c0a7daf1dd11b26ddddf66a892fd725caf7c7d72f26bb20426",
+  "blockHeight": "223823985",
+  "blockHash": "EFebaXpKF41xSqyEk7yt6tiD3g3bfCJ9CGfJKwWyJdcZ"
+ },
+ {
+  "version": 1,
+  "request": {
+   "method": "query",
+   "params": {
+    "account_id": "omni.bridge.near",
+    "finality": "final",
+    "request_type": "call_function",
+    "method_name": "get_token_address",
+    "args_base64": "eyJjaGFpbl9raW5kIjoiU29sIiwidG9rZW4iOiJzb2wtYzYzNGQwNjNjZWZmNzcxYWZmMGM5NzJlYzM5NmZkOTE1YTZiYmQwZS5vbWZ0Lm5lYXIifQ=="
+   }
+  },
+  "requestSha256": "30453a104391ee26c34d583427cd09ba9253f93365c7c5157eb421b906e61d44",
+  "endpointHost": "archival-rpc.mainnet.fastnear.com",
+  "retrievedAt": "2026-11-09T21:40:40.295Z",
+  "httpStatus": 429,
+  "outcome": "rpc-error",
+  "response": {
+   "error": {
+    "name": "HTTP_OR_INVALID_RESPONSE",
+    "status": 429
+   }
+  },
+  "responseSha256": "61237278c9352f8451d67184c95ac9c89f629ae114b838d1b4fd481f22f73853",
+  "blockHeight": null,
+  "blockHash": null
+ },
+ {
+  "version": 1,
+  "request": {
+   "method": "query",
+   "params": {
+    "account_id": "omni.bridge.near",
+    "finality": "final",
+    "request_type": "call_function",
+    "method_name": "get_bridged_token",
+    "args_base64": "eyJhZGRyZXNzIjoibmVhcjpzb2wtYzYzNGQwNjNjZWZmNzcxYWZmMGM5NzJlYzM5NmZkOTE1YTZiYmQwZS5vbWZ0Lm5lYXIiLCJjaGFpbiI6IlNvbCJ9"
+   }
+  },
+  "requestSha256": "985081cfef438c1b0284bc619317f97eb97a82006f46475fe3fbe7cc9d10e7be",
+  "endpointHost": "archival-rpc.mainnet.fastnear.com",
+  "retrievedAt": "2026-11-09T21:40:40.310Z",
+  "httpStatus": 429,
+  "outcome": "rpc-error",
+  "response": {
+   "error": {
+    "name": "HTTP_OR_INVALID_RESPONSE",
+    "status": 429
+   }
+  },
+  "responseSha256": "61237278c9352f8451d67184c95ac9c89f629ae114b838d1b4fd481f22f73853",
+  "blockHeight": null,
+  "blockHash": null
+ },
+ {
+  "version": 1,
+  "request": {
+   "method": "query",
+   "params": {
+    "account_id": "sol-d600e625449a4d9380eaf5e3265e54c90d34e260.omft.near",
+    "finality": "final",
+    "request_type": "view_account"
+   }
+  },
+  "requestSha256": "9e461b5b08a559ed616f42f1d2c41f978cf87ad6248f66bb0e6c104f4b99be62",
+  "endpointHost": "archival-rpc.mainnet.fastnear.com",
+  "retrievedAt": "2026-11-09T21:40:40.324Z",
+  "httpStatus": 429,
+  "outcome": "rpc-error",
+  "response": {
+   "error": {
+    "name": "HTTP_OR_INVALID_RESPONSE",
+    "status": 429
+   }
+  },
+  "responseSha256": "61237278c9352f8451d67184c95ac9c89f629ae114b838d1b4fd481f22f73853",
+  "blockHeight": null,
+  "blockHash": null
+ },
+ {
+  "version": 1,
+  "request": {
+   "method": "query",
+   "params": {
+    "account_id": "sol-d600e625449a4d9380eaf5e3265e54c90d34e260.omft.near",
+    "finality": "final",
+    "request_type": "call_function",
+    "method_name": "contract_source_metadata",
+    "args_base64": "e30="
+   }
+  },
+  "requestSha256": "9220413c47943ab94a04359e6fc91ddab30ccf238e753857dff558253e263d66",
+  "endpointHost": "archival-rpc.mainnet.fastnear.com",
+  "retrievedAt": "2026-11-09T21:40:40.339Z",
+  "httpStatus": 429,
+  "outcome": "rpc-error",
+  "response": {
+   "error": {
+    "name": "HTTP_OR_INVALID_RESPONSE",
+    "status": 429
+   }
+  },
+  "responseSha256": "61237278c9352f8451d67184c95ac9c89f629ae114b838d1b4fd481f22f73853",
+  "blockHeight": null,
+  "blockHash": null
+ },
+ {
+  "version": 1,
+  "request": {
+   "method": "query",
+   "params": {
+    "account_id": "sol-d600e625449a4d9380eaf5e3265e54c90d34e260.omft.near",
+    "finality": "final",
+    "request_type": "call_function",
+    "method_name": "owner_get",
+    "args_base64": "e30="
+   }
+  },
+  "requestSha256": "129f4f8a5d210492447a1c9c194000513029e988bbdba65b2d02de43b8ad5ca1",
+  "endpointHost": "archival-rpc.mainnet.fastnear.com",
+  "retrievedAt": "2026-11-09T21:40:40.353Z",
+  "httpStatus": 429,
+  "outcome": "rpc-error",
+  "response": {
+   "error": {
+    "name": "HTTP_OR_INVALID_RESPONSE",
+    "status": 429
+   }
+  },
+  "responseSha256": "61237278c9352f8451d67184c95ac9c89f629ae114b838d1b4fd481f22f73853",
+  "blockHeight": null,
+  "blockHash": null
+ },
+ {
+  "version": 1,
+  "request": {
+   "method": "query",
+   "params": {
+    "account_id": "sol-d600e625449a4d9380eaf5e3265e54c90d34e260.omft.near",
+    "finality": "final",
+    "request_type": "view_state",
+    "prefix_base64": "U1RBVEU=",
+    "include_proof": false
+   }
+  },
+  "requestSha256": "976f2e8a529ab80561ce74085e3c126a05203ed3fc420cc27eb7eff71bd45d89",
+  "endpointHost": "archival-rpc.mainnet.fastnear.com",
+  "retrievedAt": "2026-11-09T21:40:40.370Z",
+  "httpStatus": 429,
+  "outcome": "rpc-error",
+  "response": {
+   "error": {
+    "name": "HTTP_OR_INVALID_RESPONSE",
+    "status": 429
+   }
+  },
+  "responseSha256": "61237278c9352f8451d67184c95ac9c89f629ae114b838d1b4fd481f22f73853",
+  "blockHeight": null,
+  "blockHash": null
+ },
+ {
+  "version": 1,
+  "request": {
+   "method": "query",
+   "params": {
+    "account_id": "sol-d600e625449a4d9380eaf5e3265e54c90d34e260.omft.near",
+    "finality": "final",
+    "request_type": "view_state",
+    "prefix_base64": "U1RBVEU=",
+    "include_proof": false
+   }
+  },
+  "requestSha256": "976f2e8a529ab80561ce74085e3c126a05203ed3fc420cc27eb7eff71bd45d89",
+  "endpointHost": "rpc.mainnet.fastnear.com",
+  "retrievedAt": "2026-11-09T21:40:40.436Z",
+  "httpStatus": 200,
+  "outcome": "result",
+  "response": {
+   "jsonrpc": "2.0",
+   "result": {
+    "block_hash": "EFebaXpKF41xSqyEk7yt6tiD3g3bfCJ9CGfJKwWyJdcZ",
+    "block_height": 223823985,
+    "values": [
+     {
+      "key": "U1RBVEU=",
+      "value": "EAAAAG9tbmkuYnJpZGdlLm5lYXIBAAAAACBxdYkUAAAAAAAAAAAAAAB9AAAAAAAAAAEAAABt"
+     }
+    ]
+   },
+   "id": "intent-route"
+  },
+  "responseSha256": "a31993a2fc7f970827179e9a0c668e7c9ca0a149674f6b665e7c6fb8871b1a79",
+  "blockHeight": "223823985",
+  "blockHash": "EFebaXpKF41xSqyEk7yt6tiD3g3bfCJ9CGfJKwWyJdcZ"
+ },
+ {
+  "version": 1,
+  "request": {
+   "method": "query",
+   "params": {
+    "account_id": "sol-d600e625449a4d9380eaf5e3265e54c90d34e260.omft.near",
+    "finality": "final",
+    "request_type": "view_state",
+    "prefix_base64": "V0lUSERSQVdfUkVMQVlFUl9BRERSRVNT",
+    "include_proof": false
+   }
+  },
+  "requestSha256": "c46caf6f164ed4703f74a45f96204cdb52c29edef36bec46ed729e79ff61fe62",
+  "endpointHost": "archival-rpc.mainnet.fastnear.com",
+  "retrievedAt": "2026-11-09T21:40:40.452Z",
+  "httpStatus": 429,
+  "outcome": "rpc-error",
+  "response": {
+   "error": {
+    "name": "HTTP_OR_INVALID_RESPONSE",
+    "status": 429
+   }
+  },
+  "responseSha256": "61237278c9352f8451d67184c95ac9c89f629ae114b838d1b4fd481f22f73853",
+  "blockHeight": null,
+  "blockHash": null
+ },
+ {
+  "version": 1,
+  "request": {
+   "method": "query",
+   "params": {
+    "account_id": "sol-d600e625449a4d9380eaf5e3265e54c90d34e260.omft.near",
+    "finality": "final",
+    "request_type": "view_state",
+    "prefix_base64": "V0lUSERSQVdfUkVMQVlFUl9BRERSRVNT",
+    "include_proof": false
+   }
+  },
+  "requestSha256": "c46caf6f164ed4703f74a45f96204cdb52c29edef36bec46ed729e79ff61fe62",
+  "endpointHost": "rpc.mainnet.fastnear.com",
+  "retrievedAt": "2026-11-09T21:40:40.514Z",
+  "httpStatus": 200,
+  "outcome": "result",
+  "response": {
+   "jsonrpc": "2.0",
+   "result": {
+    "block_hash": "EFebaXpKF41xSqyEk7yt6tiD3g3bfCJ9CGfJKwWyJdcZ",
+    "block_height": 223823985,
+    "values": [
+     {
+      "key": "V0lUSERSQVdfUkVMQVlFUl9BRERSRVNT",
+      "value": "QAAAADJkNDFmNjhhZjEyMDdlZTZiOTZkNTAwMmJmNjA2NzE2ODZmYWNlZmI1YTUwZTY5ZTdhOGFmZjI0MzFkZWRjNTY="
+     }
+    ]
+   },
+   "id": "intent-route"
+  },
+  "responseSha256": "ee048ff0a21e43c0a7daf1dd11b26ddddf66a892fd725caf7c7d72f26bb20426",
+  "blockHeight": "223823985",
+  "blockHash": "EFebaXpKF41xSqyEk7yt6tiD3g3bfCJ9CGfJKwWyJdcZ"
+ },
+ {
+  "version": 1,
+  "request": {
+   "method": "query",
+   "params": {
+    "account_id": "omni.bridge.near",
+    "finality": "final",
+    "request_type": "call_function",
+    "method_name": "get_token_address",
+    "args_base64": "eyJjaGFpbl9raW5kIjoiU29sIiwidG9rZW4iOiJzb2wtZDYwMGU2MjU0NDlhNGQ5MzgwZWFmNWUzMjY1ZTU0YzkwZDM0ZTI2MC5vbWZ0Lm5lYXIifQ=="
+   }
+  },
+  "requestSha256": "dd598e225ba07aaf7d3c7e5e06055e75040a6a786a64ccfaac52ef0eaef9c681",
+  "endpointHost": "archival-rpc.mainnet.fastnear.com",
+  "retrievedAt": "2026-11-09T21:40:40.529Z",
+  "httpStatus": 429,
+  "outcome": "rpc-error",
+  "response": {
+   "error": {
+    "name": "HTTP_OR_INVALID_RESPONSE",
+    "status": 429
+   }
+  },
+  "responseSha256": "61237278c9352f8451d67184c95ac9c89f629ae114b838d1b4fd481f22f73853",
+  "blockHeight": null,
+  "blockHash": null
+ },
+ {
+  "version": 1,
+  "request": {
+   "method": "query",
+   "params": {
+    "account_id": "omni.bridge.near",
+    "finality": "final",
+    "request_type": "call_function",
+    "method_name": "get_bridged_token",
+    "args_base64": "eyJhZGRyZXNzIjoibmVhcjpzb2wtZDYwMGU2MjU0NDlhNGQ5MzgwZWFmNWUzMjY1ZTU0YzkwZDM0ZTI2MC5vbWZ0Lm5lYXIiLCJjaGFpbiI6IlNvbCJ9"
+   }
+  },
+  "requestSha256": "adf14f4664381616bfa24b363e6b39982394c4042ef454a8dfc279861202b18a",
+  "endpointHost": "archival-rpc.mainnet.fastnear.com",
+  "retrievedAt": "2026-11-09T21:40:40.543Z",
+  "httpStatus": 429,
+  "outcome": "rpc-error",
+  "response": {
+   "error": {
+    "name": "HTTP_OR_INVALID_RESPONSE",
+    "status": 429
+   }
+  },
+  "responseSha256": "61237278c9352f8451d67184c95ac9c89f629ae114b838d1b4fd481f22f73853",
+  "blockHeight": null,
+  "blockHash": null
+ },
+ {
+  "version": 1,
+  "request": {
+   "method": "query",
+   "params": {
+    "account_id": "sol.omft.near",
+    "finality": "final",
+    "request_type": "view_account"
+   }
+  },
+  "requestSha256": "c3fc947ec77cff6fb9755cac457a6fc9682dbdb99ce0c329addc3e977da6d30a",
+  "endpointHost": "archival-rpc.mainnet.fastnear.com",
+  "retrievedAt": "2026-11-09T21:40:40.558Z",
+  "httpStatus": 429,
+  "outcome": "rpc-error",
+  "response": {
+   "error": {
+    "name": "HTTP_OR_INVALID_RESPONSE",
+    "status": 429
+   }
+  },
+  "responseSha256": "61237278c9352f8451d67184c95ac9c89f629ae114b838d1b4fd481f22f73853",
+  "blockHeight": null,
+  "blockHash": null
+ },
+ {
+  "version": 1,
+  "request": {
+   "method": "query",
+   "params": {
+    "account_id": "sol.omft.near",
+    "finality": "final",
+    "request_type": "call_function",
+    "method_name": "contract_source_metadata",
+    "args_base64": "e30="
+   }
+  },
+  "requestSha256": "52ef0bfdc1f80113b28c0e280edb614ca0fab4a6c53cc42b4eb908688e154930",
+  "endpointHost": "archival-rpc.mainnet.fastnear.com",
+  "retrievedAt": "2026-11-09T21:40:40.573Z",
+  "httpStatus": 429,
+  "outcome": "rpc-error",
+  "response": {
+   "error": {
+    "name": "HTTP_OR_INVALID_RESPONSE",
+    "status": 429
+   }
+  },
+  "responseSha256": "61237278c9352f8451d67184c95ac9c89f629ae114b838d1b4fd481f22f73853",
+  "blockHeight": null,
+  "blockHash": null
+ },
+ {
+  "version": 1,
+  "request": {
+   "method": "query",
+   "params": {
+    "account_id": "sol.omft.near",
+    "finality": "final",
+    "request_type": "call_function",
+    "method_name": "owner_get",
+    "args_base64": "e30="
+   }
+  },
+  "requestSha256": "33a93b60a0ef13938c50c6b824118cb6bb04783f77afa0f8875b8fca8a0b2ef8",
+  "endpointHost": "archival-rpc.mainnet.fastnear.com",
+  "retrievedAt": "2026-11-09T21:40:40.586Z",
+  "httpStatus": 429,
+  "outcome": "rpc-error",
+  "response": {
+   "error": {
+    "name": "HTTP_OR_INVALID_RESPONSE",
+    "status": 429
+   }
+  },
+  "responseSha256": "61237278c9352f8451d67184c95ac9c89f629ae114b838d1b4fd481f22f73853",
+  "blockHeight": null,
+  "blockHash": null
+ },
+ {
+  "version": 1,
+  "request": {
+   "method": "query",
+   "params": {
+    "account_id": "sol.omft.near",
+    "finality": "final",
+    "request_type": "view_state",
+    "prefix_base64": "U1RBVEU=",
+    "include_proof": false
+   }
+  },
+  "requestSha256": "565e276141845599a5293154a6403815dfc425da7f8724c97347cc406aede2a6",
+  "endpointHost": "archival-rpc.mainnet.fastnear.com",
+  "retrievedAt": "2026-11-09T21:40:40.600Z",
+  "httpStatus": 429,
+  "outcome": "rpc-error",
+  "response": {
+   "error": {
+    "name": "HTTP_OR_INVALID_RESPONSE",
+    "status": 429
+   }
+  },
+  "responseSha256": "61237278c9352f8451d67184c95ac9c89f629ae114b838d1b4fd481f22f73853",
+  "blockHeight": null,
+  "blockHash": null
+ },
+ {
+  "version": 1,
+  "request": {
+   "method": "query",
+   "params": {
+    "account_id": "sol.omft.near",
+    "finality": "final",
+    "request_type": "view_state",
+    "prefix_base64": "U1RBVEU=",
+    "include_proof": false
+   }
+  },
+  "requestSha256": "565e276141845599a5293154a6403815dfc425da7f8724c97347cc406aede2a6",
+  "endpointHost": "rpc.mainnet.fastnear.com",
+  "retrievedAt": "2026-11-09T21:40:40.666Z",
+  "httpStatus": 200,
+  "outcome": "result",
+  "response": {
+   "jsonrpc": "2.0",
+   "result": {
+    "block_hash": "EFebaXpKF41xSqyEk7yt6tiD3g3bfCJ9CGfJKwWyJdcZ",
+    "block_height": 223823985,
+    "values": [
+     {
+      "key": "U1RBVEU=",
+      "value": "EAAAAG9tbmkuYnJpZGdlLm5lYXIBAAAAADN65dsDGAAAAAAAAAAAAAB9AAAAAAAAAAEAAABt"
+     }
+    ]
+   },
+   "id": "intent-route"
+  },
+  "responseSha256": "e8a15245728ddaeadbb127c47ba35f9187bf42331e4d07035eac5b20b8507d0a",
+  "blockHeight": "223823985",
+  "blockHash": "EFebaXpKF41xSqyEk7yt6tiD3g3bfCJ9CGfJKwWyJdcZ"
+ },
+ {
+  "version": 1,
+  "request": {
+   "method": "query",
+   "params": {
+    "account_id": "sol.omft.near",
+    "finality": "final",
+    "request_type": "view_state",
+    "prefix_base64": "V0lUSERSQVdfUkVMQVlFUl9BRERSRVNT",
+    "include_proof": false
+   }
+  },
+  "requestSha256": "c9c2dccb1a2e8b706f3e49fd704f34cfa06916e72cb707f2133c7c7ab1470be7",
+  "endpointHost": "archival-rpc.mainnet.fastnear.com",
+  "retrievedAt": "2026-11-09T21:40:40.684Z",
+  "httpStatus": 429,
+  "outcome": "rpc-error",
+  "response": {
+   "error": {
+    "name": "HTTP_OR_INVALID_RESPONSE",
+    "status": 429
+   }
+  },
+  "responseSha256": "61237278c9352f8451d67184c95ac9c89f629ae114b838d1b4fd481f22f73853",
+  "blockHeight": null,
+  "blockHash": null
+ },
+ {
+  "version": 1,
+  "request": {
+   "method": "query",
+   "params": {
+    "account_id": "sol.omft.near",
+    "finality": "final",
+    "request_type": "view_state",
+    "prefix_base64": "V0lUSERSQVdfUkVMQVlFUl9BRERSRVNT",
+    "include_proof": false
+   }
+  },
+  "requestSha256": "c9c2dccb1a2e8b706f3e49fd704f34cfa06916e72cb707f2133c7c7ab1470be7",
+  "endpointHost": "rpc.mainnet.fastnear.com",
+  "retrievedAt": "2026-11-09T21:40:40.748Z",
+  "httpStatus": 200,
+  "outcome": "result",
+  "response": {
+   "jsonrpc": "2.0",
+   "result": {
+    "block_hash": "EFebaXpKF41xSqyEk7yt6tiD3g3bfCJ9CGfJKwWyJdcZ",
+    "block_height": 223823985,
+    "values": [
+     {
+      "key": "V0lUSERSQVdfUkVMQVlFUl9BRERSRVNT",
+      "value": "QAAAADJkNDFmNjhhZjEyMDdlZTZiOTZkNTAwMmJmNjA2NzE2ODZmYWNlZmI1YTUwZTY5ZTdhOGFmZjI0MzFkZWRjNTY="
+     }
+    ]
+   },
+   "id": "intent-route"
+  },
+  "responseSha256": "ee048ff0a21e43c0a7daf1dd11b26ddddf66a892fd725caf7c7d72f26bb20426",
+  "blockHeight": "223823985",
+  "blockHash": "EFebaXpKF41xSqyEk7yt6tiD3g3bfCJ9CGfJKwWyJdcZ"
+ },
+ {
+  "version": 1,
+  "request": {
+   "method": "query",
+   "params": {
+    "account_id": "omni.bridge.near",
+    "finality": "final",
+    "request_type": "call_function",
+    "method_name": "get_token_address",
+    "args_base64": "eyJjaGFpbl9raW5kIjoiU29sIiwidG9rZW4iOiJzb2wub21mdC5uZWFyIn0="
+   }
+  },
+  "requestSha256": "ab7e6919bb9556d2643dcbbb75e1b6182da21734589f331c7294215a6bb55f13",
+  "endpointHost": "archival-rpc.mainnet.fastnear.com",
+  "retrievedAt": "2026-11-09T21:40:40.763Z",
+  "httpStatus": 429,
+  "outcome": "rpc-error",
+  "response": {
+   "error": {
+    "name": "HTTP_OR_INVALID_RESPONSE",
+    "status": 429
+   }
+  },
+  "responseSha256": "61237278c9352f8451d67184c95ac9c89f629ae114b838d1b4fd481f22f73853",
+  "blockHeight": null,
+  "blockHash": null
+ },
+ {
+  "version": 1,
+  "request": {
+   "method": "query",
+   "params": {
+    "account_id": "omni.bridge.near",
+    "finality": "final",
+    "request_type": "call_function",
+    "method_name": "get_bridged_token",
+    "args_base64": "eyJhZGRyZXNzIjoibmVhcjpzb2wub21mdC5uZWFyIiwiY2hhaW4iOiJTb2wifQ=="
+   }
+  },
+  "requestSha256": "5967d3f45efbf5ed32afdc207bfc2bdf25ab3b9ef1fe3ca95422468abb173128",
+  "endpointHost": "archival-rpc.mainnet.fastnear.com",
+  "retrievedAt": "2026-11-09T21:40:40.779Z",
+  "httpStatus": 429,
+  "outcome": "rpc-error",
+  "response": {
+   "error": {
+    "name": "HTTP_OR_INVALID_RESPONSE",
+    "status": 429
+   }
+  },
+  "responseSha256": "61237278c9352f8451d67184c95ac9c89f629ae114b838d1b4fd481f22f73853",
+  "blockHeight": null,
+  "blockHash": null
+ },
+ {
+  "version": 1,
+  "request": {
+   "method": "query",
+   "params": {
+    "account_id": "aptos.omft.near",
+    "finality": "final",
+    "request_type": "view_account"
+   }
+  },
+  "requestSha256": "e92665624c1ee77ddbdce08ba51cda4fe5002013936596437ccec66002f0935a",
+  "endpointHost": "archival-rpc.mainnet.fastnear.com",
+  "retrievedAt": "2026-11-09T21:40:40.793Z",
+  "httpStatus": 429,
+  "outcome": "rpc-error",
+  "response": {
+   "error": {
+    "name": "HTTP_OR_INVALID_RESPONSE",
+    "status": 429
+   }
+  },
+  "responseSha256": "61237278c9352f8451d67184c95ac9c89f629ae114b838d1b4fd481f22f73853",
+  "blockHeight": null,
+  "blockHash": null
+ },
+ {
+  "version": 1,
+  "request": {
+   "method": "query",
+   "params": {
+    "account_id": "aptos.omft.near",
+    "finality": "final",
+    "request_type": "call_function",
+    "method_name": "contract_source_metadata",
+    "args_base64": "e30="
+   }
+  },
+  "requestSha256": "9bca0bf1bab41146ec0bca878839df3fcdb580ad9eeb74118440e4027bcc8af0",
+  "endpointHost": "archival-rpc.mainnet.fastnear.com",
+  "retrievedAt": "2026-11-09T21:40:40.806Z",
+  "httpStatus": 429,
+  "outcome": "rpc-error",
+  "response": {
+   "error": {
+    "name": "HTTP_OR_INVALID_RESPONSE",
+    "status": 429
+   }
+  },
+  "responseSha256": "61237278c9352f8451d67184c95ac9c89f629ae114b838d1b4fd481f22f73853",
+  "blockHeight": null,
+  "blockHash": null
+ },
+ {
+  "version": 1,
+  "request": {
+   "method": "query",
+   "params": {
+    "account_id": "aptos.omft.near",
+    "finality": "final",
+    "request_type": "call_function",
+    "method_name": "owner_get",
+    "args_base64": "e30="
+   }
+  },
+  "requestSha256": "8ffb942c1e4beb5061101d7c38df466bf524a322fde0214977fc5ea678c178b2",
+  "endpointHost": "archival-rpc.mainnet.fastnear.com",
+  "retrievedAt": "2026-11-09T21:40:40.822Z",
+  "httpStatus": 429,
+  "outcome": "rpc-error",
+  "response": {
+   "error": {
+    "name": "HTTP_OR_INVALID_RESPONSE",
+    "status": 429
+   }
+  },
+  "responseSha256": "61237278c9352f8451d67184c95ac9c89f629ae114b838d1b4fd481f22f73853",
+  "blockHeight": null,
+  "blockHash": null
+ },
+ {
+  "version": 1,
+  "request": {
+   "method": "query",
+   "params": {
+    "account_id": "aptos.omft.near",
+    "finality": "final",
+    "request_type": "view_state",
+    "prefix_base64": "U1RBVEU=",
+    "include_proof": false
+   }
+  },
+  "requestSha256": "6f5489ed1feb0ebd6c6412708a92239a7f671cfa89851854705699bb319fa114",
+  "endpointHost": "archival-rpc.mainnet.fastnear.com",
+  "retrievedAt": "2026-11-09T21:40:40.838Z",
+  "httpStatus": 429,
+  "outcome": "rpc-error",
+  "response": {
+   "error": {
+    "name": "HTTP_OR_INVALID_RESPONSE",
+    "status": 429
+   }
+  },
+  "responseSha256": "61237278c9352f8451d67184c95ac9c89f629ae114b838d1b4fd481f22f73853",
+  "blockHeight": null,
+  "blockHash": null
+ },
+ {
+  "version": 1,
+  "request": {
+   "method": "query",
+   "params": {
+    "account_id": "aptos.omft.near",
+    "finality": "final",
+    "request_type": "view_state",
+    "prefix_base64": "U1RBVEU=",
+    "include_proof": false
+   }
+  },
+  "requestSha256": "6f5489ed1feb0ebd6c6412708a92239a7f671cfa89851854705699bb319fa114",
+  "endpointHost": "rpc.mainnet.fastnear.com",
+  "retrievedAt": "2026-11-09T21:40:40.924Z",
+  "httpStatus": 200,
+  "outcome": "result",
+  "response": {
+   "jsonrpc": "2.0",
+   "result": {
+    "block_hash": "Fh6L5w1yqo7QTsQewdMdT3BpJ9U8wGfCmPUD2e4XnAQn",
+    "block_height": 223823986,
+    "values": [
+     {
+      "key": "U1RBVEU=",
+      "value": "EAAAAG9tbmkuYnJpZGdlLm5lYXIBAAAAAEcaUjtsCgAAAAAAAAAAAAB9AAAAAAAAAAEAAABt"
+     }
+    ]
+   },
+   "id": "intent-route"
+  },
+  "responseSha256": "34a836c2dc6cf9a49f8b1e2e36ff11f07139aeed3eceb34d9a8bcf17b37ccdf3",
+  "blockHeight": "223823986",
+  "blockHash": "Fh6L5w1yqo7QTsQewdMdT3BpJ9U8wGfCmPUD2e4XnAQn"
+ },
+ {
+  "version": 1,
+  "request": {
+   "method": "query",
+   "params": {
+    "account_id": "aptos.omft.near",
+    "finality": "final",
+    "request_type": "view_state",
+    "prefix_base64": "V0lUSERSQVdfUkVMQVlFUl9BRERSRVNT",
+    "include_proof": false
+   }
+  },
+  "requestSha256": "018fbd0ef0b9d5b82023d2b6f311aafb006ba095ccf993f4e88b7e2cfcb16c6e",
+  "endpointHost": "archival-rpc.mainnet.fastnear.com",
+  "retrievedAt": "2026-11-09T21:40:40.940Z",
+  "httpStatus": 429,
+  "outcome": "rpc-error",
+  "response": {
+   "error": {
+    "name": "HTTP_OR_INVALID_RESPONSE",
+    "status": 429
+   }
+  },
+  "responseSha256": "61237278c9352f8451d67184c95ac9c89f629ae114b838d1b4fd481f22f73853",
+  "blockHeight": null,
+  "blockHash": null
+ },
+ {
+  "version": 1,
+  "request": {
+   "method": "query",
+   "params": {
+    "account_id": "aptos.omft.near",
+    "finality": "final",
+    "request_type": "view_state",
+    "prefix_base64": "V0lUSERSQVdfUkVMQVlFUl9BRERSRVNT",
+    "include_proof": false
+   }
+  },
+  "requestSha256": "018fbd0ef0b9d5b82023d2b6f311aafb006ba095ccf993f4e88b7e2cfcb16c6e",
+  "endpointHost": "rpc.mainnet.fastnear.com",
+  "retrievedAt": "2026-11-09T21:40:41.036Z",
+  "httpStatus": 200,
+  "outcome": "result",
+  "response": {
+   "jsonrpc": "2.0",
+   "result": {
+    "block_hash": "Fh6L5w1yqo7QTsQewdMdT3BpJ9U8wGfCmPUD2e4XnAQn",
+    "block_height": 223823986,
+    "values": [
+     {
+      "key": "V0lUSERSQVdfUkVMQVlFUl9BRERSRVNT",
+      "value": "QAAAADJkNDFmNjhhZjEyMDdlZTZiOTZkNTAwMmJmNjA2NzE2ODZmYWNlZmI1YTUwZTY5ZTdhOGFmZjI0MzFkZWRjNTY="
+     }
+    ]
+   },
+   "id": "intent-route"
+  },
+  "responseSha256": "cefb69e081f62c4a35287034d5b14e6c20c8c1b63c4c701945a15f5b5b61a328",
+  "blockHeight": "223823986",
+  "blockHash": "Fh6L5w1yqo7QTsQewdMdT3BpJ9U8wGfCmPUD2e4XnAQn"
+ },
+ {
+  "version": 1,
+  "request": {
+   "method": "query",
+   "params": {
+    "account_id": "omni.bridge.near",
+    "finality": "final",
+    "request_type": "call_function",
+    "method_name": "get_token_address",
+    "args_base64": "eyJjaGFpbl9raW5kIjoiQXB0b3MiLCJ0b2tlbiI6ImFwdG9zLm9tZnQubmVhciJ9"
+   }
+  },
+  "requestSha256": "f18dd77988177619b988d6a7f2889334375a496d0268ba01d0ab41779e03529b",
+  "endpointHost": "archival-rpc.mainnet.fastnear.com",
+  "retrievedAt": "2026-11-09T21:40:41.085Z",
+  "httpStatus": 200,
+  "outcome": "result",
+  "response": {
+   "jsonrpc": "2.0",
+   "result": {
+    "block_hash": "Fh6L5w1yqo7QTsQewdMdT3BpJ9U8wGfCmPUD2e4XnAQn",
+    "block_height": 223823986,
+    "logs": [],
+    "result": [
+     34,
+     97,
+     112,
+     116,
+     111,
+     115,
+     58,
+     48,
+     120,
+     48,
+     48,
+     48,
+     48,
+     48,
+     48,
+     48,
+     48,
+     48,
+     48,
+     48,
+     48,
+     48,
+     48,
+     48,
+     48,
+     48,
+     48,
+     48,
+     48,
+     48,
+     48,
+     48,
+     48,
+     48,
+     48,
+     48,
+     48,
+     48,
+     48,
+     48,
+     48,
+     48,
+     48,
+     48,
+     48,
+     48,
+     48,
+     48,
+     48,
+     48,
+     48,
+     48,
+     48,
+     48,
+     48,
+     48,
+     48,
+     48,
+     48,
+     48,
+     48,
+     48,
+     48,
+     48,
+     48,
+     48,
+     48,
+     48,
+     48,
+     48,
+     48,
+     48,
+     97,
+     34
+    ]
+   },
+   "id": "intent-route"
+  },
+  "responseSha256": "7a2fb42a4f3bbe229e3058ea9c217741d0789022767ea572b9fb58e3de477eb8",
+  "blockHeight": "223823986",
+  "blockHash": "Fh6L5w1yqo7QTsQewdMdT3BpJ9U8wGfCmPUD2e4XnAQn"
+ },
+ {
+  "version": 1,
+  "request": {
+   "method": "query",
+   "params": {
+    "account_id": "omni.bridge.near",
+    "finality": "final",
+    "request_type": "call_function",
+    "method_name": "get_bridged_token",
+    "args_base64": "eyJhZGRyZXNzIjoiYXB0b3M6MHgwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDBhIiwiY2hhaW4iOiJOZWFyIn0="
+   }
+  },
+  "requestSha256": "73e72e9bfa0947d6ebe383687723e2969f0e8a227c27db4602b329c4aba0d63d",
+  "endpointHost": "archival-rpc.mainnet.fastnear.com",
+  "retrievedAt": "2026-11-09T21:40:41.102Z",
+  "httpStatus": 429,
+  "outcome": "rpc-error",
+  "response": {
+   "error": {
+    "name": "HTTP_OR_INVALID_RESPONSE",
+    "status": 429
+   }
+  },
+  "responseSha256": "61237278c9352f8451d67184c95ac9c89f629ae114b838d1b4fd481f22f73853",
+  "blockHeight": null,
+  "blockHash": null
+ },
+ {
+  "version": 1,
+  "request": {
+   "method": "query",
+   "params": {
+    "account_id": "aptos-34ee497f210c5a511e8d5b53bc56d75b63612bb5.omft.near",
+    "finality": "final",
+    "request_type": "view_account"
+   }
+  },
+  "requestSha256": "b5f67dd679d200365883ce94a679fae99ee07e770b712ceedc4062ececc5a9db",
+  "endpointHost": "archival-rpc.mainnet.fastnear.com",
+  "retrievedAt": "2026-11-09T21:40:41.118Z",
+  "httpStatus": 429,
+  "outcome": "rpc-error",
+  "response": {
+   "error": {
+    "name": "HTTP_OR_INVALID_RESPONSE",
+    "status": 429
+   }
+  },
+  "responseSha256": "61237278c9352f8451d67184c95ac9c89f629ae114b838d1b4fd481f22f73853",
+  "blockHeight": null,
+  "blockHash": null
+ },
+ {
+  "version": 1,
+  "request": {
+   "method": "query",
+   "params": {
+    "account_id": "aptos-34ee497f210c5a511e8d5b53bc56d75b63612bb5.omft.near",
+    "finality": "final",
+    "request_type": "call_function",
+    "method_name": "contract_source_metadata",
+    "args_base64": "e30="
+   }
+  },
+  "requestSha256": "4a139b3d9aa1b0a8a669445d7e0679cb8f249a4a283d4d41a28cc887e5bf6c49",
+  "endpointHost": "archival-rpc.mainnet.fastnear.com",
+  "retrievedAt": "2026-11-09T21:40:41.131Z",
+  "httpStatus": 429,
+  "outcome": "rpc-error",
+  "response": {
+   "error": {
+    "name": "HTTP_OR_INVALID_RESPONSE",
+    "status": 429
+   }
+  },
+  "responseSha256": "61237278c9352f8451d67184c95ac9c89f629ae114b838d1b4fd481f22f73853",
+  "blockHeight": null,
+  "blockHash": null
+ },
+ {
+  "version": 1,
+  "request": {
+   "method": "query",
+   "params": {
+    "account_id": "aptos-34ee497f210c5a511e8d5b53bc56d75b63612bb5.omft.near",
+    "finality": "final",
+    "request_type": "call_function",
+    "method_name": "owner_get",
+    "args_base64": "e30="
+   }
+  },
+  "requestSha256": "67d51db61671761cead32a819adbc34180182ebaaecf4e2b9ac8249c2921c551",
+  "endpointHost": "archival-rpc.mainnet.fastnear.com",
+  "retrievedAt": "2026-11-09T21:40:41.149Z",
+  "httpStatus": 429,
+  "outcome": "rpc-error",
+  "response": {
+   "error": {
+    "name": "HTTP_OR_INVALID_RESPONSE",
+    "status": 429
+   }
+  },
+  "responseSha256": "61237278c9352f8451d67184c95ac9c89f629ae114b838d1b4fd481f22f73853",
+  "blockHeight": null,
+  "blockHash": null
+ },
+ {
+  "version": 1,
+  "request": {
+   "method": "query",
+   "params": {
+    "account_id": "aptos-34ee497f210c5a511e8d5b53bc56d75b63612bb5.omft.near",
+    "finality": "final",
+    "request_type": "view_state",
+    "prefix_base64": "U1RBVEU=",
+    "include_proof": false
+   }
+  },
+  "requestSha256": "a848fbf22d14f3a891b97fb2c7de111ebca6a735b87c3b828982a4db3bdfad7c",
+  "endpointHost": "archival-rpc.mainnet.fastnear.com",
+  "retrievedAt": "2026-11-09T21:40:41.166Z",
+  "httpStatus": 429,
+  "outcome": "rpc-error",
+  "response": {
+   "error": {
+    "name": "HTTP_OR_INVALID_RESPONSE",
+    "status": 429
+   }
+  },
+  "responseSha256": "61237278c9352f8451d67184c95ac9c89f629ae114b838d1b4fd481f22f73853",
+  "blockHeight": null,
+  "blockHash": null
+ },
+ {
+  "version": 1,
+  "request": {
+   "method": "query",
+   "params": {
+    "account_id": "aptos-34ee497f210c5a511e8d5b53bc56d75b63612bb5.omft.near",
+    "finality": "final",
+    "request_type": "view_state",
+    "prefix_base64": "U1RBVEU=",
+    "include_proof": false
+   }
+  },
+  "requestSha256": "a848fbf22d14f3a891b97fb2c7de111ebca6a735b87c3b828982a4db3bdfad7c",
+  "endpointHost": "rpc.mainnet.fastnear.com",
+  "retrievedAt": "2026-11-09T21:40:41.237Z",
+  "httpStatus": 200,
+  "outcome": "result",
+  "response": {
+   "jsonrpc": "2.0",
+   "result": {
+    "block_hash": "Fh6L5w1yqo7QTsQewdMdT3BpJ9U8wGfCmPUD2e4XnAQn",
+    "block_height": 223823986,
+    "values": [
+     {
+      "key": "U1RBVEU=",
+      "value": "EAAAAG9tbmkuYnJpZGdlLm5lYXIBAAAAAMpBcMcUAAAAAAAAAAAAAAB9AAAAAAAAAAEAAABt"
+     }
+    ]
+   },
+   "id": "intent-route"
+  },
+  "responseSha256": "35e169729b8f3ca405f9c23f21de23d74f2d7f30d80138c083fba8d0078ea7ad",
+  "blockHeight": "223823986",
+  "blockHash": "Fh6L5w1yqo7QTsQewdMdT3BpJ9U8wGfCmPUD2e4XnAQn"
+ },
+ {
+  "version": 1,
+  "request": {
+   "method": "query",
+   "params": {
+    "account_id": "aptos-34ee497f210c5a511e8d5b53bc56d75b63612bb5.omft.near",
+    "finality": "final",
+    "request_type": "view_state",
+    "prefix_base64": "V0lUSERSQVdfUkVMQVlFUl9BRERSRVNT",
+    "include_proof": false
+   }
+  },
+  "requestSha256": "68581206b39a5cfa33e64c030fd6b35871ff02b700d63cf5970eb0859657dffa",
+  "endpointHost": "archival-rpc.mainnet.fastnear.com",
+  "retrievedAt": "2026-11-09T21:40:41.252Z",
+  "httpStatus": 429,
+  "outcome": "rpc-error",
+  "response": {
+   "error": {
+    "name": "HTTP_OR_INVALID_RESPONSE",
+    "status": 429
+   }
+  },
+  "responseSha256": "61237278c9352f8451d67184c95ac9c89f629ae114b838d1b4fd481f22f73853",
+  "blockHeight": null,
+  "blockHash": null
+ },
+ {
+  "version": 1,
+  "request": {
+   "method": "query",
+   "params": {
+    "account_id": "aptos-34ee497f210c5a511e8d5b53bc56d75b63612bb5.omft.near",
+    "finality": "final",
+    "request_type": "view_state",
+    "prefix_base64": "V0lUSERSQVdfUkVMQVlFUl9BRERSRVNT",
+    "include_proof": false
+   }
+  },
+  "requestSha256": "68581206b39a5cfa33e64c030fd6b35871ff02b700d63cf5970eb0859657dffa",
+  "endpointHost": "rpc.mainnet.fastnear.com",
+  "retrievedAt": "2026-11-09T21:40:41.317Z",
+  "httpStatus": 200,
+  "outcome": "result",
+  "response": {
+   "jsonrpc": "2.0",
+   "result": {
+    "block_hash": "Fh6L5w1yqo7QTsQewdMdT3BpJ9U8wGfCmPUD2e4XnAQn",
+    "block_height": 223823986,
+    "values": [
+     {
+      "key": "V0lUSERSQVdfUkVMQVlFUl9BRERSRVNT",
+      "value": "QAAAADJkNDFmNjhhZjEyMDdlZTZiOTZkNTAwMmJmNjA2NzE2ODZmYWNlZmI1YTUwZTY5ZTdhOGFmZjI0MzFkZWRjNTY="
+     }
+    ]
+   },
+   "id": "intent-route"
+  },
+  "responseSha256": "cefb69e081f62c4a35287034d5b14e6c20c8c1b63c4c701945a15f5b5b61a328",
+  "blockHeight": "223823986",
+  "blockHash": "Fh6L5w1yqo7QTsQewdMdT3BpJ9U8wGfCmPUD2e4XnAQn"
+ },
+ {
+  "version": 1,
+  "request": {
+   "method": "query",
+   "params": {
+    "account_id": "omni.bridge.near",
+    "finality": "final",
+    "request_type": "call_function",
+    "method_name": "get_token_address",
+    "args_base64": "eyJjaGFpbl9raW5kIjoiQXB0b3MiLCJ0b2tlbiI6ImFwdG9zLTM0ZWU0OTdmMjEwYzVhNTExZThkNWI1M2JjNTZkNzViNjM2MTJiYjUub21mdC5uZWFyIn0="
+   }
+  },
+  "requestSha256": "84cdec78437fa7ebbe88141c0b891f50d29ca7c049a26981349feaa039d69573",
+  "endpointHost": "archival-rpc.mainnet.fastnear.com",
+  "retrievedAt": "2026-11-09T21:40:41.332Z",
+  "httpStatus": 429,
+  "outcome": "rpc-error",
+  "response": {
+   "error": {
+    "name": "HTTP_OR_INVALID_RESPONSE",
+    "status": 429
+   }
+  },
+  "responseSha256": "61237278c9352f8451d67184c95ac9c89f629ae114b838d1b4fd481f22f73853",
+  "blockHeight": null,
+  "blockHash": null
+ },
+ {
+  "version": 1,
+  "request": {
+   "method": "query",
+   "params": {
+    "account_id": "omni.bridge.near",
+    "finality": "final",
+    "request_type": "call_function",
+    "method_name": "get_bridged_token",
+    "args_base64": "eyJhZGRyZXNzIjoibmVhcjphcHRvcy0zNGVlNDk3ZjIxMGM1YTUxMWU4ZDViNTNiYzU2ZDc1YjYzNjEyYmI1Lm9tZnQubmVhciIsImNoYWluIjoiQXB0b3MifQ=="
+   }
+  },
+  "requestSha256": "d9b9e517f8a1df51f587ce424ec6d043055264151fb2b0fc64abeebd1d03180f",
+  "endpointHost": "archival-rpc.mainnet.fastnear.com",
+  "retrievedAt": "2026-11-09T21:40:41.347Z",
+  "httpStatus": 429,
+  "outcome": "rpc-error",
+  "response": {
+   "error": {
+    "name": "HTTP_OR_INVALID_RESPONSE",
+    "status": 429
+   }
+  },
+  "responseSha256": "61237278c9352f8451d67184c95ac9c89f629ae114b838d1b4fd481f22f73853",
+  "blockHeight": null,
+  "blockHash": null
+ },
+ {
+  "version": 1,
+  "request": {
+   "method": "query",
+   "params": {
+    "account_id": "aptos-88cb7619440a914fe6400149a12b443c3ac21d59.omft.near",
+    "finality": "final",
+    "request_type": "view_account"
+   }
+  },
+  "requestSha256": "a9511a53d35acfe33c8a1dc7d303b6d083a8041aa2c70e86179bb4b5064128a6",
+  "endpointHost": "archival-rpc.mainnet.fastnear.com",
+  "retrievedAt": "2026-11-09T21:40:41.361Z",
+  "httpStatus": 429,
+  "outcome": "rpc-error",
+  "response": {
+   "error": {
+    "name": "HTTP_OR_INVALID_RESPONSE",
+    "status": 429
+   }
+  },
+  "responseSha256": "61237278c9352f8451d67184c95ac9c89f629ae114b838d1b4fd481f22f73853",
+  "blockHeight": null,
+  "blockHash": null
+ },
+ {
+  "version": 1,
+  "request": {
+   "method": "query",
+   "params": {
+    "account_id": "aptos-88cb7619440a914fe6400149a12b443c3ac21d59.omft.near",
+    "finality": "final",
+    "request_type": "call_function",
+    "method_name": "contract_source_metadata",
+    "args_base64": "e30="
+   }
+  },
+  "requestSha256": "8a0b3b2d43e8351fccc6cb75fd7f0163099c279d0ccfb4b4b2e86c8de9246a6d",
+  "endpointHost": "archival-rpc.mainnet.fastnear.com",
+  "retrievedAt": "2026-11-09T21:40:41.379Z",
+  "httpStatus": 429,
+  "outcome": "rpc-error",
+  "response": {
+   "error": {
+    "name": "HTTP_OR_INVALID_RESPONSE",
+    "status": 429
+   }
+  },
+  "responseSha256": "61237278c9352f8451d67184c95ac9c89f629ae114b838d1b4fd481f22f73853",
+  "blockHeight": null,
+  "blockHash": null
+ },
+ {
+  "version": 1,
+  "request": {
+   "method": "query",
+   "params": {
+    "account_id": "aptos-88cb7619440a914fe6400149a12b443c3ac21d59.omft.near",
+    "finality": "final",
+    "request_type": "call_function",
+    "method_name": "owner_get",
+    "args_base64": "e30="
+   }
+  },
+  "requestSha256": "95d06c4eb76610947bd9ee20c66d0cc4877417bb52875595c1e58ebdbf7eac47",
+  "endpointHost": "archival-rpc.mainnet.fastnear.com",
+  "retrievedAt": "2026-11-09T21:40:41.394Z",
+  "httpStatus": 429,
+  "outcome": "rpc-error",
+  "response": {
+   "error": {
+    "name": "HTTP_OR_INVALID_RESPONSE",
+    "status": 429
+   }
+  },
+  "responseSha256": "61237278c9352f8451d67184c95ac9c89f629ae114b838d1b4fd481f22f73853",
+  "blockHeight": null,
+  "blockHash": null
+ },
+ {
+  "version": 1,
+  "request": {
+   "method": "query",
+   "params": {
+    "account_id": "aptos-88cb7619440a914fe6400149a12b443c3ac21d59.omft.near",
+    "finality": "final",
+    "request_type": "view_state",
+    "prefix_base64": "U1RBVEU=",
+    "include_proof": false
+   }
+  },
+  "requestSha256": "783ea76311a8c3ce88e51e27814e3b005d6b19d8b9eec599615cb5d1507b5d4a",
+  "endpointHost": "archival-rpc.mainnet.fastnear.com",
+  "retrievedAt": "2026-11-09T21:40:41.409Z",
+  "httpStatus": 429,
+  "outcome": "rpc-error",
+  "response": {
+   "error": {
+    "name": "HTTP_OR_INVALID_RESPONSE",
+    "status": 429
+   }
+  },
+  "responseSha256": "61237278c9352f8451d67184c95ac9c89f629ae114b838d1b4fd481f22f73853",
+  "blockHeight": null,
+  "blockHash": null
+ },
+ {
+  "version": 1,
+  "request": {
+   "method": "query",
+   "params": {
+    "account_id": "aptos-88cb7619440a914fe6400149a12b443c3ac21d59.omft.near",
+    "finality": "final",
+    "request_type": "view_state",
+    "prefix_base64": "U1RBVEU=",
+    "include_proof": false
+   }
+  },
+  "requestSha256": "783ea76311a8c3ce88e51e27814e3b005d6b19d8b9eec599615cb5d1507b5d4a",
+  "endpointHost": "rpc.mainnet.fastnear.com",
+  "retrievedAt": "2026-11-09T21:40:41.477Z",
+  "httpStatus": 200,
+  "outcome": "result",
+  "response": {
+   "jsonrpc": "2.0",
+   "result": {
+    "block_hash": "EVccjkYYJ4vg7LwAbet7XzCNDzod4b6x6uUJx38nby6D",
+    "block_height": 223823987,
+    "values": [
+     {
+      "key": "U1RBVEU=",
+      "value": "EAAAAG9tbmkuYnJpZGdlLm5lYXIBAAAAALRNg7QEAAAAAAAAAAAAAAB9AAAAAAAAAAEAAABt"
+     }
+    ]
+   },
+   "id": "intent-route"
+  },
+  "responseSha256": "65cfe1cfad0eb03d3f539d7964d9e7e3fc0270ed625454d147297a708b925fbb",
+  "blockHeight": "223823987",
+  "blockHash": "EVccjkYYJ4vg7LwAbet7XzCNDzod4b6x6uUJx38nby6D"
+ },
+ {
+  "version": 1,
+  "request": {
+   "method": "query",
+   "params": {
+    "account_id": "aptos-88cb7619440a914fe6400149a12b443c3ac21d59.omft.near",
+    "finality": "final",
+    "request_type": "view_state",
+    "prefix_base64": "V0lUSERSQVdfUkVMQVlFUl9BRERSRVNT",
+    "include_proof": false
+   }
+  },
+  "requestSha256": "6ae7fa3e64e828c15b3f4cfbd46ba7ac248c8dff99175c1746583e0200af25bf",
+  "endpointHost": "archival-rpc.mainnet.fastnear.com",
+  "retrievedAt": "2026-11-09T21:40:41.496Z",
+  "httpStatus": 429,
+  "outcome": "rpc-error",
+  "response": {
+   "error": {
+    "name": "HTTP_OR_INVALID_RESPONSE",
+    "status": 429
+   }
+  },
+  "responseSha256": "61237278c9352f8451d67184c95ac9c89f629ae114b838d1b4fd481f22f73853",
+  "blockHeight": null,
+  "blockHash": null
+ },
+ {
+  "version": 1,
+  "request": {
+   "method": "query",
+   "params": {
+    "account_id": "aptos-88cb7619440a914fe6400149a12b443c3ac21d59.omft.near",
+    "finality": "final",
+    "request_type": "view_state",
+    "prefix_base64": "V0lUSERSQVdfUkVMQVlFUl9BRERSRVNT",
+    "include_proof": false
+   }
+  },
+  "requestSha256": "6ae7fa3e64e828c15b3f4cfbd46ba7ac248c8dff99175c1746583e0200af25bf",
+  "endpointHost": "rpc.mainnet.fastnear.com",
+  "retrievedAt": "2026-11-09T21:40:41.556Z",
+  "httpStatus": 200,
+  "outcome": "result",
+  "response": {
+   "jsonrpc": "2.0",
+   "result": {
+    "block_hash": "EVccjkYYJ4vg7LwAbet7XzCNDzod4b6x6uUJx38nby6D",
+    "block_height": 223823987,
+    "values": [
+     {
+      "key": "V0lUSERSQVdfUkVMQVlFUl9BRERSRVNT",
+      "value": "QAAAADJkNDFmNjhhZjEyMDdlZTZiOTZkNTAwMmJmNjA2NzE2ODZmYWNlZmI1YTUwZTY5ZTdhOGFmZjI0MzFkZWRjNTY="
+     }
+    ]
+   },
+   "id": "intent-route"
+  },
+  "responseSha256": "034dc475036cefa3429f7440e74eba7cb66f3dc7e5de653cd4aaed9bfc36672e",
+  "blockHeight": "223823987",
+  "blockHash": "EVccjkYYJ4vg7LwAbet7XzCNDzod4b6x6uUJx38nby6D"
+ },
+ {
+  "version": 1,
+  "request": {
+   "method": "query",
+   "params": {
+    "account_id": "omni.bridge.near",
+    "finality": "final",
+    "request_type": "call_function",
+    "method_name": "get_token_address",
+    "args_base64": "eyJjaGFpbl9raW5kIjoiQXB0b3MiLCJ0b2tlbiI6ImFwdG9zLTg4Y2I3NjE5NDQwYTkxNGZlNjQwMDE0OWExMmI0NDNjM2FjMjFkNTkub21mdC5uZWFyIn0="
+   }
+  },
+  "requestSha256": "8bdf810a67f04db97218394e9cec01f888e50abbfb004cdb2a89a68e9845d5c0",
+  "endpointHost": "archival-rpc.mainnet.fastnear.com",
+  "retrievedAt": "2026-11-09T21:40:41.576Z",
+  "httpStatus": 429,
+  "outcome": "rpc-error",
+  "response": {
+   "error": {
+    "name": "HTTP_OR_INVALID_RESPONSE",
+    "status": 429
+   }
+  },
+  "responseSha256": "61237278c9352f8451d67184c95ac9c89f629ae114b838d1b4fd481f22f73853",
+  "blockHeight": null,
+  "blockHash": null
+ },
+ {
+  "version": 1,
+  "request": {
+   "method": "query",
+   "params": {
+    "account_id": "omni.bridge.near",
+    "finality": "final",
+    "request_type": "call_function",
+    "method_name": "get_bridged_token",
+    "args_base64": "eyJhZGRyZXNzIjoibmVhcjphcHRvcy04OGNiNzYxOTQ0MGE5MTRmZTY0MDAxNDlhMTJiNDQzYzNhYzIxZDU5Lm9tZnQubmVhciIsImNoYWluIjoiQXB0b3MifQ=="
+   }
+  },
+  "requestSha256": "040f964ce87821de9777939473b7434f1759b1de39c6aa2ec97f178b6ecabb31",
+  "endpointHost": "archival-rpc.mainnet.fastnear.com",
+  "retrievedAt": "2026-11-09T21:40:41.594Z",
+  "httpStatus": 429,
+  "outcome": "rpc-error",
+  "response": {
+   "error": {
+    "name": "HTTP_OR_INVALID_RESPONSE",
+    "status": 429
+   }
+  },
+  "responseSha256": "61237278c9352f8451d67184c95ac9c89f629ae114b838d1b4fd481f22f73853",
+  "blockHeight": null,
+  "blockHash": null
+ },
+ {
+  "version": 1,
+  "request": {
+   "method": "query",
+   "params": {
+    "account_id": "starknet.omft.near",
+    "finality": "final",
+    "request_type": "view_account"
+   }
+  },
+  "requestSha256": "d24e101adaf1e974e32e7aa861ff20a74da1c50dfb01379b52f05bbce873a8e8",
+  "endpointHost": "archival-rpc.mainnet.fastnear.com",
+  "retrievedAt": "2026-11-09T21:40:41.609Z",
+  "httpStatus": 429,
+  "outcome": "rpc-error",
+  "response": {
+   "error": {
+    "name": "HTTP_OR_INVALID_RESPONSE",
+    "status": 429
+   }
+  },
+  "responseSha256": "61237278c9352f8451d67184c95ac9c89f629ae114b838d1b4fd481f22f73853",
+  "blockHeight": null,
+  "blockHash": null
+ },
+ {
+  "version": 1,
+  "request": {
+   "method": "query",
+   "params": {
+    "account_id": "starknet.omft.near",
+    "finality": "final",
+    "request_type": "call_function",
+    "method_name": "contract_source_metadata",
+    "args_base64": "e30="
+   }
+  },
+  "requestSha256": "7aed6846532e2df76a07cb6b9ee1d69460a164d3e76eb374c43c2738a930ff94",
+  "endpointHost": "archival-rpc.mainnet.fastnear.com",
+  "retrievedAt": "2026-11-09T21:40:41.625Z",
+  "httpStatus": 429,
+  "outcome": "rpc-error",
+  "response": {
+   "error": {
+    "name": "HTTP_OR_INVALID_RESPONSE",
+    "status": 429
+   }
+  },
+  "responseSha256": "61237278c9352f8451d67184c95ac9c89f629ae114b838d1b4fd481f22f73853",
+  "blockHeight": null,
+  "blockHash": null
+ },
+ {
+  "version": 1,
+  "request": {
+   "method": "query",
+   "params": {
+    "account_id": "starknet.omft.near",
+    "finality": "final",
+    "request_type": "call_function",
+    "method_name": "owner_get",
+    "args_base64": "e30="
+   }
+  },
+  "requestSha256": "b249e48490368481325911e0f5df056a45931fba72224d338edb25943dd4892f",
+  "endpointHost": "archival-rpc.mainnet.fastnear.com",
+  "retrievedAt": "2026-11-09T21:40:41.640Z",
+  "httpStatus": 429,
+  "outcome": "rpc-error",
+  "response": {
+   "error": {
+    "name": "HTTP_OR_INVALID_RESPONSE",
+    "status": 429
+   }
+  },
+  "responseSha256": "61237278c9352f8451d67184c95ac9c89f629ae114b838d1b4fd481f22f73853",
+  "blockHeight": null,
+  "blockHash": null
+ },
+ {
+  "version": 1,
+  "request": {
+   "method": "query",
+   "params": {
+    "account_id": "starknet.omft.near",
+    "finality": "final",
+    "request_type": "view_state",
+    "prefix_base64": "U1RBVEU=",
+    "include_proof": false
+   }
+  },
+  "requestSha256": "47ea0f3837a3241f3bdb7e2be4604d66671430f6aaecbe496c7e903ca933b202",
+  "endpointHost": "archival-rpc.mainnet.fastnear.com",
+  "retrievedAt": "2026-11-09T21:40:41.653Z",
+  "httpStatus": 429,
+  "outcome": "rpc-error",
+  "response": {
+   "error": {
+    "name": "HTTP_OR_INVALID_RESPONSE",
+    "status": 429
+   }
+  },
+  "responseSha256": "61237278c9352f8451d67184c95ac9c89f629ae114b838d1b4fd481f22f73853",
+  "blockHeight": null,
+  "blockHash": null
+ },
+ {
+  "version": 1,
+  "request": {
+   "method": "query",
+   "params": {
+    "account_id": "starknet.omft.near",
+    "finality": "final",
+    "request_type": "view_state",
+    "prefix_base64": "U1RBVEU=",
+    "include_proof": false
+   }
+  },
+  "requestSha256": "47ea0f3837a3241f3bdb7e2be4604d66671430f6aaecbe496c7e903ca933b202",
+  "endpointHost": "rpc.mainnet.fastnear.com",
+  "retrievedAt": "2026-11-09T21:40:41.722Z",
+  "httpStatus": 200,
+  "outcome": "result",
+  "response": {
+   "jsonrpc": "2.0",
+   "result": {
+    "block_hash": "EVccjkYYJ4vg7LwAbet7XzCNDzod4b6x6uUJx38nby6D",
+    "block_height": 223823987,
+    "values": [
+     {
+      "key": "U1RBVEU=",
+      "value": "EAAAAG9tbmkuYnJpZGdlLm5lYXIBAAAAACVzGXNyCvj3EhQIAAAAAAB9AAAAAAAAAAEAAABt"
+     }
+    ]
+   },
+   "id": "intent-route"
+  },
+  "responseSha256": "12ea829476d87b59646c512ecfee32af1d21271ed448d5ffa79d329ddd789389",
+  "blockHeight": "223823987",
+  "blockHash": "EVccjkYYJ4vg7LwAbet7XzCNDzod4b6x6uUJx38nby6D"
+ },
+ {
+  "version": 1,
+  "request": {
+   "method": "query",
+   "params": {
+    "account_id": "starknet.omft.near",
+    "finality": "final",
+    "request_type": "view_state",
+    "prefix_base64": "V0lUSERSQVdfUkVMQVlFUl9BRERSRVNT",
+    "include_proof": false
+   }
+  },
+  "requestSha256": "8de8f6b3c6f668b1e851ae6758d49be45a6582e6cddd19c92afa9dbbf4f68cfd",
+  "endpointHost": "archival-rpc.mainnet.fastnear.com",
+  "retrievedAt": "2026-11-09T21:40:41.739Z",
+  "httpStatus": 429,
+  "outcome": "rpc-error",
+  "response": {
+   "error": {
+    "name": "HTTP_OR_INVALID_RESPONSE",
+    "status": 429
+   }
+  },
+  "responseSha256": "61237278c9352f8451d67184c95ac9c89f629ae114b838d1b4fd481f22f73853",
+  "blockHeight": null,
+  "blockHash": null
+ },
+ {
+  "version": 1,
+  "request": {
+   "method": "query",
+   "params": {
+    "account_id": "starknet.omft.near",
+    "finality": "final",
+    "request_type": "view_state",
+    "prefix_base64": "V0lUSERSQVdfUkVMQVlFUl9BRERSRVNT",
+    "include_proof": false
+   }
+  },
+  "requestSha256": "8de8f6b3c6f668b1e851ae6758d49be45a6582e6cddd19c92afa9dbbf4f68cfd",
+  "endpointHost": "rpc.mainnet.fastnear.com",
+  "retrievedAt": "2026-11-09T21:40:41.801Z",
+  "httpStatus": 200,
+  "outcome": "result",
+  "response": {
+   "jsonrpc": "2.0",
+   "result": {
+    "block_hash": "EVccjkYYJ4vg7LwAbet7XzCNDzod4b6x6uUJx38nby6D",
+    "block_height": 223823987,
+    "values": [
+     {
+      "key": "V0lUSERSQVdfUkVMQVlFUl9BRERSRVNT",
+      "value": "QAAAADJkNDFmNjhhZjEyMDdlZTZiOTZkNTAwMmJmNjA2NzE2ODZmYWNlZmI1YTUwZTY5ZTdhOGFmZjI0MzFkZWRjNTY="
+     }
+    ]
+   },
+   "id": "intent-route"
+  },
+  "responseSha256": "034dc475036cefa3429f7440e74eba7cb66f3dc7e5de653cd4aaed9bfc36672e",
+  "blockHeight": "223823987",
+  "blockHash": "EVccjkYYJ4vg7LwAbet7XzCNDzod4b6x6uUJx38nby6D"
+ },
+ {
+  "version": 1,
+  "request": {
+   "method": "query",
+   "params": {
+    "account_id": "omni.bridge.near",
+    "finality": "final",
+    "request_type": "call_function",
+    "method_name": "get_token_address",
+    "args_base64": "eyJjaGFpbl9raW5kIjoiU3RyayIsInRva2VuIjoic3RhcmtuZXQub21mdC5uZWFyIn0="
+   }
+  },
+  "requestSha256": "0cfc74d123db34062d76168935746bb6b978b7f34068a09fe6b4dc0b6827dc8a",
+  "endpointHost": "archival-rpc.mainnet.fastnear.com",
+  "retrievedAt": "2026-11-09T21:40:41.819Z",
+  "httpStatus": 429,
+  "outcome": "rpc-error",
+  "response": {
+   "error": {
+    "name": "HTTP_OR_INVALID_RESPONSE",
+    "status": 429
+   }
+  },
+  "responseSha256": "61237278c9352f8451d67184c95ac9c89f629ae114b838d1b4fd481f22f73853",
+  "blockHeight": null,
+  "blockHash": null
+ },
+ {
+  "version": 1,
+  "request": {
+   "method": "query",
+   "params": {
+    "account_id": "omni.bridge.near",
+    "finality": "final",
+    "request_type": "call_function",
+    "method_name": "get_bridged_token",
+    "args_base64": "eyJhZGRyZXNzIjoibmVhcjpzdGFya25ldC5vbWZ0Lm5lYXIiLCJjaGFpbiI6IlN0cmsifQ=="
+   }
+  },
+  "requestSha256": "a334997ca70715f799bf4c158b37d16a4179a406bad53e4f0989a53f88675a4d",
+  "endpointHost": "archival-rpc.mainnet.fastnear.com",
+  "retrievedAt": "2026-11-09T21:40:41.834Z",
+  "httpStatus": 429,
+  "outcome": "rpc-error",
+  "response": {
+   "error": {
+    "name": "HTTP_OR_INVALID_RESPONSE",
+    "status": 429
+   }
+  },
+  "responseSha256": "61237278c9352f8451d67184c95ac9c89f629ae114b838d1b4fd481f22f73853",
+  "blockHeight": null,
+  "blockHash": null
+ },
+ {
+  "version": 1,
+  "request": {
+   "method": "query",
+   "params": {
+    "account_id": "zec.omft.near",
+    "finality": "final",
+    "request_type": "view_account"
+   }
+  },
+  "requestSha256": "003591b17d86638c07a8552f9dc4877c720674837ac7d175ac53ccabc49d5d41",
+  "endpointHost": "archival-rpc.mainnet.fastnear.com",
+  "retrievedAt": "2026-11-09T21:40:41.850Z",
+  "httpStatus": 429,
+  "outcome": "rpc-error",
+  "response": {
+   "error": {
+    "name": "HTTP_OR_INVALID_RESPONSE",
+    "status": 429
+   }
+  },
+  "responseSha256": "61237278c9352f8451d67184c95ac9c89f629ae114b838d1b4fd481f22f73853",
+  "blockHeight": null,
+  "blockHash": null
+ },
+ {
+  "version": 1,
+  "request": {
+   "method": "query",
+   "params": {
+    "account_id": "zec.omft.near",
+    "finality": "final",
+    "request_type": "call_function",
+    "method_name": "contract_source_metadata",
+    "args_base64": "e30="
+   }
+  },
+  "requestSha256": "30c4e063385dc84767466b185dc20538fc9b9520cfe665867a1f70da1e6580d0",
+  "endpointHost": "archival-rpc.mainnet.fastnear.com",
+  "retrievedAt": "2026-11-09T21:40:41.865Z",
+  "httpStatus": 429,
+  "outcome": "rpc-error",
+  "response": {
+   "error": {
+    "name": "HTTP_OR_INVALID_RESPONSE",
+    "status": 429
+   }
+  },
+  "responseSha256": "61237278c9352f8451d67184c95ac9c89f629ae114b838d1b4fd481f22f73853",
+  "blockHeight": null,
+  "blockHash": null
+ },
+ {
+  "version": 1,
+  "request": {
+   "method": "query",
+   "params": {
+    "account_id": "zec.omft.near",
+    "finality": "final",
+    "request_type": "call_function",
+    "method_name": "owner_get",
+    "args_base64": "e30="
+   }
+  },
+  "requestSha256": "1869a9b7fee5b5733dfa959b9dd842851c99344b2c86f04c842e8663122e7594",
+  "endpointHost": "archival-rpc.mainnet.fastnear.com",
+  "retrievedAt": "2026-11-09T21:40:41.879Z",
+  "httpStatus": 429,
+  "outcome": "rpc-error",
+  "response": {
+   "error": {
+    "name": "HTTP_OR_INVALID_RESPONSE",
+    "status": 429
+   }
+  },
+  "responseSha256": "61237278c9352f8451d67184c95ac9c89f629ae114b838d1b4fd481f22f73853",
+  "blockHeight": null,
+  "blockHash": null
+ },
+ {
+  "version": 1,
+  "request": {
+   "method": "query",
+   "params": {
+    "account_id": "zec.omft.near",
+    "finality": "final",
+    "request_type": "view_state",
+    "prefix_base64": "U1RBVEU=",
+    "include_proof": false
+   }
+  },
+  "requestSha256": "82e7bfb74c9d2affb961a143c61c4140d8325c714fdb0a42341d865c1887afe9",
+  "endpointHost": "archival-rpc.mainnet.fastnear.com",
+  "retrievedAt": "2026-11-09T21:40:41.894Z",
+  "httpStatus": 429,
+  "outcome": "rpc-error",
+  "response": {
+   "error": {
+    "name": "HTTP_OR_INVALID_RESPONSE",
+    "status": 429
+   }
+  },
+  "responseSha256": "61237278c9352f8451d67184c95ac9c89f629ae114b838d1b4fd481f22f73853",
+  "blockHeight": null,
+  "blockHash": null
+ },
+ {
+  "version": 1,
+  "request": {
+   "method": "query",
+   "params": {
+    "account_id": "zec.omft.near",
+    "finality": "final",
+    "request_type": "view_state",
+    "prefix_base64": "U1RBVEU=",
+    "include_proof": false
+   }
+  },
+  "requestSha256": "82e7bfb74c9d2affb961a143c61c4140d8325c714fdb0a42341d865c1887afe9",
+  "endpointHost": "rpc.mainnet.fastnear.com",
+  "retrievedAt": "2026-11-09T21:40:41.962Z",
+  "httpStatus": 200,
+  "outcome": "rpc-error",
+  "response": {
+   "jsonrpc": "2.0",
+   "error": {
+    "name": "HANDLER_ERROR",
+    "cause": {
+     "info": {
+      "block_hash": "GCWcbR4WZ7QNQKY4hZoTJCVRLFis2UyciRz9dL23Lhsg",
+      "block_height": 223823988,
+      "contract_account_id": "zec.omft.near"
+     },
+     "name": "TOO_LARGE_CONTRACT_STATE"
+    },
+    "code": -32000,
+    "message": "Server error",
+    "data": "State of contract zec.omft.near is too large to be viewed"
+   },
+   "id": "intent-route"
+  },
+  "responseSha256": "88770eacb4b427f6594966534d9759ef98af71c9a92d271e9fe7884931043bc2",
+  "blockHeight": null,
+  "blockHash": null
+ },
+ {
+  "version": 1,
+  "request": {
+   "method": "query",
+   "params": {
+    "account_id": "zec.omft.near",
+    "finality": "final",
+    "request_type": "view_state",
+    "prefix_base64": "V0lUSERSQVdfUkVMQVlFUl9BRERSRVNT",
+    "include_proof": false
+   }
+  },
+  "requestSha256": "c7035b134d93e8c451f87d46a7bf648a964e3cacfbdd7cf19254f592cb0a180d",
+  "endpointHost": "archival-rpc.mainnet.fastnear.com",
+  "retrievedAt": "2026-11-09T21:40:42.016Z",
+  "httpStatus": 200,
+  "outcome": "rpc-error",
+  "response": {
+   "jsonrpc": "2.0",
+   "error": {
+    "name": "HANDLER_ERROR",
+    "cause": {
+     "info": {
+      "block_hash": "GCWcbR4WZ7QNQKY4hZoTJCVRLFis2UyciRz9dL23Lhsg",
+      "block_height": 223823988,
+      "contract_account_id": "zec.omft.near"
+     },
+     "name": "TOO_LARGE_CONTRACT_STATE"
+    },
+    "code": -32000,
+    "message": "Server error",
+    "data": "State of contract zec.omft.near is too large to be viewed"
+   },
+   "id": "intent-route"
+  },
+  "responseSha256": "88770eacb4b427f6594966534d9759ef98af71c9a92d271e9fe7884931043bc2",
+  "blockHeight": null,
+  "blockHash": null
+ },
+ {
+  "version": 1,
+  "request": {
+   "method": "query",
+   "params": {
+    "account_id": "zec.omft.near",
+    "finality": "final",
+    "request_type": "view_state",
+    "prefix_base64": "V0lUSERSQVdfUkVMQVlFUl9BRERSRVNT",
+    "include_proof": false
+   }
+  },
+  "requestSha256": "c7035b134d93e8c451f87d46a7bf648a964e3cacfbdd7cf19254f592cb0a180d",
+  "endpointHost": "rpc.mainnet.fastnear.com",
+  "retrievedAt": "2026-11-09T21:40:42.106Z",
+  "httpStatus": 200,
+  "outcome": "rpc-error",
+  "response": {
+   "jsonrpc": "2.0",
+   "error": {
+    "name": "HANDLER_ERROR",
+    "cause": {
+     "info": {
+      "block_hash": "GCWcbR4WZ7QNQKY4hZoTJCVRLFis2UyciRz9dL23Lhsg",
+      "block_height": 223823988,
+      "contract_account_id": "zec.omft.near"
+     },
+     "name": "TOO_LARGE_CONTRACT_STATE"
+    },
+    "code": -32000,
+    "message": "Server error",
+    "data": "State of contract zec.omft.near is too large to be viewed"
+   },
+   "id": "intent-route"
+  },
+  "responseSha256": "88770eacb4b427f6594966534d9759ef98af71c9a92d271e9fe7884931043bc2",
+  "blockHeight": null,
+  "blockHash": null
+ },
+ {
+  "version": 1,
+  "request": {
+   "method": "query",
+   "params": {
+    "account_id": "omni.bridge.near",
+    "finality": "final",
+    "request_type": "call_function",
+    "method_name": "get_token_address",
+    "args_base64": "eyJjaGFpbl9raW5kIjoiWmNhc2giLCJ0b2tlbiI6InplYy5vbWZ0Lm5lYXIifQ=="
+   }
+  },
+  "requestSha256": "e9565351ed9ac27f6a5f17f7c1a8f79ed775370b722a0ce4bcaed444b1820b6d",
+  "endpointHost": "archival-rpc.mainnet.fastnear.com",
+  "retrievedAt": "2026-11-09T21:40:42.121Z",
+  "httpStatus": 429,
+  "outcome": "rpc-error",
+  "response": {
+   "error": {
+    "name": "HTTP_OR_INVALID_RESPONSE",
+    "status": 429
+   }
+  },
+  "responseSha256": "61237278c9352f8451d67184c95ac9c89f629ae114b838d1b4fd481f22f73853",
+  "blockHeight": null,
+  "blockHash": null
+ },
+ {
+  "version": 1,
+  "request": {
+   "method": "query",
+   "params": {
+    "account_id": "omni.bridge.near",
+    "finality": "final",
+    "request_type": "call_function",
+    "method_name": "get_bridged_token",
+    "args_base64": "eyJhZGRyZXNzIjoibmVhcjp6ZWMub21mdC5uZWFyIiwiY2hhaW4iOiJaY2FzaCJ9"
+   }
+  },
+  "requestSha256": "13f858e32f4e48a22588a8c455f2ff0e43c2a452a096050fc5ffb8520ea7129a",
+  "endpointHost": "archival-rpc.mainnet.fastnear.com",
+  "retrievedAt": "2026-11-09T21:40:42.140Z",
+  "httpStatus": 429,
+  "outcome": "rpc-error",
+  "response": {
+   "error": {
+    "name": "HTTP_OR_INVALID_RESPONSE",
+    "status": 429
+   }
+  },
+  "responseSha256": "61237278c9352f8451d67184c95ac9c89f629ae114b838d1b4fd481f22f73853",
+  "blockHeight": null,
+  "blockHash": null
+ },
+ {
+  "version": 1,
+  "request": {
+   "method": "query",
+   "params": {
+    "account_id": "eth.omft.near",
+    "finality": "final",
+    "request_type": "view_account"
+   }
+  },
+  "requestSha256": "ccde36b795bac39a4ef6d3ff152fdbf282e9d1ade95efb2ff159a09996f3c0ea",
+  "endpointHost": "archival-rpc.mainnet.fastnear.com",
+  "retrievedAt": "2026-11-09T21:40:42.159Z",
+  "httpStatus": 429,
+  "outcome": "rpc-error",
+  "response": {
+   "error": {
+    "name": "HTTP_OR_INVALID_RESPONSE",
+    "status": 429
+   }
+  },
+  "responseSha256": "61237278c9352f8451d67184c95ac9c89f629ae114b838d1b4fd481f22f73853",
+  "blockHeight": null,
+  "blockHash": null
+ },
+ {
+  "version": 1,
+  "request": {
+   "method": "query",
+   "params": {
+    "account_id": "eth.omft.near",
+    "finality": "final",
+    "request_type": "call_function",
+    "method_name": "contract_source_metadata",
+    "args_base64": "e30="
+   }
+  },
+  "requestSha256": "568f26442f245720d1f6a6ec2f9d47ea330697a90ac40d0e786318af703baa98",
+  "endpointHost": "archival-rpc.mainnet.fastnear.com",
+  "retrievedAt": "2026-11-09T21:40:42.173Z",
+  "httpStatus": 429,
+  "outcome": "rpc-error",
+  "response": {
+   "error": {
+    "name": "HTTP_OR_INVALID_RESPONSE",
+    "status": 429
+   }
+  },
+  "responseSha256": "61237278c9352f8451d67184c95ac9c89f629ae114b838d1b4fd481f22f73853",
+  "blockHeight": null,
+  "blockHash": null
+ },
+ {
+  "version": 1,
+  "request": {
+   "method": "query",
+   "params": {
+    "account_id": "eth.omft.near",
+    "finality": "final",
+    "request_type": "call_function",
+    "method_name": "owner_get",
+    "args_base64": "e30="
+   }
+  },
+  "requestSha256": "de07c64a952edcf9ab92c8a13fd2d31e011c898a8918b24635e1e49a38418e6e",
+  "endpointHost": "archival-rpc.mainnet.fastnear.com",
+  "retrievedAt": "2026-11-09T21:40:42.188Z",
+  "httpStatus": 429,
+  "outcome": "rpc-error",
+  "response": {
+   "error": {
+    "name": "HTTP_OR_INVALID_RESPONSE",
+    "status": 429
+   }
+  },
+  "responseSha256": "61237278c9352f8451d67184c95ac9c89f629ae114b838d1b4fd481f22f73853",
+  "blockHeight": null,
+  "blockHash": null
+ },
+ {
+  "version": 1,
+  "request": {
+   "method": "query",
+   "params": {
+    "account_id": "eth.omft.near",
+    "finality": "final",
+    "request_type": "view_state",
+    "prefix_base64": "U1RBVEU=",
+    "include_proof": false
+   }
+  },
+  "requestSha256": "0f4dc46095748a354d19e8e6ca378dbe2335481a402453b07874d787c5306732",
+  "endpointHost": "archival-rpc.mainnet.fastnear.com",
+  "retrievedAt": "2026-11-09T21:40:42.206Z",
+  "httpStatus": 429,
+  "outcome": "rpc-error",
+  "response": {
+   "error": {
+    "name": "HTTP_OR_INVALID_RESPONSE",
+    "status": 429
+   }
+  },
+  "responseSha256": "61237278c9352f8451d67184c95ac9c89f629ae114b838d1b4fd481f22f73853",
+  "blockHeight": null,
+  "blockHash": null
+ },
+ {
+  "version": 1,
+  "request": {
+   "method": "query",
+   "params": {
+    "account_id": "eth.omft.near",
+    "finality": "final",
+    "request_type": "view_state",
+    "prefix_base64": "U1RBVEU=",
+    "include_proof": false
+   }
+  },
+  "requestSha256": "0f4dc46095748a354d19e8e6ca378dbe2335481a402453b07874d787c5306732",
+  "endpointHost": "rpc.mainnet.fastnear.com",
+  "retrievedAt": "2026-11-09T21:40:42.278Z",
+  "httpStatus": 200,
+  "outcome": "result",
+  "response": {
+   "jsonrpc": "2.0",
+   "result": {
+    "block_hash": "GCWcbR4WZ7QNQKY4hZoTJCVRLFis2UyciRz9dL23Lhsg",
+    "block_height": 223823988,
+    "values": [
+     {
+      "key": "U1RBVEU=",
+      "value": "AQAAAADCWzjb9fRfln0AAAAAAAAAfQAAAAAAAAABAAAAAQ=="
+     }
+    ]
+   },
+   "id": "intent-route"
+  },
+  "responseSha256": "f2cfb02c76cce01a0b22b73923d6d9145aef55a847674223e46331e736697bcf",
+  "blockHeight": "223823988",
+  "blockHash": "GCWcbR4WZ7QNQKY4hZoTJCVRLFis2UyciRz9dL23Lhsg"
+ },
+ {
+  "version": 1,
+  "request": {
+   "method": "query",
+   "params": {
+    "account_id": "eth.omft.near",
+    "finality": "final",
+    "request_type": "view_state",
+    "prefix_base64": "V0lUSERSQVdfUkVMQVlFUl9BRERSRVNT",
+    "include_proof": false
+   }
+  },
+  "requestSha256": "b6f5bece005334c282520357edc86945ab9da138ffe926a3fcc5259b8d434abf",
+  "endpointHost": "archival-rpc.mainnet.fastnear.com",
+  "retrievedAt": "2026-11-09T21:40:42.294Z",
+  "httpStatus": 429,
+  "outcome": "rpc-error",
+  "response": {
+   "error": {
+    "name": "HTTP_OR_INVALID_RESPONSE",
+    "status": 429
+   }
+  },
+  "responseSha256": "61237278c9352f8451d67184c95ac9c89f629ae114b838d1b4fd481f22f73853",
+  "blockHeight": null,
+  "blockHash": null
+ },
+ {
+  "version": 1,
+  "request": {
+   "method": "query",
+   "params": {
+    "account_id": "eth.omft.near",
+    "finality": "final",
+    "request_type": "view_state",
+    "prefix_base64": "V0lUSERSQVdfUkVMQVlFUl9BRERSRVNT",
+    "include_proof": false
+   }
+  },
+  "requestSha256": "b6f5bece005334c282520357edc86945ab9da138ffe926a3fcc5259b8d434abf",
+  "endpointHost": "rpc.mainnet.fastnear.com",
+  "retrievedAt": "2026-11-09T21:40:42.380Z",
+  "httpStatus": 200,
+  "outcome": "result",
+  "response": {
+   "jsonrpc": "2.0",
+   "result": {
+    "block_hash": "GCWcbR4WZ7QNQKY4hZoTJCVRLFis2UyciRz9dL23Lhsg",
+    "block_height": 223823988,
+    "values": []
+   },
+   "id": "intent-route"
+  },
+  "responseSha256": "dc28dac5aa76d64a403175583cf4e4e1e423797b5ad669765176c7ae8ff856e1",
+  "blockHeight": "223823988",
+  "blockHash": "GCWcbR4WZ7QNQKY4hZoTJCVRLFis2UyciRz9dL23Lhsg"
+ },
+ {
+  "version": 1,
+  "request": {
+   "method": "query",
+   "params": {
+    "account_id": "omni.bridge.near",
+    "finality": "final",
+    "request_type": "call_function",
+    "method_name": "get_token_address",
+    "args_base64": "eyJjaGFpbl9raW5kIjoiRXRoIiwidG9rZW4iOiJldGgub21mdC5uZWFyIn0="
+   }
+  },
+  "requestSha256": "3c0b42b3057ea9a119afbe774965afb29db59e7548d5fbc86a2cc75413a49ed7",
+  "endpointHost": "archival-rpc.mainnet.fastnear.com",
+  "retrievedAt": "2026-11-09T21:40:42.408Z",
+  "httpStatus": 429,
+  "outcome": "rpc-error",
+  "response": {
+   "error": {
+    "name": "HTTP_OR_INVALID_RESPONSE",
+    "status": 429
+   }
+  },
+  "responseSha256": "61237278c9352f8451d67184c95ac9c89f629ae114b838d1b4fd481f22f73853",
+  "blockHeight": null,
+  "blockHash": null
+ },
+ {
+  "version": 1,
+  "request": {
+   "method": "query",
+   "params": {
+    "account_id": "omni.bridge.near",
+    "finality": "final",
+    "request_type": "call_function",
+    "method_name": "get_bridged_token",
+    "args_base64": "eyJhZGRyZXNzIjoibmVhcjpldGgub21mdC5uZWFyIiwiY2hhaW4iOiJFdGgifQ=="
+   }
+  },
+  "requestSha256": "fe60ac763c994769d707457367f6ad96dce94e2a31d6bb9641d677b69c9dff23",
+  "endpointHost": "archival-rpc.mainnet.fastnear.com",
+  "retrievedAt": "2026-11-09T21:40:42.437Z",
+  "httpStatus": 429,
+  "outcome": "rpc-error",
+  "response": {
+   "error": {
+    "name": "HTTP_OR_INVALID_RESPONSE",
+    "status": 429
+   }
+  },
+  "responseSha256": "61237278c9352f8451d67184c95ac9c89f629ae114b838d1b4fd481f22f73853",
+  "blockHeight": null,
+  "blockHash": null
+ }
+]

@@ -1,0 +1,31 @@
+{
+ "version": 1,
+ "requestSha256": "c997b08a6d6bcbc8054479a9014c7ad5b390a579a81d897d0a513f5cf8498a4e",
+ "request": {
+  "method": "query",
+  "params": {
+   "account_id": "sol-0xaad74c68eecfc9f8c5bdcea614f6167048c795ef.omdep.near",
+   "request_type": "call_function",
+   "method_name": "ft_metadata",
+   "args_base64": "e30=",
+   "finality": "final"
+  }
+ },
+ "endpointHost": "archival-rpc.mainnet.fastnear.com",
+ "retrievedAt": "2026-11-09T19:33:10.480Z",
+ "httpStatus": 200,
+ "outcome": "result",
+ "blockHeight": "223810681",
+ "blockHash": "F4f1vn2XDZhpo2x66okEChmUjVoxEQ6qQJ9RDERy1afV",
+ "responseSha256": "486d47002e42f375388753edd705a8a2cf20d8978b238dd5f4764796680d661d",
+ "response": {
+  "jsonrpc": "2.0",
+  "result": {
+   "block_hash": "F4f1vn2XDZhpo2x66okEChmUjVoxEQ6qQJ9RDERy1afV",
+   "block_height": 223810681,
+   "logs": []
+  },
+  "id": "near-reader"
+ },
+ "resultText": "{\"spec\":\"ft-1.0.0\",\"name\":\"Pudgy Penguins\",\"symbol\":\"PENGU\",\"icon\":null,\"reference\":null,\"reference_hash\":null,\"decimals\":6}"
+}

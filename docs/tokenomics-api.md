@@ -8,6 +8,17 @@ Contract between the backend (branch `tokenomics-graph`) and the frontend (branc
 
 `answer` holds the short answer and the headline findings; `path`, `control` and `offsets` hold the three parts of the question; the other sections hold the supporting facts.
 
+## Protocols
+
+The same contract serves every protocol in `TOKENOMICS_REGISTRY` (`src/tokenomics/registry.ts`). In the endpoints below, `marinade` stands for a protocol id; today the ids are `marinade` and `kamino`.
+
+| Protocol | Sections with data | Sections that are `pending` |
+|---|---|---|
+| `marinade` | all eleven | none |
+| `kamino` (the Sentora PYUSD kVault, from a recorded capture) | `control`, `parameters`, `programs`, `claims`, `graph` | `answer`, `path`, `offsets`, `participation`, `holders`, `flows` |
+
+Kamino has no headline question and no short answer: the capture maps who controls the vault and what it depends on, not a path to token holders. Each of its pending sections carries a note that begins "Not mapped in this capture" and says what is missing. `ProtocolsResponse` gives each protocol's title, its coverage sentence and the status of every section, so a client never has to assume which sections exist.
+
 ## Endpoints (all GET unless noted; JSON; same origin; no credentials ever reach the browser)
 
 | Endpoint | Returns |

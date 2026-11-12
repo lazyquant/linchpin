@@ -1,0 +1,31 @@
+{
+ "version": 1,
+ "requestSha256": "5515e97ff6af700280a1ccc63deef12a34ab5ec50430dec4dac59feeba86c814",
+ "request": {
+  "method": "query",
+  "params": {
+   "account_id": "aggregate-oracle.near",
+   "request_type": "call_function",
+   "method_name": "get_owner",
+   "args_base64": "e30=",
+   "finality": "final"
+  }
+ },
+ "endpointHost": "archival-rpc.mainnet.fastnear.com",
+ "retrievedAt": "2026-11-09T19:30:46.323Z",
+ "httpStatus": 200,
+ "outcome": "call-error",
+ "blockHeight": "223810432",
+ "blockHash": "GcEj8hBLVtdzmBBMH8dNUizH4cbdHLT2Fz9f5U8Der3j",
+ "responseSha256": "d8237d331bd29f737237bdce35becda653fcc4697bbb50d8c0b51d712694832a",
+ "response": {
+  "jsonrpc": "2.0",
+  "result": {
+   "block_hash": "GcEj8hBLVtdzmBBMH8dNUizH4cbdHLT2Fz9f5U8Der3j",
+   "block_height": 223810432,
+   "error": "wasm execution failed with error: MethodResolveError(MethodNotFound)",
+   "logs": []
+  },
+  "id": "near-reader"
+ }
+}

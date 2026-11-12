@@ -1,0 +1,2415 @@
+{
+  "schemaVersion": 1,
+  "templates": [
+    {
+      "id": "entity-resolve",
+      "question": "Which recorded entities match this identifier or name?",
+      "params": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "text",
+          "limit"
+        ],
+        "properties": {
+          "text": {
+            "type": "string"
+          },
+          "protocolId": {
+            "type": "string"
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 500
+          }
+        }
+      },
+      "cypher": "MATCH (e:Entity) WHERE (e.id = $text OR e.address = $text OR toLower(coalesce(e.name, '')) CONTAINS toLower($text)) AND ($protocolId IS NULL OR EXISTS { MATCH (e)-[:PART_OF]->(p:Protocol) WHERE p.id = $protocolId }) RETURN 'scope' AS rowKind, e.id AS entityId, $protocolId AS protocolId, e.nameSource AS source, e.kinds AS kinds, e.name AS name, e.nameSource AS nameSource ORDER BY entityId LIMIT toInteger($limit)",
+      "columns": [
+        "rowKind",
+        "entityId",
+        "protocolId",
+        "source",
+        "kinds",
+        "name",
+        "nameSource"
+      ],
+      "limits": "Cannot establish unobserved historical state, completeness of a partial reader, or execution beyond recorded evidence.",
+      "twin": "runEvidenceLocal",
+      "entryPoint": "runEvidenceNeo4j",
+      "postProcessing": [
+        "Normalise Neo4j integers and temporals; sort rows canonically.",
+        "When the query returns no rows, return the coverage rows of the asked scope (protocolId, series and the snapshots in scope; spec G11), or one not-mapped coverage row when no snapshot is in scope."
+      ],
+      "cypherParams": {
+        "limit": {
+          "default": "required"
+        },
+        "protocolId": {
+          "default": null
+        },
+        "text": {
+          "default": "required"
+        }
+      }
+    },
+    {
+      "id": "control",
+      "question": "Who can control this entity?",
+      "params": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "subject",
+          "scope"
+        ],
+        "properties": {
+          "subject": {
+            "type": "string"
+          },
+          "scope": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "snapshotId",
+              "asOf",
+              "maxHops",
+              "maxResults"
+            ],
+            "properties": {
+              "snapshotId": {
+                "type": "string"
+              },
+              "asOf": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "maxHops": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 8
+              },
+              "maxResults": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 500
+              }
+            }
+          }
+        }
+      },
+      "cypher": "WITH [$scope.snapshotId] AS ids\nMATCH (e:Entity)<-[:ABOUT]-(f:Fact) WHERE f.snapshotId IN ids\nWITH f, CASE WHEN $scope IS NULL THEN head([(snap:Snapshot)-[:HAS_FACT]->(f) | snap.observedTo]) ELSE datetime($scope.asOf) END AS at\nWITH f, (f.validTo IS NOT NULL AND f.validTo <= at) AS expired, (f.validTo IS NULL OR f.validTo > at) AND (f.validFrom IS NULL OR f.validFrom <= at) AND EXISTS { MATCH (f)-[:EVIDENCED_BY]->(r:Receipt) WHERE r.observedAt <= at AND (r.historicalState = 'current-only' OR (r.historicalState IN ['pinned','constructed'] AND f.validFrom IS NOT NULL)) } AS usable\nORDER BY f.subjectId, f.predicate, coalesce(f.objectId,f.objectValue), f.id\nWITH collect(f{.*, objectId:f.objectId, objectValue:f.objectValue, validFrom:f.validFrom, validTo:f.validTo, blockOrSlot:f.blockOrSlot, usable:usable, expired:expired}) AS raw\nWITH [f IN raw | f{.*, status: CASE WHEN f.usable AND f.cardinality = 'one' AND any(g IN raw WHERE g.usable AND g.snapshotId=f.snapshotId AND g.key=f.key AND coalesce(g.objectId,g.objectValue)<>coalesce(f.objectId,f.objectValue)) THEN 'conflicting' ELSE f.status END}] AS facts\nWITH [f IN facts WHERE f.usable AND f.class = 'control'] AS facts\nWITH facts, reduce(st={queue:[{subject:$subject, path:[]}], visited:[$subject], rows:[]}, step IN range(0,size(facts)) |\n CASE WHEN step >= size(st.queue) THEN st ELSE\n reduce(acc=st, f IN [f IN facts WHERE f.subjectId=st.queue[step].subject AND size(st.queue[step].path)<$scope.maxHops][0..$scope.maxResults] |\n CASE WHEN false THEN acc ELSE\n {queue:acc.queue + CASE WHEN f.objectId IS NOT NULL AND NOT f.objectId IN acc.visited THEN [{subject:f.objectId,path:st.queue[step].path+[f.id]}] ELSE [] END,\n visited:acc.visited + CASE WHEN f.objectId IS NOT NULL AND NOT f.objectId IN acc.visited THEN [f.objectId] ELSE [] END,\n rows:acc.rows + [f{.*, path:f.path, hop:size(st.queue[step].path)+1, viaFactIds:st.queue[step].path, factId:f.id, reason:CASE WHEN f.expired THEN 'expired' WHEN (coalesce(f.objectValue = 'unknown', false) AND f.class <> 'control') OR (NOT (coalesce(f.objectValue = 'unknown', false) AND f.class = 'control') AND (f.basis = 'unknown' OR f.status = 'unverified')) THEN 'missing-coverage' WHEN f.status = 'missing' THEN 'missing-evidence' WHEN NOT f.usable THEN 'missing-history' WHEN coalesce(f.objectValue = 'unknown', false) AND f.class = 'control' THEN 'unknown-controller' ELSE null END, rowKind:CASE WHEN f.objectValue IN ['unknown','none'] THEN 'unknown' WHEN size(f.path)>0 THEN 'path' ELSE 'fact' END}]} END) END) AS result\nUNWIND result.rows AS row\nRETURN row",
+      "columns": [
+        "rowKind",
+        "factId",
+        "uid",
+        "key",
+        "subjectId",
+        "predicate",
+        "objectId",
+        "objectValue",
+        "basis",
+        "status",
+        "evidenceIds",
+        "blockOrSlot",
+        "asOf",
+        "snapshotId",
+        "path",
+        "reason",
+        "hop",
+        "viaFactIds"
+      ],
+      "limits": "Cannot establish unobserved historical state, completeness of a partial reader, or execution beyond recorded evidence.",
+      "twin": "runEvidenceLocal",
+      "entryPoint": "runEvidenceNeo4j",
+      "postProcessing": [
+        "Drop the internal columns usable and expired.",
+        "For a row with a non-empty path: factIds = path; bases and statuses from the rows of those fact ids in the same result; evidenceIds and snapshotIds as their sorted union; key = sha256(path joined by \"|\").",
+        "Normalise and sort rows canonically.",
+        "When the query returns no rows, return the coverage rows of the asked scope (protocolId, series and the snapshots in scope; spec G11), or one not-mapped coverage row when no snapshot is in scope."
+      ],
+      "cypherParams": {
+        "scope": {
+          "default": null
+        },
+        "subject": {
+          "default": "required"
+        }
+      }
+    },
+    {
+      "id": "dependencies",
+      "question": "What does this entity depend on?",
+      "params": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "subject",
+          "scope",
+          "relations"
+        ],
+        "properties": {
+          "subject": {
+            "type": "string"
+          },
+          "scope": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "snapshotId",
+              "asOf",
+              "maxHops",
+              "maxResults"
+            ],
+            "properties": {
+              "snapshotId": {
+                "type": "string"
+              },
+              "asOf": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "maxHops": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 8
+              },
+              "maxResults": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 500
+              }
+            }
+          },
+          "relations": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "minItems": 1,
+            "maxItems": 16,
+            "uniqueItems": true
+          }
+        }
+      },
+      "cypher": "WITH [$scope.snapshotId] AS ids\nMATCH (e:Entity)<-[:ABOUT]-(f:Fact) WHERE f.snapshotId IN ids\nWITH f, CASE WHEN $scope IS NULL THEN head([(snap:Snapshot)-[:HAS_FACT]->(f) | snap.observedTo]) ELSE datetime($scope.asOf) END AS at\nWITH f, (f.validTo IS NOT NULL AND f.validTo <= at) AS expired, (f.validTo IS NULL OR f.validTo > at) AND (f.validFrom IS NULL OR f.validFrom <= at) AND EXISTS { MATCH (f)-[:EVIDENCED_BY]->(r:Receipt) WHERE r.observedAt <= at AND (r.historicalState = 'current-only' OR (r.historicalState IN ['pinned','constructed'] AND f.validFrom IS NOT NULL)) } AS usable\nORDER BY f.subjectId, f.predicate, coalesce(f.objectId,f.objectValue), f.id\nWITH collect(f{.*, objectId:f.objectId, objectValue:f.objectValue, validFrom:f.validFrom, validTo:f.validTo, blockOrSlot:f.blockOrSlot, usable:usable, expired:expired}) AS raw\nWITH [f IN raw | f{.*, status: CASE WHEN f.usable AND f.cardinality = 'one' AND any(g IN raw WHERE g.usable AND g.snapshotId=f.snapshotId AND g.key=f.key AND coalesce(g.objectId,g.objectValue)<>coalesce(f.objectId,f.objectValue)) THEN 'conflicting' ELSE f.status END}] AS facts\nWITH [f IN facts WHERE f.usable AND f.predicate IN $relations] AS facts\nWITH facts, reduce(st={queue:[{subject:$subject, path:[]}], visited:[$subject], rows:[]}, step IN range(0,size(facts)) |\n CASE WHEN step >= size(st.queue) THEN st ELSE\n reduce(acc=st, f IN [f IN facts WHERE f.subjectId=st.queue[step].subject AND size(st.queue[step].path)<$scope.maxHops] |\n CASE WHEN size(acc.rows)>=$scope.maxResults THEN acc ELSE\n {queue:acc.queue + CASE WHEN f.objectId IS NOT NULL AND NOT f.objectId IN acc.visited THEN [{subject:f.objectId,path:st.queue[step].path+[f.id]}] ELSE [] END,\n visited:acc.visited + CASE WHEN f.objectId IS NOT NULL AND NOT f.objectId IN acc.visited THEN [f.objectId] ELSE [] END,\n rows:acc.rows + [f{.*, path:CASE WHEN size(st.queue[step].path)=0 THEN [] ELSE st.queue[step].path+[f.id] END,  factId:f.id, reason:CASE WHEN f.expired THEN 'expired' WHEN (coalesce(f.objectValue = 'unknown', false) AND f.class <> 'control') OR (NOT (coalesce(f.objectValue = 'unknown', false) AND f.class = 'control') AND (f.basis = 'unknown' OR f.status = 'unverified')) THEN 'missing-coverage' WHEN f.status = 'missing' THEN 'missing-evidence' WHEN NOT f.usable THEN 'missing-history' WHEN coalesce(f.objectValue = 'unknown', false) AND f.class = 'control' THEN 'unknown-controller' ELSE null END, rowKind:CASE WHEN f.objectValue IN ['unknown','none'] THEN 'unknown' WHEN size(st.queue[step].path)>0 THEN 'path' ELSE 'fact' END}]} END) END) AS result\nUNWIND result.rows AS row\nRETURN row",
+      "columns": [
+        "rowKind",
+        "factId",
+        "uid",
+        "key",
+        "subjectId",
+        "predicate",
+        "objectId",
+        "objectValue",
+        "basis",
+        "status",
+        "evidenceIds",
+        "blockOrSlot",
+        "asOf",
+        "snapshotId",
+        "path",
+        "reason"
+      ],
+      "limits": "Cannot establish unobserved historical state, completeness of a partial reader, or execution beyond recorded evidence.",
+      "twin": "runEvidenceLocal",
+      "entryPoint": "runEvidenceNeo4j",
+      "postProcessing": [
+        "Drop the internal columns usable and expired.",
+        "For a row with a non-empty path: factIds = path; bases and statuses from the rows of those fact ids in the same result; evidenceIds and snapshotIds as their sorted union; key = sha256(path joined by \"|\").",
+        "Normalise and sort rows canonically.",
+        "When the query returns no rows, return the coverage rows of the asked scope (protocolId, series and the snapshots in scope; spec G11), or one not-mapped coverage row when no snapshot is in scope."
+      ],
+      "cypherParams": {
+        "relations": {
+          "default": "required"
+        },
+        "scope": {
+          "default": null
+        },
+        "subject": {
+          "default": "required"
+        }
+      }
+    },
+    {
+      "id": "changes",
+      "question": "What changed between these observations?",
+      "params": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "subject",
+          "beforeSnapshotId",
+          "afterSnapshotId",
+          "maxResults"
+        ],
+        "properties": {
+          "subject": {
+            "type": "string"
+          },
+          "beforeSnapshotId": {
+            "type": "string"
+          },
+          "afterSnapshotId": {
+            "type": "string"
+          },
+          "maxResults": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 500
+          }
+        }
+      },
+      "cypher": "WITH [$beforeSnapshotId,$afterSnapshotId] AS ids\nMATCH (e:Entity)<-[:ABOUT]-(f:Fact) WHERE f.snapshotId IN ids\nWITH f, CASE WHEN $scope IS NULL THEN head([(snap:Snapshot)-[:HAS_FACT]->(f) | snap.observedTo]) ELSE datetime($scope.asOf) END AS at\nWITH f, (f.validTo IS NOT NULL AND f.validTo <= at) AS expired, (f.validTo IS NULL OR f.validTo > at) AND (f.validFrom IS NULL OR f.validFrom <= at) AND EXISTS { MATCH (f)-[:EVIDENCED_BY]->(r:Receipt) WHERE r.observedAt <= at AND (r.historicalState = 'current-only' OR (r.historicalState IN ['pinned','constructed'] AND f.validFrom IS NOT NULL)) } AS usable\nORDER BY f.subjectId, f.predicate, coalesce(f.objectId,f.objectValue), f.id\nWITH collect(f{.*, objectId:f.objectId, objectValue:f.objectValue, validFrom:f.validFrom, validTo:f.validTo, blockOrSlot:f.blockOrSlot, usable:usable, expired:expired}) AS raw\nWITH [f IN raw | f{.*, status: CASE WHEN f.cardinality = 'one' AND any(g IN raw WHERE g.snapshotId=f.snapshotId AND g.key=f.key AND coalesce(g.objectId,g.objectValue)<>coalesce(f.objectId,f.objectValue)) THEN 'conflicting' ELSE f.status END}] AS facts\nMATCH (b:Snapshot {id:$beforeSnapshotId})-[bc:COVERS]->(e:Entity {id:$subject})<- [ac:COVERS]-(a:Snapshot {id:$afterSnapshotId})\nWHERE b.chain=a.chain AND b.network=a.network\nWITH facts,b,a,bc,ac\nUNWIND [f IN facts WHERE f.subjectId=$subject] AS f\nWITH facts,b,a,bc,ac,f ORDER BY f.subjectId,f.predicate,coalesce(f.objectId,f.objectValue),f.id,f.snapshotId\nWITH facts,b,a,bc,ac,collect(f) AS ordered\nUNWIND ordered[0..$maxResults] AS f\nWITH facts,b,a,bc,ac,f,\n [g IN facts WHERE g.key=f.key AND g.snapshotId=b.id AND g.usable] AS before,\n [g IN facts WHERE g.key=f.key AND g.snapshotId=a.id AND g.usable] AS after\nWITH facts,f, before, after,bc,ac,head(before) AS bf,head(after) AS af\nWITH f,bf,af, CASE\n WHEN size(before)=0 AND size(after)=1 AND none(g IN facts WHERE g.key=f.key AND g.snapshotId=$beforeSnapshotId) AND none(s IN bc.readerStatuses WHERE NOT s ENDS WITH '|complete') THEN 'added'\n WHEN size(after)=0 AND size(before)=1 AND none(g IN facts WHERE g.key=f.key AND g.snapshotId=$afterSnapshotId) AND none(s IN ac.readerStatuses WHERE NOT s ENDS WITH '|complete') THEN 'removed'\n WHEN size(before)=1 AND size(after)=1 AND (coalesce(bf.objectId,bf.objectValue)<>coalesce(af.objectId,af.objectValue) OR bf.status<>af.status OR bf.basis<>af.basis) THEN 'changed'\n ELSE null END AS kind\nWITH f,bf,af,CASE WHEN f.uid=coalesce(af.uid,bf.uid) THEN kind ELSE null END AS kind\nRETURN f{.*,factId:f.id,rowKind:'fact',reason:CASE WHEN f.expired THEN 'expired' WHEN (coalesce(f.objectValue = 'unknown', false) AND f.class <> 'control') OR (NOT (coalesce(f.objectValue = 'unknown', false) AND f.class = 'control') AND (f.basis = 'unknown' OR f.status = 'unverified')) THEN 'missing-coverage' WHEN f.status = 'missing' THEN 'missing-evidence' WHEN NOT f.usable THEN 'missing-history' WHEN coalesce(f.objectValue = 'unknown', false) AND f.class = 'control' THEN 'unknown-controller' ELSE null END,changeKind:kind,changeKey:CASE WHEN kind IS NOT NULL THEN f.key ELSE null END,beforeFactId:CASE WHEN kind IS NOT NULL THEN bf.id ELSE null END,afterFactId:CASE WHEN kind IS NOT NULL THEN af.id ELSE null END} AS row",
+      "columns": [
+        "rowKind",
+        "factId",
+        "uid",
+        "key",
+        "subjectId",
+        "predicate",
+        "objectId",
+        "objectValue",
+        "basis",
+        "status",
+        "evidenceIds",
+        "blockOrSlot",
+        "asOf",
+        "snapshotId",
+        "path",
+        "reason",
+        "changeKind",
+        "changeKey",
+        "beforeFactId",
+        "afterFactId"
+      ],
+      "limits": "Cannot establish unobserved historical state, completeness of a partial reader, or execution beyond recorded evidence.",
+      "twin": "runEvidenceLocal",
+      "entryPoint": "runEvidenceNeo4j",
+      "postProcessing": [
+        "Drop the internal columns usable and expired.",
+        "For a row with a non-empty path: as for control.",
+        "Normalise and sort rows canonically.",
+        "When the query returns no rows, return the coverage rows of the asked scope (protocolId, series and the snapshots in scope; spec G11), or one not-mapped coverage row when no snapshot is in scope."
+      ],
+      "cypherParams": {
+        "afterSnapshotId": {
+          "default": "required"
+        },
+        "beforeSnapshotId": {
+          "default": "required"
+        },
+        "maxResults": {
+          "default": "required"
+        },
+        "scope": {
+          "default": null
+        },
+        "subject": {
+          "default": "required"
+        }
+      }
+    },
+    {
+      "id": "evidence",
+      "question": "Which receipts support these assertions?",
+      "params": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "evidenceIds",
+          "maxResults"
+        ],
+        "properties": {
+          "evidenceIds": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "minItems": 1,
+            "maxItems": 500,
+            "uniqueItems": true
+          },
+          "maxResults": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 500
+          }
+        }
+      },
+      "cypher": "MATCH (r:Receipt) WHERE r.id IN $evidenceIds\nCALL (r) { MATCH (s:Snapshot) WHERE r.id IN s.receiptIds WITH s ORDER BY s.id RETURN collect(s.id) AS snapshotIds }\nRETURN r{.*, id:null, receiptId:r.id, blockHash:r.blockHash, blockOrSlot:r.blockOrSlot, rowKind:'receipt', snapshotIds:snapshotIds} AS row",
+      "columns": [
+        "rowKind",
+        "receiptId",
+        "source",
+        "responseSha256",
+        "chain",
+        "network",
+        "blockOrSlot",
+        "blockHash",
+        "observedAt",
+        "retrievedAt",
+        "historicalState",
+        "privacy",
+        "snapshotIds"
+      ],
+      "limits": "Cannot establish unobserved historical state, completeness of a partial reader, or execution beyond recorded evidence.",
+      "twin": "runEvidenceLocal",
+      "entryPoint": "runEvidenceNeo4j",
+      "postProcessing": [
+        "Drop the internal id column.",
+        "Normalise and sort rows canonically.",
+        "When the query returns no rows, return the coverage rows of the asked scope (protocolId, series and the snapshots in scope; spec G11), or one not-mapped coverage row when no snapshot is in scope."
+      ],
+      "cypherParams": {
+        "evidenceIds": {
+          "default": "required"
+        }
+      }
+    },
+    {
+      "id": "shared-controllers",
+      "question": "Which controllers control multiple subjects?",
+      "params": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [],
+        "properties": {
+          "protocolId": {
+            "type": "string"
+          },
+          "snapshotIds": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "minSubjects": {
+            "type": "integer",
+            "minimum": 1,
+            "default": 2
+          }
+        }
+      },
+      "cypher": "MATCH (s:Snapshot)\nWHERE ($snapshotIds IS NOT NULL AND s.id IN $snapshotIds) OR ($snapshotIds IS NULL AND NOT s.constructed AND NOT EXISTS { MATCH (newer:Snapshot) WHERE newer.series=s.series AND NOT newer.constructed AND (newer.observedTo>s.observedTo OR (newer.observedTo=s.observedTo AND newer.id>s.id)) })\nMATCH (s)-[:HAS_FACT]->(f:Fact) WHERE f.objectId IS NOT NULL AND f.coreType IS NOT NULL\nWITH f ORDER BY f.uid\nWITH collect(f{.*}) AS facts\nUNWIND [f IN facts WHERE f.class='control'] AS f\nMATCH (e:Entity {id:f.subjectId})\nWHERE $protocolId IS NULL OR EXISTS { MATCH (e)-[:PART_OF]->(p:Protocol {id:$protocolId}) }\nWITH f.objectId AS controllerId, collect(f) AS fs, collect(DISTINCT f.subjectId) AS subjects\nWHERE size(subjects)>=coalesce($minSubjects,2)\nCALL (subjects) { UNWIND subjects AS subject MATCH (:Entity {id:subject})-[:PART_OF]->(p:Protocol) RETURN collect(DISTINCT p.id) AS protocols }\nCALL (subjects,controllerId) { MATCH (e:Entity)-[r]->(:Entity {id:controllerId}) WHERE e.id IN subjects AND r.role IS NOT NULL RETURN collect(DISTINCT r.role) AS roles }\nRETURN {rowKind:'path', factIds:[f IN fs|f.id], bases:[f IN fs|f.basis],statuses:[f IN fs|f.status],evidenceIds:reduce(a=[],f IN fs|a+f.evidenceIds),snapshotIds:[f IN fs|f.snapshotId], controllerId:controllerId, subjectIds:subjects,subjectCount:size(subjects),protocolIds:protocols,types:[f IN fs|f.coreType],roles:roles} AS row",
+      "columns": [
+        "rowKind",
+        "factIds",
+        "bases",
+        "statuses",
+        "evidenceIds",
+        "snapshotIds",
+        "key",
+        "controllerId",
+        "subjectIds",
+        "subjectCount",
+        "protocolIds",
+        "types",
+        "roles"
+      ],
+      "limits": "Cannot establish unobserved historical state, completeness of a partial reader, or execution beyond recorded evidence.",
+      "twin": "runEvidenceLocal",
+      "entryPoint": "runEvidenceNeo4j",
+      "postProcessing": [
+        "Deduplicate and sort evidenceIds, snapshotIds, subjectIds, protocolIds, types and roles.",
+        "key = sha256(factIds joined by \"|\").",
+        "Normalise and sort rows canonically.",
+        "When the query returns no rows, return the coverage rows of the asked scope (protocolId, series and the snapshots in scope; spec G11), or one not-mapped coverage row when no snapshot is in scope."
+      ],
+      "cypherParams": {
+        "minSubjects": {
+          "default": null
+        },
+        "protocolId": {
+          "default": null
+        },
+        "snapshotIds": {
+          "default": null
+        }
+      }
+    },
+    {
+      "id": "exposure",
+      "question": "Which entities depend on this subject?",
+      "params": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "subject",
+          "maxHops"
+        ],
+        "properties": {
+          "subject": {
+            "type": "string"
+          },
+          "maxHops": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 8
+          },
+          "snapshotIds": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "cypher": "MATCH (s:Snapshot)\nWHERE ($snapshotIds IS NOT NULL AND s.id IN $snapshotIds) OR ($snapshotIds IS NULL AND NOT s.constructed AND NOT EXISTS { MATCH (newer:Snapshot) WHERE newer.series=s.series AND NOT newer.constructed AND (newer.observedTo>s.observedTo OR (newer.observedTo=s.observedTo AND newer.id>s.id)) })\nMATCH (s)-[:HAS_FACT]->(f:Fact) WHERE f.objectId IS NOT NULL AND f.coreType IS NOT NULL\nWITH f ORDER BY f.id, f.uid\nWITH collect(f{.*}) AS facts\nWITH [f IN facts WHERE f.class='dependency'] AS facts\nWITH facts, reduce(st={queue:[{subject:$subject,fs:[]}],visited:[$subject],rows:[]},step IN range(0,size(facts)) |\nCASE WHEN step>=size(st.queue) THEN st ELSE\nreduce(acc=st,f IN [f IN facts WHERE f.objectId=st.queue[step].subject AND size(st.queue[step].fs)<$maxHops] |\nCASE WHEN f.subjectId IN acc.visited THEN acc ELSE {queue:acc.queue+[{subject:f.subjectId,fs:[f]+st.queue[step].fs}],visited:acc.visited+[f.subjectId],rows:acc.rows+[{subject:f.subjectId,fs:[f]+st.queue[step].fs}]} END) END) AS result\nUNWIND result.rows AS item\nRETURN {rowKind:'path',factIds:[f IN item.fs|f.id],bases:[f IN item.fs|f.basis],statuses:[f IN item.fs|f.status],evidenceIds:reduce(a=[],f IN item.fs|a+f.evidenceIds),snapshotIds:[f IN item.fs|f.snapshotId],dependentId:item.subject,hop:size(item.fs)} AS row",
+      "columns": [
+        "rowKind",
+        "factIds",
+        "bases",
+        "statuses",
+        "evidenceIds",
+        "snapshotIds",
+        "key",
+        "dependentId",
+        "hop"
+      ],
+      "limits": "Cannot establish unobserved historical state, completeness of a partial reader, or execution beyond recorded evidence.",
+      "twin": "runEvidenceLocal",
+      "entryPoint": "runEvidenceNeo4j",
+      "postProcessing": [
+        "Deduplicate and sort evidenceIds and snapshotIds.",
+        "key = sha256(factIds joined by \"|\").",
+        "Normalise and sort rows canonically.",
+        "When the query returns no rows, return the coverage rows of the asked scope (protocolId, series and the snapshots in scope; spec G11), or one not-mapped coverage row when no snapshot is in scope."
+      ],
+      "cypherParams": {
+        "maxHops": {
+          "default": "required"
+        },
+        "snapshotIds": {
+          "default": null
+        },
+        "subject": {
+          "default": "required"
+        }
+      }
+    },
+    {
+      "id": "coverage",
+      "question": "Which mechanics have recorded coverage?",
+      "params": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [],
+        "properties": {
+          "protocolId": {
+            "type": "string"
+          },
+          "series": {
+            "type": "string"
+          }
+        }
+      },
+      "cypher": "MATCH (c:Coverage) WHERE ($protocolId IS NULL OR c.protocolId = $protocolId) AND ($series IS NULL OR c.series = $series) RETURN c.id AS id, 'coverage' AS rowKind, c.protocolId AS protocolId, c.series AS series, c.mechanic AS mechanic, c.status AS status, c.note AS note ORDER BY protocolId, series, mechanic",
+      "columns": [
+        "id",
+        "rowKind",
+        "protocolId",
+        "series",
+        "mechanic",
+        "status",
+        "note"
+      ],
+      "limits": "Cannot establish unobserved historical state, completeness of a partial reader, or execution beyond recorded evidence.",
+      "twin": "runEvidenceLocal",
+      "entryPoint": "runEvidenceNeo4j",
+      "postProcessing": [
+        "Normalise Neo4j integers and temporals; sort rows canonically.",
+        "When the query returns no rows, return the coverage rows of the asked scope (protocolId, series and the snapshots in scope; spec G11), or one not-mapped coverage row when no snapshot is in scope."
+      ],
+      "cypherParams": {
+        "protocolId": {
+          "default": null
+        },
+        "series": {
+          "default": null
+        }
+      }
+    }
+  ],
+  "labels": {
+    "Entity": {
+      "meaning": "A recorded entity in the evidence graph.",
+      "required": {
+        "id": "string",
+        "chain": "string",
+        "network": "string",
+        "address": "string",
+        "schemaVersion": "integer",
+        "kinds": "string[]",
+        "kindBasis": "string",
+        "kindFactIds": "string[]",
+        "kindEvidenceIds": "string[]"
+      },
+      "optional": {
+        "parentId": "string",
+        "name": "string",
+        "nameSource": "string",
+        "subkind": "string"
+      }
+    },
+    "Fact": {
+      "meaning": "A recorded fact in the evidence graph.",
+      "required": {
+        "uid": "string",
+        "id": "string",
+        "snapshotId": "string",
+        "subjectId": "string",
+        "predicate": "string",
+        "class": "string",
+        "cardinality": "string",
+        "field": "string",
+        "key": "string",
+        "basis": "string",
+        "status": "string",
+        "privacy": "string",
+        "evidenceIds": "string[]",
+        "path": "string[]",
+        "validFrom": "datetime|null",
+        "validTo": "datetime|null",
+        "blockOrSlot": "int64-string|null",
+        "asOf": "datetime"
+      },
+      "optional": {
+        "objectId": "string",
+        "objectValue": "string",
+        "coreType": "string"
+      }
+    },
+    "Receipt": {
+      "meaning": "A recorded receipt in the evidence graph.",
+      "required": {
+        "id": "string",
+        "source": "string",
+        "responseSha256": "string",
+        "privacy": "string",
+        "chain": "string",
+        "network": "string",
+        "blockOrSlot": "int64-string|null",
+        "blockHash": "string|null",
+        "observedAt": "datetime",
+        "retrievedAt": "datetime",
+        "historicalState": "string"
+      },
+      "optional": {}
+    },
+    "Snapshot": {
+      "meaning": "A recorded snapshot in the evidence graph.",
+      "required": {
+        "id": "string",
+        "chain": "string",
+        "network": "string",
+        "constructed": "boolean",
+        "observedFrom": "datetime",
+        "observedTo": "datetime",
+        "fromBlockOrSlot": "int64-string|null",
+        "toBlockOrSlot": "int64-string|null",
+        "freshUntil": "datetime",
+        "series": "string"
+      },
+      "optional": {}
+    },
+    "Protocol": {
+      "meaning": "A recorded protocol in the evidence graph.",
+      "required": {
+        "id": "string",
+        "title": "string",
+        "series": "string",
+        "source": "string"
+      },
+      "optional": {}
+    },
+    "Coverage": {
+      "meaning": "A recorded coverage in the evidence graph.",
+      "required": {
+        "id": "string",
+        "protocolId": "string",
+        "series": "string",
+        "mechanic": "string",
+        "status": "string",
+        "note": "string"
+      },
+      "optional": {}
+    },
+    "Program": {
+      "meaning": "An entity classified as Program by recorded evidence.",
+      "required": {},
+      "optional": {}
+    },
+    "Token": {
+      "meaning": "An entity classified as Token by recorded evidence.",
+      "required": {},
+      "optional": {}
+    },
+    "TokenAccount": {
+      "meaning": "An entity classified as TokenAccount by recorded evidence.",
+      "required": {},
+      "optional": {}
+    },
+    "Vault": {
+      "meaning": "An entity classified as Vault by recorded evidence.",
+      "required": {},
+      "optional": {}
+    },
+    "Reserve": {
+      "meaning": "An entity classified as Reserve by recorded evidence.",
+      "required": {},
+      "optional": {}
+    },
+    "Market": {
+      "meaning": "An entity classified as Market by recorded evidence.",
+      "required": {},
+      "optional": {}
+    },
+    "Pool": {
+      "meaning": "An entity classified as Pool by recorded evidence.",
+      "required": {},
+      "optional": {}
+    },
+    "Oracle": {
+      "meaning": "An entity classified as Oracle by recorded evidence.",
+      "required": {},
+      "optional": {}
+    },
+    "Multisig": {
+      "meaning": "An entity classified as Multisig by recorded evidence.",
+      "required": {},
+      "optional": {}
+    },
+    "Governance": {
+      "meaning": "An entity classified as Governance by recorded evidence.",
+      "required": {},
+      "optional": {}
+    },
+    "Timelock": {
+      "meaning": "An entity classified as Timelock by recorded evidence.",
+      "required": {},
+      "optional": {}
+    },
+    "Treasury": {
+      "meaning": "An entity classified as Treasury by recorded evidence.",
+      "required": {},
+      "optional": {}
+    },
+    "Role": {
+      "meaning": "An entity classified as Role by recorded evidence.",
+      "required": {},
+      "optional": {}
+    },
+    "Parameter": {
+      "meaning": "An entity classified as Parameter by recorded evidence.",
+      "required": {},
+      "optional": {}
+    },
+    "Proposal": {
+      "meaning": "An entity classified as Proposal by recorded evidence.",
+      "required": {},
+      "optional": {}
+    },
+    "Key": {
+      "meaning": "An entity classified as Key by recorded evidence.",
+      "required": {},
+      "optional": {}
+    },
+    "HolderGroup": {
+      "meaning": "An entity classified as HolderGroup by recorded evidence.",
+      "required": {},
+      "optional": {}
+    },
+    "ProgramData": {
+      "meaning": "An entity classified as ProgramData by recorded evidence.",
+      "required": {},
+      "optional": {}
+    }
+  },
+  "relationships": {
+    "UPGRADE_AUTHORITY": {
+      "class": "control",
+      "direction": "From the subject entity to its object entity; control points from the controlled entity to its controller.",
+      "endpoints": {
+        "from": [
+          "Entity"
+        ],
+        "to": [
+          "Entity"
+        ]
+      },
+      "mappedFrom": [
+        {
+          "predicate": "UPGRADE_AUTHORITY",
+          "reversed": false
+        },
+        {
+          "predicate": "upgraded-by",
+          "reversed": false
+        }
+      ],
+      "required": {
+        "key": "string",
+        "class": "string",
+        "predicate": "string",
+        "factIds": "string[]",
+        "factUids": "string[]",
+        "snapshotIds": "string[]",
+        "bases": "string[]",
+        "statuses": "string[]",
+        "conflict": "boolean",
+        "firstObservedAt": "datetime",
+        "lastObservedAt": "datetime",
+        "latest": "boolean"
+      },
+      "optional": {
+        "role": "string"
+      }
+    },
+    "MINT_AUTHORITY": {
+      "class": "control",
+      "direction": "From the subject entity to its object entity; control points from the controlled entity to its controller.",
+      "endpoints": {
+        "from": [
+          "Entity"
+        ],
+        "to": [
+          "Entity"
+        ]
+      },
+      "mappedFrom": [
+        {
+          "predicate": "MINT_AUTHORITY",
+          "reversed": false
+        }
+      ],
+      "required": {
+        "key": "string",
+        "class": "string",
+        "predicate": "string",
+        "factIds": "string[]",
+        "factUids": "string[]",
+        "snapshotIds": "string[]",
+        "bases": "string[]",
+        "statuses": "string[]",
+        "conflict": "boolean",
+        "firstObservedAt": "datetime",
+        "lastObservedAt": "datetime",
+        "latest": "boolean"
+      },
+      "optional": {
+        "role": "string"
+      }
+    },
+    "FREEZE_AUTHORITY": {
+      "class": "control",
+      "direction": "From the subject entity to its object entity; control points from the controlled entity to its controller.",
+      "endpoints": {
+        "from": [
+          "Entity"
+        ],
+        "to": [
+          "Entity"
+        ]
+      },
+      "mappedFrom": [
+        {
+          "predicate": "FREEZE_AUTHORITY",
+          "reversed": false
+        }
+      ],
+      "required": {
+        "key": "string",
+        "class": "string",
+        "predicate": "string",
+        "factIds": "string[]",
+        "factUids": "string[]",
+        "snapshotIds": "string[]",
+        "bases": "string[]",
+        "statuses": "string[]",
+        "conflict": "boolean",
+        "firstObservedAt": "datetime",
+        "lastObservedAt": "datetime",
+        "latest": "boolean"
+      },
+      "optional": {
+        "role": "string"
+      }
+    },
+    "PAUSE_AUTHORITY": {
+      "class": "control",
+      "direction": "From the subject entity to its object entity; control points from the controlled entity to its controller.",
+      "endpoints": {
+        "from": [
+          "Entity"
+        ],
+        "to": [
+          "Entity"
+        ]
+      },
+      "mappedFrom": [
+        {
+          "predicate": "pause-operator",
+          "reversed": false
+        },
+        {
+          "predicate": "EMERGENCY_AUTHORITY",
+          "reversed": false
+        }
+      ],
+      "required": {
+        "key": "string",
+        "class": "string",
+        "predicate": "string",
+        "factIds": "string[]",
+        "factUids": "string[]",
+        "snapshotIds": "string[]",
+        "bases": "string[]",
+        "statuses": "string[]",
+        "conflict": "boolean",
+        "firstObservedAt": "datetime",
+        "lastObservedAt": "datetime",
+        "latest": "boolean"
+      },
+      "optional": {
+        "role": "string"
+      }
+    },
+    "ADMIN": {
+      "class": "control",
+      "direction": "From the subject entity to its object entity; control points from the controlled entity to its controller.",
+      "endpoints": {
+        "from": [
+          "Entity"
+        ],
+        "to": [
+          "Entity"
+        ]
+      },
+      "mappedFrom": [
+        {
+          "predicate": "VAULT_ADMIN",
+          "role": "vault-admin",
+          "reversed": false
+        },
+        {
+          "predicate": "ALLOCATION_ADMIN",
+          "role": "allocation-admin",
+          "reversed": false
+        },
+        {
+          "predicate": "MARKET_OWNER",
+          "role": "market-owner",
+          "reversed": false
+        },
+        {
+          "predicate": "CONFIG_AUTHORITY",
+          "role": "config-authority",
+          "reversed": false
+        },
+        {
+          "predicate": "super-admin-of",
+          "role": "super-admin",
+          "reversed": false
+        },
+        {
+          "predicate": "token-depositer",
+          "role": "token-depositer",
+          "reversed": false
+        },
+        {
+          "predicate": "RESERVE_PROPOSER",
+          "role": "reserve-proposer",
+          "reversed": false
+        },
+        {
+          "predicate": "GLOBAL_ADMIN",
+          "role": "global-admin",
+          "reversed": false
+        }
+      ],
+      "required": {
+        "key": "string",
+        "class": "string",
+        "predicate": "string",
+        "factIds": "string[]",
+        "factUids": "string[]",
+        "snapshotIds": "string[]",
+        "bases": "string[]",
+        "statuses": "string[]",
+        "conflict": "boolean",
+        "firstObservedAt": "datetime",
+        "lastObservedAt": "datetime",
+        "latest": "boolean"
+      },
+      "optional": {
+        "role": "string"
+      }
+    },
+    "OWNED_BY": {
+      "class": "control",
+      "direction": "From the subject entity to its object entity; control points from the controlled entity to its controller.",
+      "endpoints": {
+        "from": [
+          "Entity"
+        ],
+        "to": [
+          "Entity"
+        ]
+      },
+      "mappedFrom": [
+        {
+          "predicate": "owned-by",
+          "reversed": false
+        }
+      ],
+      "required": {
+        "key": "string",
+        "class": "string",
+        "predicate": "string",
+        "factIds": "string[]",
+        "factUids": "string[]",
+        "snapshotIds": "string[]",
+        "bases": "string[]",
+        "statuses": "string[]",
+        "conflict": "boolean",
+        "firstObservedAt": "datetime",
+        "lastObservedAt": "datetime",
+        "latest": "boolean"
+      },
+      "optional": {
+        "role": "string"
+      }
+    },
+    "CONTROLLED_BY": {
+      "class": "control",
+      "direction": "From the subject entity to its object entity; control points from the controlled entity to its controller.",
+      "endpoints": {
+        "from": [
+          "Entity"
+        ],
+        "to": [
+          "Entity"
+        ]
+      },
+      "mappedFrom": [
+        {
+          "predicate": "CONTROLLED_BY",
+          "reversed": false
+        }
+      ],
+      "required": {
+        "key": "string",
+        "class": "string",
+        "predicate": "string",
+        "factIds": "string[]",
+        "factUids": "string[]",
+        "snapshotIds": "string[]",
+        "bases": "string[]",
+        "statuses": "string[]",
+        "conflict": "boolean",
+        "firstObservedAt": "datetime",
+        "lastObservedAt": "datetime",
+        "latest": "boolean"
+      },
+      "optional": {
+        "role": "string"
+      }
+    },
+    "HAS_MEMBER": {
+      "class": "control",
+      "direction": "From the subject entity to its object entity; control points from the controlled entity to its controller.",
+      "endpoints": {
+        "from": [
+          "Entity"
+        ],
+        "to": [
+          "Entity"
+        ]
+      },
+      "mappedFrom": [
+        {
+          "predicate": "MULTISIG_MEMBER",
+          "reversed": false
+        },
+        {
+          "predicate": "council-member",
+          "reversed": false
+        },
+        {
+          "predicate": "mpc-participant",
+          "role": "mpc-participant",
+          "reversed": false
+        },
+        {
+          "predicate": "holds-role",
+          "reversed": false
+        }
+      ],
+      "required": {
+        "key": "string",
+        "class": "string",
+        "predicate": "string",
+        "factIds": "string[]",
+        "factUids": "string[]",
+        "snapshotIds": "string[]",
+        "bases": "string[]",
+        "statuses": "string[]",
+        "conflict": "boolean",
+        "firstObservedAt": "datetime",
+        "lastObservedAt": "datetime",
+        "latest": "boolean"
+      },
+      "optional": {
+        "role": "string"
+      }
+    },
+    "HAS_ROLE": {
+      "class": "control",
+      "direction": "From the subject entity to its object entity; control points from the controlled entity to its controller.",
+      "endpoints": {
+        "from": [
+          "Entity"
+        ],
+        "to": [
+          "Entity"
+        ]
+      },
+      "mappedFrom": [],
+      "required": {
+        "key": "string",
+        "class": "string",
+        "predicate": "string",
+        "factIds": "string[]",
+        "factUids": "string[]",
+        "snapshotIds": "string[]",
+        "bases": "string[]",
+        "statuses": "string[]",
+        "conflict": "boolean",
+        "firstObservedAt": "datetime",
+        "lastObservedAt": "datetime",
+        "latest": "boolean"
+      },
+      "optional": {
+        "role": "string"
+      }
+    },
+    "HAS_KEY": {
+      "class": "control",
+      "direction": "From the subject entity to its object entity; control points from the controlled entity to its controller.",
+      "endpoints": {
+        "from": [
+          "Entity"
+        ],
+        "to": [
+          "Entity"
+        ]
+      },
+      "mappedFrom": [
+        {
+          "predicate": "has-full-access-key",
+          "role": "full-access",
+          "reversed": false
+        },
+        {
+          "predicate": "has-function-call-key",
+          "role": "function-call",
+          "reversed": false
+        }
+      ],
+      "required": {
+        "key": "string",
+        "class": "string",
+        "predicate": "string",
+        "factIds": "string[]",
+        "factUids": "string[]",
+        "snapshotIds": "string[]",
+        "bases": "string[]",
+        "statuses": "string[]",
+        "conflict": "boolean",
+        "firstObservedAt": "datetime",
+        "lastObservedAt": "datetime",
+        "latest": "boolean"
+      },
+      "optional": {
+        "role": "string"
+      }
+    },
+    "OWNER_PROGRAM": {
+      "class": "dependency",
+      "direction": "From the subject entity to its object entity; control points from the controlled entity to its controller.",
+      "endpoints": {
+        "from": [
+          "Entity"
+        ],
+        "to": [
+          "Entity"
+        ]
+      },
+      "mappedFrom": [
+        {
+          "predicate": "OWNER_PROGRAM",
+          "reversed": false
+        }
+      ],
+      "required": {
+        "key": "string",
+        "class": "string",
+        "predicate": "string",
+        "factIds": "string[]",
+        "factUids": "string[]",
+        "snapshotIds": "string[]",
+        "bases": "string[]",
+        "statuses": "string[]",
+        "conflict": "boolean",
+        "firstObservedAt": "datetime",
+        "lastObservedAt": "datetime",
+        "latest": "boolean"
+      },
+      "optional": {
+        "role": "string"
+      }
+    },
+    "PROGRAM_DATA": {
+      "class": "dependency",
+      "direction": "From the subject entity to its object entity; control points from the controlled entity to its controller.",
+      "endpoints": {
+        "from": [
+          "Entity"
+        ],
+        "to": [
+          "Entity"
+        ]
+      },
+      "mappedFrom": [
+        {
+          "predicate": "PROGRAM_DATA",
+          "reversed": false
+        }
+      ],
+      "required": {
+        "key": "string",
+        "class": "string",
+        "predicate": "string",
+        "factIds": "string[]",
+        "factUids": "string[]",
+        "snapshotIds": "string[]",
+        "bases": "string[]",
+        "statuses": "string[]",
+        "conflict": "boolean",
+        "firstObservedAt": "datetime",
+        "lastObservedAt": "datetime",
+        "latest": "boolean"
+      },
+      "optional": {
+        "role": "string"
+      }
+    },
+    "ISSUED_BY_PROGRAM": {
+      "class": "dependency",
+      "direction": "From the subject entity to its object entity; control points from the controlled entity to its controller.",
+      "endpoints": {
+        "from": [
+          "Entity"
+        ],
+        "to": [
+          "Entity"
+        ]
+      },
+      "mappedFrom": [
+        {
+          "predicate": "ISSUED_BY_PROGRAM",
+          "reversed": false
+        }
+      ],
+      "required": {
+        "key": "string",
+        "class": "string",
+        "predicate": "string",
+        "factIds": "string[]",
+        "factUids": "string[]",
+        "snapshotIds": "string[]",
+        "bases": "string[]",
+        "statuses": "string[]",
+        "conflict": "boolean",
+        "firstObservedAt": "datetime",
+        "lastObservedAt": "datetime",
+        "latest": "boolean"
+      },
+      "optional": {
+        "role": "string"
+      }
+    },
+    "ASSET": {
+      "class": "dependency",
+      "direction": "From the subject entity to its object entity; control points from the controlled entity to its controller.",
+      "endpoints": {
+        "from": [
+          "Entity"
+        ],
+        "to": [
+          "Entity"
+        ]
+      },
+      "mappedFrom": [
+        {
+          "predicate": "ASSET_MINT",
+          "reversed": false
+        }
+      ],
+      "required": {
+        "key": "string",
+        "class": "string",
+        "predicate": "string",
+        "factIds": "string[]",
+        "factUids": "string[]",
+        "snapshotIds": "string[]",
+        "bases": "string[]",
+        "statuses": "string[]",
+        "conflict": "boolean",
+        "firstObservedAt": "datetime",
+        "lastObservedAt": "datetime",
+        "latest": "boolean"
+      },
+      "optional": {
+        "role": "string"
+      }
+    },
+    "ALLOCATES_TO": {
+      "class": "dependency",
+      "direction": "From the subject entity to its object entity; control points from the controlled entity to its controller.",
+      "endpoints": {
+        "from": [
+          "Entity"
+        ],
+        "to": [
+          "Entity"
+        ]
+      },
+      "mappedFrom": [
+        {
+          "predicate": "ALLOCATES_TO",
+          "reversed": false
+        }
+      ],
+      "required": {
+        "key": "string",
+        "class": "string",
+        "predicate": "string",
+        "factIds": "string[]",
+        "factUids": "string[]",
+        "snapshotIds": "string[]",
+        "bases": "string[]",
+        "statuses": "string[]",
+        "conflict": "boolean",
+        "firstObservedAt": "datetime",
+        "lastObservedAt": "datetime",
+        "latest": "boolean"
+      },
+      "optional": {
+        "role": "string"
+      }
+    },
+    "IN_MARKET": {
+      "class": "dependency",
+      "direction": "From the subject entity to its object entity; control points from the controlled entity to its controller.",
+      "endpoints": {
+        "from": [
+          "Entity"
+        ],
+        "to": [
+          "Entity"
+        ]
+      },
+      "mappedFrom": [
+        {
+          "predicate": "IN_MARKET",
+          "reversed": false
+        }
+      ],
+      "required": {
+        "key": "string",
+        "class": "string",
+        "predicate": "string",
+        "factIds": "string[]",
+        "factUids": "string[]",
+        "snapshotIds": "string[]",
+        "bases": "string[]",
+        "statuses": "string[]",
+        "conflict": "boolean",
+        "firstObservedAt": "datetime",
+        "lastObservedAt": "datetime",
+        "latest": "boolean"
+      },
+      "optional": {
+        "role": "string"
+      }
+    },
+    "PRICED_BY": {
+      "class": "dependency",
+      "direction": "From the subject entity to its object entity; control points from the controlled entity to its controller.",
+      "endpoints": {
+        "from": [
+          "Entity"
+        ],
+        "to": [
+          "Entity"
+        ]
+      },
+      "mappedFrom": [
+        {
+          "predicate": "PRICED_BY",
+          "reversed": false
+        },
+        {
+          "predicate": "priced-by",
+          "reversed": false
+        },
+        {
+          "predicate": "legacy-oracle",
+          "role": "legacy",
+          "reversed": false
+        }
+      ],
+      "required": {
+        "key": "string",
+        "class": "string",
+        "predicate": "string",
+        "factIds": "string[]",
+        "factUids": "string[]",
+        "snapshotIds": "string[]",
+        "bases": "string[]",
+        "statuses": "string[]",
+        "conflict": "boolean",
+        "firstObservedAt": "datetime",
+        "lastObservedAt": "datetime",
+        "latest": "boolean"
+      },
+      "optional": {
+        "role": "string"
+      }
+    },
+    "ROUTES_THROUGH": {
+      "class": "dependency",
+      "direction": "From the subject entity to its object entity; control points from the controlled entity to its controller.",
+      "endpoints": {
+        "from": [
+          "Entity"
+        ],
+        "to": [
+          "Entity"
+        ]
+      },
+      "mappedFrom": [
+        {
+          "predicate": "routes-through",
+          "reversed": false
+        }
+      ],
+      "required": {
+        "key": "string",
+        "class": "string",
+        "predicate": "string",
+        "factIds": "string[]",
+        "factUids": "string[]",
+        "snapshotIds": "string[]",
+        "bases": "string[]",
+        "statuses": "string[]",
+        "conflict": "boolean",
+        "firstObservedAt": "datetime",
+        "lastObservedAt": "datetime",
+        "latest": "boolean"
+      },
+      "optional": {
+        "role": "string"
+      }
+    },
+    "DEPLOYED_BY": {
+      "class": "dependency",
+      "direction": "From the subject entity to its object entity; control points from the controlled entity to its controller.",
+      "endpoints": {
+        "from": [
+          "Entity"
+        ],
+        "to": [
+          "Entity"
+        ]
+      },
+      "mappedFrom": [
+        {
+          "predicate": "deployed-by",
+          "reversed": false
+        }
+      ],
+      "required": {
+        "key": "string",
+        "class": "string",
+        "predicate": "string",
+        "factIds": "string[]",
+        "factUids": "string[]",
+        "snapshotIds": "string[]",
+        "bases": "string[]",
+        "statuses": "string[]",
+        "conflict": "boolean",
+        "firstObservedAt": "datetime",
+        "lastObservedAt": "datetime",
+        "latest": "boolean"
+      },
+      "optional": {
+        "role": "string"
+      }
+    },
+    "FUNDED_BY": {
+      "class": "dependency",
+      "direction": "From the subject entity to its object entity; control points from the controlled entity to its controller.",
+      "endpoints": {
+        "from": [
+          "Entity"
+        ],
+        "to": [
+          "Entity"
+        ]
+      },
+      "mappedFrom": [
+        {
+          "predicate": "FUNDED_BY",
+          "reversed": false
+        }
+      ],
+      "required": {
+        "key": "string",
+        "class": "string",
+        "predicate": "string",
+        "factIds": "string[]",
+        "factUids": "string[]",
+        "snapshotIds": "string[]",
+        "bases": "string[]",
+        "statuses": "string[]",
+        "conflict": "boolean",
+        "firstObservedAt": "datetime",
+        "lastObservedAt": "datetime",
+        "latest": "boolean"
+      },
+      "optional": {
+        "role": "string"
+      }
+    },
+    "DEPENDS_ON": {
+      "class": "dependency",
+      "direction": "From the subject entity to its object entity; control points from the controlled entity to its controller.",
+      "endpoints": {
+        "from": [
+          "Entity"
+        ],
+        "to": [
+          "Entity"
+        ]
+      },
+      "mappedFrom": [
+        {
+          "predicate": "DEPENDS_ON",
+          "reversed": false
+        }
+      ],
+      "required": {
+        "key": "string",
+        "class": "string",
+        "predicate": "string",
+        "factIds": "string[]",
+        "factUids": "string[]",
+        "snapshotIds": "string[]",
+        "bases": "string[]",
+        "statuses": "string[]",
+        "conflict": "boolean",
+        "firstObservedAt": "datetime",
+        "lastObservedAt": "datetime",
+        "latest": "boolean"
+      },
+      "optional": {
+        "role": "string"
+      }
+    },
+    "BACKED_BY": {
+      "class": "backing",
+      "direction": "From the subject entity to its object entity; control points from the controlled entity to its controller.",
+      "endpoints": {
+        "from": [
+          "Entity"
+        ],
+        "to": [
+          "Entity"
+        ]
+      },
+      "mappedFrom": [
+        {
+          "predicate": "BACKED_BY",
+          "reversed": false
+        }
+      ],
+      "required": {
+        "key": "string",
+        "class": "string",
+        "predicate": "string",
+        "factIds": "string[]",
+        "factUids": "string[]",
+        "snapshotIds": "string[]",
+        "bases": "string[]",
+        "statuses": "string[]",
+        "conflict": "boolean",
+        "firstObservedAt": "datetime",
+        "lastObservedAt": "datetime",
+        "latest": "boolean"
+      },
+      "optional": {
+        "role": "string"
+      }
+    },
+    "ORIGINATES_FROM": {
+      "class": "origin",
+      "direction": "From the subject entity to its object entity; control points from the controlled entity to its controller.",
+      "endpoints": {
+        "from": [
+          "Entity"
+        ],
+        "to": [
+          "Entity"
+        ]
+      },
+      "mappedFrom": [
+        {
+          "predicate": "ORIGINATES_FROM",
+          "reversed": false
+        }
+      ],
+      "required": {
+        "key": "string",
+        "class": "string",
+        "predicate": "string",
+        "factIds": "string[]",
+        "factUids": "string[]",
+        "snapshotIds": "string[]",
+        "bases": "string[]",
+        "statuses": "string[]",
+        "conflict": "boolean",
+        "firstObservedAt": "datetime",
+        "lastObservedAt": "datetime",
+        "latest": "boolean"
+      },
+      "optional": {
+        "role": "string"
+      }
+    },
+    "ABOUT": {
+      "class": "evidence",
+      "direction": "From Fact to Entity.",
+      "endpoints": {
+        "from": [
+          "Fact"
+        ],
+        "to": [
+          "Entity"
+        ]
+      },
+      "mappedFrom": [],
+      "required": {
+        "key": "string"
+      },
+      "optional": {}
+    },
+    "OBJECT": {
+      "class": "evidence",
+      "direction": "From Fact to Entity.",
+      "endpoints": {
+        "from": [
+          "Fact"
+        ],
+        "to": [
+          "Entity"
+        ]
+      },
+      "mappedFrom": [],
+      "required": {
+        "key": "string"
+      },
+      "optional": {}
+    },
+    "EVIDENCED_BY": {
+      "class": "evidence",
+      "direction": "From Fact to Receipt.",
+      "endpoints": {
+        "from": [
+          "Fact"
+        ],
+        "to": [
+          "Receipt"
+        ]
+      },
+      "mappedFrom": [],
+      "required": {
+        "key": "string"
+      },
+      "optional": {}
+    },
+    "HAS_FACT": {
+      "class": "evidence",
+      "direction": "From Snapshot to Fact.",
+      "endpoints": {
+        "from": [
+          "Snapshot"
+        ],
+        "to": [
+          "Fact"
+        ]
+      },
+      "mappedFrom": [],
+      "required": {
+        "key": "string"
+      },
+      "optional": {}
+    },
+    "PART_OF": {
+      "class": "evidence",
+      "direction": "From Entity to Protocol.",
+      "endpoints": {
+        "from": [
+          "Entity"
+        ],
+        "to": [
+          "Protocol"
+        ]
+      },
+      "mappedFrom": [],
+      "required": {
+        "key": "string",
+        "source": "string",
+        "scope": "string"
+      },
+      "optional": {}
+    },
+    "COVERS": {
+      "class": "evidence",
+      "direction": "From Snapshot to Entity.",
+      "endpoints": {
+        "from": [
+          "Snapshot"
+        ],
+        "to": [
+          "Entity"
+        ]
+      },
+      "mappedFrom": [],
+      "required": {
+        "key": "string",
+        "readers": "string[]",
+        "readerStatuses": "string[]",
+        "status": "string"
+      },
+      "optional": {}
+    },
+    "HAS_COVERAGE": {
+      "class": "evidence",
+      "direction": "From Protocol to Coverage.",
+      "endpoints": {
+        "from": [
+          "Protocol"
+        ],
+        "to": [
+          "Coverage"
+        ]
+      },
+      "mappedFrom": [],
+      "required": {
+        "key": "string"
+      },
+      "optional": {}
+    }
+  },
+  "coreTypes": {
+    "UPGRADE_AUTHORITY": {
+      "class": "control",
+      "direction": "From the subject entity to its object entity; control points from the controlled entity to its controller.",
+      "endpoints": {
+        "from": [
+          "Entity"
+        ],
+        "to": [
+          "Entity"
+        ]
+      },
+      "mappedFrom": [
+        {
+          "predicate": "UPGRADE_AUTHORITY",
+          "reversed": false
+        },
+        {
+          "predicate": "upgraded-by",
+          "reversed": false
+        }
+      ]
+    },
+    "MINT_AUTHORITY": {
+      "class": "control",
+      "direction": "From the subject entity to its object entity; control points from the controlled entity to its controller.",
+      "endpoints": {
+        "from": [
+          "Entity"
+        ],
+        "to": [
+          "Entity"
+        ]
+      },
+      "mappedFrom": [
+        {
+          "predicate": "MINT_AUTHORITY",
+          "reversed": false
+        }
+      ]
+    },
+    "FREEZE_AUTHORITY": {
+      "class": "control",
+      "direction": "From the subject entity to its object entity; control points from the controlled entity to its controller.",
+      "endpoints": {
+        "from": [
+          "Entity"
+        ],
+        "to": [
+          "Entity"
+        ]
+      },
+      "mappedFrom": [
+        {
+          "predicate": "FREEZE_AUTHORITY",
+          "reversed": false
+        }
+      ]
+    },
+    "PAUSE_AUTHORITY": {
+      "class": "control",
+      "direction": "From the subject entity to its object entity; control points from the controlled entity to its controller.",
+      "endpoints": {
+        "from": [
+          "Entity"
+        ],
+        "to": [
+          "Entity"
+        ]
+      },
+      "mappedFrom": [
+        {
+          "predicate": "pause-operator",
+          "reversed": false
+        },
+        {
+          "predicate": "EMERGENCY_AUTHORITY",
+          "reversed": false
+        }
+      ]
+    },
+    "ADMIN": {
+      "class": "control",
+      "direction": "From the subject entity to its object entity; control points from the controlled entity to its controller.",
+      "endpoints": {
+        "from": [
+          "Entity"
+        ],
+        "to": [
+          "Entity"
+        ]
+      },
+      "mappedFrom": [
+        {
+          "predicate": "VAULT_ADMIN",
+          "role": "vault-admin",
+          "reversed": false
+        },
+        {
+          "predicate": "ALLOCATION_ADMIN",
+          "role": "allocation-admin",
+          "reversed": false
+        },
+        {
+          "predicate": "MARKET_OWNER",
+          "role": "market-owner",
+          "reversed": false
+        },
+        {
+          "predicate": "CONFIG_AUTHORITY",
+          "role": "config-authority",
+          "reversed": false
+        },
+        {
+          "predicate": "super-admin-of",
+          "role": "super-admin",
+          "reversed": false
+        },
+        {
+          "predicate": "token-depositer",
+          "role": "token-depositer",
+          "reversed": false
+        },
+        {
+          "predicate": "RESERVE_PROPOSER",
+          "role": "reserve-proposer",
+          "reversed": false
+        },
+        {
+          "predicate": "GLOBAL_ADMIN",
+          "role": "global-admin",
+          "reversed": false
+        }
+      ]
+    },
+    "OWNED_BY": {
+      "class": "control",
+      "direction": "From the subject entity to its object entity; control points from the controlled entity to its controller.",
+      "endpoints": {
+        "from": [
+          "Entity"
+        ],
+        "to": [
+          "Entity"
+        ]
+      },
+      "mappedFrom": [
+        {
+          "predicate": "owned-by",
+          "reversed": false
+        }
+      ]
+    },
+    "CONTROLLED_BY": {
+      "class": "control",
+      "direction": "From the subject entity to its object entity; control points from the controlled entity to its controller.",
+      "endpoints": {
+        "from": [
+          "Entity"
+        ],
+        "to": [
+          "Entity"
+        ]
+      },
+      "mappedFrom": [
+        {
+          "predicate": "CONTROLLED_BY",
+          "reversed": false
+        }
+      ]
+    },
+    "HAS_MEMBER": {
+      "class": "control",
+      "direction": "From the subject entity to its object entity; control points from the controlled entity to its controller.",
+      "endpoints": {
+        "from": [
+          "Entity"
+        ],
+        "to": [
+          "Entity"
+        ]
+      },
+      "mappedFrom": [
+        {
+          "predicate": "MULTISIG_MEMBER",
+          "reversed": false
+        },
+        {
+          "predicate": "council-member",
+          "reversed": false
+        },
+        {
+          "predicate": "mpc-participant",
+          "role": "mpc-participant",
+          "reversed": false
+        },
+        {
+          "predicate": "holds-role",
+          "reversed": false
+        }
+      ]
+    },
+    "HAS_ROLE": {
+      "class": "control",
+      "direction": "From the subject entity to its object entity; control points from the controlled entity to its controller.",
+      "endpoints": {
+        "from": [
+          "Entity"
+        ],
+        "to": [
+          "Entity"
+        ]
+      },
+      "mappedFrom": []
+    },
+    "HAS_KEY": {
+      "class": "control",
+      "direction": "From the subject entity to its object entity; control points from the controlled entity to its controller.",
+      "endpoints": {
+        "from": [
+          "Entity"
+        ],
+        "to": [
+          "Entity"
+        ]
+      },
+      "mappedFrom": [
+        {
+          "predicate": "has-full-access-key",
+          "role": "full-access",
+          "reversed": false
+        },
+        {
+          "predicate": "has-function-call-key",
+          "role": "function-call",
+          "reversed": false
+        }
+      ]
+    },
+    "OWNER_PROGRAM": {
+      "class": "dependency",
+      "direction": "From the subject entity to its object entity; control points from the controlled entity to its controller.",
+      "endpoints": {
+        "from": [
+          "Entity"
+        ],
+        "to": [
+          "Entity"
+        ]
+      },
+      "mappedFrom": [
+        {
+          "predicate": "OWNER_PROGRAM",
+          "reversed": false
+        }
+      ]
+    },
+    "PROGRAM_DATA": {
+      "class": "dependency",
+      "direction": "From the subject entity to its object entity; control points from the controlled entity to its controller.",
+      "endpoints": {
+        "from": [
+          "Entity"
+        ],
+        "to": [
+          "Entity"
+        ]
+      },
+      "mappedFrom": [
+        {
+          "predicate": "PROGRAM_DATA",
+          "reversed": false
+        }
+      ]
+    },
+    "ISSUED_BY_PROGRAM": {
+      "class": "dependency",
+      "direction": "From the subject entity to its object entity; control points from the controlled entity to its controller.",
+      "endpoints": {
+        "from": [
+          "Entity"
+        ],
+        "to": [
+          "Entity"
+        ]
+      },
+      "mappedFrom": [
+        {
+          "predicate": "ISSUED_BY_PROGRAM",
+          "reversed": false
+        }
+      ]
+    },
+    "ASSET": {
+      "class": "dependency",
+      "direction": "From the subject entity to its object entity; control points from the controlled entity to its controller.",
+      "endpoints": {
+        "from": [
+          "Entity"
+        ],
+        "to": [
+          "Entity"
+        ]
+      },
+      "mappedFrom": [
+        {
+          "predicate": "ASSET_MINT",
+          "reversed": false
+        }
+      ]
+    },
+    "ALLOCATES_TO": {
+      "class": "dependency",
+      "direction": "From the subject entity to its object entity; control points from the controlled entity to its controller.",
+      "endpoints": {
+        "from": [
+          "Entity"
+        ],
+        "to": [
+          "Entity"
+        ]
+      },
+      "mappedFrom": [
+        {
+          "predicate": "ALLOCATES_TO",
+          "reversed": false
+        }
+      ]
+    },
+    "IN_MARKET": {
+      "class": "dependency",
+      "direction": "From the subject entity to its object entity; control points from the controlled entity to its controller.",
+      "endpoints": {
+        "from": [
+          "Entity"
+        ],
+        "to": [
+          "Entity"
+        ]
+      },
+      "mappedFrom": [
+        {
+          "predicate": "IN_MARKET",
+          "reversed": false
+        }
+      ]
+    },
+    "PRICED_BY": {
+      "class": "dependency",
+      "direction": "From the subject entity to its object entity; control points from the controlled entity to its controller.",
+      "endpoints": {
+        "from": [
+          "Entity"
+        ],
+        "to": [
+          "Entity"
+        ]
+      },
+      "mappedFrom": [
+        {
+          "predicate": "PRICED_BY",
+          "reversed": false
+        },
+        {
+          "predicate": "priced-by",
+          "reversed": false
+        },
+        {
+          "predicate": "legacy-oracle",
+          "role": "legacy",
+          "reversed": false
+        }
+      ]
+    },
+    "ROUTES_THROUGH": {
+      "class": "dependency",
+      "direction": "From the subject entity to its object entity; control points from the controlled entity to its controller.",
+      "endpoints": {
+        "from": [
+          "Entity"
+        ],
+        "to": [
+          "Entity"
+        ]
+      },
+      "mappedFrom": [
+        {
+          "predicate": "routes-through",
+          "reversed": false
+        }
+      ]
+    },
+    "DEPLOYED_BY": {
+      "class": "dependency",
+      "direction": "From the subject entity to its object entity; control points from the controlled entity to its controller.",
+      "endpoints": {
+        "from": [
+          "Entity"
+        ],
+        "to": [
+          "Entity"
+        ]
+      },
+      "mappedFrom": [
+        {
+          "predicate": "deployed-by",
+          "reversed": false
+        }
+      ]
+    },
+    "FUNDED_BY": {
+      "class": "dependency",
+      "direction": "From the subject entity to its object entity; control points from the controlled entity to its controller.",
+      "endpoints": {
+        "from": [
+          "Entity"
+        ],
+        "to": [
+          "Entity"
+        ]
+      },
+      "mappedFrom": [
+        {
+          "predicate": "FUNDED_BY",
+          "reversed": false
+        }
+      ]
+    },
+    "DEPENDS_ON": {
+      "class": "dependency",
+      "direction": "From the subject entity to its object entity; control points from the controlled entity to its controller.",
+      "endpoints": {
+        "from": [
+          "Entity"
+        ],
+        "to": [
+          "Entity"
+        ]
+      },
+      "mappedFrom": [
+        {
+          "predicate": "DEPENDS_ON",
+          "reversed": false
+        }
+      ]
+    },
+    "BACKED_BY": {
+      "class": "backing",
+      "direction": "From the subject entity to its object entity; control points from the controlled entity to its controller.",
+      "endpoints": {
+        "from": [
+          "Entity"
+        ],
+        "to": [
+          "Entity"
+        ]
+      },
+      "mappedFrom": [
+        {
+          "predicate": "BACKED_BY",
+          "reversed": false
+        }
+      ]
+    },
+    "ORIGINATES_FROM": {
+      "class": "origin",
+      "direction": "From the subject entity to its object entity; control points from the controlled entity to its controller.",
+      "endpoints": {
+        "from": [
+          "Entity"
+        ],
+        "to": [
+          "Entity"
+        ]
+      },
+      "mappedFrom": [
+        {
+          "predicate": "ORIGINATES_FROM",
+          "reversed": false
+        }
+      ]
+    }
+  },
+  "evidenceTypes": [
+    "ABOUT",
+    "OBJECT",
+    "EVIDENCED_BY",
+    "HAS_FACT",
+    "PART_OF",
+    "COVERS",
+    "HAS_COVERAGE"
+  ],
+  "notProjected": [
+    "supply-token",
+    "debt-token",
+    "interest-rate-strategy",
+    "ltv",
+    "liquidation-threshold",
+    "liquidation-bonus",
+    "reserve-factor",
+    "supply-cap",
+    "borrow-cap",
+    "reserve-active",
+    "reserve-frozen",
+    "borrowing-enabled",
+    "flash-loan-enabled",
+    "holds-component",
+    "oracle-fallback",
+    "touches-control-of",
+    "touches-code-of",
+    "changes-parameter-of",
+    "SUPPLY_RAW",
+    "MULTISIG_THRESHOLD",
+    "IDLE_RAW",
+    "AVAILABLE_LIQUIDITY_RAW",
+    "BORROWED_RAW",
+    "DECIMALS",
+    "has-code-hash",
+    "proposal",
+    "ft-metadata",
+    "deployed-version",
+    "claimed-document",
+    "vote-threshold",
+    "paused",
+    "mpc-allowed-image",
+    "proposal-period",
+    "bond",
+    "contract-mode",
+    "mpc-threshold",
+    "fee-collector",
+    "moves-funds-from",
+    "moves-funds-to",
+    "account-kind",
+    "proxy-implementation",
+    "proxy-admin",
+    "proxy-beacon",
+    "proxy-scheme",
+    "pending-owner",
+    "role-admin",
+    "role-members-unknown",
+    "safe-owner",
+    "safe-threshold",
+    "timelock-delay",
+    "deprecated",
+    "upgraded-address",
+    "freeze-operator",
+    "minter-admin"
+  ],
+  "notProjectedReasons": {
+    "supply-token": "Aave reader predicate; its projection waits for a vocabulary review",
+    "debt-token": "Aave reader predicate; its projection waits for a vocabulary review",
+    "interest-rate-strategy": "Aave reader predicate; its projection waits for a vocabulary review",
+    "ltv": "Aave reader predicate; its projection waits for a vocabulary review",
+    "liquidation-threshold": "Aave reader predicate; its projection waits for a vocabulary review",
+    "liquidation-bonus": "Aave reader predicate; its projection waits for a vocabulary review",
+    "reserve-factor": "Aave reader predicate; its projection waits for a vocabulary review",
+    "supply-cap": "Aave reader predicate; its projection waits for a vocabulary review",
+    "borrow-cap": "Aave reader predicate; its projection waits for a vocabulary review",
+    "reserve-active": "Aave reader predicate; its projection waits for a vocabulary review",
+    "reserve-frozen": "Aave reader predicate; its projection waits for a vocabulary review",
+    "borrowing-enabled": "Aave reader predicate; its projection waits for a vocabulary review",
+    "flash-loan-enabled": "Aave reader predicate; its projection waits for a vocabulary review",
+    "holds-component": "Aave reader predicate; its projection waits for a vocabulary review",
+    "oracle-fallback": "Aave reader predicate; its projection waits for a vocabulary review",
+    "touches-control-of": "proposed effect, not current control; its class is a later vocabulary decision",
+    "touches-code-of": "proposed effect, not current control; its class is a later vocabulary decision",
+    "changes-parameter-of": "proposed effect, not current control; its class is a later vocabulary decision",
+    "account-kind": "EVM reader (run 031) predicate; its projection is Peter's pending vocabulary decision (run 038 vocabulary review, Q12), so it is not projected yet",
+    "proxy-implementation": "EVM reader (run 031) predicate; its projection is Peter's pending vocabulary decision (run 038 vocabulary review, Q12), so it is not projected yet",
+    "proxy-admin": "EVM reader (run 031) predicate; its projection is Peter's pending vocabulary decision (run 038 vocabulary review, Q12), so it is not projected yet",
+    "proxy-beacon": "EVM reader (run 031) predicate; its projection is Peter's pending vocabulary decision (run 038 vocabulary review, Q12), so it is not projected yet",
+    "proxy-scheme": "EVM reader (run 031) predicate; its projection is Peter's pending vocabulary decision (run 038 vocabulary review, Q12), so it is not projected yet",
+    "pending-owner": "EVM reader (run 031) predicate; its projection is Peter's pending vocabulary decision (run 038 vocabulary review, Q12), so it is not projected yet",
+    "role-admin": "EVM reader (run 031) predicate; its projection is Peter's pending vocabulary decision (run 038 vocabulary review, Q12), so it is not projected yet",
+    "role-members-unknown": "EVM reader (run 031) predicate; its projection is Peter's pending vocabulary decision (run 038 vocabulary review, Q12), so it is not projected yet",
+    "safe-owner": "EVM reader (run 031) predicate; its projection is Peter's pending vocabulary decision (run 038 vocabulary review, Q12), so it is not projected yet",
+    "safe-threshold": "EVM reader (run 031) predicate; its projection is Peter's pending vocabulary decision (run 038 vocabulary review, Q12), so it is not projected yet",
+    "timelock-delay": "EVM reader (run 031) predicate; its projection is Peter's pending vocabulary decision (run 038 vocabulary review, Q12), so it is not projected yet",
+    "deprecated": "EVM reader (run 031) predicate; its projection is Peter's pending vocabulary decision (run 038 vocabulary review, Q12), so it is not projected yet",
+    "upgraded-address": "EVM reader (run 031) predicate; its projection is Peter's pending vocabulary decision (run 038 vocabulary review, Q12), so it is not projected yet",
+    "freeze-operator": "EVM reader (run 031) predicate; its projection is Peter's pending vocabulary decision (run 038 vocabulary review, Q12), so it is not projected yet",
+    "minter-admin": "EVM reader (run 031) predicate; its projection is Peter's pending vocabulary decision (run 038 vocabulary review, Q12), so it is not projected yet"
+  },
+  "mechanics": [
+    "control",
+    "code-upgrade",
+    "supply",
+    "dependencies",
+    "parameters",
+    "fees",
+    "treasury",
+    "governance",
+    "holders",
+    "flows",
+    "claims"
+  ],
+  "predicateMechanic": {
+    "UPGRADE_AUTHORITY": "code-upgrade",
+    "upgraded-by": "code-upgrade",
+    "PROGRAM_DATA": "code-upgrade",
+    "has-code-hash": "code-upgrade",
+    "deployed-version": "code-upgrade",
+    "MINT_AUTHORITY": "supply",
+    "SUPPLY_RAW": "supply",
+    "DECIMALS": "supply",
+    "ft-metadata": "supply",
+    "vote-threshold": "governance",
+    "proposal": "governance",
+    "proposal-period": "governance",
+    "bond": "governance",
+    "touches-control-of": "governance",
+    "touches-code-of": "governance",
+    "changes-parameter-of": "governance",
+    "fee-collector": "fees",
+    "moves-funds-from": "flows",
+    "moves-funds-to": "flows",
+    "claimed-document": "claims",
+    "MULTISIG_THRESHOLD": "control",
+    "paused": "control",
+    "contract-mode": "control",
+    "mpc-allowed-image": "control",
+    "mpc-threshold": "control",
+    "supply-token": "dependencies",
+    "debt-token": "dependencies",
+    "interest-rate-strategy": "dependencies",
+    "holds-component": "dependencies",
+    "oracle-fallback": "dependencies",
+    "FREEZE_AUTHORITY": "control",
+    "CONFIG_AUTHORITY": "control",
+    "ISSUED_BY_PROGRAM": "dependencies",
+    "DEPENDS_ON": "dependencies",
+    "BACKED_BY": "dependencies",
+    "ORIGINATES_FROM": "dependencies",
+    "ALLOCATES_TO": "dependencies",
+    "IN_MARKET": "dependencies",
+    "PRICED_BY": "dependencies",
+    "OWNER_PROGRAM": "dependencies",
+    "VAULT_ADMIN": "control",
+    "ALLOCATION_ADMIN": "control",
+    "MARKET_OWNER": "control",
+    "CONTROLLED_BY": "control",
+    "MULTISIG_MEMBER": "control",
+    "owned-by": "control",
+    "super-admin-of": "control",
+    "holds-role": "control",
+    "priced-by": "dependencies",
+    "legacy-oracle": "dependencies",
+    "routes-through": "dependencies",
+    "deployed-by": "dependencies",
+    "has-full-access-key": "control",
+    "has-function-call-key": "control",
+    "council-member": "control",
+    "mpc-participant": "control",
+    "token-depositer": "control",
+    "pause-operator": "control",
+    "ASSET_MINT": "dependencies",
+    "FUNDED_BY": "dependencies",
+    "proxy-implementation": "control",
+    "proxy-admin": "control",
+    "proxy-beacon": "control",
+    "pending-owner": "control",
+    "role-admin": "control",
+    "role-members-unknown": "control",
+    "safe-owner": "control",
+    "freeze-operator": "control",
+    "minter-admin": "control",
+    "EMERGENCY_AUTHORITY": "control",
+    "RESERVE_PROPOSER": "control",
+    "GLOBAL_ADMIN": "control"
+  },
+  "rowKinds": [
+    "fact",
+    "path",
+    "unknown",
+    "scope",
+    "coverage",
+    "receipt"
+  ],
+  "identityGrammar": {
+    "solana": "^solana:(mainnet-beta|devnet|testnet):[1-9A-HJ-NP-Za-km-z]{32,44}(#.+)?$",
+    "near": "^near:(mainnet|testnet):[^:#]+(#.+)?$",
+    "derivedSuffix": "#(role|role-admin|proposal|deployment|param):.+$"
+  },
+  "shapeRules": {
+    "holdsRole": "A holds-role object that is the subject’s own #role: or #role-admin: identity projects as HAS_ROLE; otherwise HAS_MEMBER."
+  }
+}

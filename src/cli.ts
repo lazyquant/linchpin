@@ -198,7 +198,11 @@ else if (cmd === "cases" || cmd === "demo") { for (const c of ["cases/mip-14.jso
 else if (cmd === "doctor") await doctor();
 else if (cmd === "flowchart") process.exitCode = await (await import("./flowchart/command")).runFlowchartCommand(args.slice(1));
 else if (cmd === "flowchart-validate") process.exitCode = await (await import("./flowchart/command")).runFlowchartValidateCommand(args.slice(1));
-else { console.log(safeOutput("usage: linchpin review <case.json> [--offline|--record [--refresh]] [--out dir] | linchpin pack <pack.json> [--offline|--record [--refresh]] [--out dir] | linchpin cases [--offline] | linchpin doctor; modes: --offline (fixtures only), --record (fill missing fixtures), --record --refresh (re-fetch all) | linchpin flowchart <input.json> --out <file.html> [--title <text>] [--source evidence-graph] | linchpin flowchart-validate <file.html> [--input <input.json>] [--source evidence-graph]")); process.exit(cmd ? 1 : 0); }
+else if (cmd === "near") process.exitCode = await (await import("./near/cli/near")).runNearCommand(args.slice(1));
+else if (cmd === "positions") process.exitCode = await (await import("./positions/cli")).runPositionsCommand(args.slice(1));
+else if (cmd === "position") process.exitCode = await (await import("./review/position/command")).runPositionCommand(args.slice(1));
+else if (cmd === "evm") process.exitCode = await (await import(`./evm/cli/${"evm"}`)).runEvmCommand(args.slice(1));
+else { console.log(safeOutput("usage: linchpin review <case.json> [--offline|--record [--refresh]] [--out dir] | linchpin pack <pack.json> [--offline|--record [--refresh]] [--out dir] | linchpin cases [--offline] | linchpin doctor; modes: --offline (fixtures only), --record (fill missing fixtures), --record --refresh (re-fetch all) | linchpin flowchart <input.json> --out <file.html> [--title <text>] [--source evidence-graph] | linchpin flowchart-validate <file.html> [--input <input.json>] [--source evidence-graph] | linchpin position review|watch|demo [...]")); process.exit(cmd ? 1 : 0); }
 } catch (error) {
   console.error(safeOutput(error instanceof Error ? `${error.name}: ${error.message}` : String(error)));
   process.exitCode = 1;

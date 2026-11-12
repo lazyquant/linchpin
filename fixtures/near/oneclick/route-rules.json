@@ -1,0 +1,137 @@
+{
+  "version": 1,
+  "sdkPackage": "@defuse-protocol/intents-sdk",
+  "sdkVersion": "0.95.0",
+  "sdkCommit": null,
+  "sourceFile": "dist/src/constants/poa-tokens-migrated-to-omni-bridge.js",
+  "readAt": "2026-11-09T21:37:30.147Z",
+  "rules": [
+    {
+      "id": "nep141-omft",
+      "standard": "nep141",
+      "match": {
+        "accountSuffix": ".omft.near"
+      },
+      "family": null,
+      "reason": "undetermined"
+    },
+    {
+      "id": "nep141-omdep",
+      "standard": "nep141",
+      "match": {
+        "accountSuffix": ".omdep.near"
+      },
+      "family": "omni_bridge",
+      "reason": null
+    },
+    {
+      "id": "nep141-near",
+      "standard": "nep141",
+      "match": {
+        "any": true
+      },
+      "family": "near_withdrawal",
+      "reason": null
+    },
+    {
+      "id": "nep245-hot",
+      "standard": "nep245",
+      "match": {
+        "contract": "v2_1.omni.hot.tg"
+      },
+      "family": "hot_bridge",
+      "reason": null
+    },
+    {
+      "id": "nep245-other",
+      "standard": "nep245",
+      "match": {
+        "any": true
+      },
+      "family": "undocumented",
+      "reason": "missing-coverage"
+    },
+    {
+      "id": "1cs-v1",
+      "standard": "1cs_v1",
+      "match": {
+        "any": true
+      },
+      "family": "undocumented",
+      "reason": "missing-coverage"
+    }
+  ],
+  "sourceSha256": "0d2d4ad9210972538d098b918caefabca54e37f79a599d37e9d07c8dfce0a5e3",
+  "sourceHost": "registry.npmjs.org",
+  "tarball": "@defuse-protocol/intents-sdk/-/intents-sdk-0.95.0.tgz",
+  "migrations": [
+    {
+      "token": "sol-57d087fd8c460f612f8701f5499ad8b2eec5ab68.omft.near",
+      "chain": "Sol"
+    },
+    {
+      "token": "sol-c58e6539c2f2e097c251f8edf11f9c03e581f8d4.omft.near",
+      "chain": "Sol"
+    },
+    {
+      "token": "sol-b9c68f94ec8fd160137af8cdfe5e61cd68e2afba.omft.near",
+      "chain": "Sol"
+    },
+    {
+      "token": "sol-bb27241c87aa401cc963c360c175dd7ca7035873.omft.near",
+      "chain": "Sol"
+    },
+    {
+      "token": "sol-c800a4bd850783ccb82c2b2c7e84175443606352.omft.near",
+      "chain": "Sol"
+    },
+    {
+      "token": "sol-91914f13d3b54f8126a2824d71632d4b078d7403.omft.near",
+      "chain": "Sol"
+    },
+    {
+      "token": "sol-5ce3bf3a31af18be40ba30f721101b4341690186.omft.near",
+      "chain": "Sol"
+    },
+    {
+      "token": "sol-df27d7abcc1c656d4ac3b1399bbfbba1994e6d8c.omft.near",
+      "chain": "Sol"
+    },
+    {
+      "token": "sol-1f00bb36e75cfc8e1274c1507cc3054f5b3f3ce1.omft.near",
+      "chain": "Sol"
+    },
+    {
+      "token": "sol-c634d063ceff771aff0c972ec396fd915a6bbd0e.omft.near",
+      "chain": "Sol"
+    },
+    {
+      "token": "sol-d600e625449a4d9380eaf5e3265e54c90d34e260.omft.near",
+      "chain": "Sol"
+    },
+    {
+      "token": "sol.omft.near",
+      "chain": "Sol"
+    },
+    {
+      "token": "aptos.omft.near",
+      "chain": "Aptos"
+    },
+    {
+      "token": "aptos-34ee497f210c5a511e8d5b53bc56d75b63612bb5.omft.near",
+      "chain": "Aptos"
+    },
+    {
+      "token": "aptos-88cb7619440a914fe6400149a12b443c3ac21d59.omft.near",
+      "chain": "Aptos"
+    },
+    {
+      "token": "starknet.omft.near",
+      "chain": "Strk"
+    },
+    {
+      "token": "zec.omft.near",
+      "chain": "Zcash"
+    }
+  ]
+}

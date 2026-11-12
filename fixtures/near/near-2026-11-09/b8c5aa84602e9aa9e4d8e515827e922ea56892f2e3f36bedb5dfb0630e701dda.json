@@ -1,0 +1,31 @@
+{
+ "version": 1,
+ "requestSha256": "b8c5aa84602e9aa9e4d8e515827e922ea56892f2e3f36bedb5dfb0630e701dda",
+ "request": {
+  "method": "query",
+  "params": {
+   "account_id": "contract.main.burrow.near",
+   "request_type": "call_function",
+   "method_name": "get_config",
+   "args_base64": "e30=",
+   "finality": "final"
+  }
+ },
+ "endpointHost": "archival-rpc.mainnet.fastnear.com",
+ "retrievedAt": "2026-11-09T19:30:28.329Z",
+ "httpStatus": 200,
+ "outcome": "result",
+ "blockHeight": "223810402",
+ "blockHash": "2MhMquWbYBote5zaAo7ojonh4b2qcUKvZcDbTN1zfSu2",
+ "responseSha256": "0e34e50fad6d477bb19c8b120e0cd24fc5ccd585883e29ad7a4ac6b581fb1fd6",
+ "response": {
+  "jsonrpc": "2.0",
+  "result": {
+   "block_hash": "2MhMquWbYBote5zaAo7ojonh4b2qcUKvZcDbTN1zfSu2",
+   "block_height": 223810402,
+   "logs": []
+  },
+  "id": "near-reader"
+ },
+ "resultText": "{\"oracle_account_id\":\"priceoracle.near\",\"pyth_oracle_account_id\":\"aggregate-oracle.near\",\"ref_exchange_id\":\"v2.ref-finance.near\",\"owner_id\":\"burrow.sputnik-dao.near\",\"booster_token_id\":\"token.burrow.near\",\"booster_decimals\":18,\"max_num_assets\":20,\"maximum_recency_duration_sec\":90,\"maximum_staleness_duration_sec\":90,\"lp_tokens_info_valid_duration_sec\":600,\"pyth_price_valid_duration_sec\":60,\"minimum_staking_duration_sec\":2592000,\"maximum_staking_duration_sec\":7776000,\"x_booster_multiplier_at_maximum_staking_duration\":30000,\"force_closing_enabled\":true,\"enable_price_oracle\":false,\"enable_pyth_oracle\":true,\"contract_mode\":\"Running\",\"boost_suppress_factor\":1000,\"dcl_id\":\"dclv2.ref-labs.near\",\"pause_operator_id\":null}"
+}

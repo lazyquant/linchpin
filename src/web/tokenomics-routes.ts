@@ -1,16 +1,24 @@
 import type { TokenomicsBuild } from '../tokenomics/build';
-import type { ProtocolsResponse, SectionId } from '../tokenomics/api';
+import type { ProtocolsResponse, SectionId, ProtocolId } from '../tokenomics/api';
 import type { TokenomicsGraphService } from '../tokenomics/graph-service';
 import { GraphError } from './graph';
-import { QUESTION } from '../tokenomics/sections';
+import { TOKENOMICS_REGISTRY } from '../tokenomics/registry';
+import { isProtocolId } from '../tokenomics/protocols';
 
 const json = (value: unknown, status = 200) => Response.json(value, { status, headers: { 'Cache-Control': 'no-store' } });
-/** Only graph routes access Neo4j; all chain research uses the captured offline bundle. */
+export type ProtocolSlot = { build?: TokenomicsBuild; graph?: TokenomicsGraphService; error?: string };
 export async function tokenomicsRoutes(build: TokenomicsBuild | undefined, request: Request, graph?: TokenomicsGraphService): Promise<Response> {
+  return tokenomicsProtocolRoutes(new Map([['marinade', { build, graph }]]), request);
+}
+/** Only graph routes access Neo4j; all chain research uses the captured offline bundle. */
+export async function tokenomicsProtocolRoutes(slots: Map<ProtocolId, ProtocolSlot>, request: Request): Promise<Response> {
   const url = new URL(request.url), parts = url.pathname.split('/').filter(Boolean);
   if (request.method === 'POST' && request.headers.get('origin') && request.headers.get('origin') !== url.origin)
     return json({ error: 'Same-origin requests only' }, 403);
-  if (parts[0] !== 'api' || parts[1] !== 'tokenomics' || (parts.length > 2 && parts[2] !== 'marinade')) return json({ error: 'Resource not found' }, 404);
+  if (parts[0] !== 'api' || parts[1] !== 'tokenomics' || (parts.length > 2 && (!isProtocolId(parts[2]) || !slots.has(parts[2])))) return json({ error: 'Resource not found' }, 404);
+  const id = (parts[2] ?? 'marinade') as ProtocolId;
+  const { build, graph } = slots.get(id) ?? {};
+  if (parts.length > 2 && !build && slots.get(id)?.error) return json({ error: 'Tokenomics captured build is not ready', detail: slots.get(id)!.error }, 503);
   if (parts.length === 5 && parts[3] === 'graph' && parts[4] === 'load') {
     if (request.method !== 'POST') return json({ error: 'Method not allowed' }, 405);
     if (!build) return json({ error: 'Tokenomics captured build is not ready' }, 503);
@@ -31,15 +39,23 @@ export async function tokenomicsRoutes(build: TokenomicsBuild | undefined, reque
   const bundle = { ...build.bundle, graph: { ...build.bundle.graph, data: graphData,
     ...(graph?.failure ? { status: 'failed' as const, error: graph.failure } : {}) } };
   if (parts.length === 2) {
-    const { asOf, slotRange } = build.evidence.metadata([...build.evidence.records.keys()]);
-    const response: ProtocolsResponse = { protocols: [{ id: 'marinade', title: 'Marinade tokenomics', question: QUESTION, asOf, slotRange,
-      sections: Object.fromEntries(SECTIONS.map(section => [section, bundle[section].status])) as ProtocolsResponse['protocols'][number]['sections'] }] };
+    const response: ProtocolsResponse & { message?: string } = { protocols: [] };
+    for (const entry of TOKENOMICS_REGISTRY) {
+      const slot = slots.get(entry.id);
+      if (!slot?.build) {
+        if (slot?.error) response.message = slot.error;
+        continue;
+      }
+      const { asOf, slotRange } = slot.build.evidence.metadata([...slot.build.evidence.records.keys()]);
+      response.protocols.push({ id: entry.id, title: entry.title, ...(entry.question === undefined ? {} : { question: entry.question }), asOf, slotRange,
+        sections: Object.fromEntries(SECTIONS.map(section => [section, section === 'graph' && slot.graph?.failure ? 'failed' : slot.build!.bundle[section].status])) as ProtocolsResponse['protocols'][number]['sections'] });
+    }
     return json(response);
   }
   if (parts.length === 3) return json(bundle);
   if (parts[3] === 'evidence') return json(build.evidence.lookup(ids));
   if (parts[3] === 'export') return new Response(JSON.stringify(bundle, null, 2), { headers: {
-    'Content-Type': 'application/json', 'Content-Disposition': 'attachment; filename="linchpin-marinade-tokenomics.json"', 'Cache-Control': 'no-store',
+    'Content-Type': 'application/json', 'Content-Disposition': `attachment; filename="linchpin-${id}-tokenomics.json"`, 'Cache-Control': 'no-store',
   } });
   return json(bundle[parts[3] as SectionId]);
 }

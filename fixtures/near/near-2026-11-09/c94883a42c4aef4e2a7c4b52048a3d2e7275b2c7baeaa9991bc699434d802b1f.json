@@ -1,0 +1,31 @@
+{
+ "version": 1,
+ "requestSha256": "c94883a42c4aef4e2a7c4b52048a3d2e7275b2c7baeaa9991bc699434d802b1f",
+ "request": {
+  "method": "query",
+  "params": {
+   "account_id": "ctl-intents.near",
+   "request_type": "call_function",
+   "method_name": "acl_get_permissioned_accounts",
+   "args_base64": "e30=",
+   "finality": "final"
+  }
+ },
+ "endpointHost": "archival-rpc.mainnet.fastnear.com",
+ "retrievedAt": "2026-11-09T19:31:40.378Z",
+ "httpStatus": 200,
+ "outcome": "result",
+ "blockHeight": "223810526",
+ "blockHash": "C96UqDPGXoibRmLedPRaxBqmVjc4D4SwPPFQ625wj1av",
+ "responseSha256": "465e7692bbb8ddb7d19f7fef6b3883153ab2c9c2213c13d844300524c89c9914",
+ "response": {
+  "jsonrpc": "2.0",
+  "result": {
+   "block_hash": "C96UqDPGXoibRmLedPRaxBqmVjc4D4SwPPFQ625wj1av",
+   "block_height": 223810526,
+   "logs": []
+  },
+  "id": "near-reader"
+ },
+ "resultText": "{\"super_admins\":[\"ctl-intents.near\",\"intents.sputnik-dao.near\"],\"roles\":{\"Deployer\":{\"admins\":[],\"grantees\":[]},\"Updater\":{\"admins\":[],\"grantees\":[\"8e69c33b572dad1f2da6f744c834705e651d3784af2471b58949f2fefd5b55d3\"]},\"Downgrader\":{\"admins\":[],\"grantees\":[\"8e69c33b572dad1f2da6f744c834705e651d3784af2471b58949f2fefd5b55d3\",\"ac39364aae9f15438b575f677768c2cf4a7cc74b7dcd198980e8618f003ff538\"]},\"DAO\":{\"admins\":[],\"grantees\":[\"intents.sputnik-dao.near\"]},\"Releaser\":{\"admins\":[],\"grantees\":[]},\"Unpauser\":{\"admins\":[],\"grantees\":[]},\"Pauser\":{\"admins\":[],\"grantees\":[]}}}"
+}

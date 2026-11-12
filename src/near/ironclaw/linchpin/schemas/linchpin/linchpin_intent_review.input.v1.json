@@ -1,0 +1,14 @@
+{
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "assetId": {
+      "type": "string",
+      "maxLength": 256,
+      "pattern": "^(nep141:|nep245:|1cs_v1:)\\S+$"
+    }
+  },
+  "required": [
+    "assetId"
+  ]
+}

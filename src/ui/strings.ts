@@ -1,0 +1,157 @@
+/**
+ * Every string the kit itself puts on a page, the class names of the drawn tree, the word lists the
+ * validator checks literal text against, and the text and background token pairs of the stylesheet.
+ */
+
+/** Fixed kit wording. `scope` is the only function; its template is `scopeTemplate`. */
+export const STRINGS = Object.freeze({
+  unsupported: "component not supported",
+  noEvidence: "no evidence",
+  unknown: "unknown",
+  none: "none",
+  notMapped: "not mapped",
+  partlyMapped: "partly mapped",
+  mapped: "mapped",
+  constructed: "CONSTRUCTED",
+  recorded: "Recorded evidence; not refreshed from chain",
+  scopeTemplate: "Linchpin scope: {source}; not evidence",
+  scope: (source: string): string => `Linchpin scope: ${source}; not evidence`,
+  notRecorded: "not recorded",
+  noRows: "No rows in this result",
+  truncated: "This result is cut short; more rows exist than are drawn here",
+  basis: "basis",
+  blockOrSlot: "block or slot",
+  asOf: "as of",
+  evidence: "evidence",
+  subject: "subject",
+  kind: "kind",
+  question: "question",
+  protocol: "protocol",
+  snapshot: "snapshot",
+  captured: "captured",
+  latestAsOf: "latest as of",
+  rangeTo: "to",
+  coverage: "coverage",
+  mechanic: "mechanic",
+  target: "target",
+  instruction: "instruction",
+  role: "role",
+  authority: "authority",
+  controller: "controller",
+  threshold: "threshold",
+  from: "from",
+  to: "to",
+  amount: "amount",
+  unit: "unit",
+  window: "window",
+  time: "time",
+  relation: "relation",
+  graphLabel: "Dependency graph; the same nodes and edges follow as text",
+  graphNodes: "Nodes",
+  graphEdges: "Edges",
+  isolated: "isolated: named by no edge",
+  noNodes: "No nodes in this result",
+  noEdges: "No edges in this result",
+  sectionTable: "Facts",
+  sectionChain: "Control",
+  sectionPath: "Value path",
+  sectionGraph: "Dependencies",
+  sectionUnknowns: "Unknowns",
+  sectionCoverage: "Coverage",
+});
+
+/** Class names the tree contract uses. A node has a class when it is one of the space-separated tokens of `attrs.class`. */
+export const CLASSES = Object.freeze({
+  surface: "lk-surface",
+  row: "lk-row",
+  unknown: "lk-unknown",
+  none: "lk-none",
+  basis: "lk-basis",
+  observation: "lk-obs",
+  chip: "lk-chip",
+  evidenceId: "lk-evidence-id",
+  noEvidence: "lk-no-evidence",
+  scope: "lk-scope",
+  unsupported: "lk-unsupported",
+  graphNode: "lk-graph-node",
+  graphEdge: "lk-graph-edge",
+  constructed: "lk-constructed",
+  themeLight: "lk-theme-light",
+  themeDark: "lk-theme-dark",
+});
+
+/** Advice and assurance words no kit string may contain. */
+export const ADVICE_WORDS: readonly string[] = Object.freeze(["should", "recommend", "safe", "unsafe", "score", "rating", "buy", "sell", "exploit", "secure", "prevent", "guarantee"]); // BANNED word list
+
+/** Words a literal text prop may not contain: advice words, and absence words that would state a fact in prose. */
+export const TEXT_RULE_WORDS: readonly string[] = Object.freeze(["should", "recommend", "safe", "unsafe", "score", "rating", "buy", "sell", "exploit", "risk score", "none", "no", "zero", "nothing", "absent", "empty"]); // BANNED word list
+
+/** Words for a summary of a whole subject. No kit string and no class name uses one. */
+export const RATING_WORDS: readonly string[] = Object.freeze(["score", "rating", "gauge", "meter", "grade"]); // BANNED word list
+
+/** Every text token and the background token it is drawn over in the stylesheet. Each pair holds a contrast of at least 4.5 in light and in dark. */
+export const CONTRAST_PAIRS: readonly { text: string; background: string }[] = Object.freeze(
+  ["--lk-ink", "--lk-ink-muted", "--lk-accent", "--lk-contra"].flatMap((text) =>
+    ["--lk-paper", "--lk-paper-deep", "--lk-hatch"].map((background) => Object.freeze({ text, background })),
+  ),
+);
+
+/** Wording of the gallery page. The gallery is a review document; these strings appear nowhere else. */
+export const GALLERY_STRINGS = Object.freeze({
+  title: "Linchpin UI kit: gallery",
+  lede: "Every catalog component in every state, drawn by the kit from recorded rows. Each value carries its basis, its block and its evidence ids. Open an evidence chip with the keyboard or the pointer.",
+  source: "Rows",
+  sourceDetail: "copied unchanged from the recorded snapshot named here; a specimen that alters or invents rows says so in its caption",
+  themeLight: "Light",
+  themeDark: "Dark",
+  panelHeading: "subject-panel",
+  panelCaption: "The full panel for one subject: header, facts by predicate group, the graph of the contract, its roles and their holders, then the unknowns of the capture. Rows unchanged from the snapshot.",
+  questionRoles: "Which accounts hold a role on the contract?",
+  noteText: "Roles are listed as the contract returned them at the block shown on each row.",
+  titleRoles: "Roles",
+  titleHolders: "Role holders",
+  titleKeys: "Access keys",
+  titleCode: "Code and control",
+  titleGraph: "Roles and holders",
+  titleUnknowns: "Owners not identified",
+  titleSection: "Roles",
+  capColumnFilled: "A Column stacks its children in the given order. Rows unchanged from the snapshot.",
+  capColumnEmpty: "Constructed for this state: a Column with an empty child list draws nothing.",
+  capColumnUnsupported: "Constructed for this state: the surface names a component outside the catalog. The kit draws a fixed box and nothing of that component's data.",
+  capAnswerFilled: "The question text is the gallery's own wording. Snapshot, block range and latest time are read from the rows bound on the surface.",
+  capFactsFilled: "The role facts of the subject. Rows unchanged from the snapshot.",
+  capFactsLong: "Function-call keys of the subject, each about ninety characters. Identifiers wrap and are never cut. Rows unchanged from the snapshot.",
+  capFactsNone: "A value that was read and is absent is the word none with its own mark. Rows unchanged from the snapshot.",
+  capFactsUnknown: "A value that could not be identified is the word unknown, hatched. Rows unchanged from the snapshot.",
+  capFactsEmpty: "Constructed for this state: a result with zero rows.",
+  capChainFilled: "Each row joins two recorded facts: the contract's role and one holder of that role. The capture maps no instruction and no threshold, so the instruction step reads not mapped; who controls each holder is not mapped either. Drawn here: the holders with a named account.",
+  capChainNone: "Three of the roles whose holder was read and is absent. Each row joins two recorded facts, as above.",
+  capChainEmpty: "Constructed for this state: a chain result with zero rows.",
+  capPathConstructed: "Constructed for this state: the extract records no value path. These rows are written for the gallery, cite nothing, and so read no evidence.",
+  capPathEmpty: "Constructed for this state: a path result with zero rows.",
+  capCoverageNotMapped: "Constructed for this state: a result whose coverage is not mapped. Only the note is drawn; its rows never appear as facts.",
+  capCoverageConstructed: "Constructed for this state: a partly mapped result with its note.",
+  capCoverageMechanic: "Constructed for this state: one mechanic of a coverage list that was asked about and is not mapped.",
+  capUnknownsUnknown: "The four owners the capture could not identify. Rows unchanged from the snapshot.",
+  capUnknownsEmpty: "Constructed for this state: an unknowns result with zero rows.",
+  capNoteFilled: "One short sentence of literal text. The validator refuses advice words, digits and long text here.",
+  capHeaderFilled: "Subject id in full; block range and capture time read from the receipts the subject's facts cite.",
+  capHeaderLong: "A holder account with a long id. The id wraps and is never cut.",
+  capHeaderConstructed: "Constructed for this state: the same header with the constructed flag set.",
+  capHeaderEmpty: "Constructed for this state: a header whose data holds nothing. Each gap is said in words.",
+  capSectionFilled: "A titled Section with one child. Rows unchanged from the snapshot.",
+  capSectionEmpty: "Constructed for this state: a Section with an empty child list.",
+  capGraphFilled: "The contract, its roles and their holders. Every edge is one recorded fact; the lists carry the same nodes and edges as text. Node labels drop the chain prefix; the lists show each id in full.",
+  capGraphUnknown: "The four contracts whose owner is unknown. The capture holds no relation between them, so each node is isolated and nothing is drawn between them.",
+  capGraphEmpty: "Constructed for this state: a graph result with zero nodes.",
+  capTimelineFilled: "The subject's code and control facts in the order of their observation time. Rows unchanged from the snapshot.",
+  capTimelineEmpty: "Constructed for this state: a table with a time column and zero rows.",
+  pathTitle: "Example value path",
+  constructedSource: "gallery example",
+  constructedKind: "contract, as an example",
+  coverageNoteNotMapped: "Fee flows are not mapped in this example.",
+  coverageNotePartial: "Role holders are mapped; instructions are not.",
+  mechanicName: "fee flows",
+  mechanicNote: "Not mapped in this example.",
+  usage: "usage: bun run src/ui/gallery.ts build [--out <dir>]",
+});

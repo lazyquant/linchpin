@@ -9,23 +9,61 @@ import { redactedRpcUrl, redactSecrets } from '../chain/rpc';
 import { CASES, present, withBaseline, makeMemo, type CaseId, type Result } from './model';
 import { runPipeline, liveDirectory, saveResult, ROOT, type Run } from './runner';
 import type { TokenomicsBuild } from '../tokenomics/build';
-import { loadTokenomicsBundle } from '../tokenomics/cache';
+import { KaminoProjectionError } from '../tokenomics/kamino';
+import { TOKENOMICS_REGISTRY, type ProtocolEntry } from '../tokenomics/registry';
+import { tokenomicsQueries, type TokenomicsGraph } from '../graph/tokenomics-neo4j';
 import { TokenomicsGraphService } from '../tokenomics/graph-service';
-import { tokenomicsRoutes } from './tokenomics-routes';
+import { tokenomicsProtocolRoutes, type ProtocolSlot } from './tokenomics-routes';
 import { bonkStory, mndeStory, walkthroughMemo } from './case-walkthrough-model';
 import type { Packet } from '../review/packet';
-import type { BundleResponse } from '../tokenomics/api';
+import type { BundleResponse, ProtocolId } from '../tokenomics/api';
 
 export class ResearchService {
   results = new Map<CaseId, Result>();
   liveResults = new Map<CaseId, Result>();
   runs = new Map<string, Run>();
   tokenomics?: TokenomicsBuild;
+  tokenomicsProtocols = new Map<ProtocolId, ProtocolSlot>();
+  private tokenomicsLock: { holder: string | null } = { holder: null };
+  setTokenomicsBuild(id: ProtocolId, build: TokenomicsBuild) {
+    if (id === 'marinade') { this.tokenomics = build; this.tokenomicsGraphService = undefined; }
+    else this.tokenomicsProtocols.set(id, { build });
+  }
+  setTokenomicsError(id: ProtocolId, message: string) { this.tokenomicsProtocols.set(id, { error: message }); }
+  async prepareTokenomics(root = ROOT, entries: readonly ProtocolEntry[] = TOKENOMICS_REGISTRY) {
+    for (const entry of entries) {
+      try { this.setTokenomicsBuild(entry.id, await entry.load(root, { marinadePack: this.results.get('marinade') })); }
+      catch (error) {
+        if (entry.id === 'marinade') throw error;
+        const code = error && typeof error === 'object' && 'code' in error && typeof error.code === 'string'
+          && /^[a-zA-Z0-9_-]+$/.test(error.code) ? error.code : 'build-failed';
+        // Projection errors contain capture diagnostics, never transport endpoints.
+        // Unexpected errors retain their code without exposing arbitrary messages.
+        const detail = error instanceof KaminoProjectionError ? error.message : code;
+        const message = `${entry.title} is unavailable because its build failed: ${detail}.`;
+        this.setTokenomicsError(entry.id, message);
+        console.error(message);
+      }
+    }
+  }
+  get tokenomicsSlots() {
+    const slots = new Map(this.tokenomicsProtocols);
+    slots.set('marinade', { build: this.tokenomics, graph: this.tokenomicsGraph });
+    for (const entry of TOKENOMICS_REGISTRY) {
+      const slot = slots.get(entry.id);
+      if (entry.id === 'marinade' || !slot?.build || slot.graph) continue;
+      slot.graph = new TokenomicsGraphService(slot.build.bundle, this.graphOptions, {
+        graph: (slot.build as TokenomicsBuild & { graph?: TokenomicsGraph }).graph,
+        namespace: entry.namespace, queries: tokenomicsQueries(entry.namespace, entry.queryIds), lock: this.tokenomicsLock,
+      });
+    }
+    return slots;
+  }
   private graphService?: GraphService;
   private tokenomicsGraphService?: TokenomicsGraphService;
   get tokenomicsGraph() {
     if (!this.tokenomics) return undefined;
-    return this.tokenomicsGraphService ??= new TokenomicsGraphService(this.tokenomics.bundle, this.graphOptions);
+    return this.tokenomicsGraphService ??= new TokenomicsGraphService(this.tokenomics.bundle, this.graphOptions, { lock: this.tokenomicsLock });
   }
   constructor(private pipeline = runPipeline, private refreshTimeoutMs = 120_000, private graphOptions: GraphOptions = {}) {}
   get graph() {
@@ -47,7 +85,7 @@ export class ResearchService {
   async graphAnswer(id?: string) {
     const answer = await this.graph.query(id); this.publishGraph(answer); return answer;
   }
-  async close() { await this.graphService?.close(); await this.tokenomicsGraphService?.close(); }
+  async close() { await this.graphService?.close(); await this.tokenomicsGraphService?.close(); for (const slot of this.tokenomicsProtocols.values()) await slot.graph?.close(); }
   start(caseId: CaseId, source: 'captured' | 'live' = 'captured'): Run {
     const existing = [...this.runs.values()].find(r => r.caseId === caseId && r.status === 'running');
     if (existing) return existing;
@@ -122,7 +160,7 @@ export function api(service: ResearchService) {
         'Content-Type': 'text/markdown; charset=utf-8', 'Content-Disposition': `attachment; filename="linchpin-${which}-walkthrough-memo.md"`, 'Cache-Control': 'no-store' } });
     }
     if (parts[0] === 'api' && parts[1] === 'tokenomics') {
-      try { return await tokenomicsRoutes(service.tokenomics, request, service.tokenomicsGraph); }
+      try { return await tokenomicsProtocolRoutes(service.tokenomicsSlots, request); }
       finally { if (request.method === 'POST' && parts[3] === 'graph' && parts[4] === 'load') service.graph.invalidateSummary(); }
     }
     if (parts[0] === 'api' && parts[1] === 'graph') {
@@ -176,7 +214,7 @@ if (import.meta.main) {
   const service = new ResearchService();
   console.log('Preparing four completed examples from recorded fixtures…');
   await service.prepare();
-  service.tokenomics = await loadTokenomicsBundle({ root: ROOT, packResult: service.results.get('marinade')! });
+  await service.prepareTokenomics();
   process.once('SIGINT', () => { void service.close().catch(() => {}).finally(() => process.exit(0)); });
   const port = Number(process.env.LINCHPIN_WEB_PORT ?? 8875);
   if (!Number.isSafeInteger(port) || port < 1024 || port > 65535) throw new Error('LINCHPIN_WEB_PORT must be an integer from 1024 to 65535');

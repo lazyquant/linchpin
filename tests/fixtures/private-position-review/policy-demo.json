@@ -1,0 +1,13 @@
+{
+  "policyId": "fixture-demo-policy",
+  "subjects": ["solana:mainnet-beta:A2wsxhA7pF4B2UKVfXocb6TAAP9ipfPJam6oMKgDE5BK"],
+  "rules": [
+    { "id": "one-oracle-cap", "kind": "max-share-behind", "params": { "kind": "oracle-source", "maxPercent": 50, "basis": "count" } },
+    { "id": "value-cap", "kind": "max-share-behind", "params": { "kind": "controller", "maxPercent": 50, "basis": "value" } },
+    { "id": "exit-evidence", "kind": "min-exit-evidence", "params": { "maxAgeDays": 7 } },
+    { "id": "fresh-evidence", "kind": "max-evidence-age", "params": { "days": 7 } },
+    { "id": "vault-admin-resolved", "kind": "controller-resolved", "params": { "account": "solana:mainnet-beta:A2wsxhA7pF4B2UKVfXocb6TAAP9ipfPJam6oMKgDE5BK" } },
+    { "id": "admin-controller-resolved", "kind": "controller-resolved", "params": { "account": "solana:mainnet-beta:7fLxEftpppneavpueYgP2s7HhSGbWpj2jTCmAEwwqonY" } },
+    { "id": "admin-unchanged", "kind": "unchanged-since", "params": { "snapshotId": "solana-mainnet-beta.kamino.sentora-pyusd-20261109T163416Z", "factKeys": ["solana:mainnet-beta:A2wsxhA7pF4B2UKVfXocb6TAAP9ipfPJam6oMKgDE5BK|VAULT_ADMIN"] } }
+  ]
+}

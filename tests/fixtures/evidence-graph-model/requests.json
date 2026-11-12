@@ -1,0 +1,192 @@
+[
+  {
+    "id": "kamino-vault-dependencies",
+    "template": "dependencies",
+    "params": {
+      "subject": "solana:mainnet-beta:A2wsxhA7pF4B2UKVfXocb6TAAP9ipfPJam6oMKgDE5BK",
+      "scope": {
+        "asOf": "2026-11-10T17:04:20.763Z",
+        "snapshotId": "solana-mainnet-beta.kamino.sentora-pyusd-20261109T170418Z",
+        "maxHops": 4,
+        "maxResults": 500
+      },
+      "relations": [
+        "ALLOCATES_TO",
+        "IN_MARKET",
+        "PRICED_BY",
+        "OWNER_PROGRAM"
+      ]
+    }
+  },
+  {
+    "id": "kamino-vault-control-1",
+    "template": "control",
+    "params": {
+      "subject": "solana:mainnet-beta:A2wsxhA7pF4B2UKVfXocb6TAAP9ipfPJam6oMKgDE5BK",
+      "scope": {
+        "asOf": "2026-11-10T17:04:20.763Z",
+        "snapshotId": "solana-mainnet-beta.kamino.sentora-pyusd-20261109T170418Z",
+        "maxHops": 1,
+        "maxResults": 500
+      }
+    }
+  },
+  {
+    "id": "kamino-controller-control-1",
+    "template": "control",
+    "params": {
+      "subject": "solana:mainnet-beta:7fLxEftpppneavpueYgP2s7HhSGbWpj2jTCmAEwwqonY",
+      "scope": {
+        "asOf": "2026-11-10T17:04:20.763Z",
+        "snapshotId": "solana-mainnet-beta.kamino.sentora-pyusd-20261109T170418Z",
+        "maxHops": 1,
+        "maxResults": 500
+      }
+    }
+  },
+  {
+    "id": "kamino-vault-control-2",
+    "template": "control",
+    "params": {
+      "subject": "solana:mainnet-beta:A2wsxhA7pF4B2UKVfXocb6TAAP9ipfPJam6oMKgDE5BK",
+      "scope": {
+        "asOf": "2026-11-10T17:04:20.763Z",
+        "snapshotId": "solana-mainnet-beta.kamino.sentora-pyusd-20261109T170418Z",
+        "maxHops": 2,
+        "maxResults": 500
+      }
+    }
+  },
+  {
+    "id": "kamino-oracle-control-empty",
+    "template": "control",
+    "params": {
+      "subject": "solana:mainnet-beta:3t4JZcueEzTbVP6kLxXrL3VpWx45jDer4eqysweBchNH",
+      "scope": {
+        "asOf": "2026-11-10T17:04:20.763Z",
+        "snapshotId": "solana-mainnet-beta.kamino.sentora-pyusd-20261109T170418Z",
+        "maxHops": 1,
+        "maxResults": 500
+      }
+    }
+  },
+  {
+    "id": "kamino-vault-changes",
+    "template": "changes",
+    "params": {
+      "subject": "solana:mainnet-beta:A2wsxhA7pF4B2UKVfXocb6TAAP9ipfPJam6oMKgDE5BK",
+      "beforeSnapshotId": "solana-mainnet-beta.kamino.sentora-pyusd-20261109T163416Z",
+      "afterSnapshotId": "solana-mainnet-beta.kamino.sentora-pyusd-20261109T170418Z",
+      "maxResults": 500
+    }
+  },
+  {
+    "id": "burrow-dependencies",
+    "template": "dependencies",
+    "params": {
+      "subject": "near:mainnet:contract.main.burrow.near",
+      "scope": {
+        "asOf": "2026-11-10T19:33:38.487Z",
+        "snapshotId": "near-2026-11-09",
+        "maxHops": 4,
+        "maxResults": 500
+      },
+      "relations": [
+        "owned-by",
+        "priced-by",
+        "routes-through",
+        "deployed-by"
+      ]
+    }
+  },
+  {
+    "id": "intents-control",
+    "template": "control",
+    "params": {
+      "subject": "near:mainnet:intents.near",
+      "scope": {
+        "asOf": "2026-11-10T19:33:38.487Z",
+        "snapshotId": "near-2026-11-09",
+        "maxHops": 1,
+        "maxResults": 500
+      }
+    }
+  },
+  {
+    "id": "locker-changes",
+    "template": "changes",
+    "params": {
+      "subject": "near:mainnet:intents.near#role:UnrestrictedAccountLocker",
+      "beforeSnapshotId": "near-2026-11-09",
+      "afterSnapshotId": "near-constructed-intents-locker-added",
+      "maxResults": 500
+    }
+  },
+  {
+    "id": "receipt-evidence-10",
+    "template": "evidence",
+    "params": {
+      "evidenceIds": [
+        "01478093aa8dac928b42f0ab23181ec33acead87cd36f9351346708088d7cbc7",
+        "0ae892d76d2d0ebd68137429430c3dc708f53ff823b50c18a7e84e20a06b3118",
+        "1b7c5103d953ac63d186941a5676519fa046b3cc31b421cfd88c433806b9d9b9",
+        "2bfb0408a229fbe657586e4def41490eebba0b5e4d59be5e057b4a27e44d15f2",
+        "2e2635128c22faea2394f56dfd73b6dff91dbaf030bf5d91f36af2ebcf5a5daa",
+        "nr:near-2026-11-09:034f9b98d697c9062c049ae3b368caf5c82e60c9",
+        "nr:near-2026-11-09:04108c6cd377703d68fd04a78f608cdfe78e7bc8",
+        "nr:near-2026-11-09:06ede66ee7945d937fb667f7ee6156f6450b80e2",
+        "nr:near-2026-11-09:0c9f1e1b63eab4ea806e2a7167064f44ff4c8b4a",
+        "nr:near-2026-11-09:0fd4f360b7ccfc67df56b8fda82df07488a85b00"
+      ],
+      "maxResults": 500
+    }
+  },
+  {
+    "id": "kamino-shared-controllers",
+    "template": "shared-controllers",
+    "params": {
+      "protocolId": "protocol:kamino"
+    }
+  },
+  {
+    "id": "all-shared-controllers",
+    "template": "shared-controllers",
+    "params": {}
+  },
+  {
+    "id": "oracle-exposure",
+    "template": "exposure",
+    "params": {
+      "subject": "solana:mainnet-beta:3t4JZcueEzTbVP6kLxXrL3VpWx45jDer4eqysweBchNH",
+      "maxHops": 8
+    }
+  },
+  {
+    "id": "kamino-coverage",
+    "template": "coverage",
+    "params": {
+      "protocolId": "protocol:kamino"
+    }
+  },
+  {
+    "id": "vault-entity-resolve",
+    "template": "entity-resolve",
+    "params": {
+      "text": "A2wsxhA7pF4B2UKVfXocb6TAAP9ipfPJam6oMKgDE5BK",
+      "limit": 10
+    }
+  },
+  {
+    "id": "locker-missing-subject",
+    "template": "control",
+    "params": {
+      "subject": "near:mainnet:v2.ref-finance.near",
+      "scope": {
+        "asOf": "2026-11-10T19:31:34.397Z",
+        "snapshotId": "near-constructed-intents-locker-added",
+        "maxHops": 1,
+        "maxResults": 500
+      }
+    }
+  }
+]

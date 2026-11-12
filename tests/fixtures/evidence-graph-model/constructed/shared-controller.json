@@ -1,0 +1,73 @@
+{
+  "note": "AC6 constructed records set: two tester protocols whose member sets share one controller. Expected: shared-controllers without $protocolId returns the controller once with both protocol ids; with one protocol id only that protocol's subjects remain.",
+  "snapshot": {
+    "version": 1,
+    "id": "solana-mainnet-beta.kamino.sentora-pyusd-20261110T130000Z",
+    "chain": "solana",
+    "network": "mainnet-beta",
+    "constructed": false,
+    "observedFrom": "2026-11-09T17:04:20.763Z",
+    "observedTo": "2026-11-09T17:04:20.763Z",
+    "fromBlockOrSlot": "600",
+    "toBlockOrSlot": "600",
+    "freshUntil": "2026-11-10T17:04:20.763Z",
+    "subjects": [
+      "solana:mainnet-beta:A2wsxhA7pF4B2UKVfXocb6TAAP9ipfPJam6oMKgDE5BK",
+      "solana:mainnet-beta:24LjDBukaUSHgPowcF2wY1XscnhChcBUDETN2UhBZMMT"
+    ],
+    "readers": [{ "id": "tester-shared-reader", "status": "complete", "subjects": ["solana:mainnet-beta:A2wsxhA7pF4B2UKVfXocb6TAAP9ipfPJam6oMKgDE5BK", "solana:mainnet-beta:24LjDBukaUSHgPowcF2wY1XscnhChcBUDETN2UhBZMMT"] }],
+    "names": {},
+    "receipts": [
+      { "id": "rc-tester-shared-va", "source": "tester-fixture:shared-controller/vault-admin", "responseSha256": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc", "privacy": "public", "observation": { "chain": "solana", "network": "mainnet-beta", "blockOrSlot": "600", "blockHash": null, "observedAt": "2026-11-09T17:04:20.763Z", "retrievedAt": "2026-11-09T17:04:20.763Z", "historicalState": "current-only" } },
+      { "id": "rc-tester-shared-mo", "source": "tester-fixture:shared-controller/market-owner", "responseSha256": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd", "privacy": "public", "observation": { "chain": "solana", "network": "mainnet-beta", "blockOrSlot": "600", "blockHash": null, "observedAt": "2026-11-09T17:04:20.763Z", "retrievedAt": "2026-11-09T17:04:20.763Z", "historicalState": "current-only" } }
+    ],
+    "facts": [
+      { "id": "f-tester-shared-va", "subject": "solana:mainnet-beta:A2wsxhA7pF4B2UKVfXocb6TAAP9ipfPJam6oMKgDE5BK", "predicate": "VAULT_ADMIN", "object": "solana:mainnet-beta:7fLxEftpppneavpueYgP2s7HhSGbWpj2jTCmAEwwqonY", "basis": "decoded", "status": "verified", "evidenceIds": ["rc-tester-shared-va"], "path": [], "validFrom": null, "validTo": null, "privacy": "public" },
+      { "id": "f-tester-shared-mo", "subject": "solana:mainnet-beta:24LjDBukaUSHgPowcF2wY1XscnhChcBUDETN2UhBZMMT", "predicate": "MARKET_OWNER", "object": "solana:mainnet-beta:7fLxEftpppneavpueYgP2s7HhSGbWpj2jTCmAEwwqonY", "basis": "decoded", "status": "verified", "evidenceIds": ["rc-tester-shared-mo"], "path": [], "validFrom": null, "validTo": null, "privacy": "public" }
+    ]
+  },
+  "protocols": [
+    {
+      "id": "protocol:tester-shared-a",
+      "title": "Tester shared A",
+      "series": "kamino.sentora-pyusd",
+      "source": "tests/fixtures/evidence-graph-model/constructed/shared-controller.json",
+      "memberRule": "registry",
+      "members": ["solana:mainnet-beta:A2wsxhA7pF4B2UKVfXocb6TAAP9ipfPJam6oMKgDE5BK"],
+      "coverage": [
+        { "mechanic": "control", "status": "not-mapped", "note": "Tester fixture: not mapped." },
+        { "mechanic": "code-upgrade", "status": "not-mapped", "note": "Tester fixture: not mapped." },
+        { "mechanic": "supply", "status": "not-mapped", "note": "Tester fixture: not mapped." },
+        { "mechanic": "dependencies", "status": "not-mapped", "note": "Tester fixture: not mapped." },
+        { "mechanic": "parameters", "status": "not-mapped", "note": "Tester fixture: not mapped." },
+        { "mechanic": "fees", "status": "not-mapped", "note": "Tester fixture: not mapped." },
+        { "mechanic": "treasury", "status": "not-mapped", "note": "Tester fixture: not mapped." },
+        { "mechanic": "governance", "status": "not-mapped", "note": "Tester fixture: not mapped." },
+        { "mechanic": "holders", "status": "not-mapped", "note": "Tester fixture: not mapped." },
+        { "mechanic": "flows", "status": "not-mapped", "note": "Tester fixture: not mapped." },
+        { "mechanic": "claims", "status": "not-mapped", "note": "Tester fixture: not mapped." }
+      ]
+    },
+    {
+      "id": "protocol:tester-shared-b",
+      "title": "Tester shared B",
+      "series": "kamino.sentora-pyusd",
+      "source": "tests/fixtures/evidence-graph-model/constructed/shared-controller.json",
+      "memberRule": "registry",
+      "members": ["solana:mainnet-beta:24LjDBukaUSHgPowcF2wY1XscnhChcBUDETN2UhBZMMT"],
+      "coverage": [
+        { "mechanic": "control", "status": "not-mapped", "note": "Tester fixture: not mapped." },
+        { "mechanic": "code-upgrade", "status": "not-mapped", "note": "Tester fixture: not mapped." },
+        { "mechanic": "supply", "status": "not-mapped", "note": "Tester fixture: not mapped." },
+        { "mechanic": "dependencies", "status": "not-mapped", "note": "Tester fixture: not mapped." },
+        { "mechanic": "parameters", "status": "not-mapped", "note": "Tester fixture: not mapped." },
+        { "mechanic": "fees", "status": "not-mapped", "note": "Tester fixture: not mapped." },
+        { "mechanic": "treasury", "status": "not-mapped", "note": "Tester fixture: not mapped." },
+        { "mechanic": "governance", "status": "not-mapped", "note": "Tester fixture: not mapped." },
+        { "mechanic": "holders", "status": "not-mapped", "note": "Tester fixture: not mapped." },
+        { "mechanic": "flows", "status": "not-mapped", "note": "Tester fixture: not mapped." },
+        { "mechanic": "claims", "status": "not-mapped", "note": "Tester fixture: not mapped." }
+      ]
+    }
+  ]
+}
