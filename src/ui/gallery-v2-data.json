@@ -1,0 +1,4811 @@
+{
+ "source": {
+  "note": "Rows copied from the captures named here through the builders of the repository. A specimen that alters or invents rows says so in its caption.",
+  "captures": [
+   "solana-mainnet-beta.kamino-lend.main-market-20261111T195059Z",
+   "solana-mainnet-beta.kamino.sentora-pyusd-20261109T163416Z",
+   "solana-mainnet-beta.kamino.sentora-pyusd-20261109T170418Z",
+   "solana-mainnet-beta.marinade.2026-10-06"
+  ],
+  "read": "the constructed position read under fixtures/solana-app/replay/constructed"
+ },
+ "market": "solana:mainnet-beta:7u3HeHxYDLhnCoErrtycNokbQYbWGzLs6JSDqGAv5PfF",
+ "vault": "solana:mainnet-beta:A2wsxhA7pF4B2UKVfXocb6TAAP9ipfPJam6oMKgDE5BK",
+ "unknownAccount": "solana:mainnet-beta:A9rQoX1sictAQkyXxaZA8nz674xutHwoqpK2mwLyexCZ",
+ "results": {
+  "explorer-filled": {
+   "resultId": "explorer-filled",
+   "shape": "graph",
+   "coverage": "mapped",
+   "coverageNotes": [],
+   "nodes": [
+    {
+     "id": "solana:mainnet-beta:24LjDBukaUSHgPowcF2wY1XscnhChcBUDETN2UhBZMMT",
+     "label": "solana:mainnet-beta:24LjDBukaUSHgPowcF2wY1XscnhChcBUDETN2UhBZMMT",
+     "isolated": false
+    },
+    {
+     "id": "solana:mainnet-beta:2gc9Dm1eB6UgVYFBUN9bWks6Kes9PbWSaPaa9DqyvEiN",
+     "label": "solana:mainnet-beta:2gc9Dm1eB6UgVYFBUN9bWks6Kes9PbWSaPaa9DqyvEiN",
+     "isolated": false,
+     "kind": "Reserve",
+     "kindBasis": "decoded"
+    },
+    {
+     "id": "solana:mainnet-beta:3ZUAwhEtK8XWfK4fy98z4yoptm4GeyeAu21L11HPXaZ5",
+     "label": "solana:mainnet-beta:3ZUAwhEtK8XWfK4fy98z4yoptm4GeyeAu21L11HPXaZ5",
+     "isolated": false,
+     "kind": "Reserve",
+     "kindBasis": "decoded"
+    },
+    {
+     "id": "solana:mainnet-beta:3t4JZcueEzTbVP6kLxXrL3VpWx45jDer4eqysweBchNH",
+     "label": "solana:mainnet-beta:3t4JZcueEzTbVP6kLxXrL3VpWx45jDer4eqysweBchNH",
+     "isolated": false,
+     "kind": "Oracle",
+     "kindBasis": "decoded"
+    },
+    {
+     "id": "solana:mainnet-beta:4R33WT7isNgzALNyvpZKiZQARtZNAXarWB3prUbPkXX7",
+     "label": "solana:mainnet-beta:4R33WT7isNgzALNyvpZKiZQARtZNAXarWB3prUbPkXX7",
+     "isolated": false
+    },
+    {
+     "id": "solana:mainnet-beta:6A8D3ExQ4CdiZTBmij7MScUeKsgs6mSHksYzJbiY61FM",
+     "label": "solana:mainnet-beta:6A8D3ExQ4CdiZTBmij7MScUeKsgs6mSHksYzJbiY61FM",
+     "isolated": false,
+     "kind": "Reserve",
+     "kindBasis": "decoded"
+    },
+    {
+     "id": "solana:mainnet-beta:6WEGfej9B9wjxRs6t4BYpb9iCXd8CpTpJ8fVSNzHCC5y",
+     "label": "solana:mainnet-beta:6WEGfej9B9wjxRs6t4BYpb9iCXd8CpTpJ8fVSNzHCC5y",
+     "isolated": false,
+     "kind": "Market",
+     "kindBasis": "decoded",
+     "name": "Maple Market"
+    },
+    {
+     "id": "solana:mainnet-beta:6bR98MJTH68s7eV8ssyBgfuuH5oR2bEt58P9rZPLpBrC",
+     "label": "solana:mainnet-beta:6bR98MJTH68s7eV8ssyBgfuuH5oR2bEt58P9rZPLpBrC",
+     "isolated": false,
+     "kind": "Reserve",
+     "kindBasis": "decoded"
+    },
+    {
+     "id": "solana:mainnet-beta:7fLxEftpppneavpueYgP2s7HhSGbWpj2jTCmAEwwqonY",
+     "label": "solana:mainnet-beta:7fLxEftpppneavpueYgP2s7HhSGbWpj2jTCmAEwwqonY",
+     "isolated": false
+    },
+    {
+     "id": "solana:mainnet-beta:7u3HeHxYDLhnCoErrtycNokbQYbWGzLs6JSDqGAv5PfF",
+     "label": "solana:mainnet-beta:7u3HeHxYDLhnCoErrtycNokbQYbWGzLs6JSDqGAv5PfF",
+     "isolated": false,
+     "kind": "Market",
+     "kindBasis": "decoded",
+     "name": "SOL/BTC Market"
+    },
+    {
+     "id": "solana:mainnet-beta:8BNUWRSibVasaAmhYpBCFpGgMisGKfVAf9ho3Cmf6vjr",
+     "label": "solana:mainnet-beta:8BNUWRSibVasaAmhYpBCFpGgMisGKfVAf9ho3Cmf6vjr",
+     "isolated": false,
+     "kind": "Market",
+     "kindBasis": "decoded",
+     "name": "Sentora xStocks Market"
+    },
+    {
+     "id": "solana:mainnet-beta:92qeAka3ZzCGPfJriDXrE7tiNqfATVCAM6ZjjctR3TrS",
+     "label": "solana:mainnet-beta:92qeAka3ZzCGPfJriDXrE7tiNqfATVCAM6ZjjctR3TrS",
+     "isolated": false,
+     "kind": "Reserve",
+     "kindBasis": "decoded"
+    },
+    {
+     "id": "solana:mainnet-beta:9uSbGW1y9H5Av6H5TKxQ1wnFApSq2t3oEpfF2YfjDQGA",
+     "label": "solana:mainnet-beta:9uSbGW1y9H5Av6H5TKxQ1wnFApSq2t3oEpfF2YfjDQGA",
+     "isolated": false,
+     "kind": "ProgramData",
+     "kindBasis": "decoded"
+    },
+    {
+     "id": "solana:mainnet-beta:A2wsxhA7pF4B2UKVfXocb6TAAP9ipfPJam6oMKgDE5BK",
+     "label": "solana:mainnet-beta:A2wsxhA7pF4B2UKVfXocb6TAAP9ipfPJam6oMKgDE5BK",
+     "isolated": false,
+     "kind": "Vault",
+     "kindBasis": "decoded",
+     "name": "Sentora PYUSD"
+    },
+    {
+     "id": "solana:mainnet-beta:Btu8835QDYgdTnMJJBSidbfQhrZzryZbMhCpty6h6Xdk",
+     "label": "solana:mainnet-beta:Btu8835QDYgdTnMJJBSidbfQhrZzryZbMhCpty6h6Xdk",
+     "isolated": false,
+     "kind": "Market",
+     "kindBasis": "decoded",
+     "name": "AUTO market"
+    },
+    {
+     "id": "solana:mainnet-beta:CqAoLuqWtavaVE8deBjMKe8ZfSt9ghR6Vb8nfsyabyHA",
+     "label": "solana:mainnet-beta:CqAoLuqWtavaVE8deBjMKe8ZfSt9ghR6Vb8nfsyabyHA",
+     "isolated": false,
+     "kind": "Market",
+     "kindBasis": "decoded",
+     "name": "Prime Market"
+    },
+    {
+     "id": "solana:mainnet-beta:CyyFApdfEzHM5dVowALutPiL3fZepMrThtQUed77A1KN",
+     "label": "solana:mainnet-beta:CyyFApdfEzHM5dVowALutPiL3fZepMrThtQUed77A1KN",
+     "isolated": false,
+     "kind": "Market",
+     "kindBasis": "decoded",
+     "name": "Sentora Huma PST Market"
+    },
+    {
+     "id": "solana:mainnet-beta:DCqyVY1SFCwq8unnexv9pjujVAC7jsmjfoUWBrNLvbY",
+     "label": "solana:mainnet-beta:DCqyVY1SFCwq8unnexv9pjujVAC7jsmjfoUWBrNLvbY",
+     "isolated": true,
+     "kind": "Token",
+     "kindBasis": "decoded"
+    },
+    {
+     "id": "solana:mainnet-beta:DuKtB88SQGJbow5jxmUSwgJWmC7zma8mX3Nodz1Gsjs2",
+     "label": "solana:mainnet-beta:DuKtB88SQGJbow5jxmUSwgJWmC7zma8mX3Nodz1Gsjs2",
+     "isolated": false,
+     "kind": "ProgramData",
+     "kindBasis": "decoded"
+    },
+    {
+     "id": "solana:mainnet-beta:DxXdAyU3kCjnyggvHmY5nAwg5cRbbmdyX3npfDMjjMek",
+     "label": "solana:mainnet-beta:DxXdAyU3kCjnyggvHmY5nAwg5cRbbmdyX3npfDMjjMek",
+     "isolated": false,
+     "kind": "Market",
+     "kindBasis": "decoded",
+     "name": "JLP Market"
+    },
+    {
+     "id": "solana:mainnet-beta:FswUCVjvfAuzHCgPDF95eLKscGsLHyJmD6hzkhq26CLe",
+     "label": "solana:mainnet-beta:FswUCVjvfAuzHCgPDF95eLKscGsLHyJmD6hzkhq26CLe",
+     "isolated": false,
+     "kind": "Reserve",
+     "kindBasis": "decoded"
+    },
+    {
+     "id": "solana:mainnet-beta:GeZ7nkkcbJ6VVV1XVFbmFnLCY3F1LPBGk6cufDZvrbGn",
+     "label": "solana:mainnet-beta:GeZ7nkkcbJ6VVV1XVFbmFnLCY3F1LPBGk6cufDZvrbGn",
+     "isolated": false,
+     "kind": "ProgramData",
+     "kindBasis": "decoded"
+    },
+    {
+     "id": "solana:mainnet-beta:GzFgdRJXmawPhGeBsyRCDLx4jAKPsvbUqoqitzppkzkW",
+     "label": "solana:mainnet-beta:GzFgdRJXmawPhGeBsyRCDLx4jAKPsvbUqoqitzppkzkW",
+     "isolated": false
+    },
+    {
+     "id": "solana:mainnet-beta:HFn8GnPADiny6XqUoWE8uRPPxb29ikn4yTuPa9MF2fWJ",
+     "label": "solana:mainnet-beta:HFn8GnPADiny6XqUoWE8uRPPxb29ikn4yTuPa9MF2fWJ",
+     "isolated": false,
+     "kind": "Program",
+     "kindBasis": "decoded"
+    },
+    {
+     "id": "solana:mainnet-beta:J11HELuMrLs4WywWHpwoagqT5NMgHTGqCexKjrhM1PuU",
+     "label": "solana:mainnet-beta:J11HELuMrLs4WywWHpwoagqT5NMgHTGqCexKjrhM1PuU",
+     "isolated": false,
+     "kind": "Reserve",
+     "kindBasis": "decoded"
+    },
+    {
+     "id": "solana:mainnet-beta:KLend2g3cP87fffoy8q1mQqGKjrxjC8boSyAYavgmjD",
+     "label": "solana:mainnet-beta:KLend2g3cP87fffoy8q1mQqGKjrxjC8boSyAYavgmjD",
+     "isolated": false,
+     "kind": "Program",
+     "kindBasis": "decoded"
+    },
+    {
+     "id": "solana:mainnet-beta:KvauGMspG5k6rtzrqqn7WNn3oZdyKqLKwK2XWQ8FLjd",
+     "label": "solana:mainnet-beta:KvauGMspG5k6rtzrqqn7WNn3oZdyKqLKwK2XWQ8FLjd",
+     "isolated": false,
+     "kind": "Program",
+     "kindBasis": "decoded"
+    }
+   ],
+   "edges": [
+    {
+     "key": "2120a616994ecd102cfe0a75d4858f11ada291a214e64a2dfb62be34a7ba506b",
+     "from": "solana:mainnet-beta:24LjDBukaUSHgPowcF2wY1XscnhChcBUDETN2UhBZMMT",
+     "to": "unknown",
+     "relation": "CONTROLLED_BY",
+     "factIds": [
+      "2120a616994ecd102cfe0a75d4858f11ada291a214e64a2dfb62be34a7ba506b"
+     ],
+     "bases": [
+      "unknown"
+     ],
+     "evidenceIds": [
+      "b592ab1a2e87ffeefabc5b5ce8134f1deea51cca220297853c513425a297d3e2"
+     ],
+     "blockOrSlot": "467394687",
+     "asOf": "2026-11-09T17:04:20.763Z",
+     "layer": "Control"
+    },
+    {
+     "key": "7a59f946b0b4ef1e6c5105b230fbddbb585c243f8c77725a61e4eba70bbb0d8e",
+     "from": "solana:mainnet-beta:2gc9Dm1eB6UgVYFBUN9bWks6Kes9PbWSaPaa9DqyvEiN",
+     "to": "solana:mainnet-beta:7u3HeHxYDLhnCoErrtycNokbQYbWGzLs6JSDqGAv5PfF",
+     "relation": "IN_MARKET",
+     "factIds": [
+      "7a59f946b0b4ef1e6c5105b230fbddbb585c243f8c77725a61e4eba70bbb0d8e"
+     ],
+     "bases": [
+      "decoded"
+     ],
+     "evidenceIds": [
+      "01478093aa8dac928b42f0ab23181ec33acead87cd36f9351346708088d7cbc7"
+     ],
+     "blockOrSlot": "467394687",
+     "asOf": "2026-11-09T17:04:20.763Z",
+     "layer": "Structure"
+    },
+    {
+     "key": "84645ef39889506bdf74fa3e1cfc5a85ccf513bc2b656c95c091fad8bcc33d3b",
+     "from": "solana:mainnet-beta:2gc9Dm1eB6UgVYFBUN9bWks6Kes9PbWSaPaa9DqyvEiN",
+     "to": "solana:mainnet-beta:KLend2g3cP87fffoy8q1mQqGKjrxjC8boSyAYavgmjD",
+     "relation": "OWNER_PROGRAM",
+     "factIds": [
+      "84645ef39889506bdf74fa3e1cfc5a85ccf513bc2b656c95c091fad8bcc33d3b"
+     ],
+     "bases": [
+      "decoded"
+     ],
+     "evidenceIds": [
+      "01478093aa8dac928b42f0ab23181ec33acead87cd36f9351346708088d7cbc7"
+     ],
+     "blockOrSlot": "467394687",
+     "asOf": "2026-11-09T17:04:20.763Z",
+     "layer": "Code"
+    },
+    {
+     "key": "5f924830223f6384172a6a3a33db7e2015c7ec1e7417cd099a250d0a6308c8af",
+     "from": "solana:mainnet-beta:2gc9Dm1eB6UgVYFBUN9bWks6Kes9PbWSaPaa9DqyvEiN",
+     "to": "solana:mainnet-beta:3t4JZcueEzTbVP6kLxXrL3VpWx45jDer4eqysweBchNH",
+     "relation": "PRICED_BY",
+     "factIds": [
+      "5f924830223f6384172a6a3a33db7e2015c7ec1e7417cd099a250d0a6308c8af"
+     ],
+     "bases": [
+      "decoded"
+     ],
+     "evidenceIds": [
+      "01478093aa8dac928b42f0ab23181ec33acead87cd36f9351346708088d7cbc7"
+     ],
+     "blockOrSlot": "467394687",
+     "asOf": "2026-11-09T17:04:20.763Z",
+     "layer": "Pricing"
+    },
+    {
+     "key": "f9cd1941a782cea72b80077ef69e8166765c785df42926135a70f08f272184d9",
+     "from": "solana:mainnet-beta:3ZUAwhEtK8XWfK4fy98z4yoptm4GeyeAu21L11HPXaZ5",
+     "to": "solana:mainnet-beta:CqAoLuqWtavaVE8deBjMKe8ZfSt9ghR6Vb8nfsyabyHA",
+     "relation": "IN_MARKET",
+     "factIds": [
+      "f9cd1941a782cea72b80077ef69e8166765c785df42926135a70f08f272184d9"
+     ],
+     "bases": [
+      "decoded"
+     ],
+     "evidenceIds": [
+      "83f665693818b1a16d57e9dd6a9c1870034ebbcf8b3c29c844feb66daf0bdf16"
+     ],
+     "blockOrSlot": "467394687",
+     "asOf": "2026-11-09T17:04:20.763Z",
+     "layer": "Structure"
+    },
+    {
+     "key": "a6562da3eebace83afed40aebe27cb1fbcc54e5691b919d18d3bb5b49d7c3d70",
+     "from": "solana:mainnet-beta:3ZUAwhEtK8XWfK4fy98z4yoptm4GeyeAu21L11HPXaZ5",
+     "to": "solana:mainnet-beta:KLend2g3cP87fffoy8q1mQqGKjrxjC8boSyAYavgmjD",
+     "relation": "OWNER_PROGRAM",
+     "factIds": [
+      "a6562da3eebace83afed40aebe27cb1fbcc54e5691b919d18d3bb5b49d7c3d70"
+     ],
+     "bases": [
+      "decoded"
+     ],
+     "evidenceIds": [
+      "83f665693818b1a16d57e9dd6a9c1870034ebbcf8b3c29c844feb66daf0bdf16"
+     ],
+     "blockOrSlot": "467394687",
+     "asOf": "2026-11-09T17:04:20.763Z",
+     "layer": "Code"
+    },
+    {
+     "key": "468e4e4a851e3b6276f232e87303d115cbbcecd723fb0f19158dc5c22e9de255",
+     "from": "solana:mainnet-beta:3ZUAwhEtK8XWfK4fy98z4yoptm4GeyeAu21L11HPXaZ5",
+     "to": "solana:mainnet-beta:3t4JZcueEzTbVP6kLxXrL3VpWx45jDer4eqysweBchNH",
+     "relation": "PRICED_BY",
+     "factIds": [
+      "468e4e4a851e3b6276f232e87303d115cbbcecd723fb0f19158dc5c22e9de255"
+     ],
+     "bases": [
+      "decoded"
+     ],
+     "evidenceIds": [
+      "83f665693818b1a16d57e9dd6a9c1870034ebbcf8b3c29c844feb66daf0bdf16"
+     ],
+     "blockOrSlot": "467394687",
+     "asOf": "2026-11-09T17:04:20.763Z",
+     "layer": "Pricing"
+    },
+    {
+     "key": "53804f8e6599d5e2f986a390e578114191ff8585b6a7733f636467f1cf8dfb63",
+     "from": "solana:mainnet-beta:3t4JZcueEzTbVP6kLxXrL3VpWx45jDer4eqysweBchNH",
+     "to": "solana:mainnet-beta:HFn8GnPADiny6XqUoWE8uRPPxb29ikn4yTuPa9MF2fWJ",
+     "relation": "OWNER_PROGRAM",
+     "factIds": [
+      "53804f8e6599d5e2f986a390e578114191ff8585b6a7733f636467f1cf8dfb63"
+     ],
+     "bases": [
+      "decoded"
+     ],
+     "evidenceIds": [
+      "c66bb213ebacaedc09682d03e7ca19a48b160a0a7b54c8f5ab5015303a541ce7"
+     ],
+     "blockOrSlot": "467394687",
+     "asOf": "2026-11-09T17:04:20.763Z",
+     "layer": "Code"
+    },
+    {
+     "key": "2ac299315e7a84601493b9cfd5a52948bcd2fe821f19f5acfc4d83927a84ab5d",
+     "from": "solana:mainnet-beta:4R33WT7isNgzALNyvpZKiZQARtZNAXarWB3prUbPkXX7",
+     "to": "unknown",
+     "relation": "CONTROLLED_BY",
+     "factIds": [
+      "2ac299315e7a84601493b9cfd5a52948bcd2fe821f19f5acfc4d83927a84ab5d"
+     ],
+     "bases": [
+      "unknown"
+     ],
+     "evidenceIds": [
+      "c2a85ba806135d4aacaccd41b8f10a2bc0c3b949a9c9cb8fbba0b2455b32dc38"
+     ],
+     "blockOrSlot": "467394687",
+     "asOf": "2026-11-09T17:04:20.763Z",
+     "layer": "Control"
+    },
+    {
+     "key": "7ca092a15f500fa00b2431edba7696c9149eac1bf63783b46e36deb828d30a39",
+     "from": "solana:mainnet-beta:6A8D3ExQ4CdiZTBmij7MScUeKsgs6mSHksYzJbiY61FM",
+     "to": "solana:mainnet-beta:Btu8835QDYgdTnMJJBSidbfQhrZzryZbMhCpty6h6Xdk",
+     "relation": "IN_MARKET",
+     "factIds": [
+      "7ca092a15f500fa00b2431edba7696c9149eac1bf63783b46e36deb828d30a39"
+     ],
+     "bases": [
+      "decoded"
+     ],
+     "evidenceIds": [
+      "9aa7ac431bb7cc5aaf9df20816df69556f20c3ec8d2aeb8843bf64677f28644e"
+     ],
+     "blockOrSlot": "467394687",
+     "asOf": "2026-11-09T17:04:20.763Z",
+     "layer": "Structure"
+    },
+    {
+     "key": "960d0105eec006a6ebc908d3326504307b4a0d499a5061fb42dba91336e70855",
+     "from": "solana:mainnet-beta:6A8D3ExQ4CdiZTBmij7MScUeKsgs6mSHksYzJbiY61FM",
+     "to": "solana:mainnet-beta:KLend2g3cP87fffoy8q1mQqGKjrxjC8boSyAYavgmjD",
+     "relation": "OWNER_PROGRAM",
+     "factIds": [
+      "960d0105eec006a6ebc908d3326504307b4a0d499a5061fb42dba91336e70855"
+     ],
+     "bases": [
+      "decoded"
+     ],
+     "evidenceIds": [
+      "9aa7ac431bb7cc5aaf9df20816df69556f20c3ec8d2aeb8843bf64677f28644e"
+     ],
+     "blockOrSlot": "467394687",
+     "asOf": "2026-11-09T17:04:20.763Z",
+     "layer": "Code"
+    },
+    {
+     "key": "44fbb4a0a4d8151b8ec033417851eca0d1ae70bfe599a86aba3bd2ad9d4d91d1",
+     "from": "solana:mainnet-beta:6A8D3ExQ4CdiZTBmij7MScUeKsgs6mSHksYzJbiY61FM",
+     "to": "solana:mainnet-beta:3t4JZcueEzTbVP6kLxXrL3VpWx45jDer4eqysweBchNH",
+     "relation": "PRICED_BY",
+     "factIds": [
+      "44fbb4a0a4d8151b8ec033417851eca0d1ae70bfe599a86aba3bd2ad9d4d91d1"
+     ],
+     "bases": [
+      "decoded"
+     ],
+     "evidenceIds": [
+      "9aa7ac431bb7cc5aaf9df20816df69556f20c3ec8d2aeb8843bf64677f28644e"
+     ],
+     "blockOrSlot": "467394687",
+     "asOf": "2026-11-09T17:04:20.763Z",
+     "layer": "Pricing"
+    },
+    {
+     "key": "eb2803852c64475650542e1136cbb4ebb151c6fa301bd1f7952e878f2fc109c5",
+     "from": "solana:mainnet-beta:6WEGfej9B9wjxRs6t4BYpb9iCXd8CpTpJ8fVSNzHCC5y",
+     "to": "solana:mainnet-beta:24LjDBukaUSHgPowcF2wY1XscnhChcBUDETN2UhBZMMT",
+     "relation": "MARKET_OWNER",
+     "factIds": [
+      "eb2803852c64475650542e1136cbb4ebb151c6fa301bd1f7952e878f2fc109c5"
+     ],
+     "bases": [
+      "decoded"
+     ],
+     "evidenceIds": [
+      "c5763abfae2eea11ab005b48e956f71b06bb87b5be12203cfca5bd4116124c89"
+     ],
+     "blockOrSlot": "467394687",
+     "asOf": "2026-11-09T17:04:20.763Z",
+     "layer": "Control"
+    },
+    {
+     "key": "8231ba042910addceade2805ba55dbe61ab1ffd5999168a2bacc371d669f6b6e",
+     "from": "solana:mainnet-beta:6WEGfej9B9wjxRs6t4BYpb9iCXd8CpTpJ8fVSNzHCC5y",
+     "to": "solana:mainnet-beta:KLend2g3cP87fffoy8q1mQqGKjrxjC8boSyAYavgmjD",
+     "relation": "OWNER_PROGRAM",
+     "factIds": [
+      "8231ba042910addceade2805ba55dbe61ab1ffd5999168a2bacc371d669f6b6e"
+     ],
+     "bases": [
+      "decoded"
+     ],
+     "evidenceIds": [
+      "c5763abfae2eea11ab005b48e956f71b06bb87b5be12203cfca5bd4116124c89"
+     ],
+     "blockOrSlot": "467394687",
+     "asOf": "2026-11-09T17:04:20.763Z",
+     "layer": "Code"
+    },
+    {
+     "key": "ee98c455515af955b03baa5835f4eba462679cea799f224ee94d4620fd8b36f6",
+     "from": "solana:mainnet-beta:6bR98MJTH68s7eV8ssyBgfuuH5oR2bEt58P9rZPLpBrC",
+     "to": "solana:mainnet-beta:8BNUWRSibVasaAmhYpBCFpGgMisGKfVAf9ho3Cmf6vjr",
+     "relation": "IN_MARKET",
+     "factIds": [
+      "ee98c455515af955b03baa5835f4eba462679cea799f224ee94d4620fd8b36f6"
+     ],
+     "bases": [
+      "decoded"
+     ],
+     "evidenceIds": [
+      "9dc0551211b643b9deccd16505c5d387c3a0bac1302f2ac67728064755809d93"
+     ],
+     "blockOrSlot": "467394687",
+     "asOf": "2026-11-09T17:04:20.763Z",
+     "layer": "Structure"
+    },
+    {
+     "key": "b712646f2a5673a6c244ec3509bbda9afb59fe676edf24bff1be08280c548362",
+     "from": "solana:mainnet-beta:6bR98MJTH68s7eV8ssyBgfuuH5oR2bEt58P9rZPLpBrC",
+     "to": "solana:mainnet-beta:KLend2g3cP87fffoy8q1mQqGKjrxjC8boSyAYavgmjD",
+     "relation": "OWNER_PROGRAM",
+     "factIds": [
+      "b712646f2a5673a6c244ec3509bbda9afb59fe676edf24bff1be08280c548362"
+     ],
+     "bases": [
+      "decoded"
+     ],
+     "evidenceIds": [
+      "9dc0551211b643b9deccd16505c5d387c3a0bac1302f2ac67728064755809d93"
+     ],
+     "blockOrSlot": "467394687",
+     "asOf": "2026-11-09T17:04:20.763Z",
+     "layer": "Code"
+    },
+    {
+     "key": "5fa00ebc09f026d948ef748f94ac7ec90517c98a64f7ee000f6243f77c9f8386",
+     "from": "solana:mainnet-beta:6bR98MJTH68s7eV8ssyBgfuuH5oR2bEt58P9rZPLpBrC",
+     "to": "solana:mainnet-beta:3t4JZcueEzTbVP6kLxXrL3VpWx45jDer4eqysweBchNH",
+     "relation": "PRICED_BY",
+     "factIds": [
+      "5fa00ebc09f026d948ef748f94ac7ec90517c98a64f7ee000f6243f77c9f8386"
+     ],
+     "bases": [
+      "decoded"
+     ],
+     "evidenceIds": [
+      "9dc0551211b643b9deccd16505c5d387c3a0bac1302f2ac67728064755809d93"
+     ],
+     "blockOrSlot": "467394687",
+     "asOf": "2026-11-09T17:04:20.763Z",
+     "layer": "Pricing"
+    },
+    {
+     "key": "6c2d405f54a3c5dda709ecd8ccab90ab1e1b0af999b75fb477567af2fd88819d",
+     "from": "solana:mainnet-beta:7fLxEftpppneavpueYgP2s7HhSGbWpj2jTCmAEwwqonY",
+     "to": "unknown",
+     "relation": "CONTROLLED_BY",
+     "factIds": [
+      "6c2d405f54a3c5dda709ecd8ccab90ab1e1b0af999b75fb477567af2fd88819d"
+     ],
+     "bases": [
+      "unknown"
+     ],
+     "evidenceIds": [
+      "618ae8cee60ba0d08ef8157b5242f89df4473ffdc1cbda46101101cdaced7283"
+     ],
+     "blockOrSlot": "467394687",
+     "asOf": "2026-11-09T17:04:20.763Z",
+     "layer": "Control"
+    },
+    {
+     "key": "eca60167fb8058d91fddcf67a09767181132b45c7fe554737eab8d610db0b9be",
+     "from": "solana:mainnet-beta:7u3HeHxYDLhnCoErrtycNokbQYbWGzLs6JSDqGAv5PfF",
+     "to": "solana:mainnet-beta:24LjDBukaUSHgPowcF2wY1XscnhChcBUDETN2UhBZMMT",
+     "relation": "MARKET_OWNER",
+     "factIds": [
+      "eca60167fb8058d91fddcf67a09767181132b45c7fe554737eab8d610db0b9be"
+     ],
+     "bases": [
+      "decoded"
+     ],
+     "evidenceIds": [
+      "73a927d80245bd5b240c445abc7cb54d87662919b7c45b968f80b4a89b60e400"
+     ],
+     "blockOrSlot": "467394687",
+     "asOf": "2026-11-09T17:04:20.763Z",
+     "layer": "Control"
+    },
+    {
+     "key": "73b1dcc592f2210d4b71cfcc2c0c688cb2efbdaf0e6201257fdd3d732e822797",
+     "from": "solana:mainnet-beta:7u3HeHxYDLhnCoErrtycNokbQYbWGzLs6JSDqGAv5PfF",
+     "to": "solana:mainnet-beta:KLend2g3cP87fffoy8q1mQqGKjrxjC8boSyAYavgmjD",
+     "relation": "OWNER_PROGRAM",
+     "factIds": [
+      "73b1dcc592f2210d4b71cfcc2c0c688cb2efbdaf0e6201257fdd3d732e822797"
+     ],
+     "bases": [
+      "decoded"
+     ],
+     "evidenceIds": [
+      "73a927d80245bd5b240c445abc7cb54d87662919b7c45b968f80b4a89b60e400"
+     ],
+     "blockOrSlot": "467394687",
+     "asOf": "2026-11-09T17:04:20.763Z",
+     "layer": "Code"
+    },
+    {
+     "key": "adbd1143a9d34fe04d4e94430167c80863344ce5dd3acd5d8ab9ecd54f5fb329",
+     "from": "solana:mainnet-beta:8BNUWRSibVasaAmhYpBCFpGgMisGKfVAf9ho3Cmf6vjr",
+     "to": "solana:mainnet-beta:7fLxEftpppneavpueYgP2s7HhSGbWpj2jTCmAEwwqonY",
+     "relation": "MARKET_OWNER",
+     "factIds": [
+      "adbd1143a9d34fe04d4e94430167c80863344ce5dd3acd5d8ab9ecd54f5fb329"
+     ],
+     "bases": [
+      "decoded"
+     ],
+     "evidenceIds": [
+      "6f755134959bf07655cb165358576fdfda52857d0ecce5498bf61e712db373df"
+     ],
+     "blockOrSlot": "467394687",
+     "asOf": "2026-11-09T17:04:20.763Z",
+     "layer": "Control"
+    },
+    {
+     "key": "0341f689315d41bff8640f0944997fc2084d25b327ba2ed1829b35fa928c8b69",
+     "from": "solana:mainnet-beta:8BNUWRSibVasaAmhYpBCFpGgMisGKfVAf9ho3Cmf6vjr",
+     "to": "solana:mainnet-beta:KLend2g3cP87fffoy8q1mQqGKjrxjC8boSyAYavgmjD",
+     "relation": "OWNER_PROGRAM",
+     "factIds": [
+      "0341f689315d41bff8640f0944997fc2084d25b327ba2ed1829b35fa928c8b69"
+     ],
+     "bases": [
+      "decoded"
+     ],
+     "evidenceIds": [
+      "6f755134959bf07655cb165358576fdfda52857d0ecce5498bf61e712db373df"
+     ],
+     "blockOrSlot": "467394687",
+     "asOf": "2026-11-09T17:04:20.763Z",
+     "layer": "Code"
+    },
+    {
+     "key": "d4adee55dd0bc7f80c2d5ad048fd6a2281fa36891ff23e7cbb4ceb002eca1811",
+     "from": "solana:mainnet-beta:92qeAka3ZzCGPfJriDXrE7tiNqfATVCAM6ZjjctR3TrS",
+     "to": "solana:mainnet-beta:6WEGfej9B9wjxRs6t4BYpb9iCXd8CpTpJ8fVSNzHCC5y",
+     "relation": "IN_MARKET",
+     "factIds": [
+      "d4adee55dd0bc7f80c2d5ad048fd6a2281fa36891ff23e7cbb4ceb002eca1811"
+     ],
+     "bases": [
+      "decoded"
+     ],
+     "evidenceIds": [
+      "0ae892d76d2d0ebd68137429430c3dc708f53ff823b50c18a7e84e20a06b3118"
+     ],
+     "blockOrSlot": "467394687",
+     "asOf": "2026-11-09T17:04:20.763Z",
+     "layer": "Structure"
+    },
+    {
+     "key": "5d7f119a79bded307703e9e126bdc0a64f73fbfefff3331819375db62bbe4d9d",
+     "from": "solana:mainnet-beta:92qeAka3ZzCGPfJriDXrE7tiNqfATVCAM6ZjjctR3TrS",
+     "to": "solana:mainnet-beta:KLend2g3cP87fffoy8q1mQqGKjrxjC8boSyAYavgmjD",
+     "relation": "OWNER_PROGRAM",
+     "factIds": [
+      "5d7f119a79bded307703e9e126bdc0a64f73fbfefff3331819375db62bbe4d9d"
+     ],
+     "bases": [
+      "decoded"
+     ],
+     "evidenceIds": [
+      "0ae892d76d2d0ebd68137429430c3dc708f53ff823b50c18a7e84e20a06b3118"
+     ],
+     "blockOrSlot": "467394687",
+     "asOf": "2026-11-09T17:04:20.763Z",
+     "layer": "Code"
+    },
+    {
+     "key": "09f7aa6f84c465a4be97f5aa336494c4d3e19ce83fb3130073637b19d93c05e8",
+     "from": "solana:mainnet-beta:92qeAka3ZzCGPfJriDXrE7tiNqfATVCAM6ZjjctR3TrS",
+     "to": "solana:mainnet-beta:3t4JZcueEzTbVP6kLxXrL3VpWx45jDer4eqysweBchNH",
+     "relation": "PRICED_BY",
+     "factIds": [
+      "09f7aa6f84c465a4be97f5aa336494c4d3e19ce83fb3130073637b19d93c05e8"
+     ],
+     "bases": [
+      "decoded"
+     ],
+     "evidenceIds": [
+      "0ae892d76d2d0ebd68137429430c3dc708f53ff823b50c18a7e84e20a06b3118"
+     ],
+     "blockOrSlot": "467394687",
+     "asOf": "2026-11-09T17:04:20.763Z",
+     "layer": "Pricing"
+    },
+    {
+     "key": "02ea89ae27c65ad8e0b3fc7b5d48a683e24f2aa6cfec31a20d97a9530882021d",
+     "from": "solana:mainnet-beta:A2wsxhA7pF4B2UKVfXocb6TAAP9ipfPJam6oMKgDE5BK",
+     "to": "solana:mainnet-beta:2gc9Dm1eB6UgVYFBUN9bWks6Kes9PbWSaPaa9DqyvEiN",
+     "relation": "ALLOCATES_TO",
+     "factIds": [
+      "02ea89ae27c65ad8e0b3fc7b5d48a683e24f2aa6cfec31a20d97a9530882021d"
+     ],
+     "bases": [
+      "decoded"
+     ],
+     "evidenceIds": [
+      "2e2635128c22faea2394f56dfd73b6dff91dbaf030bf5d91f36af2ebcf5a5daa"
+     ],
+     "blockOrSlot": "467394687",
+     "asOf": "2026-11-09T17:04:20.763Z",
+     "layer": "Structure"
+    },
+    {
+     "key": "792cfeeebb6f7d4da6113db08b7838c3931c3b34438d34c4525a8ab300697340",
+     "from": "solana:mainnet-beta:A2wsxhA7pF4B2UKVfXocb6TAAP9ipfPJam6oMKgDE5BK",
+     "to": "solana:mainnet-beta:3ZUAwhEtK8XWfK4fy98z4yoptm4GeyeAu21L11HPXaZ5",
+     "relation": "ALLOCATES_TO",
+     "factIds": [
+      "792cfeeebb6f7d4da6113db08b7838c3931c3b34438d34c4525a8ab300697340"
+     ],
+     "bases": [
+      "decoded"
+     ],
+     "evidenceIds": [
+      "2e2635128c22faea2394f56dfd73b6dff91dbaf030bf5d91f36af2ebcf5a5daa"
+     ],
+     "blockOrSlot": "467394687",
+     "asOf": "2026-11-09T17:04:20.763Z",
+     "layer": "Structure"
+    },
+    {
+     "key": "1793d7e0665b99250ff735c39c1fa67422ac64b8328a0d4c60feaec9fdb0954b",
+     "from": "solana:mainnet-beta:A2wsxhA7pF4B2UKVfXocb6TAAP9ipfPJam6oMKgDE5BK",
+     "to": "solana:mainnet-beta:6A8D3ExQ4CdiZTBmij7MScUeKsgs6mSHksYzJbiY61FM",
+     "relation": "ALLOCATES_TO",
+     "factIds": [
+      "1793d7e0665b99250ff735c39c1fa67422ac64b8328a0d4c60feaec9fdb0954b"
+     ],
+     "bases": [
+      "decoded"
+     ],
+     "evidenceIds": [
+      "2e2635128c22faea2394f56dfd73b6dff91dbaf030bf5d91f36af2ebcf5a5daa"
+     ],
+     "blockOrSlot": "467394687",
+     "asOf": "2026-11-09T17:04:20.763Z",
+     "layer": "Structure"
+    },
+    {
+     "key": "58e9691a15e129763df7e54f7ac008fc5ac94deb129dcbf79d7a3c6d4bf3bfa8",
+     "from": "solana:mainnet-beta:A2wsxhA7pF4B2UKVfXocb6TAAP9ipfPJam6oMKgDE5BK",
+     "to": "solana:mainnet-beta:6bR98MJTH68s7eV8ssyBgfuuH5oR2bEt58P9rZPLpBrC",
+     "relation": "ALLOCATES_TO",
+     "factIds": [
+      "58e9691a15e129763df7e54f7ac008fc5ac94deb129dcbf79d7a3c6d4bf3bfa8"
+     ],
+     "bases": [
+      "decoded"
+     ],
+     "evidenceIds": [
+      "2e2635128c22faea2394f56dfd73b6dff91dbaf030bf5d91f36af2ebcf5a5daa"
+     ],
+     "blockOrSlot": "467394687",
+     "asOf": "2026-11-09T17:04:20.763Z",
+     "layer": "Structure"
+    },
+    {
+     "key": "46b128ac093f00503772621ef83704b18e6990b2032eb717aa51e59a245896e1",
+     "from": "solana:mainnet-beta:A2wsxhA7pF4B2UKVfXocb6TAAP9ipfPJam6oMKgDE5BK",
+     "to": "solana:mainnet-beta:92qeAka3ZzCGPfJriDXrE7tiNqfATVCAM6ZjjctR3TrS",
+     "relation": "ALLOCATES_TO",
+     "factIds": [
+      "46b128ac093f00503772621ef83704b18e6990b2032eb717aa51e59a245896e1"
+     ],
+     "bases": [
+      "decoded"
+     ],
+     "evidenceIds": [
+      "2e2635128c22faea2394f56dfd73b6dff91dbaf030bf5d91f36af2ebcf5a5daa"
+     ],
+     "blockOrSlot": "467394687",
+     "asOf": "2026-11-09T17:04:20.763Z",
+     "layer": "Structure"
+    },
+    {
+     "key": "5342426c365577a7091615672a11ca01400e04ae6063fa2e9d7ab0fdf7ed2424",
+     "from": "solana:mainnet-beta:A2wsxhA7pF4B2UKVfXocb6TAAP9ipfPJam6oMKgDE5BK",
+     "to": "solana:mainnet-beta:FswUCVjvfAuzHCgPDF95eLKscGsLHyJmD6hzkhq26CLe",
+     "relation": "ALLOCATES_TO",
+     "factIds": [
+      "5342426c365577a7091615672a11ca01400e04ae6063fa2e9d7ab0fdf7ed2424"
+     ],
+     "bases": [
+      "decoded"
+     ],
+     "evidenceIds": [
+      "2e2635128c22faea2394f56dfd73b6dff91dbaf030bf5d91f36af2ebcf5a5daa"
+     ],
+     "blockOrSlot": "467394687",
+     "asOf": "2026-11-09T17:04:20.763Z",
+     "layer": "Structure"
+    },
+    {
+     "key": "2b6a28be673cdd075946566d23e1cdfdbe7de23a52ccb5d24d2e112ff196f7a9",
+     "from": "solana:mainnet-beta:A2wsxhA7pF4B2UKVfXocb6TAAP9ipfPJam6oMKgDE5BK",
+     "to": "solana:mainnet-beta:J11HELuMrLs4WywWHpwoagqT5NMgHTGqCexKjrhM1PuU",
+     "relation": "ALLOCATES_TO",
+     "factIds": [
+      "2b6a28be673cdd075946566d23e1cdfdbe7de23a52ccb5d24d2e112ff196f7a9"
+     ],
+     "bases": [
+      "decoded"
+     ],
+     "evidenceIds": [
+      "2e2635128c22faea2394f56dfd73b6dff91dbaf030bf5d91f36af2ebcf5a5daa"
+     ],
+     "blockOrSlot": "467394687",
+     "asOf": "2026-11-09T17:04:20.763Z",
+     "layer": "Structure"
+    },
+    {
+     "key": "624f867df03c2b5fee7ea5c8e980f6eb0d559631641224653cf7c5978cf26e95",
+     "from": "solana:mainnet-beta:A2wsxhA7pF4B2UKVfXocb6TAAP9ipfPJam6oMKgDE5BK",
+     "to": "solana:mainnet-beta:7fLxEftpppneavpueYgP2s7HhSGbWpj2jTCmAEwwqonY",
+     "relation": "ALLOCATION_ADMIN",
+     "factIds": [
+      "624f867df03c2b5fee7ea5c8e980f6eb0d559631641224653cf7c5978cf26e95"
+     ],
+     "bases": [
+      "decoded"
+     ],
+     "evidenceIds": [
+      "2e2635128c22faea2394f56dfd73b6dff91dbaf030bf5d91f36af2ebcf5a5daa"
+     ],
+     "blockOrSlot": "467394687",
+     "asOf": "2026-11-09T17:04:20.763Z",
+     "layer": "Control"
+    },
+    {
+     "key": "632f61b38ee1ec27d44d0b1bd0d5e4c3bcd62b814a9902c2ebf73d55b979a68a",
+     "from": "solana:mainnet-beta:A2wsxhA7pF4B2UKVfXocb6TAAP9ipfPJam6oMKgDE5BK",
+     "to": "solana:mainnet-beta:KvauGMspG5k6rtzrqqn7WNn3oZdyKqLKwK2XWQ8FLjd",
+     "relation": "OWNER_PROGRAM",
+     "factIds": [
+      "632f61b38ee1ec27d44d0b1bd0d5e4c3bcd62b814a9902c2ebf73d55b979a68a"
+     ],
+     "bases": [
+      "decoded"
+     ],
+     "evidenceIds": [
+      "2e2635128c22faea2394f56dfd73b6dff91dbaf030bf5d91f36af2ebcf5a5daa"
+     ],
+     "blockOrSlot": "467394687",
+     "asOf": "2026-11-09T17:04:20.763Z",
+     "layer": "Code"
+    },
+    {
+     "key": "3de7f904df43fdfaa706a7737228ab00c23f843120baf4e93c388d8963c33489",
+     "from": "solana:mainnet-beta:A2wsxhA7pF4B2UKVfXocb6TAAP9ipfPJam6oMKgDE5BK",
+     "to": "solana:mainnet-beta:7fLxEftpppneavpueYgP2s7HhSGbWpj2jTCmAEwwqonY",
+     "relation": "VAULT_ADMIN",
+     "factIds": [
+      "3de7f904df43fdfaa706a7737228ab00c23f843120baf4e93c388d8963c33489"
+     ],
+     "bases": [
+      "decoded"
+     ],
+     "evidenceIds": [
+      "2e2635128c22faea2394f56dfd73b6dff91dbaf030bf5d91f36af2ebcf5a5daa"
+     ],
+     "blockOrSlot": "467394687",
+     "asOf": "2026-11-09T17:04:20.763Z",
+     "layer": "Control"
+    },
+    {
+     "key": "5505aa88cff2c2a6a36805b3235d33089b8c826180a244389fb37b9ed179ac08",
+     "from": "solana:mainnet-beta:Btu8835QDYgdTnMJJBSidbfQhrZzryZbMhCpty6h6Xdk",
+     "to": "solana:mainnet-beta:24LjDBukaUSHgPowcF2wY1XscnhChcBUDETN2UhBZMMT",
+     "relation": "MARKET_OWNER",
+     "factIds": [
+      "5505aa88cff2c2a6a36805b3235d33089b8c826180a244389fb37b9ed179ac08"
+     ],
+     "bases": [
+      "decoded"
+     ],
+     "evidenceIds": [
+      "8aa7ec7136567fcd90d1212a5bb0bfdc8633911981b826075340c4171ec67766"
+     ],
+     "blockOrSlot": "467394687",
+     "asOf": "2026-11-09T17:04:20.763Z",
+     "layer": "Control"
+    },
+    {
+     "key": "7251f6e738c91eee8b1aa4c64d24e8299117ca517471952735e2a1bb12703619",
+     "from": "solana:mainnet-beta:Btu8835QDYgdTnMJJBSidbfQhrZzryZbMhCpty6h6Xdk",
+     "to": "solana:mainnet-beta:KLend2g3cP87fffoy8q1mQqGKjrxjC8boSyAYavgmjD",
+     "relation": "OWNER_PROGRAM",
+     "factIds": [
+      "7251f6e738c91eee8b1aa4c64d24e8299117ca517471952735e2a1bb12703619"
+     ],
+     "bases": [
+      "decoded"
+     ],
+     "evidenceIds": [
+      "8aa7ec7136567fcd90d1212a5bb0bfdc8633911981b826075340c4171ec67766"
+     ],
+     "blockOrSlot": "467394687",
+     "asOf": "2026-11-09T17:04:20.763Z",
+     "layer": "Code"
+    },
+    {
+     "key": "18eb404836533793a8ddcf435aa54de67b9c4b2703d515b66e2cc60cce0322a6",
+     "from": "solana:mainnet-beta:CqAoLuqWtavaVE8deBjMKe8ZfSt9ghR6Vb8nfsyabyHA",
+     "to": "solana:mainnet-beta:24LjDBukaUSHgPowcF2wY1XscnhChcBUDETN2UhBZMMT",
+     "relation": "MARKET_OWNER",
+     "factIds": [
+      "18eb404836533793a8ddcf435aa54de67b9c4b2703d515b66e2cc60cce0322a6"
+     ],
+     "bases": [
+      "decoded"
+     ],
+     "evidenceIds": [
+      "1b7c5103d953ac63d186941a5676519fa046b3cc31b421cfd88c433806b9d9b9"
+     ],
+     "blockOrSlot": "467394687",
+     "asOf": "2026-11-09T17:04:20.763Z",
+     "layer": "Control"
+    },
+    {
+     "key": "335b19f804117989809c7100264303b78ad37aab3078459872efdefc1d685254",
+     "from": "solana:mainnet-beta:CqAoLuqWtavaVE8deBjMKe8ZfSt9ghR6Vb8nfsyabyHA",
+     "to": "solana:mainnet-beta:KLend2g3cP87fffoy8q1mQqGKjrxjC8boSyAYavgmjD",
+     "relation": "OWNER_PROGRAM",
+     "factIds": [
+      "335b19f804117989809c7100264303b78ad37aab3078459872efdefc1d685254"
+     ],
+     "bases": [
+      "decoded"
+     ],
+     "evidenceIds": [
+      "1b7c5103d953ac63d186941a5676519fa046b3cc31b421cfd88c433806b9d9b9"
+     ],
+     "blockOrSlot": "467394687",
+     "asOf": "2026-11-09T17:04:20.763Z",
+     "layer": "Code"
+    },
+    {
+     "key": "6bf4226cf14d1d2986d4f7e0aa35cecad6a78ca768fe3b70f7a71293d3ab9c88",
+     "from": "solana:mainnet-beta:CyyFApdfEzHM5dVowALutPiL3fZepMrThtQUed77A1KN",
+     "to": "solana:mainnet-beta:7fLxEftpppneavpueYgP2s7HhSGbWpj2jTCmAEwwqonY",
+     "relation": "MARKET_OWNER",
+     "factIds": [
+      "6bf4226cf14d1d2986d4f7e0aa35cecad6a78ca768fe3b70f7a71293d3ab9c88"
+     ],
+     "bases": [
+      "decoded"
+     ],
+     "evidenceIds": [
+      "e76fac2baf90b011b99655523b11289c0caaa0410df576ad4c934a3bcd1b47ba"
+     ],
+     "blockOrSlot": "467394687",
+     "asOf": "2026-11-09T17:04:20.763Z",
+     "layer": "Control"
+    },
+    {
+     "key": "c24abd1d763f7407b704280b70ad7419f2ddca7a11f8ced482306ff91545d1a1",
+     "from": "solana:mainnet-beta:CyyFApdfEzHM5dVowALutPiL3fZepMrThtQUed77A1KN",
+     "to": "solana:mainnet-beta:KLend2g3cP87fffoy8q1mQqGKjrxjC8boSyAYavgmjD",
+     "relation": "OWNER_PROGRAM",
+     "factIds": [
+      "c24abd1d763f7407b704280b70ad7419f2ddca7a11f8ced482306ff91545d1a1"
+     ],
+     "bases": [
+      "decoded"
+     ],
+     "evidenceIds": [
+      "e76fac2baf90b011b99655523b11289c0caaa0410df576ad4c934a3bcd1b47ba"
+     ],
+     "blockOrSlot": "467394687",
+     "asOf": "2026-11-09T17:04:20.763Z",
+     "layer": "Code"
+    },
+    {
+     "key": "7fb1d10cb693c6e65ac60d4f5a8b7aec88049f74fb6ba640231b35fce5007d82",
+     "from": "solana:mainnet-beta:DxXdAyU3kCjnyggvHmY5nAwg5cRbbmdyX3npfDMjjMek",
+     "to": "solana:mainnet-beta:24LjDBukaUSHgPowcF2wY1XscnhChcBUDETN2UhBZMMT",
+     "relation": "MARKET_OWNER",
+     "factIds": [
+      "7fb1d10cb693c6e65ac60d4f5a8b7aec88049f74fb6ba640231b35fce5007d82"
+     ],
+     "bases": [
+      "decoded"
+     ],
+     "evidenceIds": [
+      "f9313e797d985976477dea8ee26590d9dc33d504eda38a510162e1a9868f29b7"
+     ],
+     "blockOrSlot": "467394687",
+     "asOf": "2026-11-09T17:04:20.763Z",
+     "layer": "Control"
+    },
+    {
+     "key": "f986a0078b249b886c78050974d755c0475cbfc7cfd110b2f23aa6941bc11c38",
+     "from": "solana:mainnet-beta:DxXdAyU3kCjnyggvHmY5nAwg5cRbbmdyX3npfDMjjMek",
+     "to": "solana:mainnet-beta:KLend2g3cP87fffoy8q1mQqGKjrxjC8boSyAYavgmjD",
+     "relation": "OWNER_PROGRAM",
+     "factIds": [
+      "f986a0078b249b886c78050974d755c0475cbfc7cfd110b2f23aa6941bc11c38"
+     ],
+     "bases": [
+      "decoded"
+     ],
+     "evidenceIds": [
+      "f9313e797d985976477dea8ee26590d9dc33d504eda38a510162e1a9868f29b7"
+     ],
+     "blockOrSlot": "467394687",
+     "asOf": "2026-11-09T17:04:20.763Z",
+     "layer": "Code"
+    },
+    {
+     "key": "4f426a6ba8ec610c9b61e9a1bee7e78679f5fae6e9b232af2a779f28af571a34",
+     "from": "solana:mainnet-beta:FswUCVjvfAuzHCgPDF95eLKscGsLHyJmD6hzkhq26CLe",
+     "to": "solana:mainnet-beta:DxXdAyU3kCjnyggvHmY5nAwg5cRbbmdyX3npfDMjjMek",
+     "relation": "IN_MARKET",
+     "factIds": [
+      "4f426a6ba8ec610c9b61e9a1bee7e78679f5fae6e9b232af2a779f28af571a34"
+     ],
+     "bases": [
+      "decoded"
+     ],
+     "evidenceIds": [
+      "307d1b0485ada440bed53b6ab87e1535c9b597423019ac914af4e11e650aa73a"
+     ],
+     "blockOrSlot": "467394687",
+     "asOf": "2026-11-09T17:04:20.763Z",
+     "layer": "Structure"
+    },
+    {
+     "key": "98be195af8def8cbe88bf9e2577c0e0865df10f124db980d868a1ce116ba7ede",
+     "from": "solana:mainnet-beta:FswUCVjvfAuzHCgPDF95eLKscGsLHyJmD6hzkhq26CLe",
+     "to": "solana:mainnet-beta:KLend2g3cP87fffoy8q1mQqGKjrxjC8boSyAYavgmjD",
+     "relation": "OWNER_PROGRAM",
+     "factIds": [
+      "98be195af8def8cbe88bf9e2577c0e0865df10f124db980d868a1ce116ba7ede"
+     ],
+     "bases": [
+      "decoded"
+     ],
+     "evidenceIds": [
+      "307d1b0485ada440bed53b6ab87e1535c9b597423019ac914af4e11e650aa73a"
+     ],
+     "blockOrSlot": "467394687",
+     "asOf": "2026-11-09T17:04:20.763Z",
+     "layer": "Code"
+    },
+    {
+     "key": "f92aa05c44fb8bf36b9baefaa57e38e04947e118caa499216d39d9be50c81485",
+     "from": "solana:mainnet-beta:FswUCVjvfAuzHCgPDF95eLKscGsLHyJmD6hzkhq26CLe",
+     "to": "solana:mainnet-beta:3t4JZcueEzTbVP6kLxXrL3VpWx45jDer4eqysweBchNH",
+     "relation": "PRICED_BY",
+     "factIds": [
+      "f92aa05c44fb8bf36b9baefaa57e38e04947e118caa499216d39d9be50c81485"
+     ],
+     "bases": [
+      "decoded"
+     ],
+     "evidenceIds": [
+      "307d1b0485ada440bed53b6ab87e1535c9b597423019ac914af4e11e650aa73a"
+     ],
+     "blockOrSlot": "467394687",
+     "asOf": "2026-11-09T17:04:20.763Z",
+     "layer": "Pricing"
+    },
+    {
+     "key": "4350d8d484c245fb0f4abbb42cb3dc73daecfe833ac912c7991963925410e080",
+     "from": "solana:mainnet-beta:GzFgdRJXmawPhGeBsyRCDLx4jAKPsvbUqoqitzppkzkW",
+     "to": "unknown",
+     "relation": "CONTROLLED_BY",
+     "factIds": [
+      "4350d8d484c245fb0f4abbb42cb3dc73daecfe833ac912c7991963925410e080"
+     ],
+     "bases": [
+      "unknown"
+     ],
+     "evidenceIds": [
+      "f8d647f0358ed194191fa3324bd94c77549146aad2c3a6941576d9201443969f"
+     ],
+     "blockOrSlot": "467394687",
+     "asOf": "2026-11-09T17:04:20.763Z",
+     "layer": "Control"
+    },
+    {
+     "key": "24c9c074c19bc2dca990f9501e8a7a4b07ddea2811726c988f50eb1557b24a1a",
+     "from": "solana:mainnet-beta:HFn8GnPADiny6XqUoWE8uRPPxb29ikn4yTuPa9MF2fWJ",
+     "to": "solana:mainnet-beta:DuKtB88SQGJbow5jxmUSwgJWmC7zma8mX3Nodz1Gsjs2",
+     "relation": "PROGRAM_DATA",
+     "factIds": [
+      "24c9c074c19bc2dca990f9501e8a7a4b07ddea2811726c988f50eb1557b24a1a"
+     ],
+     "bases": [
+      "decoded"
+     ],
+     "evidenceIds": [
+      "4bd3fd1e0203bcdb2f4e44c7ae8defe46afa69cb02d2074f90dafa7abe26cf17"
+     ],
+     "blockOrSlot": "467394685",
+     "asOf": "2026-11-09T17:04:20.494Z",
+     "layer": "Code"
+    },
+    {
+     "key": "584fdd274d145edf95a245929b6ca6d4c6abf29895ef87213451ec81cc38e274",
+     "from": "solana:mainnet-beta:HFn8GnPADiny6XqUoWE8uRPPxb29ikn4yTuPa9MF2fWJ",
+     "to": "solana:mainnet-beta:4R33WT7isNgzALNyvpZKiZQARtZNAXarWB3prUbPkXX7",
+     "relation": "UPGRADE_AUTHORITY",
+     "factIds": [
+      "584fdd274d145edf95a245929b6ca6d4c6abf29895ef87213451ec81cc38e274"
+     ],
+     "bases": [
+      "decoded"
+     ],
+     "evidenceIds": [
+      "4bd3fd1e0203bcdb2f4e44c7ae8defe46afa69cb02d2074f90dafa7abe26cf17",
+      "fd9a0297366f0b4c8534886fe076e703a9d86a498d5942643b79ff24f20749b4"
+     ],
+     "blockOrSlot": "467394685",
+     "asOf": "2026-11-09T17:04:20.494Z",
+     "layer": "Control"
+    },
+    {
+     "key": "d97a1c2135fa1d1b72c9da3758673a742897785263088249a54fe7f87cade5d0",
+     "from": "solana:mainnet-beta:J11HELuMrLs4WywWHpwoagqT5NMgHTGqCexKjrhM1PuU",
+     "to": "solana:mainnet-beta:CyyFApdfEzHM5dVowALutPiL3fZepMrThtQUed77A1KN",
+     "relation": "IN_MARKET",
+     "factIds": [
+      "d97a1c2135fa1d1b72c9da3758673a742897785263088249a54fe7f87cade5d0"
+     ],
+     "bases": [
+      "decoded"
+     ],
+     "evidenceIds": [
+      "958856e4a4b620939c00deab8da0fae2a67a311bfa1a4426f4b0a42e3bca29b3"
+     ],
+     "blockOrSlot": "467394687",
+     "asOf": "2026-11-09T17:04:20.763Z",
+     "layer": "Structure"
+    },
+    {
+     "key": "5278d74ba8d17b757ac4177e028399830dd1346c3e6d771eab9b94cf5c9f8994",
+     "from": "solana:mainnet-beta:J11HELuMrLs4WywWHpwoagqT5NMgHTGqCexKjrhM1PuU",
+     "to": "solana:mainnet-beta:KLend2g3cP87fffoy8q1mQqGKjrxjC8boSyAYavgmjD",
+     "relation": "OWNER_PROGRAM",
+     "factIds": [
+      "5278d74ba8d17b757ac4177e028399830dd1346c3e6d771eab9b94cf5c9f8994"
+     ],
+     "bases": [
+      "decoded"
+     ],
+     "evidenceIds": [
+      "958856e4a4b620939c00deab8da0fae2a67a311bfa1a4426f4b0a42e3bca29b3"
+     ],
+     "blockOrSlot": "467394687",
+     "asOf": "2026-11-09T17:04:20.763Z",
+     "layer": "Code"
+    },
+    {
+     "key": "7924dc7e1cc580bc61f06084b4daf7205b800dc7101ab43160c886b278d40861",
+     "from": "solana:mainnet-beta:J11HELuMrLs4WywWHpwoagqT5NMgHTGqCexKjrhM1PuU",
+     "to": "solana:mainnet-beta:3t4JZcueEzTbVP6kLxXrL3VpWx45jDer4eqysweBchNH",
+     "relation": "PRICED_BY",
+     "factIds": [
+      "7924dc7e1cc580bc61f06084b4daf7205b800dc7101ab43160c886b278d40861"
+     ],
+     "bases": [
+      "decoded"
+     ],
+     "evidenceIds": [
+      "958856e4a4b620939c00deab8da0fae2a67a311bfa1a4426f4b0a42e3bca29b3"
+     ],
+     "blockOrSlot": "467394687",
+     "asOf": "2026-11-09T17:04:20.763Z",
+     "layer": "Pricing"
+    },
+    {
+     "key": "eeb02c93f99feaa30d4ada1df8a1c08c5e8113d6cdffdca63da66aec1e9f62bc",
+     "from": "solana:mainnet-beta:KLend2g3cP87fffoy8q1mQqGKjrxjC8boSyAYavgmjD",
+     "to": "solana:mainnet-beta:9uSbGW1y9H5Av6H5TKxQ1wnFApSq2t3oEpfF2YfjDQGA",
+     "relation": "PROGRAM_DATA",
+     "factIds": [
+      "eeb02c93f99feaa30d4ada1df8a1c08c5e8113d6cdffdca63da66aec1e9f62bc"
+     ],
+     "bases": [
+      "decoded"
+     ],
+     "evidenceIds": [
+      "fdfd460495a0fe4bc5e40e64ac7cc37db8e08988ab4bd5150d84c0e3f9798762"
+     ],
+     "blockOrSlot": "467394685",
+     "asOf": "2026-11-09T17:04:20.494Z",
+     "layer": "Code"
+    },
+    {
+     "key": "9f815d5a75a5979666c7f582f1d686486c74170f350c2f6555971c3420dcead6",
+     "from": "solana:mainnet-beta:KLend2g3cP87fffoy8q1mQqGKjrxjC8boSyAYavgmjD",
+     "to": "solana:mainnet-beta:GzFgdRJXmawPhGeBsyRCDLx4jAKPsvbUqoqitzppkzkW",
+     "relation": "UPGRADE_AUTHORITY",
+     "factIds": [
+      "9f815d5a75a5979666c7f582f1d686486c74170f350c2f6555971c3420dcead6"
+     ],
+     "bases": [
+      "decoded"
+     ],
+     "evidenceIds": [
+      "474af0c7af761a79b26e79cd62932d62f042ae5eeae1035081f88023eb5478c1",
+      "fdfd460495a0fe4bc5e40e64ac7cc37db8e08988ab4bd5150d84c0e3f9798762"
+     ],
+     "blockOrSlot": "467394685",
+     "asOf": "2026-11-09T17:04:20.494Z",
+     "layer": "Control"
+    },
+    {
+     "key": "f19a426d5d784acaacd53d6a8a8a6a6dacdcb7a28647a4af6c14c997f95f0b95",
+     "from": "solana:mainnet-beta:KvauGMspG5k6rtzrqqn7WNn3oZdyKqLKwK2XWQ8FLjd",
+     "to": "solana:mainnet-beta:GeZ7nkkcbJ6VVV1XVFbmFnLCY3F1LPBGk6cufDZvrbGn",
+     "relation": "PROGRAM_DATA",
+     "factIds": [
+      "f19a426d5d784acaacd53d6a8a8a6a6dacdcb7a28647a4af6c14c997f95f0b95"
+     ],
+     "bases": [
+      "decoded"
+     ],
+     "evidenceIds": [
+      "620b12f8dce5f6cfe78730e23ffdc6a58b417b534c9db7b98e28ddd21635aa13"
+     ],
+     "blockOrSlot": "467394685",
+     "asOf": "2026-11-09T17:04:20.494Z",
+     "layer": "Code"
+    },
+    {
+     "key": "907823c8d77c9c5cc46aadc91c1b529769e02f26a17a66c590cc7eb762ea681a",
+     "from": "solana:mainnet-beta:KvauGMspG5k6rtzrqqn7WNn3oZdyKqLKwK2XWQ8FLjd",
+     "to": "solana:mainnet-beta:GzFgdRJXmawPhGeBsyRCDLx4jAKPsvbUqoqitzppkzkW",
+     "relation": "UPGRADE_AUTHORITY",
+     "factIds": [
+      "907823c8d77c9c5cc46aadc91c1b529769e02f26a17a66c590cc7eb762ea681a"
+     ],
+     "bases": [
+      "decoded"
+     ],
+     "evidenceIds": [
+      "620b12f8dce5f6cfe78730e23ffdc6a58b417b534c9db7b98e28ddd21635aa13",
+      "e5170ab01755249488c34da697646ae59772b60379ac0f370fc3d01b63ba483f"
+     ],
+     "blockOrSlot": "467394685",
+     "asOf": "2026-11-09T17:04:20.494Z",
+     "layer": "Control"
+    }
+   ],
+   "truncated": false,
+   "total": 56
+  },
+  "explorer-folded": {
+   "resultId": "explorer-folded",
+   "shape": "graph",
+   "coverage": "mapped",
+   "coverageNotes": [],
+   "nodes": [
+    {
+     "id": "solana:mainnet-beta:24LjDBukaUSHgPowcF2wY1XscnhChcBUDETN2UhBZMMT",
+     "label": "solana:mainnet-beta:24LjDBukaUSHgPowcF2wY1XscnhChcBUDETN2UhBZMMT",
+     "isolated": false
+    },
+    {
+     "id": "solana:mainnet-beta:2EXNMnkHE5TY1wTwA9UKi3wpTvoXpFsDPeGC5GVttu5F",
+     "label": "solana:mainnet-beta:2EXNMnkHE5TY1wTwA9UKi3wpTvoXpFsDPeGC5GVttu5F",
+     "isolated": false,
+     "kind": "Reserve",
+     "kindBasis": "decoded",
+     "name": "fBTC"
+    },
+    {
+     "id": "solana:mainnet-beta:2UFz8kwraHybFyKhGQRwAsE5NtNpAhWs2X5grGoS7hnQ",
+     "label": "solana:mainnet-beta:2UFz8kwraHybFyKhGQRwAsE5NtNpAhWs2X5grGoS7hnQ",
+     "isolated": false,
+     "kind": "Reserve",
+     "kindBasis": "decoded",
+     "name": "picoSOL"
+    },
+    {
+     "id": "solana:mainnet-beta:2gFjdQLFaFqTKMv4nFGMAP4bX2F5KAsyiJn8yZQHPKSE",
+     "label": "solana:mainnet-beta:2gFjdQLFaFqTKMv4nFGMAP4bX2F5KAsyiJn8yZQHPKSE",
+     "isolated": false,
+     "kind": "Reserve",
+     "kindBasis": "decoded",
+     "name": "stkeSOL"
+    },
+    {
+     "id": "solana:mainnet-beta:2gc9Dm1eB6UgVYFBUN9bWks6Kes9PbWSaPaa9DqyvEiN",
+     "label": "solana:mainnet-beta:2gc9Dm1eB6UgVYFBUN9bWks6Kes9PbWSaPaa9DqyvEiN",
+     "isolated": false,
+     "kind": "Reserve",
+     "kindBasis": "decoded",
+     "name": "PYUSD"
+    },
+    {
+     "id": "solana:mainnet-beta:37Jk2zkz23vkAYBT66HM2gaqJuNg2nYLsCreQAVt5MWK",
+     "label": "solana:mainnet-beta:37Jk2zkz23vkAYBT66HM2gaqJuNg2nYLsCreQAVt5MWK",
+     "isolated": false,
+     "kind": "Reserve",
+     "kindBasis": "decoded",
+     "name": "cbBTC"
+    },
+    {
+     "id": "solana:mainnet-beta:4AFAGAm5G8fkcKy7QerL88E7BiSE22ZRbvJzvaKjayor",
+     "label": "solana:mainnet-beta:4AFAGAm5G8fkcKy7QerL88E7BiSE22ZRbvJzvaKjayor",
+     "isolated": false,
+     "kind": "Reserve",
+     "kindBasis": "decoded",
+     "name": "JUP"
+    },
+    {
+     "id": "solana:mainnet-beta:4Hyrqb9Mq7y1wkq4YoqHkPdPx3VQyFY3mxMj67naC1Cb",
+     "label": "solana:mainnet-beta:4Hyrqb9Mq7y1wkq4YoqHkPdPx3VQyFY3mxMj67naC1Cb",
+     "isolated": false,
+     "kind": "Reserve",
+     "kindBasis": "decoded",
+     "name": "xBTC"
+    },
+    {
+     "id": "solana:mainnet-beta:4VtJ1yCCyU2YGgPTZGHZRwzwaZ3hmzgqMtRQo8RqMa57",
+     "label": "solana:mainnet-beta:4VtJ1yCCyU2YGgPTZGHZRwzwaZ3hmzgqMtRQo8RqMa57",
+     "isolated": false
+    },
+    {
+     "id": "solana:mainnet-beta:4eUxuaHSHNTftaui3XVW32d2Ph2hKBLpuMP25gQ5MqF4",
+     "label": "solana:mainnet-beta:4eUxuaHSHNTftaui3XVW32d2Ph2hKBLpuMP25gQ5MqF4",
+     "isolated": false,
+     "kind": "Reserve",
+     "kindBasis": "decoded",
+     "name": "wstETH"
+    },
+    {
+     "id": "solana:mainnet-beta:57U9pEC8NsWvHgWywd2xHTRkGQzWWYsWivxYRhtxZrLB",
+     "label": "solana:mainnet-beta:57U9pEC8NsWvHgWywd2xHTRkGQzWWYsWivxYRhtxZrLB",
+     "isolated": false,
+     "kind": "Reserve",
+     "kindBasis": "decoded",
+     "name": "kSOLBSOLOrca"
+    },
+    {
+     "id": "solana:mainnet-beta:5YpGenXaAowj4HS33AvirVb8P4tgue7S7YaY6MyYZ7LD",
+     "label": "solana:mainnet-beta:5YpGenXaAowj4HS33AvirVb8P4tgue7S7YaY6MyYZ7LD",
+     "isolated": false,
+     "kind": "Reserve",
+     "kindBasis": "decoded",
+     "name": "CHAI"
+    },
+    {
+     "id": "solana:mainnet-beta:5xXxt9uVHrcT5b1KveAT5ZWgk2f74aDjnLEDDEeAxgpN",
+     "label": "solana:mainnet-beta:5xXxt9uVHrcT5b1KveAT5ZWgk2f74aDjnLEDDEeAxgpN",
+     "isolated": false,
+     "kind": "Reserve",
+     "kindBasis": "decoded",
+     "name": "USDC"
+    },
+    {
+     "id": "solana:mainnet-beta:64AZMUHLB6NYvQSt41JTer4v8NAFDCz5sUPb7dYpCxa",
+     "label": "solana:mainnet-beta:64AZMUHLB6NYvQSt41JTer4v8NAFDCz5sUPb7dYpCxa",
+     "isolated": false,
+     "kind": "Reserve",
+     "kindBasis": "decoded",
+     "name": "adraSOL"
+    },
+    {
+     "id": "solana:mainnet-beta:6U9CnJYCQwHUEmf4Pq4oGVKHVvD29wZvtPbFNjYmgjaF",
+     "label": "solana:mainnet-beta:6U9CnJYCQwHUEmf4Pq4oGVKHVvD29wZvtPbFNjYmgjaF",
+     "isolated": false,
+     "kind": "Reserve",
+     "kindBasis": "decoded",
+     "name": "bbSOL"
+    },
+    {
+     "id": "solana:mainnet-beta:6pazpY4icuXZ5sb2jMWAqdG4TtbUoY1SJ45237Fjht9h",
+     "label": "solana:mainnet-beta:6pazpY4icuXZ5sb2jMWAqdG4TtbUoY1SJ45237Fjht9h",
+     "isolated": false,
+     "kind": "Reserve",
+     "kindBasis": "decoded",
+     "name": "USDC"
+    },
+    {
+     "id": "solana:mainnet-beta:6vKCRnEzrxRS1NybsMVEyNE3ztFAxCz6WusiiGft1PbA",
+     "label": "solana:mainnet-beta:6vKCRnEzrxRS1NybsMVEyNE3ztFAxCz6WusiiGft1PbA",
+     "isolated": false,
+     "kind": "Reserve",
+     "kindBasis": "decoded",
+     "name": "USD1"
+    },
+    {
+     "id": "solana:mainnet-beta:75WrtSz7rLCdBvAQhtHi8M2jC8HnpT8iUxcYkdeawr37",
+     "label": "solana:mainnet-beta:75WrtSz7rLCdBvAQhtHi8M2jC8HnpT8iUxcYkdeawr37",
+     "isolated": false,
+     "kind": "Reserve",
+     "kindBasis": "decoded",
+     "name": "kSOLJITOSOLRaydium"
+    },
+    {
+     "id": "solana:mainnet-beta:7u3HeHxYDLhnCoErrtycNokbQYbWGzLs6JSDqGAv5PfF",
+     "label": "solana:mainnet-beta:7u3HeHxYDLhnCoErrtycNokbQYbWGzLs6JSDqGAv5PfF",
+     "isolated": false,
+     "kind": "Market",
+     "kindBasis": "decoded"
+    },
+    {
+     "id": "solana:mainnet-beta:8gVpWfWDCtCcUX1meSphqqpyWBceLCcrs9yEXwKKjQrL",
+     "label": "solana:mainnet-beta:8gVpWfWDCtCcUX1meSphqqpyWBceLCcrs9yEXwKKjQrL",
+     "isolated": false,
+     "kind": "Reserve",
+     "kindBasis": "decoded",
+     "name": "nxSOL"
+    },
+    {
+     "id": "solana:mainnet-beta:8qnVHjKMcWAdkFnKvmRigj9J7UAVj2ooJ83GfeNn2DpR",
+     "label": "solana:mainnet-beta:8qnVHjKMcWAdkFnKvmRigj9J7UAVj2ooJ83GfeNn2DpR",
+     "isolated": false,
+     "kind": "Reserve",
+     "kindBasis": "decoded",
+     "name": "fwdSOL"
+    },
+    {
+     "id": "solana:mainnet-beta:9JB9EMxEp9gZy3i1jqD2yvNYWKRZCP6f3drdQw853swH",
+     "label": "solana:mainnet-beta:9JB9EMxEp9gZy3i1jqD2yvNYWKRZCP6f3drdQw853swH",
+     "isolated": false,
+     "kind": "Reserve",
+     "kindBasis": "decoded",
+     "name": "STSOL"
+    },
+    {
+     "id": "solana:mainnet-beta:9Ukd2MSw5RvVFaN8jLhWxjHLEGiF1F6Hf7v3Zq5hZsKB",
+     "label": "solana:mainnet-beta:9Ukd2MSw5RvVFaN8jLhWxjHLEGiF1F6Hf7v3Zq5hZsKB",
+     "isolated": false,
+     "kind": "Reserve",
+     "kindBasis": "decoded",
+     "name": "JTO"
+    },
+    {
+     "id": "solana:mainnet-beta:A2J2CEwmwa9aTKbEfNoik6YTyNep9GtvNjU65okWYhwn",
+     "label": "solana:mainnet-beta:A2J2CEwmwa9aTKbEfNoik6YTyNep9GtvNjU65okWYhwn",
+     "isolated": false,
+     "kind": "Reserve",
+     "kindBasis": "decoded",
+     "name": "strongSOL"
+    },
+    {
+     "id": "solana:mainnet-beta:AWnKJ9dsiHcoDCThxE5E93ikDTAXkApoNwrKM2tp9KFJ",
+     "label": "solana:mainnet-beta:AWnKJ9dsiHcoDCThxE5E93ikDTAXkApoNwrKM2tp9KFJ",
+     "isolated": false,
+     "kind": "Reserve",
+     "kindBasis": "decoded",
+     "name": "USDC"
+    },
+    {
+     "id": "solana:mainnet-beta:ApQkX32ULJUzszZDe986aobLDLMNDoGQK8tRm6oD6SsA",
+     "label": "solana:mainnet-beta:ApQkX32ULJUzszZDe986aobLDLMNDoGQK8tRm6oD6SsA",
+     "isolated": false,
+     "kind": "Reserve",
+     "kindBasis": "decoded",
+     "name": "CASH"
+    },
+    {
+     "id": "solana:mainnet-beta:AxuWrPrJfwrUTvCWRxpkSQct6q8k1YSJzxhyYw2AAmv2",
+     "label": "solana:mainnet-beta:AxuWrPrJfwrUTvCWRxpkSQct6q8k1YSJzxhyYw2AAmv2",
+     "isolated": false,
+     "kind": "Reserve",
+     "kindBasis": "decoded",
+     "name": "kUXDUSDCOrca"
+    },
+    {
+     "id": "solana:mainnet-beta:B5uYvxUcwX5fCB4msGU4DaHh8k6fsSkKHNboy94F9vbt",
+     "label": "solana:mainnet-beta:B5uYvxUcwX5fCB4msGU4DaHh8k6fsSkKHNboy94F9vbt",
+     "isolated": false,
+     "kind": "Reserve",
+     "kindBasis": "decoded",
+     "name": "hubSOL"
+    },
+    {
+     "id": "solana:mainnet-beta:BHUi32TrEsfN2U821G4FprKrR4hTeK4LCWtA3BFetuqA",
+     "label": "solana:mainnet-beta:BHUi32TrEsfN2U821G4FprKrR4hTeK4LCWtA3BFetuqA",
+     "isolated": false,
+     "kind": "Reserve",
+     "kindBasis": "decoded",
+     "name": "USDS"
+    },
+    {
+     "id": "solana:mainnet-beta:BN73b8HCQUsqdrBTqFuzqk9o1SH7fUTEcXxYmv43agJH",
+     "label": "solana:mainnet-beta:BN73b8HCQUsqdrBTqFuzqk9o1SH7fUTEcXxYmv43agJH",
+     "isolated": false
+    },
+    {
+     "id": "solana:mainnet-beta:Bpc4kAh29J3YDQUMJJdGdr1zBAhTQjC48R1B8YTWudsi",
+     "label": "solana:mainnet-beta:Bpc4kAh29J3YDQUMJJdGdr1zBAhTQjC48R1B8YTWudsi",
+     "isolated": false,
+     "kind": "Reserve",
+     "kindBasis": "decoded",
+     "name": "FDUSD"
+    },
+    {
+     "id": "solana:mainnet-beta:BvafE5Sm6rLrBbVRtJ2FkCzfNJQ2TjcL8bvPZULUDYrt",
+     "label": "solana:mainnet-beta:BvafE5Sm6rLrBbVRtJ2FkCzfNJQ2TjcL8bvPZULUDYrt",
+     "isolated": false,
+     "kind": "Reserve",
+     "kindBasis": "decoded",
+     "name": "cgntSOL"
+    },
+    {
+     "id": "solana:mainnet-beta:CExamod1Ai3d1N8Vh7sBjt5xbZzb2VmGMAFocf7fxCzm",
+     "label": "solana:mainnet-beta:CExamod1Ai3d1N8Vh7sBjt5xbZzb2VmGMAFocf7fxCzm",
+     "isolated": false,
+     "kind": "Reserve",
+     "kindBasis": "decoded",
+     "name": "hSOL"
+    },
+    {
+     "id": "solana:mainnet-beta:CHBNUPdjeo2N5QkZY2uAqv7TW5EbCTMsfvaskCBuxbom",
+     "label": "solana:mainnet-beta:CHBNUPdjeo2N5QkZY2uAqv7TW5EbCTMsfvaskCBuxbom",
+     "isolated": false,
+     "kind": "Reserve",
+     "kindBasis": "decoded",
+     "name": "vSOL"
+    },
+    {
+     "id": "solana:mainnet-beta:CkgQnPbuHHwSv2mNdAKH79TKSqC6jsyttK9yh4MPH6z3",
+     "label": "solana:mainnet-beta:CkgQnPbuHHwSv2mNdAKH79TKSqC6jsyttK9yh4MPH6z3",
+     "isolated": false,
+     "kind": "Reserve",
+     "kindBasis": "decoded",
+     "name": "dfdvSOL"
+    },
+    {
+     "id": "solana:mainnet-beta:D6q6wuQSrifJKZYpR1M8R4YawnLDtDsMmWM1NbBmgJ59",
+     "label": "solana:mainnet-beta:D6q6wuQSrifJKZYpR1M8R4YawnLDtDsMmWM1NbBmgJ59",
+     "isolated": false,
+     "kind": "Reserve",
+     "kindBasis": "decoded",
+     "name": "USDC"
+    },
+    {
+     "id": "solana:mainnet-beta:DGQZWCY17gGtBUgdaFs1VreJWsodkjFxndPsskwFKGpp",
+     "label": "solana:mainnet-beta:DGQZWCY17gGtBUgdaFs1VreJWsodkjFxndPsskwFKGpp",
+     "isolated": false,
+     "kind": "Reserve",
+     "kindBasis": "decoded",
+     "name": "JupSOL"
+    },
+    {
+     "id": "solana:mainnet-beta:DaGyAQJrdkLCzYZiUWg49NV8vabDnhR7ETwLu5eQgL56",
+     "label": "solana:mainnet-beta:DaGyAQJrdkLCzYZiUWg49NV8vabDnhR7ETwLu5eQgL56",
+     "isolated": false,
+     "kind": "Reserve",
+     "kindBasis": "decoded",
+     "name": "USDH"
+    },
+    {
+     "id": "solana:mainnet-beta:EAA3VVsxUuQB1Tm5x7TJkq9ATtiX5Qwq8ok7gXwim7oo",
+     "label": "solana:mainnet-beta:EAA3VVsxUuQB1Tm5x7TJkq9ATtiX5Qwq8ok7gXwim7oo",
+     "isolated": false,
+     "kind": "Reserve",
+     "kindBasis": "decoded",
+     "name": "JLP"
+    },
+    {
+     "id": "solana:mainnet-beta:EGPE45iPkme8G8C1xFDNZoZeHdP3aRYtaAfAQuuwrcGZ",
+     "label": "solana:mainnet-beta:EGPE45iPkme8G8C1xFDNZoZeHdP3aRYtaAfAQuuwrcGZ",
+     "isolated": false,
+     "kind": "Reserve",
+     "kindBasis": "decoded",
+     "name": "EURC"
+    },
+    {
+     "id": "solana:mainnet-beta:ESCkPWKHmgNE7Msf77n9yzqJd5kQVWWGy3o5Mgxhvavp",
+     "label": "solana:mainnet-beta:ESCkPWKHmgNE7Msf77n9yzqJd5kQVWWGy3o5Mgxhvavp",
+     "isolated": false,
+     "kind": "Reserve",
+     "kindBasis": "decoded",
+     "name": "USDG"
+    },
+    {
+     "id": "solana:mainnet-beta:EVbyPKrHG6WBfm4dLxLMJpUDY43cCAcHSpV3KYjKsktW",
+     "label": "solana:mainnet-beta:EVbyPKrHG6WBfm4dLxLMJpUDY43cCAcHSpV3KYjKsktW",
+     "isolated": false,
+     "kind": "Reserve",
+     "kindBasis": "decoded",
+     "name": "JITOSOL"
+    },
+    {
+     "id": "solana:mainnet-beta:FBSyPnxtHKLBZ4UeeUyAnbtFuAmTHLtso9YtsqRDRWpM",
+     "label": "solana:mainnet-beta:FBSyPnxtHKLBZ4UeeUyAnbtFuAmTHLtso9YtsqRDRWpM",
+     "isolated": false,
+     "kind": "Reserve",
+     "kindBasis": "decoded",
+     "name": "MSOL"
+    },
+    {
+     "id": "solana:mainnet-beta:FMbsZf4HuQ1a8a7VdmALT3S8WRfu3EocphRKPXxRsfGd",
+     "label": "solana:mainnet-beta:FMbsZf4HuQ1a8a7VdmALT3S8WRfu3EocphRKPXxRsfGd",
+     "isolated": false,
+     "kind": "Reserve",
+     "kindBasis": "decoded",
+     "name": "cdcSOL"
+    },
+    {
+     "id": "solana:mainnet-beta:FPAwg5jadDs8AvUtvtAbit2RCZdkZES6yY5X6nCSuEw9",
+     "label": "solana:mainnet-beta:FPAwg5jadDs8AvUtvtAbit2RCZdkZES6yY5X6nCSuEw9",
+     "isolated": false,
+     "kind": "Reserve",
+     "kindBasis": "decoded",
+     "name": "kSOLMSOLRaydium"
+    },
+    {
+     "id": "solana:mainnet-beta:Fqjbo3L4NAyzPcy6swv1XXLm1c7tUTKWMDkjCo9mfSDq",
+     "label": "solana:mainnet-beta:Fqjbo3L4NAyzPcy6swv1XXLm1c7tUTKWMDkjCo9mfSDq",
+     "isolated": false,
+     "kind": "Reserve",
+     "kindBasis": "decoded",
+     "name": "bnSOL"
+    },
+    {
+     "id": "solana:mainnet-beta:G31zKdH2SkDZPhmoQraep5xbTSPyk3VZxAeBdC3nmq5J",
+     "label": "solana:mainnet-beta:G31zKdH2SkDZPhmoQraep5xbTSPyk3VZxAeBdC3nmq5J",
+     "isolated": false,
+     "kind": "Reserve",
+     "kindBasis": "decoded",
+     "name": "STEP"
+    },
+    {
+     "id": "solana:mainnet-beta:GFLLgX9V6PR1PzhgsGzeyUddpt2ws2PBRAxRwoLrboGp",
+     "label": "solana:mainnet-beta:GFLLgX9V6PR1PzhgsGzeyUddpt2ws2PBRAxRwoLrboGp",
+     "isolated": false,
+     "kind": "Reserve",
+     "kindBasis": "decoded",
+     "name": "kSOLJITOSOLOrca"
+    },
+    {
+     "id": "solana:mainnet-beta:Ggn9EUzL5QQPM8JPsyu1MU1uD3rGJty7iXddLQnmxPyS",
+     "label": "solana:mainnet-beta:Ggn9EUzL5QQPM8JPsyu1MU1uD3rGJty7iXddLQnmxPyS",
+     "isolated": false,
+     "kind": "Reserve",
+     "kindBasis": "decoded",
+     "name": "xSTEP"
+    },
+    {
+     "id": "solana:mainnet-beta:GhGPbkWmPjSkbkgZbhNGBTxzwQKjqDpZwNfaf2gQKgdG",
+     "label": "solana:mainnet-beta:GhGPbkWmPjSkbkgZbhNGBTxzwQKjqDpZwNfaf2gQKgdG",
+     "isolated": false,
+     "kind": "Reserve",
+     "kindBasis": "decoded",
+     "name": "UXD"
+    },
+    {
+     "id": "solana:mainnet-beta:H3t6qZ1JkguCNTi9uzVKqQ7dvt2cum4XiXWom6Gn5e5S",
+     "label": "solana:mainnet-beta:H3t6qZ1JkguCNTi9uzVKqQ7dvt2cum4XiXWom6Gn5e5S",
+     "isolated": false,
+     "kind": "Reserve",
+     "kindBasis": "decoded",
+     "name": "USDT"
+    },
+    {
+     "id": "solana:mainnet-beta:H9vmCVd77N1HZa36eBn3UnftYmg4vQzPfm1RxabHAMER",
+     "label": "solana:mainnet-beta:H9vmCVd77N1HZa36eBn3UnftYmg4vQzPfm1RxabHAMER",
+     "isolated": false,
+     "kind": "Reserve",
+     "kindBasis": "decoded",
+     "name": "bSOL"
+    },
+    {
+     "id": "solana:mainnet-beta:HD93Fq3gmVh3J7euJJ5MBw8Ph3ebeMFS699JQePN4XgN",
+     "label": "solana:mainnet-beta:HD93Fq3gmVh3J7euJJ5MBw8Ph3ebeMFS699JQePN4XgN",
+     "isolated": false,
+     "kind": "Reserve",
+     "kindBasis": "decoded",
+     "name": "jSOL"
+    },
+    {
+     "id": "solana:mainnet-beta:HMCXsf1jFUDbvGGhvUzCzwkKbmUhxhxz7gYZwXpTuReT",
+     "label": "solana:mainnet-beta:HMCXsf1jFUDbvGGhvUzCzwkKbmUhxhxz7gYZwXpTuReT",
+     "isolated": false,
+     "kind": "Reserve",
+     "kindBasis": "decoded",
+     "name": "laineSOL"
+    },
+    {
+     "id": "solana:mainnet-beta:HV9KsS5mB4b9CFhDJVKdfxWBAomYfUk5PeUsdgMQsUrB",
+     "label": "solana:mainnet-beta:HV9KsS5mB4b9CFhDJVKdfxWBAomYfUk5PeUsdgMQsUrB",
+     "isolated": false,
+     "kind": "Reserve",
+     "kindBasis": "decoded",
+     "name": "pSOL"
+    },
+    {
+     "id": "solana:mainnet-beta:HYnVhjsvU1vBKTPsXs1dWe6cJeuU8E4gjoYpmwe81KzN",
+     "label": "solana:mainnet-beta:HYnVhjsvU1vBKTPsXs1dWe6cJeuU8E4gjoYpmwe81KzN",
+     "isolated": false,
+     "kind": "Reserve",
+     "kindBasis": "decoded",
+     "name": "WBTC"
+    },
+    {
+     "id": "solana:mainnet-beta:Hcz1o77tF9TpdEHcvrx29tz7SBKoQEwJA1wuJqGZYnTw",
+     "label": "solana:mainnet-beta:Hcz1o77tF9TpdEHcvrx29tz7SBKoQEwJA1wuJqGZYnTw",
+     "isolated": false,
+     "kind": "Reserve",
+     "kindBasis": "decoded",
+     "name": "tBTC"
+    },
+    {
+     "id": "solana:mainnet-beta:Ht9NoB1udjpRqws1sCw1j2dL7MeTDHYCDdDFkbc1Arst",
+     "label": "solana:mainnet-beta:Ht9NoB1udjpRqws1sCw1j2dL7MeTDHYCDdDFkbc1Arst",
+     "isolated": false,
+     "kind": "Reserve",
+     "kindBasis": "decoded",
+     "name": "bonkSOL"
+    },
+    {
+     "id": "solana:mainnet-beta:J5oj3VKWQNKRZx3heWZx7JZC59AEDQ9UQwqqiy63nCuf",
+     "label": "solana:mainnet-beta:J5oj3VKWQNKRZx3heWZx7JZC59AEDQ9UQwqqiy63nCuf",
+     "isolated": false,
+     "kind": "Reserve",
+     "kindBasis": "decoded",
+     "name": "lanternSOL"
+    },
+    {
+     "id": "solana:mainnet-beta:KLend2g3cP87fffoy8q1mQqGKjrxjC8boSyAYavgmjD",
+     "label": "solana:mainnet-beta:KLend2g3cP87fffoy8q1mQqGKjrxjC8boSyAYavgmjD",
+     "isolated": false,
+     "kind": "Program",
+     "kindBasis": "decoded"
+    },
+    {
+     "id": "solana:mainnet-beta:StGKGcLQoTsWzQ1tFY2bWqrdiuBhqdFE4niiAutQxQB",
+     "label": "solana:mainnet-beta:StGKGcLQoTsWzQ1tFY2bWqrdiuBhqdFE4niiAutQxQB",
+     "isolated": false,
+     "kind": "Reserve",
+     "kindBasis": "decoded",
+     "name": "dSOL"
+    },
+    {
+     "id": "solana:mainnet-beta:d4A2prbA2whesmvHaL88BH6Ewn5N4bTSU2Ze8P6Bc4Q",
+     "label": "solana:mainnet-beta:d4A2prbA2whesmvHaL88BH6Ewn5N4bTSU2Ze8P6Bc4Q",
+     "isolated": false,
+     "kind": "Reserve",
+     "kindBasis": "decoded",
+     "name": "SOL"
+    },
+    {
+     "id": "solana:mainnet-beta:febGYTnFX4GbSGoFHFeJXUHgNaK53fB23uDins9Jp1E",
+     "label": "solana:mainnet-beta:febGYTnFX4GbSGoFHFeJXUHgNaK53fB23uDins9Jp1E",
+     "isolated": false,
+     "kind": "Reserve",
+     "kindBasis": "decoded",
+     "name": "ETH"
+    }
+   ],
+   "edges": [
+    {
+     "key": "ddc7c6f2ec26c80800151f7c6ea9e3a686a2c345612cf5fbef3fc5195c24191b",
+     "from": "solana:mainnet-beta:2EXNMnkHE5TY1wTwA9UKi3wpTvoXpFsDPeGC5GVttu5F",
+     "to": "solana:mainnet-beta:7u3HeHxYDLhnCoErrtycNokbQYbWGzLs6JSDqGAv5PfF",
+     "relation": "IN_MARKET",
+     "factIds": [
+      "ddc7c6f2ec26c80800151f7c6ea9e3a686a2c345612cf5fbef3fc5195c24191b"
+     ],
+     "bases": [
+      "decoded"
+     ],
+     "evidenceIds": [
+      "b70f4dc7f595c31ecc6574f65cd3058a20309a79831260a00c9e77b01ca5f5f4"
+     ],
+     "blockOrSlot": "468246959",
+     "asOf": "2026-11-11T19:51:02.928Z",
+     "layer": "Structure"
+    },
+    {
+     "key": "1da8d88e9fe78eb3536a317697e44dd508513e71961d046c4cf8e24e9a5d5d0a",
+     "from": "solana:mainnet-beta:2UFz8kwraHybFyKhGQRwAsE5NtNpAhWs2X5grGoS7hnQ",
+     "to": "solana:mainnet-beta:7u3HeHxYDLhnCoErrtycNokbQYbWGzLs6JSDqGAv5PfF",
+     "relation": "IN_MARKET",
+     "factIds": [
+      "1da8d88e9fe78eb3536a317697e44dd508513e71961d046c4cf8e24e9a5d5d0a"
+     ],
+     "bases": [
+      "decoded"
+     ],
+     "evidenceIds": [
+      "5d8f659ff712413541c8cf0a2a7648298f7c01960b4e47e0f23833280cbed7b2"
+     ],
+     "blockOrSlot": "468246959",
+     "asOf": "2026-11-11T19:51:02.928Z",
+     "layer": "Structure"
+    },
+    {
+     "key": "5ce22db6c0ed66552339dbdecd39518c960596fe33b0fe210c7d859dfccf1edf",
+     "from": "solana:mainnet-beta:2gFjdQLFaFqTKMv4nFGMAP4bX2F5KAsyiJn8yZQHPKSE",
+     "to": "solana:mainnet-beta:7u3HeHxYDLhnCoErrtycNokbQYbWGzLs6JSDqGAv5PfF",
+     "relation": "IN_MARKET",
+     "factIds": [
+      "5ce22db6c0ed66552339dbdecd39518c960596fe33b0fe210c7d859dfccf1edf"
+     ],
+     "bases": [
+      "decoded"
+     ],
+     "evidenceIds": [
+      "8fe4d9370636207990403a87bca9f82a210d83c72a249458d71ce272395256c4"
+     ],
+     "blockOrSlot": "468246959",
+     "asOf": "2026-11-11T19:51:02.928Z",
+     "layer": "Structure"
+    },
+    {
+     "key": "991c12c0a61bacd4623a4531d2cc4b9b5e51520d2f7d54df5402139f374c39a4",
+     "from": "solana:mainnet-beta:2gc9Dm1eB6UgVYFBUN9bWks6Kes9PbWSaPaa9DqyvEiN",
+     "to": "solana:mainnet-beta:7u3HeHxYDLhnCoErrtycNokbQYbWGzLs6JSDqGAv5PfF",
+     "relation": "IN_MARKET",
+     "factIds": [
+      "991c12c0a61bacd4623a4531d2cc4b9b5e51520d2f7d54df5402139f374c39a4"
+     ],
+     "bases": [
+      "decoded"
+     ],
+     "evidenceIds": [
+      "2f7f357b446d42a3aa500daa309a25095a4e06582ca28b713495c59da3a2a952"
+     ],
+     "blockOrSlot": "468246959",
+     "asOf": "2026-11-11T19:51:02.928Z",
+     "layer": "Structure"
+    },
+    {
+     "key": "8b152316b23ce3e5bf26823c9f8e9708dd1d7b6812637ee3f5bbca883e346387",
+     "from": "solana:mainnet-beta:37Jk2zkz23vkAYBT66HM2gaqJuNg2nYLsCreQAVt5MWK",
+     "to": "solana:mainnet-beta:7u3HeHxYDLhnCoErrtycNokbQYbWGzLs6JSDqGAv5PfF",
+     "relation": "IN_MARKET",
+     "factIds": [
+      "8b152316b23ce3e5bf26823c9f8e9708dd1d7b6812637ee3f5bbca883e346387"
+     ],
+     "bases": [
+      "decoded"
+     ],
+     "evidenceIds": [
+      "0a6f3d8505f9df38009436a10a0bc43394edd78f204035959c8fd44f3fe85217"
+     ],
+     "blockOrSlot": "468246959",
+     "asOf": "2026-11-11T19:51:02.928Z",
+     "layer": "Structure"
+    },
+    {
+     "key": "2411ddce9bf972087a7e7a75dfd333c8fae43881ab536aed3e2b6d314cb3c3bf",
+     "from": "solana:mainnet-beta:4AFAGAm5G8fkcKy7QerL88E7BiSE22ZRbvJzvaKjayor",
+     "to": "solana:mainnet-beta:7u3HeHxYDLhnCoErrtycNokbQYbWGzLs6JSDqGAv5PfF",
+     "relation": "IN_MARKET",
+     "factIds": [
+      "2411ddce9bf972087a7e7a75dfd333c8fae43881ab536aed3e2b6d314cb3c3bf"
+     ],
+     "bases": [
+      "decoded"
+     ],
+     "evidenceIds": [
+      "4b851e1bba712aafc01c9e3673f1c6b7db4e6a43d15a7b41caae55ec6170f840"
+     ],
+     "blockOrSlot": "468246959",
+     "asOf": "2026-11-11T19:51:02.928Z",
+     "layer": "Structure"
+    },
+    {
+     "key": "a13b52ed79c488ac33745770813a613383929fc91d6c1d00a3297eeb547f441d",
+     "from": "solana:mainnet-beta:4Hyrqb9Mq7y1wkq4YoqHkPdPx3VQyFY3mxMj67naC1Cb",
+     "to": "solana:mainnet-beta:7u3HeHxYDLhnCoErrtycNokbQYbWGzLs6JSDqGAv5PfF",
+     "relation": "IN_MARKET",
+     "factIds": [
+      "a13b52ed79c488ac33745770813a613383929fc91d6c1d00a3297eeb547f441d"
+     ],
+     "bases": [
+      "decoded"
+     ],
+     "evidenceIds": [
+      "be4b87c59358d7b9b0801254bd1a9a941cd1f3d0f7a9354809b8f4ea0f7f77fa"
+     ],
+     "blockOrSlot": "468246959",
+     "asOf": "2026-11-11T19:51:02.928Z",
+     "layer": "Structure"
+    },
+    {
+     "key": "dab71ed272bd9cacf7aa0b8166e33a309ae3efbdcbba99dfe3e5fe0e7f60ddcf",
+     "from": "solana:mainnet-beta:4eUxuaHSHNTftaui3XVW32d2Ph2hKBLpuMP25gQ5MqF4",
+     "to": "solana:mainnet-beta:7u3HeHxYDLhnCoErrtycNokbQYbWGzLs6JSDqGAv5PfF",
+     "relation": "IN_MARKET",
+     "factIds": [
+      "dab71ed272bd9cacf7aa0b8166e33a309ae3efbdcbba99dfe3e5fe0e7f60ddcf"
+     ],
+     "bases": [
+      "decoded"
+     ],
+     "evidenceIds": [
+      "78a7b9824ff99f920822510baccc1943d529163df20b5ffac08199f9a9a2fbf8"
+     ],
+     "blockOrSlot": "468246959",
+     "asOf": "2026-11-11T19:51:02.928Z",
+     "layer": "Structure"
+    },
+    {
+     "key": "2cf599c16b9200b6d982ec3a6902c89ade7d9bbfb129a6af3e2f8ab9316da00e",
+     "from": "solana:mainnet-beta:57U9pEC8NsWvHgWywd2xHTRkGQzWWYsWivxYRhtxZrLB",
+     "to": "solana:mainnet-beta:7u3HeHxYDLhnCoErrtycNokbQYbWGzLs6JSDqGAv5PfF",
+     "relation": "IN_MARKET",
+     "factIds": [
+      "2cf599c16b9200b6d982ec3a6902c89ade7d9bbfb129a6af3e2f8ab9316da00e"
+     ],
+     "bases": [
+      "decoded"
+     ],
+     "evidenceIds": [
+      "3e52a8fbfa53ad9c7adc8d758c49003075c08a355b6b65507fc8f08205bc5566"
+     ],
+     "blockOrSlot": "468246959",
+     "asOf": "2026-11-11T19:51:02.928Z",
+     "layer": "Structure"
+    },
+    {
+     "key": "7fedcc2d516e5cae02b86b1ad90fea76c5ed5b5aca346b5d11fd2702004dd1f1",
+     "from": "solana:mainnet-beta:5YpGenXaAowj4HS33AvirVb8P4tgue7S7YaY6MyYZ7LD",
+     "to": "solana:mainnet-beta:7u3HeHxYDLhnCoErrtycNokbQYbWGzLs6JSDqGAv5PfF",
+     "relation": "IN_MARKET",
+     "factIds": [
+      "7fedcc2d516e5cae02b86b1ad90fea76c5ed5b5aca346b5d11fd2702004dd1f1"
+     ],
+     "bases": [
+      "decoded"
+     ],
+     "evidenceIds": [
+      "4b436363b0fd753e56c82bfcdab7a4c88be85def9ca69a35edc7a451b1724031"
+     ],
+     "blockOrSlot": "468246959",
+     "asOf": "2026-11-11T19:51:02.928Z",
+     "layer": "Structure"
+    },
+    {
+     "key": "643e9c6008863ad5640a09c658a411609bdc333a8639f0cf0a188f44d32e7d20",
+     "from": "solana:mainnet-beta:5xXxt9uVHrcT5b1KveAT5ZWgk2f74aDjnLEDDEeAxgpN",
+     "to": "solana:mainnet-beta:7u3HeHxYDLhnCoErrtycNokbQYbWGzLs6JSDqGAv5PfF",
+     "relation": "IN_MARKET",
+     "factIds": [
+      "643e9c6008863ad5640a09c658a411609bdc333a8639f0cf0a188f44d32e7d20"
+     ],
+     "bases": [
+      "decoded"
+     ],
+     "evidenceIds": [
+      "b4c9c217a1ead494e3e0c39531fd52da982bfe2679181704a05f43958cd24ffd"
+     ],
+     "blockOrSlot": "468246959",
+     "asOf": "2026-11-11T19:51:02.928Z",
+     "layer": "Structure"
+    },
+    {
+     "key": "e48f78f5f3d742c83cc57d5853d62733621fb2f41c6f271c2fad47c070f90728",
+     "from": "solana:mainnet-beta:64AZMUHLB6NYvQSt41JTer4v8NAFDCz5sUPb7dYpCxa",
+     "to": "solana:mainnet-beta:7u3HeHxYDLhnCoErrtycNokbQYbWGzLs6JSDqGAv5PfF",
+     "relation": "IN_MARKET",
+     "factIds": [
+      "e48f78f5f3d742c83cc57d5853d62733621fb2f41c6f271c2fad47c070f90728"
+     ],
+     "bases": [
+      "decoded"
+     ],
+     "evidenceIds": [
+      "c2e2b31c712e5bff2397f4571bacad51528afc02010727bd857e6c8f84064ac9"
+     ],
+     "blockOrSlot": "468246959",
+     "asOf": "2026-11-11T19:51:02.928Z",
+     "layer": "Structure"
+    },
+    {
+     "key": "8ed60b72839245263fd3d914bb3d398246c4dee72a8c20ca409a93d9aded590e",
+     "from": "solana:mainnet-beta:6U9CnJYCQwHUEmf4Pq4oGVKHVvD29wZvtPbFNjYmgjaF",
+     "to": "solana:mainnet-beta:7u3HeHxYDLhnCoErrtycNokbQYbWGzLs6JSDqGAv5PfF",
+     "relation": "IN_MARKET",
+     "factIds": [
+      "8ed60b72839245263fd3d914bb3d398246c4dee72a8c20ca409a93d9aded590e"
+     ],
+     "bases": [
+      "decoded"
+     ],
+     "evidenceIds": [
+      "6fb89ef57dac31c9823887bd2c71c0b0e01d67560400550c3fddb4db5a25ef0c"
+     ],
+     "blockOrSlot": "468246959",
+     "asOf": "2026-11-11T19:51:02.928Z",
+     "layer": "Structure"
+    },
+    {
+     "key": "4ab44149a1dee78775029ceff47dc9e2ea3db8e0eec4b92cf2fa7891ab3b1d22",
+     "from": "solana:mainnet-beta:6pazpY4icuXZ5sb2jMWAqdG4TtbUoY1SJ45237Fjht9h",
+     "to": "solana:mainnet-beta:7u3HeHxYDLhnCoErrtycNokbQYbWGzLs6JSDqGAv5PfF",
+     "relation": "IN_MARKET",
+     "factIds": [
+      "4ab44149a1dee78775029ceff47dc9e2ea3db8e0eec4b92cf2fa7891ab3b1d22"
+     ],
+     "bases": [
+      "decoded"
+     ],
+     "evidenceIds": [
+      "822d7a1693150c40cf95b687b0d442f439e4e74fa51c72d19dfb22c4b9566831"
+     ],
+     "blockOrSlot": "468246959",
+     "asOf": "2026-11-11T19:51:02.928Z",
+     "layer": "Structure"
+    },
+    {
+     "key": "e4cf41f14e75d373d3807f7d5f247fa479e4bac938fae24330a523b5201a83e3",
+     "from": "solana:mainnet-beta:6vKCRnEzrxRS1NybsMVEyNE3ztFAxCz6WusiiGft1PbA",
+     "to": "solana:mainnet-beta:7u3HeHxYDLhnCoErrtycNokbQYbWGzLs6JSDqGAv5PfF",
+     "relation": "IN_MARKET",
+     "factIds": [
+      "e4cf41f14e75d373d3807f7d5f247fa479e4bac938fae24330a523b5201a83e3"
+     ],
+     "bases": [
+      "decoded"
+     ],
+     "evidenceIds": [
+      "95afa9f43210b368584cdf9d421966533648423eeca7395ef279de77ffb920df"
+     ],
+     "blockOrSlot": "468246959",
+     "asOf": "2026-11-11T19:51:02.928Z",
+     "layer": "Structure"
+    },
+    {
+     "key": "78e75225e8af82b469c254ffcdcba6ee5eefb98c835aa926070fb6ae432cf79f",
+     "from": "solana:mainnet-beta:75WrtSz7rLCdBvAQhtHi8M2jC8HnpT8iUxcYkdeawr37",
+     "to": "solana:mainnet-beta:7u3HeHxYDLhnCoErrtycNokbQYbWGzLs6JSDqGAv5PfF",
+     "relation": "IN_MARKET",
+     "factIds": [
+      "78e75225e8af82b469c254ffcdcba6ee5eefb98c835aa926070fb6ae432cf79f"
+     ],
+     "bases": [
+      "decoded"
+     ],
+     "evidenceIds": [
+      "c6f7c97d97520b6fa08a843b129b2ecb7a79260029f68d1e308cdfb43623928d"
+     ],
+     "blockOrSlot": "468246959",
+     "asOf": "2026-11-11T19:51:02.928Z",
+     "layer": "Structure"
+    },
+    {
+     "key": "6bcf443b72b0448472e27c7ab2d4f82b83707814d0bdcade1311b4fad8bd5ca2",
+     "from": "solana:mainnet-beta:7u3HeHxYDLhnCoErrtycNokbQYbWGzLs6JSDqGAv5PfF",
+     "to": "solana:mainnet-beta:4VtJ1yCCyU2YGgPTZGHZRwzwaZ3hmzgqMtRQo8RqMa57",
+     "relation": "EMERGENCY_AUTHORITY",
+     "factIds": [
+      "6bcf443b72b0448472e27c7ab2d4f82b83707814d0bdcade1311b4fad8bd5ca2"
+     ],
+     "bases": [
+      "decoded"
+     ],
+     "evidenceIds": [
+      "f7e8ada39a7321770eb9220f6597666bd860cbbcfaed446857fcb01a403466e3"
+     ],
+     "blockOrSlot": "468246959",
+     "asOf": "2026-11-11T19:51:02.928Z",
+     "layer": "Control"
+    },
+    {
+     "key": "41ece428ae7bd304689e6f8b731ed9391928090fa8107f237e7aef1d9c0f420a",
+     "from": "solana:mainnet-beta:7u3HeHxYDLhnCoErrtycNokbQYbWGzLs6JSDqGAv5PfF",
+     "to": "solana:mainnet-beta:24LjDBukaUSHgPowcF2wY1XscnhChcBUDETN2UhBZMMT",
+     "relation": "MARKET_OWNER",
+     "factIds": [
+      "41ece428ae7bd304689e6f8b731ed9391928090fa8107f237e7aef1d9c0f420a"
+     ],
+     "bases": [
+      "decoded"
+     ],
+     "evidenceIds": [
+      "f7e8ada39a7321770eb9220f6597666bd860cbbcfaed446857fcb01a403466e3"
+     ],
+     "blockOrSlot": "468246959",
+     "asOf": "2026-11-11T19:51:02.928Z",
+     "layer": "Control"
+    },
+    {
+     "key": "007c94fc06619b549acae3dd1e9590717c50c12fadf85eea31a9c32e10d45e6b",
+     "from": "solana:mainnet-beta:7u3HeHxYDLhnCoErrtycNokbQYbWGzLs6JSDqGAv5PfF",
+     "to": "solana:mainnet-beta:KLend2g3cP87fffoy8q1mQqGKjrxjC8boSyAYavgmjD",
+     "relation": "OWNER_PROGRAM",
+     "factIds": [
+      "007c94fc06619b549acae3dd1e9590717c50c12fadf85eea31a9c32e10d45e6b"
+     ],
+     "bases": [
+      "decoded"
+     ],
+     "evidenceIds": [
+      "f7e8ada39a7321770eb9220f6597666bd860cbbcfaed446857fcb01a403466e3"
+     ],
+     "blockOrSlot": "468246959",
+     "asOf": "2026-11-11T19:51:02.928Z",
+     "layer": "Code"
+    },
+    {
+     "key": "755e7951eb0630c21824201799eceb165d98fb33e74af8a41c21278d0a5f09e9",
+     "from": "solana:mainnet-beta:7u3HeHxYDLhnCoErrtycNokbQYbWGzLs6JSDqGAv5PfF",
+     "to": "solana:mainnet-beta:BN73b8HCQUsqdrBTqFuzqk9o1SH7fUTEcXxYmv43agJH",
+     "relation": "RESERVE_PROPOSER",
+     "factIds": [
+      "755e7951eb0630c21824201799eceb165d98fb33e74af8a41c21278d0a5f09e9"
+     ],
+     "bases": [
+      "decoded"
+     ],
+     "evidenceIds": [
+      "f7e8ada39a7321770eb9220f6597666bd860cbbcfaed446857fcb01a403466e3"
+     ],
+     "blockOrSlot": "468246959",
+     "asOf": "2026-11-11T19:51:02.928Z",
+     "layer": "Control"
+    },
+    {
+     "key": "9697cfb58499a878b7c810dcf6030be84acc4083c0e5580e2187ed008ea4517e",
+     "from": "solana:mainnet-beta:8gVpWfWDCtCcUX1meSphqqpyWBceLCcrs9yEXwKKjQrL",
+     "to": "solana:mainnet-beta:7u3HeHxYDLhnCoErrtycNokbQYbWGzLs6JSDqGAv5PfF",
+     "relation": "IN_MARKET",
+     "factIds": [
+      "9697cfb58499a878b7c810dcf6030be84acc4083c0e5580e2187ed008ea4517e"
+     ],
+     "bases": [
+      "decoded"
+     ],
+     "evidenceIds": [
+      "ad643148abd64e1751677287960881b7bc866805ebc6583230e8c47cacf15630"
+     ],
+     "blockOrSlot": "468246959",
+     "asOf": "2026-11-11T19:51:02.928Z",
+     "layer": "Structure"
+    },
+    {
+     "key": "0bc589eac2acfc2e6555d37f24489de301875749dbfd1a34dea6f5cec6c0fe26",
+     "from": "solana:mainnet-beta:8qnVHjKMcWAdkFnKvmRigj9J7UAVj2ooJ83GfeNn2DpR",
+     "to": "solana:mainnet-beta:7u3HeHxYDLhnCoErrtycNokbQYbWGzLs6JSDqGAv5PfF",
+     "relation": "IN_MARKET",
+     "factIds": [
+      "0bc589eac2acfc2e6555d37f24489de301875749dbfd1a34dea6f5cec6c0fe26"
+     ],
+     "bases": [
+      "decoded"
+     ],
+     "evidenceIds": [
+      "b83bf31f94b98e05bbbd12bb7bbaed804f3f1afce53f2772309c4668e69bb77b"
+     ],
+     "blockOrSlot": "468246959",
+     "asOf": "2026-11-11T19:51:02.928Z",
+     "layer": "Structure"
+    },
+    {
+     "key": "04eacc0200c55b0fce251bb24e9ebdf1e15cb2c1ba9c767ea704fcc5ae71d7ae",
+     "from": "solana:mainnet-beta:9JB9EMxEp9gZy3i1jqD2yvNYWKRZCP6f3drdQw853swH",
+     "to": "solana:mainnet-beta:7u3HeHxYDLhnCoErrtycNokbQYbWGzLs6JSDqGAv5PfF",
+     "relation": "IN_MARKET",
+     "factIds": [
+      "04eacc0200c55b0fce251bb24e9ebdf1e15cb2c1ba9c767ea704fcc5ae71d7ae"
+     ],
+     "bases": [
+      "decoded"
+     ],
+     "evidenceIds": [
+      "b6a21b847c2c80d55bdb43b6678c87cd7159dd97e72f06988f09aba780f5c48c"
+     ],
+     "blockOrSlot": "468246959",
+     "asOf": "2026-11-11T19:51:02.928Z",
+     "layer": "Structure"
+    },
+    {
+     "key": "f6e96ed5cf3feff873b9325fbce2de6a8c892aa098dfda5d46850acb330ad615",
+     "from": "solana:mainnet-beta:9Ukd2MSw5RvVFaN8jLhWxjHLEGiF1F6Hf7v3Zq5hZsKB",
+     "to": "solana:mainnet-beta:7u3HeHxYDLhnCoErrtycNokbQYbWGzLs6JSDqGAv5PfF",
+     "relation": "IN_MARKET",
+     "factIds": [
+      "f6e96ed5cf3feff873b9325fbce2de6a8c892aa098dfda5d46850acb330ad615"
+     ],
+     "bases": [
+      "decoded"
+     ],
+     "evidenceIds": [
+      "652dcf4e86508807dd107d52bed77dad49df2c4b830ae8100b2e10cfb5927740"
+     ],
+     "blockOrSlot": "468246959",
+     "asOf": "2026-11-11T19:51:02.928Z",
+     "layer": "Structure"
+    },
+    {
+     "key": "20490dca2a52ff0c10ab0b4b31b14fad67ba5dcb0ed634deef97e45837d1854a",
+     "from": "solana:mainnet-beta:A2J2CEwmwa9aTKbEfNoik6YTyNep9GtvNjU65okWYhwn",
+     "to": "solana:mainnet-beta:7u3HeHxYDLhnCoErrtycNokbQYbWGzLs6JSDqGAv5PfF",
+     "relation": "IN_MARKET",
+     "factIds": [
+      "20490dca2a52ff0c10ab0b4b31b14fad67ba5dcb0ed634deef97e45837d1854a"
+     ],
+     "bases": [
+      "decoded"
+     ],
+     "evidenceIds": [
+      "8243cd847f9c2f511ec6fd1551901d5d9a4be009e13c0b0670e996aadc8e5039"
+     ],
+     "blockOrSlot": "468246959",
+     "asOf": "2026-11-11T19:51:02.928Z",
+     "layer": "Structure"
+    },
+    {
+     "key": "0d956a1432cbe65cc0092e0aa817248832e112a5b7c76cf64b395b4a5c8d965d",
+     "from": "solana:mainnet-beta:AWnKJ9dsiHcoDCThxE5E93ikDTAXkApoNwrKM2tp9KFJ",
+     "to": "solana:mainnet-beta:7u3HeHxYDLhnCoErrtycNokbQYbWGzLs6JSDqGAv5PfF",
+     "relation": "IN_MARKET",
+     "factIds": [
+      "0d956a1432cbe65cc0092e0aa817248832e112a5b7c76cf64b395b4a5c8d965d"
+     ],
+     "bases": [
+      "decoded"
+     ],
+     "evidenceIds": [
+      "5ada23f8778f4637b60f6125d012cfa3500a83574c5a850d080e16758f6339b3"
+     ],
+     "blockOrSlot": "468246959",
+     "asOf": "2026-11-11T19:51:02.928Z",
+     "layer": "Structure"
+    },
+    {
+     "key": "727d3eba42ebd4ddeb9005aa7f0d13f05bb3c8328333b5e1f2a92641eb267925",
+     "from": "solana:mainnet-beta:ApQkX32ULJUzszZDe986aobLDLMNDoGQK8tRm6oD6SsA",
+     "to": "solana:mainnet-beta:7u3HeHxYDLhnCoErrtycNokbQYbWGzLs6JSDqGAv5PfF",
+     "relation": "IN_MARKET",
+     "factIds": [
+      "727d3eba42ebd4ddeb9005aa7f0d13f05bb3c8328333b5e1f2a92641eb267925"
+     ],
+     "bases": [
+      "decoded"
+     ],
+     "evidenceIds": [
+      "67b579287401acf7aed733615848079e1a3c72fa003a45412914270d7c9737f4"
+     ],
+     "blockOrSlot": "468246959",
+     "asOf": "2026-11-11T19:51:02.928Z",
+     "layer": "Structure"
+    },
+    {
+     "key": "c4db155242b8a608f60e8d9bfe6964e1d169a1b350a0f152bee30ca308565558",
+     "from": "solana:mainnet-beta:AxuWrPrJfwrUTvCWRxpkSQct6q8k1YSJzxhyYw2AAmv2",
+     "to": "solana:mainnet-beta:7u3HeHxYDLhnCoErrtycNokbQYbWGzLs6JSDqGAv5PfF",
+     "relation": "IN_MARKET",
+     "factIds": [
+      "c4db155242b8a608f60e8d9bfe6964e1d169a1b350a0f152bee30ca308565558"
+     ],
+     "bases": [
+      "decoded"
+     ],
+     "evidenceIds": [
+      "04cc840fceb354dad524ea3ea389379855ab0a37e8f6817f1535299327f3e002"
+     ],
+     "blockOrSlot": "468246959",
+     "asOf": "2026-11-11T19:51:02.928Z",
+     "layer": "Structure"
+    },
+    {
+     "key": "4acee5256902091e53ed95c84e7d1a743e465789fa40d1fa6c2d022552a09e16",
+     "from": "solana:mainnet-beta:B5uYvxUcwX5fCB4msGU4DaHh8k6fsSkKHNboy94F9vbt",
+     "to": "solana:mainnet-beta:7u3HeHxYDLhnCoErrtycNokbQYbWGzLs6JSDqGAv5PfF",
+     "relation": "IN_MARKET",
+     "factIds": [
+      "4acee5256902091e53ed95c84e7d1a743e465789fa40d1fa6c2d022552a09e16"
+     ],
+     "bases": [
+      "decoded"
+     ],
+     "evidenceIds": [
+      "04fac0320aa72b658a4e967733cef5f156d2715f1151ac17215faf5b8410f1ae"
+     ],
+     "blockOrSlot": "468246959",
+     "asOf": "2026-11-11T19:51:02.928Z",
+     "layer": "Structure"
+    },
+    {
+     "key": "c37f6026bccc71fdffc30b984d7d6a7f1cc57263da79e69302aaf8e410975a0e",
+     "from": "solana:mainnet-beta:BHUi32TrEsfN2U821G4FprKrR4hTeK4LCWtA3BFetuqA",
+     "to": "solana:mainnet-beta:7u3HeHxYDLhnCoErrtycNokbQYbWGzLs6JSDqGAv5PfF",
+     "relation": "IN_MARKET",
+     "factIds": [
+      "c37f6026bccc71fdffc30b984d7d6a7f1cc57263da79e69302aaf8e410975a0e"
+     ],
+     "bases": [
+      "decoded"
+     ],
+     "evidenceIds": [
+      "5affb38c03b550c954937398ba4943de745f5b5afa32c1d0dfc66c2f43179f5b"
+     ],
+     "blockOrSlot": "468246959",
+     "asOf": "2026-11-11T19:51:02.928Z",
+     "layer": "Structure"
+    },
+    {
+     "key": "63a0a56fc9a844594580805e9524bc2c36c75b89a7afcabbe3dce77634521276",
+     "from": "solana:mainnet-beta:Bpc4kAh29J3YDQUMJJdGdr1zBAhTQjC48R1B8YTWudsi",
+     "to": "solana:mainnet-beta:7u3HeHxYDLhnCoErrtycNokbQYbWGzLs6JSDqGAv5PfF",
+     "relation": "IN_MARKET",
+     "factIds": [
+      "63a0a56fc9a844594580805e9524bc2c36c75b89a7afcabbe3dce77634521276"
+     ],
+     "bases": [
+      "decoded"
+     ],
+     "evidenceIds": [
+      "4da08391d437731614048cf1db1748c03aea98abb2fe9e31c0222981ef4b7a4d"
+     ],
+     "blockOrSlot": "468246959",
+     "asOf": "2026-11-11T19:51:02.928Z",
+     "layer": "Structure"
+    },
+    {
+     "key": "5f80c3056a505ee767c6ef72c21815cdac03b0b1039baefd09efb185e12e9408",
+     "from": "solana:mainnet-beta:BvafE5Sm6rLrBbVRtJ2FkCzfNJQ2TjcL8bvPZULUDYrt",
+     "to": "solana:mainnet-beta:7u3HeHxYDLhnCoErrtycNokbQYbWGzLs6JSDqGAv5PfF",
+     "relation": "IN_MARKET",
+     "factIds": [
+      "5f80c3056a505ee767c6ef72c21815cdac03b0b1039baefd09efb185e12e9408"
+     ],
+     "bases": [
+      "decoded"
+     ],
+     "evidenceIds": [
+      "558aef078737e44a0236c1e5724eb83d93fbd60ebd1d9aadcfbebd5c02e44a72"
+     ],
+     "blockOrSlot": "468246959",
+     "asOf": "2026-11-11T19:51:02.928Z",
+     "layer": "Structure"
+    },
+    {
+     "key": "b7cdc24e4a7262b16727fba7e45c7fd5808461e66a988983dc88d1ff9801ccf6",
+     "from": "solana:mainnet-beta:CExamod1Ai3d1N8Vh7sBjt5xbZzb2VmGMAFocf7fxCzm",
+     "to": "solana:mainnet-beta:7u3HeHxYDLhnCoErrtycNokbQYbWGzLs6JSDqGAv5PfF",
+     "relation": "IN_MARKET",
+     "factIds": [
+      "b7cdc24e4a7262b16727fba7e45c7fd5808461e66a988983dc88d1ff9801ccf6"
+     ],
+     "bases": [
+      "decoded"
+     ],
+     "evidenceIds": [
+      "ff398f882d7bab4a32b9e4f7f3413893a06c89f92c1b56c882e999615302173b"
+     ],
+     "blockOrSlot": "468246959",
+     "asOf": "2026-11-11T19:51:02.928Z",
+     "layer": "Structure"
+    },
+    {
+     "key": "39f8047060165fb44133ae0566ed0f3d0fae30db448532d7b50f8feaa28aa71c",
+     "from": "solana:mainnet-beta:CHBNUPdjeo2N5QkZY2uAqv7TW5EbCTMsfvaskCBuxbom",
+     "to": "solana:mainnet-beta:7u3HeHxYDLhnCoErrtycNokbQYbWGzLs6JSDqGAv5PfF",
+     "relation": "IN_MARKET",
+     "factIds": [
+      "39f8047060165fb44133ae0566ed0f3d0fae30db448532d7b50f8feaa28aa71c"
+     ],
+     "bases": [
+      "decoded"
+     ],
+     "evidenceIds": [
+      "c8794f59085393ae6cb00661b8cd1c6172ca6968db6af31c390712f46834fc95"
+     ],
+     "blockOrSlot": "468246959",
+     "asOf": "2026-11-11T19:51:02.928Z",
+     "layer": "Structure"
+    },
+    {
+     "key": "f7b5957a59f8794cbd170450878fa2f8e7dbb76e6b0606a4b38d24f1bb485ef7",
+     "from": "solana:mainnet-beta:CkgQnPbuHHwSv2mNdAKH79TKSqC6jsyttK9yh4MPH6z3",
+     "to": "solana:mainnet-beta:7u3HeHxYDLhnCoErrtycNokbQYbWGzLs6JSDqGAv5PfF",
+     "relation": "IN_MARKET",
+     "factIds": [
+      "f7b5957a59f8794cbd170450878fa2f8e7dbb76e6b0606a4b38d24f1bb485ef7"
+     ],
+     "bases": [
+      "decoded"
+     ],
+     "evidenceIds": [
+      "8307f2126e478cb3a249ea9a149e4882ced5500475c9f3732464aad787af8ef4"
+     ],
+     "blockOrSlot": "468246959",
+     "asOf": "2026-11-11T19:51:02.928Z",
+     "layer": "Structure"
+    },
+    {
+     "key": "e180db47de5e999668f3e01481edd88e138d7142d8a9f9b4bbb9fc5be165b0b4",
+     "from": "solana:mainnet-beta:D6q6wuQSrifJKZYpR1M8R4YawnLDtDsMmWM1NbBmgJ59",
+     "to": "solana:mainnet-beta:7u3HeHxYDLhnCoErrtycNokbQYbWGzLs6JSDqGAv5PfF",
+     "relation": "IN_MARKET",
+     "factIds": [
+      "e180db47de5e999668f3e01481edd88e138d7142d8a9f9b4bbb9fc5be165b0b4"
+     ],
+     "bases": [
+      "decoded"
+     ],
+     "evidenceIds": [
+      "b7a36beb2387ad8324f8b80b929377a6dc86bb37d53711c42ebe2714dea377aa"
+     ],
+     "blockOrSlot": "468246959",
+     "asOf": "2026-11-11T19:51:02.928Z",
+     "layer": "Structure"
+    },
+    {
+     "key": "f7cdbe560088fb8a8781eae29a39a9c2666a8b44b0dce2d8281d74b357bac7ff",
+     "from": "solana:mainnet-beta:DGQZWCY17gGtBUgdaFs1VreJWsodkjFxndPsskwFKGpp",
+     "to": "solana:mainnet-beta:7u3HeHxYDLhnCoErrtycNokbQYbWGzLs6JSDqGAv5PfF",
+     "relation": "IN_MARKET",
+     "factIds": [
+      "f7cdbe560088fb8a8781eae29a39a9c2666a8b44b0dce2d8281d74b357bac7ff"
+     ],
+     "bases": [
+      "decoded"
+     ],
+     "evidenceIds": [
+      "a76cebd04a4d3f4ddded16466b205b7dfcde6b18c34611d8672dcf73c145a951"
+     ],
+     "blockOrSlot": "468246959",
+     "asOf": "2026-11-11T19:51:02.928Z",
+     "layer": "Structure"
+    },
+    {
+     "key": "7cd9e6181e8cfa7b56b206e0e75d2d1f0d3e3520f202386c161e9932b014541f",
+     "from": "solana:mainnet-beta:DaGyAQJrdkLCzYZiUWg49NV8vabDnhR7ETwLu5eQgL56",
+     "to": "solana:mainnet-beta:7u3HeHxYDLhnCoErrtycNokbQYbWGzLs6JSDqGAv5PfF",
+     "relation": "IN_MARKET",
+     "factIds": [
+      "7cd9e6181e8cfa7b56b206e0e75d2d1f0d3e3520f202386c161e9932b014541f"
+     ],
+     "bases": [
+      "decoded"
+     ],
+     "evidenceIds": [
+      "375d0012d1399787ee195187ed98876010905e9826b0956c30a7b56f2d61c558"
+     ],
+     "blockOrSlot": "468246959",
+     "asOf": "2026-11-11T19:51:02.928Z",
+     "layer": "Structure"
+    },
+    {
+     "key": "41a46b80a9982662b927e0c0a5b0186f9cdf07a3e1d0594be50cb9bbe3241d0f",
+     "from": "solana:mainnet-beta:EAA3VVsxUuQB1Tm5x7TJkq9ATtiX5Qwq8ok7gXwim7oo",
+     "to": "solana:mainnet-beta:7u3HeHxYDLhnCoErrtycNokbQYbWGzLs6JSDqGAv5PfF",
+     "relation": "IN_MARKET",
+     "factIds": [
+      "41a46b80a9982662b927e0c0a5b0186f9cdf07a3e1d0594be50cb9bbe3241d0f"
+     ],
+     "bases": [
+      "decoded"
+     ],
+     "evidenceIds": [
+      "93b63b1d4eb06a8ec9add81916bfd32f13fa3cf7f7ec43b0a713fb7f62b68fc1"
+     ],
+     "blockOrSlot": "468246959",
+     "asOf": "2026-11-11T19:51:02.928Z",
+     "layer": "Structure"
+    },
+    {
+     "key": "d4e57ff45307b3f5d4fb056d903da7ef4b119d3d6f92f684ee7bad2295a4ddee",
+     "from": "solana:mainnet-beta:EGPE45iPkme8G8C1xFDNZoZeHdP3aRYtaAfAQuuwrcGZ",
+     "to": "solana:mainnet-beta:7u3HeHxYDLhnCoErrtycNokbQYbWGzLs6JSDqGAv5PfF",
+     "relation": "IN_MARKET",
+     "factIds": [
+      "d4e57ff45307b3f5d4fb056d903da7ef4b119d3d6f92f684ee7bad2295a4ddee"
+     ],
+     "bases": [
+      "decoded"
+     ],
+     "evidenceIds": [
+      "8ad698364018a0f0f66c9273531d01bc4922ab2284eb10b1cd61b78841213834"
+     ],
+     "blockOrSlot": "468246959",
+     "asOf": "2026-11-11T19:51:02.928Z",
+     "layer": "Structure"
+    },
+    {
+     "key": "f97559b63c9826749c9c7065a7441c3f60f8ca001cf69ce6a20185b84f7d7209",
+     "from": "solana:mainnet-beta:ESCkPWKHmgNE7Msf77n9yzqJd5kQVWWGy3o5Mgxhvavp",
+     "to": "solana:mainnet-beta:7u3HeHxYDLhnCoErrtycNokbQYbWGzLs6JSDqGAv5PfF",
+     "relation": "IN_MARKET",
+     "factIds": [
+      "f97559b63c9826749c9c7065a7441c3f60f8ca001cf69ce6a20185b84f7d7209"
+     ],
+     "bases": [
+      "decoded"
+     ],
+     "evidenceIds": [
+      "5ac40118435d7bae0bc90a8d31cc7e356203974dec658dcd821e55da646fb6db"
+     ],
+     "blockOrSlot": "468246959",
+     "asOf": "2026-11-11T19:51:02.928Z",
+     "layer": "Structure"
+    },
+    {
+     "key": "ad5299df7ab730bd985004b9cefb28e068667ed7b2379aedfbc2a084954939cf",
+     "from": "solana:mainnet-beta:EVbyPKrHG6WBfm4dLxLMJpUDY43cCAcHSpV3KYjKsktW",
+     "to": "solana:mainnet-beta:7u3HeHxYDLhnCoErrtycNokbQYbWGzLs6JSDqGAv5PfF",
+     "relation": "IN_MARKET",
+     "factIds": [
+      "ad5299df7ab730bd985004b9cefb28e068667ed7b2379aedfbc2a084954939cf"
+     ],
+     "bases": [
+      "decoded"
+     ],
+     "evidenceIds": [
+      "3396145ae41a25232059b61a9a75f130fc856d16d3b06ff91c09ba3a7fc1fd6a"
+     ],
+     "blockOrSlot": "468246959",
+     "asOf": "2026-11-11T19:51:02.928Z",
+     "layer": "Structure"
+    },
+    {
+     "key": "fcf0d9f038ebb51aebb86b1b98fb091873d890cb2635c2b3be0b316467b99983",
+     "from": "solana:mainnet-beta:FBSyPnxtHKLBZ4UeeUyAnbtFuAmTHLtso9YtsqRDRWpM",
+     "to": "solana:mainnet-beta:7u3HeHxYDLhnCoErrtycNokbQYbWGzLs6JSDqGAv5PfF",
+     "relation": "IN_MARKET",
+     "factIds": [
+      "fcf0d9f038ebb51aebb86b1b98fb091873d890cb2635c2b3be0b316467b99983"
+     ],
+     "bases": [
+      "decoded"
+     ],
+     "evidenceIds": [
+      "874973d53f5a3c8e2e56b27db20b7285de535ce98c395d09293a55ee0a395317"
+     ],
+     "blockOrSlot": "468246959",
+     "asOf": "2026-11-11T19:51:02.928Z",
+     "layer": "Structure"
+    },
+    {
+     "key": "f00a5b00234ffa1166c0c3aac7b2f9e2c225f4d2de49120e7ba811ca62b5c8a4",
+     "from": "solana:mainnet-beta:FMbsZf4HuQ1a8a7VdmALT3S8WRfu3EocphRKPXxRsfGd",
+     "to": "solana:mainnet-beta:7u3HeHxYDLhnCoErrtycNokbQYbWGzLs6JSDqGAv5PfF",
+     "relation": "IN_MARKET",
+     "factIds": [
+      "f00a5b00234ffa1166c0c3aac7b2f9e2c225f4d2de49120e7ba811ca62b5c8a4"
+     ],
+     "bases": [
+      "decoded"
+     ],
+     "evidenceIds": [
+      "e4f6fafdfcc629e0eb4729f7ca6778d71c103dc79ef9a1f4b113c7e4c4182df8"
+     ],
+     "blockOrSlot": "468246959",
+     "asOf": "2026-11-11T19:51:02.928Z",
+     "layer": "Structure"
+    },
+    {
+     "key": "33f8ffa1342fd884db0ecd0850153d75c0072f38a9146379c022580a1d9f0f14",
+     "from": "solana:mainnet-beta:FPAwg5jadDs8AvUtvtAbit2RCZdkZES6yY5X6nCSuEw9",
+     "to": "solana:mainnet-beta:7u3HeHxYDLhnCoErrtycNokbQYbWGzLs6JSDqGAv5PfF",
+     "relation": "IN_MARKET",
+     "factIds": [
+      "33f8ffa1342fd884db0ecd0850153d75c0072f38a9146379c022580a1d9f0f14"
+     ],
+     "bases": [
+      "decoded"
+     ],
+     "evidenceIds": [
+      "eb55c69078e75312c33045869901ba0fbc574a2900e636e2e70270ef5ba51c66"
+     ],
+     "blockOrSlot": "468246959",
+     "asOf": "2026-11-11T19:51:02.928Z",
+     "layer": "Structure"
+    },
+    {
+     "key": "032f875032b575cd9fcecd54e6be3ac6aeca36dbb8e91d424773f4ecad1fec5a",
+     "from": "solana:mainnet-beta:Fqjbo3L4NAyzPcy6swv1XXLm1c7tUTKWMDkjCo9mfSDq",
+     "to": "solana:mainnet-beta:7u3HeHxYDLhnCoErrtycNokbQYbWGzLs6JSDqGAv5PfF",
+     "relation": "IN_MARKET",
+     "factIds": [
+      "032f875032b575cd9fcecd54e6be3ac6aeca36dbb8e91d424773f4ecad1fec5a"
+     ],
+     "bases": [
+      "decoded"
+     ],
+     "evidenceIds": [
+      "83c2a2b0bf2f451c77f52993fa76fb8a18b8456635f17e2a596ba60e09047b29"
+     ],
+     "blockOrSlot": "468246959",
+     "asOf": "2026-11-11T19:51:02.928Z",
+     "layer": "Structure"
+    },
+    {
+     "key": "35662a750023c161a29412be6548963d466966d2be87be20c9915f83730a37f7",
+     "from": "solana:mainnet-beta:G31zKdH2SkDZPhmoQraep5xbTSPyk3VZxAeBdC3nmq5J",
+     "to": "solana:mainnet-beta:7u3HeHxYDLhnCoErrtycNokbQYbWGzLs6JSDqGAv5PfF",
+     "relation": "IN_MARKET",
+     "factIds": [
+      "35662a750023c161a29412be6548963d466966d2be87be20c9915f83730a37f7"
+     ],
+     "bases": [
+      "decoded"
+     ],
+     "evidenceIds": [
+      "e9ca6656202e6154de102f9e8ab17a0b72b52d03325b15cf7504d4920198246e"
+     ],
+     "blockOrSlot": "468246959",
+     "asOf": "2026-11-11T19:51:02.928Z",
+     "layer": "Structure"
+    },
+    {
+     "key": "7cda1c6d31f0ef25757cbe0035a05b6981fc33662762857e14d407a5ba24a66a",
+     "from": "solana:mainnet-beta:GFLLgX9V6PR1PzhgsGzeyUddpt2ws2PBRAxRwoLrboGp",
+     "to": "solana:mainnet-beta:7u3HeHxYDLhnCoErrtycNokbQYbWGzLs6JSDqGAv5PfF",
+     "relation": "IN_MARKET",
+     "factIds": [
+      "7cda1c6d31f0ef25757cbe0035a05b6981fc33662762857e14d407a5ba24a66a"
+     ],
+     "bases": [
+      "decoded"
+     ],
+     "evidenceIds": [
+      "ca9a3e9b4771cde835cffe1a9fe49e00c66fdf1351f805fea48697bbd9108675"
+     ],
+     "blockOrSlot": "468246959",
+     "asOf": "2026-11-11T19:51:02.928Z",
+     "layer": "Structure"
+    },
+    {
+     "key": "27435d9ec85a51a07d33caf8fb7805664e5da3ce79a9888cc9135172036e9526",
+     "from": "solana:mainnet-beta:Ggn9EUzL5QQPM8JPsyu1MU1uD3rGJty7iXddLQnmxPyS",
+     "to": "solana:mainnet-beta:7u3HeHxYDLhnCoErrtycNokbQYbWGzLs6JSDqGAv5PfF",
+     "relation": "IN_MARKET",
+     "factIds": [
+      "27435d9ec85a51a07d33caf8fb7805664e5da3ce79a9888cc9135172036e9526"
+     ],
+     "bases": [
+      "decoded"
+     ],
+     "evidenceIds": [
+      "3ceb172ebbc8cc1555a3803f6ae4d459a032285ef493aa04f6246ebe1f2524c7"
+     ],
+     "blockOrSlot": "468246959",
+     "asOf": "2026-11-11T19:51:02.928Z",
+     "layer": "Structure"
+    },
+    {
+     "key": "1154764f54fe459ed4aaadc98128b638876a43d4b2c142683cdad59d219b78a6",
+     "from": "solana:mainnet-beta:GhGPbkWmPjSkbkgZbhNGBTxzwQKjqDpZwNfaf2gQKgdG",
+     "to": "solana:mainnet-beta:7u3HeHxYDLhnCoErrtycNokbQYbWGzLs6JSDqGAv5PfF",
+     "relation": "IN_MARKET",
+     "factIds": [
+      "1154764f54fe459ed4aaadc98128b638876a43d4b2c142683cdad59d219b78a6"
+     ],
+     "bases": [
+      "decoded"
+     ],
+     "evidenceIds": [
+      "692031dbeecaf76f836e1bc843aa65a5efbb3e88f5483b5fa27ea707504d5ca0"
+     ],
+     "blockOrSlot": "468246959",
+     "asOf": "2026-11-11T19:51:02.928Z",
+     "layer": "Structure"
+    },
+    {
+     "key": "ac4c5a1e1c5f1b10ecd49fcdafea8d37d5d437a103417ed41b1368dce57b8190",
+     "from": "solana:mainnet-beta:H3t6qZ1JkguCNTi9uzVKqQ7dvt2cum4XiXWom6Gn5e5S",
+     "to": "solana:mainnet-beta:7u3HeHxYDLhnCoErrtycNokbQYbWGzLs6JSDqGAv5PfF",
+     "relation": "IN_MARKET",
+     "factIds": [
+      "ac4c5a1e1c5f1b10ecd49fcdafea8d37d5d437a103417ed41b1368dce57b8190"
+     ],
+     "bases": [
+      "decoded"
+     ],
+     "evidenceIds": [
+      "b899ca84835fd3e3801b7b3623535371003393eb0ade842803eadae7f1747ac0"
+     ],
+     "blockOrSlot": "468246959",
+     "asOf": "2026-11-11T19:51:02.928Z",
+     "layer": "Structure"
+    },
+    {
+     "key": "f01d81639c7a918cee7a580d2979498ec9ffdf61eaee3ccbeee684c5c061b6c9",
+     "from": "solana:mainnet-beta:H9vmCVd77N1HZa36eBn3UnftYmg4vQzPfm1RxabHAMER",
+     "to": "solana:mainnet-beta:7u3HeHxYDLhnCoErrtycNokbQYbWGzLs6JSDqGAv5PfF",
+     "relation": "IN_MARKET",
+     "factIds": [
+      "f01d81639c7a918cee7a580d2979498ec9ffdf61eaee3ccbeee684c5c061b6c9"
+     ],
+     "bases": [
+      "decoded"
+     ],
+     "evidenceIds": [
+      "f039dfac9f067c8be04fc2f57751de2e3498758caa24961290c375bb2433e1d8"
+     ],
+     "blockOrSlot": "468246959",
+     "asOf": "2026-11-11T19:51:02.928Z",
+     "layer": "Structure"
+    },
+    {
+     "key": "156fa7ddb20c2ef3d0a8ed03a44adfc2d2d2cdeb54312af091ef9b7cca37a440",
+     "from": "solana:mainnet-beta:HD93Fq3gmVh3J7euJJ5MBw8Ph3ebeMFS699JQePN4XgN",
+     "to": "solana:mainnet-beta:7u3HeHxYDLhnCoErrtycNokbQYbWGzLs6JSDqGAv5PfF",
+     "relation": "IN_MARKET",
+     "factIds": [
+      "156fa7ddb20c2ef3d0a8ed03a44adfc2d2d2cdeb54312af091ef9b7cca37a440"
+     ],
+     "bases": [
+      "decoded"
+     ],
+     "evidenceIds": [
+      "4a9a6cff66e4ca041e921aa438695fed1d68900addd685b9a45c870ca029e210"
+     ],
+     "blockOrSlot": "468246959",
+     "asOf": "2026-11-11T19:51:02.928Z",
+     "layer": "Structure"
+    },
+    {
+     "key": "c3d40f4bfdcf7c7e62f5126583861cefd3ac3d84f71825cd4b776ba4aa222144",
+     "from": "solana:mainnet-beta:HMCXsf1jFUDbvGGhvUzCzwkKbmUhxhxz7gYZwXpTuReT",
+     "to": "solana:mainnet-beta:7u3HeHxYDLhnCoErrtycNokbQYbWGzLs6JSDqGAv5PfF",
+     "relation": "IN_MARKET",
+     "factIds": [
+      "c3d40f4bfdcf7c7e62f5126583861cefd3ac3d84f71825cd4b776ba4aa222144"
+     ],
+     "bases": [
+      "decoded"
+     ],
+     "evidenceIds": [
+      "5533e2eb71c3395c8af3e8a2a89d9435aa40df583f98caa56aa11d0a91bf06e1"
+     ],
+     "blockOrSlot": "468246959",
+     "asOf": "2026-11-11T19:51:02.928Z",
+     "layer": "Structure"
+    },
+    {
+     "key": "0c58e64ae8a20dcfd1514e7ca97877eca9196c0146dc1111827dcb61139df80f",
+     "from": "solana:mainnet-beta:HV9KsS5mB4b9CFhDJVKdfxWBAomYfUk5PeUsdgMQsUrB",
+     "to": "solana:mainnet-beta:7u3HeHxYDLhnCoErrtycNokbQYbWGzLs6JSDqGAv5PfF",
+     "relation": "IN_MARKET",
+     "factIds": [
+      "0c58e64ae8a20dcfd1514e7ca97877eca9196c0146dc1111827dcb61139df80f"
+     ],
+     "bases": [
+      "decoded"
+     ],
+     "evidenceIds": [
+      "55a8d77899433a81237df088b42f1efb3eb5d458bb899eeebee0edb584c1fae9"
+     ],
+     "blockOrSlot": "468246959",
+     "asOf": "2026-11-11T19:51:02.928Z",
+     "layer": "Structure"
+    },
+    {
+     "key": "20d00889a4e94e38d111d9b8badb4409e2da6dce7dabf165916a912ab77847d8",
+     "from": "solana:mainnet-beta:HYnVhjsvU1vBKTPsXs1dWe6cJeuU8E4gjoYpmwe81KzN",
+     "to": "solana:mainnet-beta:7u3HeHxYDLhnCoErrtycNokbQYbWGzLs6JSDqGAv5PfF",
+     "relation": "IN_MARKET",
+     "factIds": [
+      "20d00889a4e94e38d111d9b8badb4409e2da6dce7dabf165916a912ab77847d8"
+     ],
+     "bases": [
+      "decoded"
+     ],
+     "evidenceIds": [
+      "6a70e684ecc3b8f45ccdd90e63323efe4a9d95a8797d4581d1eda277e230dca8"
+     ],
+     "blockOrSlot": "468246959",
+     "asOf": "2026-11-11T19:51:02.928Z",
+     "layer": "Structure"
+    },
+    {
+     "key": "6ca3dd4f9577f3ea94da69c24ba73afea467a964dec50875c2edec4998d37400",
+     "from": "solana:mainnet-beta:Hcz1o77tF9TpdEHcvrx29tz7SBKoQEwJA1wuJqGZYnTw",
+     "to": "solana:mainnet-beta:7u3HeHxYDLhnCoErrtycNokbQYbWGzLs6JSDqGAv5PfF",
+     "relation": "IN_MARKET",
+     "factIds": [
+      "6ca3dd4f9577f3ea94da69c24ba73afea467a964dec50875c2edec4998d37400"
+     ],
+     "bases": [
+      "decoded"
+     ],
+     "evidenceIds": [
+      "62205ff890dc0fe4f21c14645244df55507637560d6a9b1166e7e8b6b883d83a"
+     ],
+     "blockOrSlot": "468246959",
+     "asOf": "2026-11-11T19:51:02.928Z",
+     "layer": "Structure"
+    },
+    {
+     "key": "d6cbe809393e146d875486831795009a49caeb8e626f6e6a1d18d656507a5ce3",
+     "from": "solana:mainnet-beta:Ht9NoB1udjpRqws1sCw1j2dL7MeTDHYCDdDFkbc1Arst",
+     "to": "solana:mainnet-beta:7u3HeHxYDLhnCoErrtycNokbQYbWGzLs6JSDqGAv5PfF",
+     "relation": "IN_MARKET",
+     "factIds": [
+      "d6cbe809393e146d875486831795009a49caeb8e626f6e6a1d18d656507a5ce3"
+     ],
+     "bases": [
+      "decoded"
+     ],
+     "evidenceIds": [
+      "b2533aca1efd659ade4496a9e99bb917612395959fad55939b65904cd8e59505"
+     ],
+     "blockOrSlot": "468246959",
+     "asOf": "2026-11-11T19:51:02.928Z",
+     "layer": "Structure"
+    },
+    {
+     "key": "7afad966d2cda8087f5cecbf5906afec3f1867bfaee5cf0cd6ada703c4403e03",
+     "from": "solana:mainnet-beta:J5oj3VKWQNKRZx3heWZx7JZC59AEDQ9UQwqqiy63nCuf",
+     "to": "solana:mainnet-beta:7u3HeHxYDLhnCoErrtycNokbQYbWGzLs6JSDqGAv5PfF",
+     "relation": "IN_MARKET",
+     "factIds": [
+      "7afad966d2cda8087f5cecbf5906afec3f1867bfaee5cf0cd6ada703c4403e03"
+     ],
+     "bases": [
+      "decoded"
+     ],
+     "evidenceIds": [
+      "2e8ad06621b78fce5a29294dcf52f6e7898630f6b80b15a4ffdafa536b6d93ac"
+     ],
+     "blockOrSlot": "468246959",
+     "asOf": "2026-11-11T19:51:02.928Z",
+     "layer": "Structure"
+    },
+    {
+     "key": "a642857f78aab583e74fbd7b223ca97e62737a58c69829babc53fc6296804de9",
+     "from": "solana:mainnet-beta:StGKGcLQoTsWzQ1tFY2bWqrdiuBhqdFE4niiAutQxQB",
+     "to": "solana:mainnet-beta:7u3HeHxYDLhnCoErrtycNokbQYbWGzLs6JSDqGAv5PfF",
+     "relation": "IN_MARKET",
+     "factIds": [
+      "a642857f78aab583e74fbd7b223ca97e62737a58c69829babc53fc6296804de9"
+     ],
+     "bases": [
+      "decoded"
+     ],
+     "evidenceIds": [
+      "505a93368e05f8ef1883e1f65a8381a335b5049f10972bf34f8c4d7a56fd770c"
+     ],
+     "blockOrSlot": "468246959",
+     "asOf": "2026-11-11T19:51:02.928Z",
+     "layer": "Structure"
+    },
+    {
+     "key": "9b62896ed2e24fc0defa67777f40db37dbfde4d7c63e6e1b325f513e658031b7",
+     "from": "solana:mainnet-beta:d4A2prbA2whesmvHaL88BH6Ewn5N4bTSU2Ze8P6Bc4Q",
+     "to": "solana:mainnet-beta:7u3HeHxYDLhnCoErrtycNokbQYbWGzLs6JSDqGAv5PfF",
+     "relation": "IN_MARKET",
+     "factIds": [
+      "9b62896ed2e24fc0defa67777f40db37dbfde4d7c63e6e1b325f513e658031b7"
+     ],
+     "bases": [
+      "decoded"
+     ],
+     "evidenceIds": [
+      "67bb844a0ee6fd37707000f91d0ca86f925cb9d42b4e43cfb1cb10785af28a6d"
+     ],
+     "blockOrSlot": "468246959",
+     "asOf": "2026-11-11T19:51:02.928Z",
+     "layer": "Structure"
+    },
+    {
+     "key": "41c6534034aa42214ee855888b0ec6a4ff64de393532748fdb45a4465b9fee81",
+     "from": "solana:mainnet-beta:febGYTnFX4GbSGoFHFeJXUHgNaK53fB23uDins9Jp1E",
+     "to": "solana:mainnet-beta:7u3HeHxYDLhnCoErrtycNokbQYbWGzLs6JSDqGAv5PfF",
+     "relation": "IN_MARKET",
+     "factIds": [
+      "41c6534034aa42214ee855888b0ec6a4ff64de393532748fdb45a4465b9fee81"
+     ],
+     "bases": [
+      "decoded"
+     ],
+     "evidenceIds": [
+      "ab7cbdd7526b115f45a46e9a08adfee5f9cd53f07f2a22810e4de9f722a2d128"
+     ],
+     "blockOrSlot": "468246959",
+     "asOf": "2026-11-11T19:51:02.928Z",
+     "layer": "Structure"
+    }
+   ],
+   "truncated": false,
+   "total": 62
+  },
+  "explorer-gap": {
+   "resultId": "explorer-gap",
+   "shape": "graph",
+   "coverage": "mapped",
+   "coverageNotes": [],
+   "nodes": [
+    {
+     "id": "solana:mainnet-beta:3Fb5DMRWoBLWD36Lp4BtG41LaFjVeEJNCH9YLNPYdVqj",
+     "label": "solana:mainnet-beta:3Fb5DMRWoBLWD36Lp4BtG41LaFjVeEJNCH9YLNPYdVqj",
+     "isolated": false,
+     "kind": "Token",
+     "kindBasis": "decoded"
+    },
+    {
+     "id": "solana:mainnet-beta:A9rQoX1sictAQkyXxaZA8nz674xutHwoqpK2mwLyexCZ",
+     "label": "solana:mainnet-beta:A9rQoX1sictAQkyXxaZA8nz674xutHwoqpK2mwLyexCZ",
+     "isolated": false
+    },
+    {
+     "id": "solana:mainnet-beta:BEe6HXZf6cByeb8iCxukjB8k74kJN3cVbBAGi49Hfi6W",
+     "label": "solana:mainnet-beta:BEe6HXZf6cByeb8iCxukjB8k74kJN3cVbBAGi49Hfi6W",
+     "isolated": false
+    }
+   ],
+   "edges": [
+    {
+     "key": "bd21f3a34f05b9bb3107a495724feda94832d0dd9940d4d94595ae199a256f9a",
+     "from": "solana:mainnet-beta:3Fb5DMRWoBLWD36Lp4BtG41LaFjVeEJNCH9YLNPYdVqj",
+     "to": "none",
+     "relation": "FREEZE_AUTHORITY",
+     "factIds": [
+      "bd21f3a34f05b9bb3107a495724feda94832d0dd9940d4d94595ae199a256f9a"
+     ],
+     "bases": [
+      "decoded"
+     ],
+     "evidenceIds": [
+      "03105cb04e3c36a92f2cc789580b909a1867c704924db91e98282353f47aed7e"
+     ],
+     "blockOrSlot": "468246960",
+     "asOf": "2026-11-11T19:51:03.048Z",
+     "layer": "Control"
+    },
+    {
+     "key": "d93224066c090b60f587680f6509188901cba0feb65259ffc7bd12a844137fb2",
+     "from": "solana:mainnet-beta:A9rQoX1sictAQkyXxaZA8nz674xutHwoqpK2mwLyexCZ",
+     "to": "unknown",
+     "relation": "CONTROLLED_BY",
+     "factIds": [
+      "d93224066c090b60f587680f6509188901cba0feb65259ffc7bd12a844137fb2"
+     ],
+     "bases": [
+      "unknown"
+     ],
+     "evidenceIds": [
+      "32bc5148ebdcd971fcad600ee376b4226dadbdd4bfef6c4e7fe8227b65247f93"
+     ],
+     "blockOrSlot": "468246959",
+     "asOf": "2026-11-11T19:51:02.928Z",
+     "layer": "Control"
+    },
+    {
+     "key": "6e85c8e524ff50f93336ab2a34e729c74261f15b2b4d0483f3ae923f81c45cca",
+     "from": "solana:mainnet-beta:BEe6HXZf6cByeb8iCxukjB8k74kJN3cVbBAGi49Hfi6W",
+     "to": "solana:mainnet-beta:A9rQoX1sictAQkyXxaZA8nz674xutHwoqpK2mwLyexCZ",
+     "relation": "GLOBAL_ADMIN",
+     "factIds": [
+      "6e85c8e524ff50f93336ab2a34e729c74261f15b2b4d0483f3ae923f81c45cca"
+     ],
+     "bases": [
+      "decoded"
+     ],
+     "evidenceIds": [
+      "32bc5148ebdcd971fcad600ee376b4226dadbdd4bfef6c4e7fe8227b65247f93"
+     ],
+     "blockOrSlot": "468246959",
+     "asOf": "2026-11-11T19:51:02.928Z",
+     "layer": "Control"
+    }
+   ],
+   "truncated": false,
+   "total": 3
+  },
+  "explorer-whole": {
+   "resultId": "explorer-whole",
+   "shape": "graph",
+   "coverage": "mapped",
+   "coverageNotes": [],
+   "nodes": [
+    {
+     "id": "solana:mainnet-beta:3JLPCS1qM2zRw3Dp6V4hZnYHd4toMNPkNesXdX9tg6KM",
+     "label": "solana:mainnet-beta:3JLPCS1qM2zRw3Dp6V4hZnYHd4toMNPkNesXdX9tg6KM",
+     "isolated": false
+    },
+    {
+     "id": "solana:mainnet-beta:4PQH9YmfuKrVyZaibkLYpJZPv2FPaybhq2GAuBcWMSBf",
+     "label": "solana:mainnet-beta:4PQH9YmfuKrVyZaibkLYpJZPv2FPaybhq2GAuBcWMSBf",
+     "isolated": false
+    },
+    {
+     "id": "solana:mainnet-beta:551FBXSXdhcRDDkdcb3ThDRg84Mwe5Zs6YjJ1EEoyzBp",
+     "label": "solana:mainnet-beta:551FBXSXdhcRDDkdcb3ThDRg84Mwe5Zs6YjJ1EEoyzBp",
+     "isolated": false
+    },
+    {
+     "id": "solana:mainnet-beta:MNDEFzGvMt87ueuHvVU9VcTqsAP5b3fTGPsHuuPA5ey",
+     "label": "solana:mainnet-beta:MNDEFzGvMt87ueuHvVU9VcTqsAP5b3fTGPsHuuPA5ey",
+     "isolated": false,
+     "name": "MNDE"
+    },
+    {
+     "id": "solana:mainnet-beta:MarBmsSgKXdrN1egZf5sqe1TMai9K1rChYNDJgjq7aD",
+     "label": "solana:mainnet-beta:MarBmsSgKXdrN1egZf5sqe1TMai9K1rChYNDJgjq7aD",
+     "isolated": false,
+     "name": "Marinade liquid staking"
+    },
+    {
+     "id": "solana:mainnet-beta:mSoLzYCxHdYgdzU16g5QSh3i5K3z3KZK7ytfqcJm7So",
+     "label": "solana:mainnet-beta:mSoLzYCxHdYgdzU16g5QSh3i5K3z3KZK7ytfqcJm7So",
+     "isolated": false,
+     "name": "mSOL"
+    }
+   ],
+   "edges": [
+    {
+     "key": "d10ca61f6fdc0e7372612a58646b3c36ac67b1811a886fc002f72c797c1b9110",
+     "from": "solana:mainnet-beta:MNDEFzGvMt87ueuHvVU9VcTqsAP5b3fTGPsHuuPA5ey",
+     "to": "none",
+     "relation": "FREEZE_AUTHORITY",
+     "factIds": [
+      "d10ca61f6fdc0e7372612a58646b3c36ac67b1811a886fc002f72c797c1b9110"
+     ],
+     "bases": [
+      "decoded"
+     ],
+     "evidenceIds": [
+      "7c142a2dd903346826d9907bdc0e01a1d0494cdbb5061b1e10261a4387446844"
+     ],
+     "blockOrSlot": "453866515",
+     "asOf": "2026-10-06T09:52:06.247Z",
+     "layer": "Control"
+    },
+    {
+     "key": "bb210b31cac28d824c39c45dc594ec1c0853e35c73d346eb8ad38e9f6df71d8d",
+     "from": "solana:mainnet-beta:MNDEFzGvMt87ueuHvVU9VcTqsAP5b3fTGPsHuuPA5ey",
+     "to": "none",
+     "relation": "MINT_AUTHORITY",
+     "factIds": [
+      "bb210b31cac28d824c39c45dc594ec1c0853e35c73d346eb8ad38e9f6df71d8d"
+     ],
+     "bases": [
+      "decoded"
+     ],
+     "evidenceIds": [
+      "7c142a2dd903346826d9907bdc0e01a1d0494cdbb5061b1e10261a4387446844"
+     ],
+     "blockOrSlot": "453866515",
+     "asOf": "2026-10-06T09:52:06.247Z",
+     "layer": "Control"
+    },
+    {
+     "key": "1193f06fc2594c79b25049a6d67c950f907c07f17ea3411b1b2368f395b820b0",
+     "from": "solana:mainnet-beta:MarBmsSgKXdrN1egZf5sqe1TMai9K1rChYNDJgjq7aD",
+     "to": "solana:mainnet-beta:4PQH9YmfuKrVyZaibkLYpJZPv2FPaybhq2GAuBcWMSBf",
+     "relation": "PROGRAM_DATA",
+     "factIds": [
+      "1193f06fc2594c79b25049a6d67c950f907c07f17ea3411b1b2368f395b820b0"
+     ],
+     "bases": [
+      "decoded"
+     ],
+     "evidenceIds": [
+      "b49cd4ae13761724a8ca32674e81d96d00798143609fe6ae45e1735c72134aac"
+     ],
+     "blockOrSlot": "453862887",
+     "asOf": "2026-10-06T09:35:54.257Z",
+     "layer": "Code"
+    },
+    {
+     "key": "5c0a0e18331da11e4e7403fa9a24379c70fa3bb6afc66bbbeb87a77b1a143a87",
+     "from": "solana:mainnet-beta:MarBmsSgKXdrN1egZf5sqe1TMai9K1rChYNDJgjq7aD",
+     "to": "solana:mainnet-beta:551FBXSXdhcRDDkdcb3ThDRg84Mwe5Zs6YjJ1EEoyzBp",
+     "relation": "UPGRADE_AUTHORITY",
+     "factIds": [
+      "5c0a0e18331da11e4e7403fa9a24379c70fa3bb6afc66bbbeb87a77b1a143a87"
+     ],
+     "bases": [
+      "decoded"
+     ],
+     "evidenceIds": [
+      "1b703b94391f87fbe179f45ac3e11041507d8dd7e3b665f1ec0bf0a1537507b2",
+      "b49cd4ae13761724a8ca32674e81d96d00798143609fe6ae45e1735c72134aac"
+     ],
+     "blockOrSlot": "453862887",
+     "asOf": "2026-10-06T09:35:54.685Z",
+     "layer": "Control"
+    },
+    {
+     "key": "a8de75975905bdb44a2361ad3822d6be4957e4d4bf145eeb1a8d4cc4d480305a",
+     "from": "solana:mainnet-beta:mSoLzYCxHdYgdzU16g5QSh3i5K3z3KZK7ytfqcJm7So",
+     "to": "none",
+     "relation": "FREEZE_AUTHORITY",
+     "factIds": [
+      "a8de75975905bdb44a2361ad3822d6be4957e4d4bf145eeb1a8d4cc4d480305a"
+     ],
+     "bases": [
+      "decoded"
+     ],
+     "evidenceIds": [
+      "ed68350090390e289c9c48ce87f74f1f348d5a76adca15bcab169d15dbbf7fbd"
+     ],
+     "blockOrSlot": "453862910",
+     "asOf": "2026-10-06T09:36:00.484Z",
+     "layer": "Control"
+    },
+    {
+     "key": "feb1be76e5f5267449eccb425c09e0d09c4bbecc8f51d9a8289bda746d81c0d7",
+     "from": "solana:mainnet-beta:mSoLzYCxHdYgdzU16g5QSh3i5K3z3KZK7ytfqcJm7So",
+     "to": "solana:mainnet-beta:MarBmsSgKXdrN1egZf5sqe1TMai9K1rChYNDJgjq7aD",
+     "relation": "ISSUED_BY_PROGRAM",
+     "factIds": [
+      "feb1be76e5f5267449eccb425c09e0d09c4bbecc8f51d9a8289bda746d81c0d7"
+     ],
+     "bases": [
+      "derived"
+     ],
+     "evidenceIds": [
+      "b49cd4ae13761724a8ca32674e81d96d00798143609fe6ae45e1735c72134aac",
+      "ed68350090390e289c9c48ce87f74f1f348d5a76adca15bcab169d15dbbf7fbd"
+     ],
+     "blockOrSlot": "453862910",
+     "asOf": "2026-10-06T09:36:00.484Z",
+     "layer": "Code"
+    },
+    {
+     "key": "174929272ea2b26004fa401dcb3d55abc92e70af4f83aa1a2abd8784fe89eaab",
+     "from": "solana:mainnet-beta:mSoLzYCxHdYgdzU16g5QSh3i5K3z3KZK7ytfqcJm7So",
+     "to": "solana:mainnet-beta:3JLPCS1qM2zRw3Dp6V4hZnYHd4toMNPkNesXdX9tg6KM",
+     "relation": "MINT_AUTHORITY",
+     "factIds": [
+      "174929272ea2b26004fa401dcb3d55abc92e70af4f83aa1a2abd8784fe89eaab"
+     ],
+     "bases": [
+      "decoded"
+     ],
+     "evidenceIds": [
+      "ed68350090390e289c9c48ce87f74f1f348d5a76adca15bcab169d15dbbf7fbd"
+     ],
+     "blockOrSlot": "453862910",
+     "asOf": "2026-10-06T09:36:00.484Z",
+     "layer": "Control"
+    }
+   ],
+   "truncated": false,
+   "total": 7
+  },
+  "fact-rows": {
+   "resultId": "fact-rows",
+   "shape": "table",
+   "columns": [
+    {
+     "name": "subject",
+     "role": "subject"
+    },
+    {
+     "name": "predicate",
+     "role": "label"
+    },
+    {
+     "name": "object",
+     "role": "value"
+    },
+    {
+     "name": "status",
+     "role": "status"
+    },
+    {
+     "name": "layer",
+     "role": "label"
+    },
+    {
+     "name": "subject kind",
+     "role": "label"
+    },
+    {
+     "name": "object kind",
+     "role": "label"
+    }
+   ],
+   "coverage": "mapped",
+   "coverageNotes": [],
+   "rows": [
+    {
+     "rowKind": "fact",
+     "key": "bd21f3a34f05b9bb3107a495724feda94832d0dd9940d4d94595ae199a256f9a",
+     "values": {
+      "subject": "solana:mainnet-beta:3Fb5DMRWoBLWD36Lp4BtG41LaFjVeEJNCH9YLNPYdVqj",
+      "predicate": "FREEZE_AUTHORITY",
+      "object": "none",
+      "status": "verified",
+      "layer": "Control",
+      "subject kind": "Token",
+      "object kind": null
+     },
+     "factIds": [
+      "bd21f3a34f05b9bb3107a495724feda94832d0dd9940d4d94595ae199a256f9a"
+     ],
+     "bases": [
+      "decoded"
+     ],
+     "evidenceIds": [
+      "03105cb04e3c36a92f2cc789580b909a1867c704924db91e98282353f47aed7e"
+     ],
+     "blockOrSlot": "468246960",
+     "asOf": "2026-11-11T19:51:03.048Z",
+     "snapshotIds": [
+      "solana-mainnet-beta.kamino-lend.main-market-20261111T195059Z"
+     ]
+    },
+    {
+     "rowKind": "fact",
+     "key": "41ece428ae7bd304689e6f8b731ed9391928090fa8107f237e7aef1d9c0f420a",
+     "values": {
+      "subject": "solana:mainnet-beta:7u3HeHxYDLhnCoErrtycNokbQYbWGzLs6JSDqGAv5PfF",
+      "predicate": "MARKET_OWNER",
+      "object": "solana:mainnet-beta:24LjDBukaUSHgPowcF2wY1XscnhChcBUDETN2UhBZMMT",
+      "status": "verified",
+      "layer": "Control",
+      "subject kind": "Market",
+      "object kind": null
+     },
+     "factIds": [
+      "41ece428ae7bd304689e6f8b731ed9391928090fa8107f237e7aef1d9c0f420a"
+     ],
+     "bases": [
+      "decoded"
+     ],
+     "evidenceIds": [
+      "f7e8ada39a7321770eb9220f6597666bd860cbbcfaed446857fcb01a403466e3"
+     ],
+     "blockOrSlot": "468246959",
+     "asOf": "2026-11-11T19:51:02.928Z",
+     "snapshotIds": [
+      "solana-mainnet-beta.kamino-lend.main-market-20261111T195059Z"
+     ]
+    },
+    {
+     "rowKind": "unknown",
+     "key": "d93224066c090b60f587680f6509188901cba0feb65259ffc7bd12a844137fb2",
+     "values": {
+      "subject": "solana:mainnet-beta:A9rQoX1sictAQkyXxaZA8nz674xutHwoqpK2mwLyexCZ",
+      "predicate": "CONTROLLED_BY",
+      "object": "unknown",
+      "status": "unverified",
+      "layer": "Control",
+      "subject kind": null,
+      "object kind": null
+     },
+     "factIds": [
+      "d93224066c090b60f587680f6509188901cba0feb65259ffc7bd12a844137fb2"
+     ],
+     "bases": [
+      "unknown"
+     ],
+     "evidenceIds": [
+      "32bc5148ebdcd971fcad600ee376b4226dadbdd4bfef6c4e7fe8227b65247f93"
+     ],
+     "blockOrSlot": "468246959",
+     "asOf": "2026-11-11T19:51:02.928Z",
+     "snapshotIds": [
+      "solana-mainnet-beta.kamino-lend.main-market-20261111T195059Z"
+     ]
+    }
+   ],
+   "truncated": false,
+   "total": 3
+  },
+  "path-filled": {
+   "resultId": "path-filled",
+   "shape": "path",
+   "columns": [
+    {
+     "name": "from",
+     "role": "label"
+    },
+    {
+     "name": "to",
+     "role": "label"
+    },
+    {
+     "name": "mechanism",
+     "role": "label"
+    },
+    {
+     "name": "status",
+     "role": "status"
+    },
+    {
+     "name": "amount",
+     "role": "amount"
+    },
+    {
+     "name": "unit",
+     "role": "unit"
+    },
+    {
+     "name": "window",
+     "role": "time"
+    },
+    {
+     "name": "transactions",
+     "role": "amount"
+    }
+   ],
+   "coverage": "mapped",
+   "coverageNotes": [],
+   "rows": [
+    {
+     "rowKind": "fact",
+     "key": "rewards-fee",
+     "values": {
+      "from": "Staking rewards",
+      "to": "Reward fee",
+      "mechanism": "Reward fee",
+      "status": "enforced-by-code",
+      "amount": null,
+      "unit": null,
+      "window": null,
+      "transactions": null
+     },
+     "factIds": [],
+     "bases": [
+      "declared",
+      "decoded"
+     ],
+     "evidenceIds": [
+      "5e085ba366659b471b062c95a1b0bf70de18da00a4b86fb0349550c919ea9a5c",
+      "6939fba768804f745605fa5e71cdd9709a2beb467a2bbe762a9d9ea8c1271194",
+      "400b0a432a2f764c50e098a15e85a8d40359bb61a67f4b78eeb10639fbc005df",
+      "90f06a0982f6cebd4b7a83a3ccbdd15bbbb99361a139e6c42eb6c68543786b99",
+      "ae1da64a4b065679917059111a04876c188d2fe5f80508b7304ed25d4fb0a25e",
+      "eadb1d3273b12f8cc44238cd004248b2b8e54bad111b02268b53977a9ef713fc",
+      "cf1d089a97844394b0fc70f5d495c73a18e2b5d42838c2eb5bfe9fc620ce3721",
+      "561999a1de642a12fe80359bfea5054a9f86b6bbfc6b4f5627e668c1f529dec2",
+      "c6e7b3cac9d934c169937729463f344dcabb50257fab4eb9c5ce7b0a8805204a",
+      "83619545fe46d7696d2503268f22268a30cf159e81c8f4856a42f588108ab77f",
+      "00420522048927e6f83bfe19c96202a538240436b1160cc3cd42f9afbca8c391",
+      "785e66ee5bd925c552907daed2dee3f1fa06d958608ef35c151a6df84e152de8",
+      "b72a2bcf2f4a8ed489609301970b03accda6aad67b5c86c3fb3d8f02342ca16e"
+     ],
+     "blockOrSlot": 453862909,
+     "asOf": "2026-10-06T09:36:00.139Z",
+     "snapshotIds": [
+      "solana-mainnet-beta.marinade.2026-10-06"
+     ]
+    },
+    {
+     "rowKind": "fact",
+     "key": "liquid-lp-fee",
+     "values": {
+      "from": "Liquid unstake",
+      "to": "LP fee",
+      "mechanism": "Liquid unstake LP fee",
+      "status": "enforced-by-code",
+      "amount": null,
+      "unit": null,
+      "window": null,
+      "transactions": null
+     },
+     "factIds": [],
+     "bases": [
+      "declared",
+      "decoded"
+     ],
+     "evidenceIds": [
+      "5e085ba366659b471b062c95a1b0bf70de18da00a4b86fb0349550c919ea9a5c",
+      "6939fba768804f745605fa5e71cdd9709a2beb467a2bbe762a9d9ea8c1271194"
+     ],
+     "blockOrSlot": 453862901,
+     "asOf": "2026-10-06T09:35:57.927Z",
+     "snapshotIds": [
+      "solana-mainnet-beta.marinade.2026-10-06"
+     ]
+    },
+    {
+     "rowKind": "fact",
+     "key": "withdraw-fee",
+     "values": {
+      "from": "Withdraw stake account",
+      "to": "Stake-account withdrawal fee",
+      "mechanism": "Withdraw stake account fee",
+      "status": "enforced-by-code",
+      "amount": null,
+      "unit": null,
+      "window": null,
+      "transactions": null
+     },
+     "factIds": [],
+     "bases": [
+      "declared",
+      "decoded"
+     ],
+     "evidenceIds": [
+      "5e085ba366659b471b062c95a1b0bf70de18da00a4b86fb0349550c919ea9a5c",
+      "6939fba768804f745605fa5e71cdd9709a2beb467a2bbe762a9d9ea8c1271194",
+      "400b0a432a2f764c50e098a15e85a8d40359bb61a67f4b78eeb10639fbc005df",
+      "90f06a0982f6cebd4b7a83a3ccbdd15bbbb99361a139e6c42eb6c68543786b99",
+      "ae1da64a4b065679917059111a04876c188d2fe5f80508b7304ed25d4fb0a25e",
+      "eadb1d3273b12f8cc44238cd004248b2b8e54bad111b02268b53977a9ef713fc",
+      "cf1d089a97844394b0fc70f5d495c73a18e2b5d42838c2eb5bfe9fc620ce3721",
+      "561999a1de642a12fe80359bfea5054a9f86b6bbfc6b4f5627e668c1f529dec2",
+      "c6e7b3cac9d934c169937729463f344dcabb50257fab4eb9c5ce7b0a8805204a",
+      "83619545fe46d7696d2503268f22268a30cf159e81c8f4856a42f588108ab77f",
+      "00420522048927e6f83bfe19c96202a538240436b1160cc3cd42f9afbca8c391"
+     ],
+     "blockOrSlot": 453862909,
+     "asOf": "2026-10-06T09:36:00.139Z",
+     "snapshotIds": [
+      "solana-mainnet-beta.marinade.2026-10-06"
+     ]
+    },
+    {
+     "rowKind": "fact",
+     "key": "delayed-fee",
+     "values": {
+      "from": "Delayed unstake",
+      "to": "Delayed-unstake fee",
+      "mechanism": "Delayed unstake fee",
+      "status": "enforced-by-code",
+      "amount": null,
+      "unit": null,
+      "window": null,
+      "transactions": null
+     },
+     "factIds": [],
+     "bases": [
+      "declared",
+      "decoded"
+     ],
+     "evidenceIds": [
+      "5e085ba366659b471b062c95a1b0bf70de18da00a4b86fb0349550c919ea9a5c",
+      "6939fba768804f745605fa5e71cdd9709a2beb467a2bbe762a9d9ea8c1271194",
+      "400b0a432a2f764c50e098a15e85a8d40359bb61a67f4b78eeb10639fbc005df",
+      "90f06a0982f6cebd4b7a83a3ccbdd15bbbb99361a139e6c42eb6c68543786b99",
+      "ae1da64a4b065679917059111a04876c188d2fe5f80508b7304ed25d4fb0a25e",
+      "eadb1d3273b12f8cc44238cd004248b2b8e54bad111b02268b53977a9ef713fc",
+      "cf1d089a97844394b0fc70f5d495c73a18e2b5d42838c2eb5bfe9fc620ce3721",
+      "561999a1de642a12fe80359bfea5054a9f86b6bbfc6b4f5627e668c1f529dec2",
+      "c6e7b3cac9d934c169937729463f344dcabb50257fab4eb9c5ce7b0a8805204a",
+      "83619545fe46d7696d2503268f22268a30cf159e81c8f4856a42f588108ab77f",
+      "00420522048927e6f83bfe19c96202a538240436b1160cc3cd42f9afbca8c391",
+      "785e66ee5bd925c552907daed2dee3f1fa06d958608ef35c151a6df84e152de8"
+     ],
+     "blockOrSlot": 453862909,
+     "asOf": "2026-10-06T09:36:00.139Z",
+     "snapshotIds": [
+      "solana-mainnet-beta.marinade.2026-10-06"
+     ]
+    },
+    {
+     "rowKind": "fact",
+     "key": "delayed-destination",
+     "values": {
+      "from": "Delayed-unstake fee",
+      "to": "No destination account declared",
+      "mechanism": "Delayed-unstake destination",
+      "status": "pending",
+      "amount": null,
+      "unit": null,
+      "window": null,
+      "transactions": null
+     },
+     "factIds": [],
+     "bases": [
+      "declared",
+      "decoded"
+     ],
+     "evidenceIds": [
+      "5e085ba366659b471b062c95a1b0bf70de18da00a4b86fb0349550c919ea9a5c",
+      "6939fba768804f745605fa5e71cdd9709a2beb467a2bbe762a9d9ea8c1271194",
+      "400b0a432a2f764c50e098a15e85a8d40359bb61a67f4b78eeb10639fbc005df",
+      "90f06a0982f6cebd4b7a83a3ccbdd15bbbb99361a139e6c42eb6c68543786b99",
+      "ae1da64a4b065679917059111a04876c188d2fe5f80508b7304ed25d4fb0a25e",
+      "eadb1d3273b12f8cc44238cd004248b2b8e54bad111b02268b53977a9ef713fc",
+      "cf1d089a97844394b0fc70f5d495c73a18e2b5d42838c2eb5bfe9fc620ce3721",
+      "561999a1de642a12fe80359bfea5054a9f86b6bbfc6b4f5627e668c1f529dec2",
+      "c6e7b3cac9d934c169937729463f344dcabb50257fab4eb9c5ce7b0a8805204a",
+      "83619545fe46d7696d2503268f22268a30cf159e81c8f4856a42f588108ab77f",
+      "00420522048927e6f83bfe19c96202a538240436b1160cc3cd42f9afbca8c391",
+      "785e66ee5bd925c552907daed2dee3f1fa06d958608ef35c151a6df84e152de8"
+     ],
+     "blockOrSlot": 453862909,
+     "asOf": "2026-10-06T09:36:00.139Z",
+     "snapshotIds": [
+      "solana-mainnet-beta.marinade.2026-10-06"
+     ]
+    },
+    {
+     "rowKind": "fact",
+     "key": "lock-vote",
+     "values": {
+      "from": "MNDE locked in VSR",
+      "to": "MNDE voters (VSR)",
+      "mechanism": "Registrar voting-weight configuration",
+      "status": "enforced-by-code",
+      "amount": null,
+      "unit": null,
+      "window": null,
+      "transactions": null
+     },
+     "factIds": [],
+     "bases": [
+      "decoded",
+      "derived"
+     ],
+     "evidenceIds": [
+      "1d1d87557b361a01d09e7525c4a892bf7314deadbc1dff8060eecb80f9208bf5",
+      "90f06a0982f6cebd4b7a83a3ccbdd15bbbb99361a139e6c42eb6c68543786b99",
+      "ae1da64a4b065679917059111a04876c188d2fe5f80508b7304ed25d4fb0a25e",
+      "eadb1d3273b12f8cc44238cd004248b2b8e54bad111b02268b53977a9ef713fc",
+      "cf1d089a97844394b0fc70f5d495c73a18e2b5d42838c2eb5bfe9fc620ce3721",
+      "561999a1de642a12fe80359bfea5054a9f86b6bbfc6b4f5627e668c1f529dec2",
+      "c6e7b3cac9d934c169937729463f344dcabb50257fab4eb9c5ce7b0a8805204a",
+      "83619545fe46d7696d2503268f22268a30cf159e81c8f4856a42f588108ab77f",
+      "00420522048927e6f83bfe19c96202a538240436b1160cc3cd42f9afbca8c391",
+      "fb7d14dcaec23f1404a158e5c4a3e889fae18a3338b5db1d772eeb267fb6327c",
+      "f9a0fd0cfa8936a61d0485cde18e97fe24390f2523770d3722dc86dc13c64b98",
+      "62064ba4e9822ae6bac672e04b0e5d94ae38289f29c5921feebc729bd2a997e5",
+      "f2c02e426cf5ae72f3e5173e2679446a4e5ab9d5c669f444cfc83aa0cbcb4221"
+     ],
+     "blockOrSlot": 453862912,
+     "asOf": "2026-10-06T09:36:01.089Z",
+     "snapshotIds": [
+      "solana-mainnet-beta.marinade.2026-10-06"
+     ]
+    },
+    {
+     "rowKind": "fact",
+     "key": "council-admin",
+     "values": {
+      "from": "Marinade DAO council (5 members)",
+      "to": "Admin authority",
+      "mechanism": "Council governance holds admin role",
+      "status": "enforced-by-code",
+      "amount": null,
+      "unit": null,
+      "window": null,
+      "transactions": null
+     },
+     "factIds": [],
+     "bases": [
+      "decoded",
+      "derived"
+     ],
+     "evidenceIds": [
+      "6939fba768804f745605fa5e71cdd9709a2beb467a2bbe762a9d9ea8c1271194",
+      "1d1d87557b361a01d09e7525c4a892bf7314deadbc1dff8060eecb80f9208bf5",
+      "90f06a0982f6cebd4b7a83a3ccbdd15bbbb99361a139e6c42eb6c68543786b99",
+      "ae1da64a4b065679917059111a04876c188d2fe5f80508b7304ed25d4fb0a25e",
+      "eadb1d3273b12f8cc44238cd004248b2b8e54bad111b02268b53977a9ef713fc",
+      "cf1d089a97844394b0fc70f5d495c73a18e2b5d42838c2eb5bfe9fc620ce3721",
+      "561999a1de642a12fe80359bfea5054a9f86b6bbfc6b4f5627e668c1f529dec2",
+      "c6e7b3cac9d934c169937729463f344dcabb50257fab4eb9c5ce7b0a8805204a",
+      "83619545fe46d7696d2503268f22268a30cf159e81c8f4856a42f588108ab77f",
+      "00420522048927e6f83bfe19c96202a538240436b1160cc3cd42f9afbca8c391",
+      "fb7d14dcaec23f1404a158e5c4a3e889fae18a3338b5db1d772eeb267fb6327c",
+      "f9a0fd0cfa8936a61d0485cde18e97fe24390f2523770d3722dc86dc13c64b98",
+      "62064ba4e9822ae6bac672e04b0e5d94ae38289f29c5921feebc729bd2a997e5",
+      "f2c02e426cf5ae72f3e5173e2679446a4e5ab9d5c669f444cfc83aa0cbcb4221",
+      "f7d0fa18ece45a5f994eb4ff9a94b2980e350fc90a93849dd15c97146574bfd7",
+      "8adac793e00711dc0369e137f069e3bab0733f189fcdd1a9db630c6a452fdee4",
+      "a9157fa79efa473c79fdabcc063d0250d00546a5ab0619b260db244d1e7ab479",
+      "36572609353494178013661c47e04c70b6c6d5aedb16a892db49ea2a51f08915",
+      "e51684d41d770b5a4c7902c95e61e46ee3a67acb26b032afa3dc99a59a6281ae",
+      "efc0e86985ecf37da82a17d7f1306be90e524cd70f2154465bb5c7e6b8d05086",
+      "400b0a432a2f764c50e098a15e85a8d40359bb61a67f4b78eeb10639fbc005df",
+      "5e085ba366659b471b062c95a1b0bf70de18da00a4b86fb0349550c919ea9a5c"
+     ],
+     "blockOrSlot": 453883706,
+     "asOf": "2026-10-06T11:08:26.204Z",
+     "snapshotIds": [
+      "solana-mainnet-beta.marinade.2026-10-06"
+     ]
+    },
+    {
+     "rowKind": "fact",
+     "key": "admin-fees",
+     "values": {
+      "from": "Admin authority",
+      "to": "Fee parameters",
+      "mechanism": "Admin configures fees",
+      "status": "enforced-by-code",
+      "amount": null,
+      "unit": null,
+      "window": null,
+      "transactions": null
+     },
+     "factIds": [],
+     "bases": [
+      "declared",
+      "decoded",
+      "derived"
+     ],
+     "evidenceIds": [
+      "5e085ba366659b471b062c95a1b0bf70de18da00a4b86fb0349550c919ea9a5c",
+      "6939fba768804f745605fa5e71cdd9709a2beb467a2bbe762a9d9ea8c1271194",
+      "400b0a432a2f764c50e098a15e85a8d40359bb61a67f4b78eeb10639fbc005df",
+      "90f06a0982f6cebd4b7a83a3ccbdd15bbbb99361a139e6c42eb6c68543786b99",
+      "ae1da64a4b065679917059111a04876c188d2fe5f80508b7304ed25d4fb0a25e",
+      "eadb1d3273b12f8cc44238cd004248b2b8e54bad111b02268b53977a9ef713fc",
+      "cf1d089a97844394b0fc70f5d495c73a18e2b5d42838c2eb5bfe9fc620ce3721",
+      "561999a1de642a12fe80359bfea5054a9f86b6bbfc6b4f5627e668c1f529dec2",
+      "c6e7b3cac9d934c169937729463f344dcabb50257fab4eb9c5ce7b0a8805204a",
+      "83619545fe46d7696d2503268f22268a30cf159e81c8f4856a42f588108ab77f",
+      "00420522048927e6f83bfe19c96202a538240436b1160cc3cd42f9afbca8c391",
+      "1d1d87557b361a01d09e7525c4a892bf7314deadbc1dff8060eecb80f9208bf5",
+      "fb7d14dcaec23f1404a158e5c4a3e889fae18a3338b5db1d772eeb267fb6327c",
+      "f9a0fd0cfa8936a61d0485cde18e97fe24390f2523770d3722dc86dc13c64b98",
+      "62064ba4e9822ae6bac672e04b0e5d94ae38289f29c5921feebc729bd2a997e5",
+      "f2c02e426cf5ae72f3e5173e2679446a4e5ab9d5c669f444cfc83aa0cbcb4221",
+      "f7d0fa18ece45a5f994eb4ff9a94b2980e350fc90a93849dd15c97146574bfd7",
+      "8adac793e00711dc0369e137f069e3bab0733f189fcdd1a9db630c6a452fdee4",
+      "a9157fa79efa473c79fdabcc063d0250d00546a5ab0619b260db244d1e7ab479",
+      "36572609353494178013661c47e04c70b6c6d5aedb16a892db49ea2a51f08915",
+      "e51684d41d770b5a4c7902c95e61e46ee3a67acb26b032afa3dc99a59a6281ae",
+      "efc0e86985ecf37da82a17d7f1306be90e524cd70f2154465bb5c7e6b8d05086"
+     ],
+     "blockOrSlot": 453883706,
+     "asOf": "2026-10-06T11:08:26.204Z",
+     "snapshotIds": [
+      "solana-mainnet-beta.marinade.2026-10-06"
+     ]
+    },
+    {
+     "rowKind": "fact",
+     "key": "vote-treasury",
+     "values": {
+      "from": "MNDE voters (VSR)",
+      "to": "DAO treasury governance",
+      "mechanism": "MNDE community voting",
+      "status": "enforced-by-code",
+      "amount": null,
+      "unit": null,
+      "window": null,
+      "transactions": null
+     },
+     "factIds": [],
+     "bases": [
+      "decoded",
+      "derived"
+     ],
+     "evidenceIds": [
+      "f7d0fa18ece45a5f994eb4ff9a94b2980e350fc90a93849dd15c97146574bfd7",
+      "8adac793e00711dc0369e137f069e3bab0733f189fcdd1a9db630c6a452fdee4",
+      "a9157fa79efa473c79fdabcc063d0250d00546a5ab0619b260db244d1e7ab479",
+      "36572609353494178013661c47e04c70b6c6d5aedb16a892db49ea2a51f08915",
+      "e51684d41d770b5a4c7902c95e61e46ee3a67acb26b032afa3dc99a59a6281ae",
+      "efc0e86985ecf37da82a17d7f1306be90e524cd70f2154465bb5c7e6b8d05086",
+      "561999a1de642a12fe80359bfea5054a9f86b6bbfc6b4f5627e668c1f529dec2",
+      "c6e7b3cac9d934c169937729463f344dcabb50257fab4eb9c5ce7b0a8805204a",
+      "8a76ddc2317fc8dbb5d288c200c5f1b85877d890ac1c6294b0fa6fc6d5149253",
+      "871c79ff21ebb038d1d5017e1125fce3072b6ee3fa52c72d1cde47cca49fa4fe",
+      "1d1d87557b361a01d09e7525c4a892bf7314deadbc1dff8060eecb80f9208bf5",
+      "90f06a0982f6cebd4b7a83a3ccbdd15bbbb99361a139e6c42eb6c68543786b99",
+      "ae1da64a4b065679917059111a04876c188d2fe5f80508b7304ed25d4fb0a25e",
+      "eadb1d3273b12f8cc44238cd004248b2b8e54bad111b02268b53977a9ef713fc",
+      "cf1d089a97844394b0fc70f5d495c73a18e2b5d42838c2eb5bfe9fc620ce3721",
+      "83619545fe46d7696d2503268f22268a30cf159e81c8f4856a42f588108ab77f",
+      "00420522048927e6f83bfe19c96202a538240436b1160cc3cd42f9afbca8c391",
+      "fb7d14dcaec23f1404a158e5c4a3e889fae18a3338b5db1d772eeb267fb6327c",
+      "f9a0fd0cfa8936a61d0485cde18e97fe24390f2523770d3722dc86dc13c64b98",
+      "62064ba4e9822ae6bac672e04b0e5d94ae38289f29c5921feebc729bd2a997e5",
+      "f2c02e426cf5ae72f3e5173e2679446a4e5ab9d5c669f444cfc83aa0cbcb4221"
+     ],
+     "blockOrSlot": 453883706,
+     "asOf": "2026-10-06T11:08:26.204Z",
+     "snapshotIds": [
+      "solana-mainnet-beta.marinade.2026-10-06"
+     ]
+    },
+    {
+     "rowKind": "fact",
+     "key": "governance-treasury",
+     "values": {
+      "from": "DAO treasury governance",
+      "to": "DAO treasury MNDE",
+      "mechanism": "Governance controls native treasury",
+      "status": "enforced-by-code",
+      "amount": null,
+      "unit": null,
+      "window": null,
+      "transactions": null
+     },
+     "factIds": [],
+     "bases": [
+      "decoded",
+      "derived"
+     ],
+     "evidenceIds": [
+      "8a76ddc2317fc8dbb5d288c200c5f1b85877d890ac1c6294b0fa6fc6d5149253",
+      "36572609353494178013661c47e04c70b6c6d5aedb16a892db49ea2a51f08915",
+      "561999a1de642a12fe80359bfea5054a9f86b6bbfc6b4f5627e668c1f529dec2",
+      "871c79ff21ebb038d1d5017e1125fce3072b6ee3fa52c72d1cde47cca49fa4fe",
+      "f7d0fa18ece45a5f994eb4ff9a94b2980e350fc90a93849dd15c97146574bfd7",
+      "8adac793e00711dc0369e137f069e3bab0733f189fcdd1a9db630c6a452fdee4",
+      "a9157fa79efa473c79fdabcc063d0250d00546a5ab0619b260db244d1e7ab479",
+      "e51684d41d770b5a4c7902c95e61e46ee3a67acb26b032afa3dc99a59a6281ae",
+      "efc0e86985ecf37da82a17d7f1306be90e524cd70f2154465bb5c7e6b8d05086"
+     ],
+     "blockOrSlot": 453883706,
+     "asOf": "2026-10-06T11:08:26.204Z",
+     "snapshotIds": [
+      "solana-mainnet-beta.marinade.2026-10-06"
+     ]
+    },
+    {
+     "rowKind": "fact",
+     "key": "buyback-recipient:3HT41nesAgcoNDeGAVFKwss5mzScMH2Uik6pcP71xnhB",
+     "values": {
+      "from": "MIP-22 buyback wallet",
+      "to": "Distributor vault; NewClaim ×4, NewDistributor ×1 in program logs for meRdrpyDCAbQxunjZSLmJ78GxQcn4fJUvqU93GoHZr1",
+      "mechanism": "NewClaim ×4, NewDistributor ×1 in program logs for meRdrpyDCAbQxunjZSLmJ78GxQcn4fJUvqU93GoHZr1",
+      "status": "operated-by-accounts",
+      "amount": "4,244,303.363608441",
+      "unit": "MNDE",
+      "window": "2026-10-01T09:32:13.000Z to 2026-10-01T09:32:13.000Z",
+      "transactions": 1
+     },
+     "factIds": [],
+     "bases": [
+      "observed"
+     ],
+     "evidenceIds": [
+      "023780b3d9cc8d36243bc3329668f78220f05fd1756b435f5763ba4dbef90f17",
+      "c50eb9d3a4d4ea29202dfe0c2f61ea8f5cd041a18f06bc5b774d0fd0c989dc97",
+      "bcb6ec5b0ada84c4d6ac445cb11365a57f5d20dcd60fb219e3149ecc0fde4e73",
+      "90f06a0982f6cebd4b7a83a3ccbdd15bbbb99361a139e6c42eb6c68543786b99",
+      "ae1da64a4b065679917059111a04876c188d2fe5f80508b7304ed25d4fb0a25e",
+      "eadb1d3273b12f8cc44238cd004248b2b8e54bad111b02268b53977a9ef713fc",
+      "cf1d089a97844394b0fc70f5d495c73a18e2b5d42838c2eb5bfe9fc620ce3721",
+      "561999a1de642a12fe80359bfea5054a9f86b6bbfc6b4f5627e668c1f529dec2",
+      "c6e7b3cac9d934c169937729463f344dcabb50257fab4eb9c5ce7b0a8805204a",
+      "83619545fe46d7696d2503268f22268a30cf159e81c8f4856a42f588108ab77f",
+      "00420522048927e6f83bfe19c96202a538240436b1160cc3cd42f9afbca8c391",
+      "28313508c2f12d8c695a3f08de9e1ccb2b1d1469578aa4583e8cb3c6a9689fb9",
+      "bbe196b7ba3d7af61a9a6cef02cb5c9d7705b2d302acfa06619b08207d30c796",
+      "f27e34a73c4e7c8875aa22c47f334b582b18ceceb1fb891b49cb91f012627c6d",
+      "182eb6b837f965842919f42f8e479f078d00e3ab17eae9f453ad66e3294b7815",
+      "f2c1578cca452df3dcd59ff2666a0b7e443dd2d4ea7c2fec9ea1dd5e0acaa93f",
+      "4f8579ef8b2847e33d114a6ab0b069b2d667670725192c7e3906727d0f1052d7",
+      "3214c25af0dc4980febe11b9cf43fbd897be6476f3859b18c97998adf904b9a0"
+     ],
+     "blockOrSlot": 453881334,
+     "asOf": "2026-10-06T10:57:55.844Z",
+     "snapshotIds": [
+      "solana-mainnet-beta.marinade.2026-10-06"
+     ]
+    },
+    {
+     "rowKind": "fact",
+     "key": "buyback-recipient:7iWnBRRhBCiNXXPhqiGzvvBkKrvFSWqqmxRyu9VyYBxE",
+     "values": {
+      "from": "MIP-22 buyback wallet",
+      "to": "Account owned by program 11111111111111111111111111111111",
+      "mechanism": "Observed MNDE sent from buyback wallet",
+      "status": "operated-by-accounts",
+      "amount": "29,962.757894446",
+      "unit": "MNDE",
+      "window": "2026-07-03T13:24:51.000Z to 2026-07-03T13:24:51.000Z",
+      "transactions": 1
+     },
+     "factIds": [],
+     "bases": [
+      "observed"
+     ],
+     "evidenceIds": [
+      "023780b3d9cc8d36243bc3329668f78220f05fd1756b435f5763ba4dbef90f17",
+      "c734d36976e1bef0258e40ffcffdb712ed29f715fc89f2ca8d740c81f0377f48",
+      "25fee6157acd0bb0013f1c1a003024bd3d72346640cb30939ef10ebf38992e95",
+      "90f06a0982f6cebd4b7a83a3ccbdd15bbbb99361a139e6c42eb6c68543786b99",
+      "ae1da64a4b065679917059111a04876c188d2fe5f80508b7304ed25d4fb0a25e",
+      "eadb1d3273b12f8cc44238cd004248b2b8e54bad111b02268b53977a9ef713fc",
+      "cf1d089a97844394b0fc70f5d495c73a18e2b5d42838c2eb5bfe9fc620ce3721",
+      "561999a1de642a12fe80359bfea5054a9f86b6bbfc6b4f5627e668c1f529dec2",
+      "c6e7b3cac9d934c169937729463f344dcabb50257fab4eb9c5ce7b0a8805204a",
+      "83619545fe46d7696d2503268f22268a30cf159e81c8f4856a42f588108ab77f",
+      "00420522048927e6f83bfe19c96202a538240436b1160cc3cd42f9afbca8c391"
+     ],
+     "blockOrSlot": 453874512,
+     "asOf": "2026-10-06T10:27:39.996Z",
+     "snapshotIds": [
+      "solana-mainnet-beta.marinade.2026-10-06"
+     ]
+    }
+   ],
+   "truncated": false,
+   "total": 12
+  },
+  "findings-filled": {
+   "resultId": "findings-filled",
+   "shape": "table",
+   "columns": [
+    {
+     "name": "finding",
+     "role": "note"
+    },
+    {
+     "name": "status",
+     "role": "status"
+    }
+   ],
+   "coverage": "mapped",
+   "coverageNotes": [],
+   "rows": [
+    {
+     "rowKind": "scope",
+     "key": "short-answer",
+     "values": {
+      "finding": "Program code routes the liquid-unstake LP treasury cut (50.00 % of the LP fee) and the stake-account withdrawal fee (0.20 %) into the treasury mSOL account; the reward fee is 0.00 %. Moving treasury funds, buying MNDE and funding the distributor depend on account actions; 4 of 4 claims observed so far (15,416.329929463 MNDE) went to current MNDE lockers in VSR. The Marinade DAO council (5 members) sets the fee route through its admin governance; MNDE holders cannot vote there.",
+      "status": "partly"
+     },
+     "factIds": [],
+     "bases": [],
+     "evidenceIds": [],
+     "blockOrSlot": null,
+     "asOf": null,
+     "snapshotIds": [
+      "solana-mainnet-beta.marinade.2026-10-06"
+     ],
+     "scopeSource": "src/tokenomics/sections.ts, short answer to: Is there an enforceable path from Marinade's activity to MNDE holders, what offsets it, and who can change it?"
+    },
+    {
+     "rowKind": "fact",
+     "key": "fee-control",
+     "values": {
+      "finding": "Liquid-staking fees, caps, LP parameters, the treasury destination and role reassignment are changed through a governance in which only the Marinade DAO council (5 members) votes; MNDE holders cannot propose or vote there.",
+      "status": "verified"
+     },
+     "factIds": [],
+     "bases": [
+      "derived"
+     ],
+     "evidenceIds": [
+      "400b0a432a2f764c50e098a15e85a8d40359bb61a67f4b78eeb10639fbc005df",
+      "90f06a0982f6cebd4b7a83a3ccbdd15bbbb99361a139e6c42eb6c68543786b99",
+      "ae1da64a4b065679917059111a04876c188d2fe5f80508b7304ed25d4fb0a25e",
+      "eadb1d3273b12f8cc44238cd004248b2b8e54bad111b02268b53977a9ef713fc",
+      "cf1d089a97844394b0fc70f5d495c73a18e2b5d42838c2eb5bfe9fc620ce3721",
+      "561999a1de642a12fe80359bfea5054a9f86b6bbfc6b4f5627e668c1f529dec2",
+      "c6e7b3cac9d934c169937729463f344dcabb50257fab4eb9c5ce7b0a8805204a",
+      "83619545fe46d7696d2503268f22268a30cf159e81c8f4856a42f588108ab77f",
+      "00420522048927e6f83bfe19c96202a538240436b1160cc3cd42f9afbca8c391",
+      "5e085ba366659b471b062c95a1b0bf70de18da00a4b86fb0349550c919ea9a5c",
+      "6939fba768804f745605fa5e71cdd9709a2beb467a2bbe762a9d9ea8c1271194",
+      "f7d0fa18ece45a5f994eb4ff9a94b2980e350fc90a93849dd15c97146574bfd7",
+      "8adac793e00711dc0369e137f069e3bab0733f189fcdd1a9db630c6a452fdee4",
+      "a9157fa79efa473c79fdabcc063d0250d00546a5ab0619b260db244d1e7ab479",
+      "36572609353494178013661c47e04c70b6c6d5aedb16a892db49ea2a51f08915",
+      "e51684d41d770b5a4c7902c95e61e46ee3a67acb26b032afa3dc99a59a6281ae",
+      "efc0e86985ecf37da82a17d7f1306be90e524cd70f2154465bb5c7e6b8d05086"
+     ],
+     "blockOrSlot": 453883706,
+     "asOf": "2026-10-06T11:08:26.204Z",
+     "snapshotIds": [
+      "solana-mainnet-beta.marinade.2026-10-06"
+     ]
+    },
+    {
+     "rowKind": "fact",
+     "key": "reward-fee",
+     "values": {
+      "finding": "The reward fee is 0.00 %; this takes 0.00 % of staking rewards.",
+      "status": "verified"
+     },
+     "factIds": [],
+     "bases": [
+      "derived"
+     ],
+     "evidenceIds": [
+      "5e085ba366659b471b062c95a1b0bf70de18da00a4b86fb0349550c919ea9a5c",
+      "6939fba768804f745605fa5e71cdd9709a2beb467a2bbe762a9d9ea8c1271194",
+      "400b0a432a2f764c50e098a15e85a8d40359bb61a67f4b78eeb10639fbc005df",
+      "90f06a0982f6cebd4b7a83a3ccbdd15bbbb99361a139e6c42eb6c68543786b99",
+      "ae1da64a4b065679917059111a04876c188d2fe5f80508b7304ed25d4fb0a25e",
+      "eadb1d3273b12f8cc44238cd004248b2b8e54bad111b02268b53977a9ef713fc",
+      "cf1d089a97844394b0fc70f5d495c73a18e2b5d42838c2eb5bfe9fc620ce3721",
+      "561999a1de642a12fe80359bfea5054a9f86b6bbfc6b4f5627e668c1f529dec2",
+      "c6e7b3cac9d934c169937729463f344dcabb50257fab4eb9c5ce7b0a8805204a",
+      "83619545fe46d7696d2503268f22268a30cf159e81c8f4856a42f588108ab77f",
+      "00420522048927e6f83bfe19c96202a538240436b1160cc3cd42f9afbca8c391"
+     ],
+     "blockOrSlot": 453862909,
+     "asOf": "2026-10-06T09:36:00.139Z",
+     "snapshotIds": [
+      "solana-mainnet-beta.marinade.2026-10-06"
+     ]
+    }
+   ],
+   "truncated": false,
+   "total": 3
+  },
+  "claims-filled": {
+   "resultId": "claims-filled",
+   "shape": "table",
+   "columns": [
+    {
+     "name": "claim",
+     "role": "note"
+    },
+    {
+     "name": "source",
+     "role": "address"
+    },
+    {
+     "name": "chain result",
+     "role": "note"
+    },
+    {
+     "name": "status",
+     "role": "status"
+    }
+   ],
+   "coverage": "mapped",
+   "coverageNotes": [],
+   "rows": [
+    {
+     "rowKind": "fact",
+     "key": "g1:State.msolMint",
+     "values": {
+      "claim": "State.msolMint matches the declared registry",
+      "source": "packs/marinade/registry.json",
+      "chain result": "mSoLzYCxHdYgdzU16g5QSh3i5K3z3KZK7ytfqcJm7So; expected mSoLzYCxHdYgdzU16g5QSh3i5K3z3KZK7ytfqcJm7So",
+      "status": "verified"
+     },
+     "factIds": [],
+     "bases": [
+      "decoded",
+      "declared"
+     ],
+     "evidenceIds": [
+      "5e085ba366659b471b062c95a1b0bf70de18da00a4b86fb0349550c919ea9a5c",
+      "6939fba768804f745605fa5e71cdd9709a2beb467a2bbe762a9d9ea8c1271194",
+      "b72a2bcf2f4a8ed489609301970b03accda6aad67b5c86c3fb3d8f02342ca16e"
+     ],
+     "blockOrSlot": 453862901,
+     "asOf": "2026-10-06T09:35:57.927Z",
+     "snapshotIds": [
+      "solana-mainnet-beta.marinade.2026-10-06"
+     ]
+    },
+    {
+     "rowKind": "fact",
+     "key": "pack:native-staking-proxy-claim-2",
+     "values": {
+      "claim": "Marinade Native charges no deposit or management fee; Marinade holds only the stake authority",
+      "source": "docs:marinade-native",
+      "chain result": "This claim is not established by the upgrade-authority read.",
+      "status": "claimed"
+     },
+     "factIds": [],
+     "bases": [
+      "claimed",
+      "decoded"
+     ],
+     "evidenceIds": [
+      "785e66ee5bd925c552907daed2dee3f1fa06d958608ef35c151a6df84e152de8",
+      "b72a2bcf2f4a8ed489609301970b03accda6aad67b5c86c3fb3d8f02342ca16e",
+      "b558a25c04c677cdb9a1b2e2bac75e41eb1873f2660215e5887b150ac96d861b",
+      "6c13744027d15f517b39e143feb5d347a4cc767da0edde7a88cb7095a99b9570",
+      "8cb8d4412ebf8de3102c246531094c5c0f15e7336a5176e18743ecb8ed6d6fb1",
+      "561999a1de642a12fe80359bfea5054a9f86b6bbfc6b4f5627e668c1f529dec2"
+     ],
+     "blockOrSlot": 453862900,
+     "asOf": "2026-10-06T09:35:57.814Z",
+     "snapshotIds": [
+      "solana-mainnet-beta.marinade.2026-10-06"
+     ]
+    }
+   ],
+   "truncated": false,
+   "total": 2
+  },
+  "changes-filled": {
+   "resultId": "changes-filled",
+   "shape": "changes",
+   "coverage": "mapped",
+   "coverageNotes": [],
+   "captureIds": [
+    "solana-mainnet-beta.kamino.sentora-pyusd-20261109T163416Z",
+    "solana-mainnet-beta.kamino.sentora-pyusd-20261109T170418Z"
+   ],
+   "rows": [
+    {
+     "kind": "changed",
+     "key": "solana:mainnet-beta:2gc9Dm1eB6UgVYFBUN9bWks6Kes9PbWSaPaa9DqyvEiN|AVAILABLE_LIQUIDITY_RAW",
+     "before": {
+      "value": "3283060419224",
+      "bases": [
+       "decoded"
+      ],
+      "evidenceIds": [
+       "cb52109625a7107779a37ba85f32a0be448b8bf27e5b8b8469640d249fd59071"
+      ],
+      "factIds": [
+       "8e06b256c5e460fd72dce94e77bd142433545bc56712e3370c0f4c7508d9fe0a"
+      ],
+      "blockOrSlot": "467386313",
+      "asOf": "2026-11-09T16:34:18.768Z"
+     },
+     "after": {
+      "value": "3283546426746",
+      "bases": [
+       "decoded"
+      ],
+      "evidenceIds": [
+       "01478093aa8dac928b42f0ab23181ec33acead87cd36f9351346708088d7cbc7"
+      ],
+      "factIds": [
+       "b273fb8da9adbb1004a808a6c301d3f445bae3501149595bb151d93d834d19e5"
+      ],
+      "blockOrSlot": "467394687",
+      "asOf": "2026-11-09T17:04:20.763Z"
+     }
+    },
+    {
+     "kind": "changed",
+     "key": "solana:mainnet-beta:2gc9Dm1eB6UgVYFBUN9bWks6Kes9PbWSaPaa9DqyvEiN|BORROWED_RAW",
+     "before": {
+      "value": "26690802268025",
+      "bases": [
+       "decoded"
+      ],
+      "evidenceIds": [
+       "cb52109625a7107779a37ba85f32a0be448b8bf27e5b8b8469640d249fd59071"
+      ],
+      "factIds": [
+       "f297508784ed1f9abe87e64dfa632ac80674901ef91912f57e71f0ab5b355722"
+      ],
+      "blockOrSlot": "467386313",
+      "asOf": "2026-11-09T16:34:18.768Z"
+     },
+     "after": {
+      "value": "26690925248079",
+      "bases": [
+       "decoded"
+      ],
+      "evidenceIds": [
+       "01478093aa8dac928b42f0ab23181ec33acead87cd36f9351346708088d7cbc7"
+      ],
+      "factIds": [
+       "da3cfbf2ba5b5002d5ca1038cf52f28c76fc01f6f6d04c942451c8d2c597f96a"
+      ],
+      "blockOrSlot": "467394687",
+      "asOf": "2026-11-09T17:04:20.763Z"
+     }
+    },
+    {
+     "kind": "changed",
+     "key": "solana:mainnet-beta:3ZUAwhEtK8XWfK4fy98z4yoptm4GeyeAu21L11HPXaZ5|BORROWED_RAW",
+     "before": {
+      "value": "18581555693274",
+      "bases": [
+       "decoded"
+      ],
+      "evidenceIds": [
+       "7b6fadce39fc4f1fa960e732459fdf0abf1e3d3fa9c128b8b76063a10d080526"
+      ],
+      "factIds": [
+       "e9c85af0100886e827534d4707b69d815c6746fd1587785209c47f547446ac04"
+      ],
+      "blockOrSlot": "467386313",
+      "asOf": "2026-11-09T16:34:18.768Z"
+     },
+     "after": {
+      "value": "18581603731532",
+      "bases": [
+       "decoded"
+      ],
+      "evidenceIds": [
+       "83f665693818b1a16d57e9dd6a9c1870034ebbcf8b3c29c844feb66daf0bdf16"
+      ],
+      "factIds": [
+       "b5d00183727f84399c867f5a062bb32033a7eafa7067fc416372047fe6a55b2a"
+      ],
+      "blockOrSlot": "467394687",
+      "asOf": "2026-11-09T17:04:20.763Z"
+     }
+    }
+   ],
+   "truncated": false,
+   "total": 3
+  },
+  "positions-reader": {
+   "resultId": "positions-reader",
+   "shape": "table",
+   "columns": [
+    {
+     "name": "account",
+     "role": "address"
+    },
+    {
+     "name": "quantity",
+     "role": "amount"
+    },
+    {
+     "name": "unit",
+     "role": "address"
+    },
+    {
+     "name": "leg",
+     "role": "label"
+    },
+    {
+     "name": "joined to",
+     "role": "address"
+    }
+   ],
+   "coverage": "mapped",
+   "coverageNotes": [],
+   "rows": [
+    {
+     "rowKind": "reader",
+     "key": "solana-reader.58333db99f09b7cc56b3ef81a9c6a892c1878e7dc661c568",
+     "source": "reader",
+     "scopeSource": "src/solana/positions/registry.ts, reserve recorded at fixtures/kamino/sentora-pyusd-20261109T170418Z/rpc-state.json slot 467394687; the reserve is a subject of solana-mainnet-beta.kamino-lend.main-market-20261111T195059Z",
+     "constructed": true,
+     "values": {
+      "account": "solana:mainnet-beta:2gc9Dm1eB6UgVYFBUN9bWks6Kes9PbWSaPaa9DqyvEiN",
+      "quantity": "50631.58245456858384711191470479996201703443148289807140827178955078125",
+      "unit": "solana:mainnet-beta:2b1kV6DkPAnxd5ixfnxCpjxmKwqjjaYmCZfHsFu24GXo",
+      "leg": "klend-borrow",
+      "joined to": "solana:mainnet-beta:2gc9Dm1eB6UgVYFBUN9bWks6Kes9PbWSaPaa9DqyvEiN"
+     },
+     "factIds": [],
+     "bases": [],
+     "evidenceIds": [
+      "solana-read.85684b0ce924e7602b3b9fa60920e7120ef1c2f9db4ac572"
+     ],
+     "blockOrSlot": "468257725",
+     "asOf": null,
+     "snapshotIds": [
+      "solana-reader.constructed"
+     ]
+    },
+    {
+     "rowKind": "reader",
+     "key": "solana-reader.1eeff7a4c3519c09cfad7c375c5f79333688157c7fd900be",
+     "source": "reader",
+     "scopeSource": "src/solana/positions/registry.ts, reserve recorded at fixtures/kamino/sentora-pyusd-20261109T170418Z/rpc-state.json slot 467394687; the reserve is a subject of solana-mainnet-beta.kamino-lend.main-market-20261111T195059Z",
+     "constructed": true,
+     "values": {
+      "account": "solana:mainnet-beta:2gc9Dm1eB6UgVYFBUN9bWks6Kes9PbWSaPaa9DqyvEiN",
+      "quantity": "799085.350664",
+      "unit": "solana:mainnet-beta:2dQkXr1e9LBvT2QcfKrzZaWY6gGAAVoCjLgkWFk3Mhkj",
+      "leg": "klend-deposit",
+      "joined to": "solana:mainnet-beta:2gc9Dm1eB6UgVYFBUN9bWks6Kes9PbWSaPaa9DqyvEiN"
+     },
+     "factIds": [],
+     "bases": [],
+     "evidenceIds": [
+      "solana-read.85684b0ce924e7602b3b9fa60920e7120ef1c2f9db4ac572"
+     ],
+     "blockOrSlot": "468257725",
+     "asOf": null,
+     "snapshotIds": [
+      "solana-reader.constructed"
+     ]
+    },
+    {
+     "rowKind": "reader",
+     "key": "solana-reader.562fd6f50ec3002944fbda4cb052656491a11c64d2260188",
+     "source": "reader",
+     "scopeSource": "src/solana/positions/registry.ts, token \"kvault-share\" recorded at fixtures/kamino/sentora-pyusd-20261109T170418Z/rpc-state.json slot 467394687; the share mint is joined to its vault by this entry, not by a fact",
+     "constructed": true,
+     "values": {
+      "account": "solana:mainnet-beta:DCqyVY1SFCwq8unnexv9pjujVAC7jsmjfoUWBrNLvbY",
+      "quantity": "0.123456",
+      "unit": "solana:mainnet-beta:DCqyVY1SFCwq8unnexv9pjujVAC7jsmjfoUWBrNLvbY",
+      "leg": "token",
+      "joined to": "solana:mainnet-beta:A2wsxhA7pF4B2UKVfXocb6TAAP9ipfPJam6oMKgDE5BK"
+     },
+     "factIds": [],
+     "bases": [],
+     "evidenceIds": [
+      "solana-read.26c69798798f758fbe5232a899f4424c5b294c2881c4f7de"
+     ],
+     "blockOrSlot": "468300100",
+     "asOf": null,
+     "snapshotIds": [
+      "solana-reader.constructed"
+     ]
+    },
+    {
+     "rowKind": "reader",
+     "key": "solana-reader.d8b0b200d1603f9cebdd3b8227585bf17375854a42763941",
+     "source": "reader",
+     "scopeSource": "src/solana/positions/registry.ts, token \"mnde\" recorded at packs/marinade/registry.json slot 453658037; the mint is a subject of solana-mainnet-beta.marinade.2026-10-06",
+     "constructed": true,
+     "values": {
+      "account": "solana:mainnet-beta:MNDEFzGvMt87ueuHvVU9VcTqsAP5b3fTGPsHuuPA5ey",
+      "quantity": "5",
+      "unit": "solana:mainnet-beta:MNDEFzGvMt87ueuHvVU9VcTqsAP5b3fTGPsHuuPA5ey",
+      "leg": "token",
+      "joined to": "solana:mainnet-beta:MNDEFzGvMt87ueuHvVU9VcTqsAP5b3fTGPsHuuPA5ey"
+     },
+     "factIds": [],
+     "bases": [],
+     "evidenceIds": [
+      "solana-read.26c69798798f758fbe5232a899f4424c5b294c2881c4f7de"
+     ],
+     "blockOrSlot": "468300100",
+     "asOf": null,
+     "snapshotIds": [
+      "solana-reader.constructed"
+     ]
+    },
+    {
+     "rowKind": "reader",
+     "key": "solana-reader.dda80fa4f7d0adf41d66757edb8c2cba3dfd1708a384a7f4",
+     "source": "reader",
+     "scopeSource": "src/solana/positions/registry.ts, token \"msol\" recorded at fixtures/marinade-contracts/getAccountInfo-ba300a779c0c.json slot 453862910; the mint is a subject of solana-mainnet-beta.marinade.2026-10-06",
+     "constructed": true,
+     "values": {
+      "account": "solana:mainnet-beta:mSoLzYCxHdYgdzU16g5QSh3i5K3z3KZK7ytfqcJm7So",
+      "quantity": "1235.567890123",
+      "unit": "solana:mainnet-beta:mSoLzYCxHdYgdzU16g5QSh3i5K3z3KZK7ytfqcJm7So",
+      "leg": "token",
+      "joined to": "solana:mainnet-beta:mSoLzYCxHdYgdzU16g5QSh3i5K3z3KZK7ytfqcJm7So"
+     },
+     "factIds": [],
+     "bases": [],
+     "evidenceIds": [
+      "solana-read.26c69798798f758fbe5232a899f4424c5b294c2881c4f7de"
+     ],
+     "blockOrSlot": "468300100",
+     "asOf": null,
+     "snapshotIds": [
+      "solana-reader.constructed"
+     ]
+    }
+   ],
+   "truncated": false,
+   "total": 5,
+   "constructed": true
+  },
+  "positions-empty": {
+   "resultId": "positions-empty",
+   "shape": "table",
+   "columns": [
+    {
+     "name": "account",
+     "role": "address"
+    },
+    {
+     "name": "quantity",
+     "role": "amount"
+    },
+    {
+     "name": "unit",
+     "role": "address"
+    },
+    {
+     "name": "leg",
+     "role": "label"
+    },
+    {
+     "name": "joined to",
+     "role": "address"
+    }
+   ],
+   "coverage": "mapped",
+   "coverageNotes": [],
+   "rows": [],
+   "truncated": false,
+   "total": 0
+  },
+  "gaps-filled": {
+   "resultId": "gaps-filled",
+   "shape": "unknowns",
+   "columns": [
+    {
+     "name": "item",
+     "role": "label"
+    },
+    {
+     "name": "account",
+     "role": "address"
+    },
+    {
+     "name": "detail",
+     "role": "note"
+    }
+   ],
+   "coverage": "mapped",
+   "coverageNotes": [],
+   "rows": [
+    {
+     "rowKind": "scope",
+     "key": "gap-0",
+     "values": {
+      "item": "unknown-controller",
+      "account": "solana:mainnet-beta:A9rQoX1sictAQkyXxaZA8nz674xutHwoqpK2mwLyexCZ",
+      "detail": "No pinned controller established"
+     },
+     "factIds": [],
+     "bases": [],
+     "evidenceIds": [],
+     "blockOrSlot": null,
+     "asOf": null,
+     "snapshotIds": [],
+     "scopeSource": "src/adapters/kamino-lend for snapshot solana-mainnet-beta.kamino-lend.main-market-20261111T195059Z (rpc-control.json)",
+     "reason": "not-captured"
+    },
+    {
+     "rowKind": "scope",
+     "key": "gap-1",
+     "values": {
+      "item": "reserve-status-not-decoded",
+      "account": "solana:mainnet-beta:64AZMUHLB6NYvQSt41JTer4v8NAFDCz5sUPb7dYpCxa",
+      "detail": "Status (Active, Obsolete or Hidden) is not decoded; IN_MARKET and PRICED_BY do not establish active status."
+     },
+     "factIds": [],
+     "bases": [],
+     "evidenceIds": [],
+     "blockOrSlot": null,
+     "asOf": null,
+     "snapshotIds": [],
+     "scopeSource": "src/adapters/kamino-lend for snapshot solana-mainnet-beta.kamino-lend.main-market-20261111T195059Z (coverage note missing-coverage)",
+     "reason": "not-captured"
+    },
+    {
+     "rowKind": "scope",
+     "key": "gap-2",
+     "values": {
+      "item": "reserve-status-not-decoded",
+      "account": "solana:mainnet-beta:StGKGcLQoTsWzQ1tFY2bWqrdiuBhqdFE4niiAutQxQB",
+      "detail": "Status (Active, Obsolete or Hidden) is not decoded; IN_MARKET and PRICED_BY do not establish active status."
+     },
+     "factIds": [],
+     "bases": [],
+     "evidenceIds": [],
+     "blockOrSlot": null,
+     "asOf": null,
+     "snapshotIds": [],
+     "scopeSource": "src/adapters/kamino-lend for snapshot solana-mainnet-beta.kamino-lend.main-market-20261111T195059Z (coverage note missing-coverage)",
+     "reason": "not-captured"
+    },
+    {
+     "rowKind": "scope",
+     "key": "gap-3",
+     "values": {
+      "item": "reserve-status-not-decoded",
+      "account": "solana:mainnet-beta:d4A2prbA2whesmvHaL88BH6Ewn5N4bTSU2Ze8P6Bc4Q",
+      "detail": "Status (Active, Obsolete or Hidden) is not decoded; IN_MARKET and PRICED_BY do not establish active status."
+     },
+     "factIds": [],
+     "bases": [],
+     "evidenceIds": [],
+     "blockOrSlot": null,
+     "asOf": null,
+     "snapshotIds": [],
+     "scopeSource": "src/adapters/kamino-lend for snapshot solana-mainnet-beta.kamino-lend.main-market-20261111T195059Z (coverage note missing-coverage)",
+     "reason": "not-captured"
+    }
+   ],
+   "truncated": false,
+   "total": 4
+  },
+  "gaps-not-read": {
+   "resultId": "gaps-not-read",
+   "shape": "unknowns",
+   "columns": [
+    {
+     "name": "account",
+     "role": "address"
+    },
+    {
+     "name": "reader reason",
+     "role": "label"
+    }
+   ],
+   "coverage": "mapped",
+   "coverageNotes": [],
+   "rows": [
+    {
+     "rowKind": "scope",
+     "key": "not-read-0",
+     "values": {
+      "account": "solana:mainnet-beta:21rweMLGYeMNonHW7H3xa5py17X6ZFRcHirCp9inRBQA",
+      "reader reason": "not-covered"
+     },
+     "factIds": [],
+     "bases": [],
+     "evidenceIds": [],
+     "blockOrSlot": null,
+     "asOf": null,
+     "snapshotIds": [],
+     "scopeSource": "position reader, read solana-reader.recorded",
+     "reason": "not-read"
+    },
+    {
+     "rowKind": "scope",
+     "key": "not-read-1",
+     "values": {
+      "account": "solana:mainnet-beta:21xrQf3HL3kxKnEKdDVPx3xBvTzM7oeZ265YdLQUJZNb",
+      "reader reason": "not-covered"
+     },
+     "factIds": [],
+     "bases": [],
+     "evidenceIds": [],
+     "blockOrSlot": null,
+     "asOf": null,
+     "snapshotIds": [],
+     "scopeSource": "position reader, read solana-reader.recorded",
+     "reason": "not-read"
+    },
+    {
+     "rowKind": "scope",
+     "key": "not-read-2",
+     "values": {
+      "account": "solana:mainnet-beta:2CfehV88LyTUWru5XRtRQCiTMETh6JZoABw8TX7WwWq2",
+      "reader reason": "not-covered"
+     },
+     "factIds": [],
+     "bases": [],
+     "evidenceIds": [],
+     "blockOrSlot": null,
+     "asOf": null,
+     "snapshotIds": [],
+     "scopeSource": "position reader, read solana-reader.recorded",
+     "reason": "not-read"
+    }
+   ],
+   "truncated": false,
+   "total": 3
+  },
+  "control-group": {
+   "resultId": "control-group",
+   "shape": "chain",
+   "columns": [
+    {
+     "name": "target",
+     "role": "address"
+    },
+    {
+     "name": "instruction",
+     "role": "instruction"
+    },
+    {
+     "name": "role",
+     "role": "role"
+    },
+    {
+     "name": "authority",
+     "role": "address"
+    },
+    {
+     "name": "controller",
+     "role": "address"
+    },
+    {
+     "name": "threshold",
+     "role": "amount"
+    }
+   ],
+   "coverage": "mapped",
+   "coverageNotes": [],
+   "rows": [
+    {
+     "rowKind": "fact",
+     "key": "6bcf443b72b0448472e27c7ab2d4f82b83707814d0bdcade1311b4fad8bd5ca2",
+     "values": {
+      "target": "solana:mainnet-beta:7u3HeHxYDLhnCoErrtycNokbQYbWGzLs6JSDqGAv5PfF",
+      "instruction": null,
+      "role": "EMERGENCY_AUTHORITY",
+      "authority": "solana:mainnet-beta:4VtJ1yCCyU2YGgPTZGHZRwzwaZ3hmzgqMtRQo8RqMa57",
+      "controller": "solana:mainnet-beta:9thcmURbz3xgvv362Fy2uGVGoxMnD3ADRuwRp13nuXE5",
+      "threshold": null
+     },
+     "factIds": [
+      "6bcf443b72b0448472e27c7ab2d4f82b83707814d0bdcade1311b4fad8bd5ca2",
+      "8f20fd21fde50c49ca79231f5b3bc6680208baef2b183fae044e99ffb16ce342"
+     ],
+     "bases": [
+      "decoded",
+      "derived"
+     ],
+     "evidenceIds": [
+      "f7e8ada39a7321770eb9220f6597666bd860cbbcfaed446857fcb01a403466e3",
+      "c22531aafeeecf3ac6887d2a4251448196f471cb5099bf61af89af6525c79a07"
+     ],
+     "blockOrSlot": "468246962",
+     "asOf": "2026-11-11T19:51:03.533Z",
+     "snapshotIds": [
+      "solana-mainnet-beta.kamino-lend.main-market-20261111T195059Z"
+     ]
+    },
+    {
+     "rowKind": "fact",
+     "key": "41ece428ae7bd304689e6f8b731ed9391928090fa8107f237e7aef1d9c0f420a",
+     "values": {
+      "target": "solana:mainnet-beta:7u3HeHxYDLhnCoErrtycNokbQYbWGzLs6JSDqGAv5PfF",
+      "instruction": null,
+      "role": "MARKET_OWNER",
+      "authority": "solana:mainnet-beta:24LjDBukaUSHgPowcF2wY1XscnhChcBUDETN2UhBZMMT",
+      "controller": "solana:mainnet-beta:7idEEVRidWrahZJhxXMqniDbV6ESj7ZjyLrigcMcEt6H",
+      "threshold": null
+     },
+     "factIds": [
+      "41ece428ae7bd304689e6f8b731ed9391928090fa8107f237e7aef1d9c0f420a",
+      "bc25f9b573a2c7c88314b6af9021ea0fdc4aadd95873a5e642fcfc7944ac938c"
+     ],
+     "bases": [
+      "decoded",
+      "derived"
+     ],
+     "evidenceIds": [
+      "f7e8ada39a7321770eb9220f6597666bd860cbbcfaed446857fcb01a403466e3",
+      "00b2b3a1f6db4e77562acbe8cb2ae900f950839a560c84fb9bddc5fb27df6f39"
+     ],
+     "blockOrSlot": "468246962",
+     "asOf": "2026-11-11T19:51:03.533Z",
+     "snapshotIds": [
+      "solana-mainnet-beta.kamino-lend.main-market-20261111T195059Z"
+     ]
+    },
+    {
+     "rowKind": "fact",
+     "key": "755e7951eb0630c21824201799eceb165d98fb33e74af8a41c21278d0a5f09e9",
+     "values": {
+      "target": "solana:mainnet-beta:7u3HeHxYDLhnCoErrtycNokbQYbWGzLs6JSDqGAv5PfF",
+      "instruction": null,
+      "role": "RESERVE_PROPOSER",
+      "authority": "solana:mainnet-beta:BN73b8HCQUsqdrBTqFuzqk9o1SH7fUTEcXxYmv43agJH",
+      "controller": "solana:mainnet-beta:53EGEAU2TqM9rrqhskJUT5qFfxfPADb647LnCqrfciVV",
+      "threshold": null
+     },
+     "factIds": [
+      "755e7951eb0630c21824201799eceb165d98fb33e74af8a41c21278d0a5f09e9",
+      "11bdbacecc4ce8e12699a9f5bb1388158c4db4c24b7b620fedadd38827f56c1b"
+     ],
+     "bases": [
+      "decoded",
+      "derived"
+     ],
+     "evidenceIds": [
+      "f7e8ada39a7321770eb9220f6597666bd860cbbcfaed446857fcb01a403466e3",
+      "4c3f935ffaa8beb3668fccfc3ae067a26db72b5720406244186eade1bc78ea6c"
+     ],
+     "blockOrSlot": "468246962",
+     "asOf": "2026-11-11T19:51:03.533Z",
+     "snapshotIds": [
+      "solana-mainnet-beta.kamino-lend.main-market-20261111T195059Z"
+     ]
+    }
+   ],
+   "truncated": false,
+   "total": 3
+  }
+ },
+ "captures": [
+  {
+   "id": "solana-mainnet-beta.kamino.sentora-pyusd-20261109T163416Z",
+   "observedFrom": "2026-11-09T16:34:17.180Z",
+   "observedTo": "2026-11-09T16:34:18.768Z",
+   "fromBlockOrSlot": "467386312",
+   "toBlockOrSlot": "467386313",
+   "facts": 72,
+   "subjects": 27,
+   "shown": false,
+   "constructed": false,
+   "source": "src/adapters/kamino/index.ts#buildKaminoSnapshots over fixtures/kamino",
+   "evidenceIds": [
+    "03b5ebc32063b8c1cc455aabe42e36c6440612073abd15d1d6d2bacb7a4f501f",
+    "14190d4e4039b5f8da3b188ac3ee2ff81341f3022aaf1910f947929709d8c99d",
+    "148ef44e0fdeb5f72d85043281489f7f5a9b84651afee1547ba67fd0a54af13d",
+    "1e7f70eaec5970dc31f75e51b37b5bb740133696273bad3e76e74e94b3b1f85d",
+    "314fcb2b93d4d647f5be4421b355f7308403f53b5822507995e4c650b11d4b6c",
+    "355325f2d61a09e55f3ef724d06ba6c18e3c3456b1c8384a9cee591fa6090326",
+    "360a9b8d3bebd19d662fda245429fc0bc8f13ce365fdae2249f5ec243b06e5c3",
+    "3a7c4737992156e8c4bea4054d02f46791272372c0b0930cb1c2ad2616e51693",
+    "3b94997cbd3284cbef62fae916a3ba41396b80da5af7e59099c1dd11ae40bf17",
+    "5bd7c41cbb9711c2c52b985123b30bcf7793a396f8c150626b9ad493ecd896a6",
+    "5c0bf476a9dbb03c7cee60f449c5032b561b30bbde8684b175337d0ded302e79",
+    "67fd133ac85f82f04ed2324935a206dfaa146d24d6a79e6c14404d1b667675c4",
+    "719ebe7f4b6f120d30f6a729fa6c3d60a81354735bfaff31f478887d0f222710",
+    "720f48b48f353aaef59f7f19404461cf3968965c8a9294bac4b7d0aa39785c21",
+    "7b6fadce39fc4f1fa960e732459fdf0abf1e3d3fa9c128b8b76063a10d080526",
+    "95ff1581c0a68046586e902b588ec95474e9ae7b50399b21989fda37cb141686",
+    "9728c36c6ba33c5b69dfba46ae7d8300d3f5e3d91c239d6f29c9bd4dd8306345",
+    "c219379c363ba416e2fae6414617914928e0d4327a6cefd123b0c85f7fa1e779",
+    "c693c64c8139ad66ac5016671655fa8090b1583c8d33d5ff3b53864624413632",
+    "cb52109625a7107779a37ba85f32a0be448b8bf27e5b8b8469640d249fd59071",
+    "d0d70e44c0e39394daf1c52504b26542ac9e97735237e3704a7b835d09c4c5be",
+    "d92664f52aea61785a436826ed8cec3e75cac3de39d25c946bff24850925f515",
+    "da68ca7f5590879eac28b45983841492a7b6867dea9142fae86e3439a76108ac",
+    "ee83c801a7bc8e4d9d17b2a58923ea4412e9919fe2ab0488b282ee5882de0017",
+    "efb11fbb9107188379782d859e914f43d4571ca235c34d077bae0329a61bf08e",
+    "f6f64e292180929e367a192d1c3b383912d288359658061c69afb31ef7e194c4",
+    "f861024f5ccf449161e8088f0a8fb80d49ba6f77df286bea45f5054c5921955a",
+    "f94a98bf6c562f01d251a1bf0651caed4999a2c5293e74cf22ea0e813f659bc0",
+    "fbb2118053fc69c8cd1216c70866bebe73231759553039cc3be3583818d11f02",
+    "fcaeab0891016f58e2d0372ed7858704c2397588993420482a5a596388e01d25"
+   ]
+  },
+  {
+   "id": "solana-mainnet-beta.kamino.sentora-pyusd-20261109T170418Z",
+   "observedFrom": "2026-11-09T17:04:19.103Z",
+   "observedTo": "2026-11-09T17:04:20.763Z",
+   "fromBlockOrSlot": "467394685",
+   "toBlockOrSlot": "467394687",
+   "facts": 72,
+   "subjects": 27,
+   "shown": true,
+   "constructed": false,
+   "source": "src/adapters/kamino/index.ts#buildKaminoSnapshots over fixtures/kamino",
+   "evidenceIds": [
+    "01478093aa8dac928b42f0ab23181ec33acead87cd36f9351346708088d7cbc7",
+    "0ae892d76d2d0ebd68137429430c3dc708f53ff823b50c18a7e84e20a06b3118",
+    "1b7c5103d953ac63d186941a5676519fa046b3cc31b421cfd88c433806b9d9b9",
+    "2bfb0408a229fbe657586e4def41490eebba0b5e4d59be5e057b4a27e44d15f2",
+    "2e2635128c22faea2394f56dfd73b6dff91dbaf030bf5d91f36af2ebcf5a5daa",
+    "307d1b0485ada440bed53b6ab87e1535c9b597423019ac914af4e11e650aa73a",
+    "474af0c7af761a79b26e79cd62932d62f042ae5eeae1035081f88023eb5478c1",
+    "47b42d07314a39cb497b722356643abccf11c8aa5238ba38e9313c26071716e2",
+    "4bd3fd1e0203bcdb2f4e44c7ae8defe46afa69cb02d2074f90dafa7abe26cf17",
+    "618ae8cee60ba0d08ef8157b5242f89df4473ffdc1cbda46101101cdaced7283",
+    "620b12f8dce5f6cfe78730e23ffdc6a58b417b534c9db7b98e28ddd21635aa13",
+    "6f755134959bf07655cb165358576fdfda52857d0ecce5498bf61e712db373df",
+    "73a927d80245bd5b240c445abc7cb54d87662919b7c45b968f80b4a89b60e400",
+    "83f665693818b1a16d57e9dd6a9c1870034ebbcf8b3c29c844feb66daf0bdf16",
+    "8aa7ec7136567fcd90d1212a5bb0bfdc8633911981b826075340c4171ec67766",
+    "958856e4a4b620939c00deab8da0fae2a67a311bfa1a4426f4b0a42e3bca29b3",
+    "9aa7ac431bb7cc5aaf9df20816df69556f20c3ec8d2aeb8843bf64677f28644e",
+    "9dc0551211b643b9deccd16505c5d387c3a0bac1302f2ac67728064755809d93",
+    "a2c825aea4b8e97fbfc712582481dc5e7e44a290cbcf104606bf2b09532e1e3e",
+    "b592ab1a2e87ffeefabc5b5ce8134f1deea51cca220297853c513425a297d3e2",
+    "c2a85ba806135d4aacaccd41b8f10a2bc0c3b949a9c9cb8fbba0b2455b32dc38",
+    "c5763abfae2eea11ab005b48e956f71b06bb87b5be12203cfca5bd4116124c89",
+    "c66bb213ebacaedc09682d03e7ca19a48b160a0a7b54c8f5ab5015303a541ce7",
+    "e307b4affec2b7f6de67801c3231f8da417e608402bb4fc8a59df641b513a048",
+    "e5170ab01755249488c34da697646ae59772b60379ac0f370fc3d01b63ba483f",
+    "e76fac2baf90b011b99655523b11289c0caaa0410df576ad4c934a3bcd1b47ba",
+    "f8d647f0358ed194191fa3324bd94c77549146aad2c3a6941576d9201443969f",
+    "f9313e797d985976477dea8ee26590d9dc33d504eda38a510162e1a9868f29b7",
+    "fd9a0297366f0b4c8534886fe076e703a9d86a498d5942643b79ff24f20749b4",
+    "fdfd460495a0fe4bc5e40e64ac7cc37db8e08988ab4bd5150d84c0e3f9798762"
+   ]
+  }
+ ],
+ "trace": {
+  "template": "control",
+  "params": {
+   "subject": "solana:mainnet-beta:7u3HeHxYDLhnCoErrtycNokbQYbWGzLs6JSDqGAv5PfF",
+   "snapshotId": "solana-mainnet-beta.kamino-lend.main-market-20261111T195059Z",
+   "asOf": "2026-11-11T19:51:03.533Z",
+   "maxHops": 4,
+   "maxResults": 200
+  },
+  "outcome": "partial",
+  "rowsReturned": 33,
+  "reasons": [
+   {
+    "code": "missing-subject",
+    "count": 12
+   }
+  ]
+ },
+ "receipts": {
+  "f7e8ada39a7321770eb9220f6597666bd860cbbcfaed446857fcb01a403466e3": {
+   "id": "f7e8ada39a7321770eb9220f6597666bd860cbbcfaed446857fcb01a403466e3",
+   "source": "fixture:kamino-lend/main-market-20261111T195059Z/rpc-state.json#7u3HeHxYDLhnCoErrtycNokbQYbWGzLs6JSDqGAv5PfF",
+   "responseSha256": "8b41c346b89b58ed4145774885ca0d18270ddae758c312baa885523836711b71",
+   "blockOrSlot": "468246959",
+   "observedAt": "2026-11-11T19:51:02.928Z",
+   "historicalState": "current-only",
+   "privacy": "public"
+  },
+  "solana-read.26c69798798f758fbe5232a899f4424c5b294c2881c4f7de": {
+   "id": "solana-read.26c69798798f758fbe5232a899f4424c5b294c2881c4f7de",
+   "source": "getTokenAccountsByOwner (replayed fixture body)",
+   "responseSha256": "9b805c793062494d92cbcaa0a7cb9de73b8eb89c157a63dd65bfd2128623b9fb",
+   "blockOrSlot": "468300100",
+   "observedAt": null,
+   "historicalState": "current-only",
+   "privacy": "private",
+   "constructed": true
+  }
+ },
+ "receiptIds": [
+  "00420522048927e6f83bfe19c96202a538240436b1160cc3cd42f9afbca8c391",
+  "00b2b3a1f6db4e77562acbe8cb2ae900f950839a560c84fb9bddc5fb27df6f39",
+  "01478093aa8dac928b42f0ab23181ec33acead87cd36f9351346708088d7cbc7",
+  "023780b3d9cc8d36243bc3329668f78220f05fd1756b435f5763ba4dbef90f17",
+  "03105cb04e3c36a92f2cc789580b909a1867c704924db91e98282353f47aed7e",
+  "03b5ebc32063b8c1cc455aabe42e36c6440612073abd15d1d6d2bacb7a4f501f",
+  "04cc840fceb354dad524ea3ea389379855ab0a37e8f6817f1535299327f3e002",
+  "04fac0320aa72b658a4e967733cef5f156d2715f1151ac17215faf5b8410f1ae",
+  "0a6f3d8505f9df38009436a10a0bc43394edd78f204035959c8fd44f3fe85217",
+  "0ae892d76d2d0ebd68137429430c3dc708f53ff823b50c18a7e84e20a06b3118",
+  "14190d4e4039b5f8da3b188ac3ee2ff81341f3022aaf1910f947929709d8c99d",
+  "148ef44e0fdeb5f72d85043281489f7f5a9b84651afee1547ba67fd0a54af13d",
+  "182eb6b837f965842919f42f8e479f078d00e3ab17eae9f453ad66e3294b7815",
+  "1b703b94391f87fbe179f45ac3e11041507d8dd7e3b665f1ec0bf0a1537507b2",
+  "1b7c5103d953ac63d186941a5676519fa046b3cc31b421cfd88c433806b9d9b9",
+  "1d1d87557b361a01d09e7525c4a892bf7314deadbc1dff8060eecb80f9208bf5",
+  "1e7f70eaec5970dc31f75e51b37b5bb740133696273bad3e76e74e94b3b1f85d",
+  "25fee6157acd0bb0013f1c1a003024bd3d72346640cb30939ef10ebf38992e95",
+  "28313508c2f12d8c695a3f08de9e1ccb2b1d1469578aa4583e8cb3c6a9689fb9",
+  "2bfb0408a229fbe657586e4def41490eebba0b5e4d59be5e057b4a27e44d15f2",
+  "2e2635128c22faea2394f56dfd73b6dff91dbaf030bf5d91f36af2ebcf5a5daa",
+  "2e8ad06621b78fce5a29294dcf52f6e7898630f6b80b15a4ffdafa536b6d93ac",
+  "2f7f357b446d42a3aa500daa309a25095a4e06582ca28b713495c59da3a2a952",
+  "307d1b0485ada440bed53b6ab87e1535c9b597423019ac914af4e11e650aa73a",
+  "314fcb2b93d4d647f5be4421b355f7308403f53b5822507995e4c650b11d4b6c",
+  "3214c25af0dc4980febe11b9cf43fbd897be6476f3859b18c97998adf904b9a0",
+  "32bc5148ebdcd971fcad600ee376b4226dadbdd4bfef6c4e7fe8227b65247f93",
+  "3396145ae41a25232059b61a9a75f130fc856d16d3b06ff91c09ba3a7fc1fd6a",
+  "355325f2d61a09e55f3ef724d06ba6c18e3c3456b1c8384a9cee591fa6090326",
+  "360a9b8d3bebd19d662fda245429fc0bc8f13ce365fdae2249f5ec243b06e5c3",
+  "36572609353494178013661c47e04c70b6c6d5aedb16a892db49ea2a51f08915",
+  "375d0012d1399787ee195187ed98876010905e9826b0956c30a7b56f2d61c558",
+  "3a7c4737992156e8c4bea4054d02f46791272372c0b0930cb1c2ad2616e51693",
+  "3b94997cbd3284cbef62fae916a3ba41396b80da5af7e59099c1dd11ae40bf17",
+  "3ceb172ebbc8cc1555a3803f6ae4d459a032285ef493aa04f6246ebe1f2524c7",
+  "3e52a8fbfa53ad9c7adc8d758c49003075c08a355b6b65507fc8f08205bc5566",
+  "400b0a432a2f764c50e098a15e85a8d40359bb61a67f4b78eeb10639fbc005df",
+  "474af0c7af761a79b26e79cd62932d62f042ae5eeae1035081f88023eb5478c1",
+  "47b42d07314a39cb497b722356643abccf11c8aa5238ba38e9313c26071716e2",
+  "4a9a6cff66e4ca041e921aa438695fed1d68900addd685b9a45c870ca029e210",
+  "4b436363b0fd753e56c82bfcdab7a4c88be85def9ca69a35edc7a451b1724031",
+  "4b851e1bba712aafc01c9e3673f1c6b7db4e6a43d15a7b41caae55ec6170f840",
+  "4bd3fd1e0203bcdb2f4e44c7ae8defe46afa69cb02d2074f90dafa7abe26cf17",
+  "4c3f935ffaa8beb3668fccfc3ae067a26db72b5720406244186eade1bc78ea6c",
+  "4da08391d437731614048cf1db1748c03aea98abb2fe9e31c0222981ef4b7a4d",
+  "4f8579ef8b2847e33d114a6ab0b069b2d667670725192c7e3906727d0f1052d7",
+  "505a93368e05f8ef1883e1f65a8381a335b5049f10972bf34f8c4d7a56fd770c",
+  "5533e2eb71c3395c8af3e8a2a89d9435aa40df583f98caa56aa11d0a91bf06e1",
+  "558aef078737e44a0236c1e5724eb83d93fbd60ebd1d9aadcfbebd5c02e44a72",
+  "55a8d77899433a81237df088b42f1efb3eb5d458bb899eeebee0edb584c1fae9",
+  "561999a1de642a12fe80359bfea5054a9f86b6bbfc6b4f5627e668c1f529dec2",
+  "5ac40118435d7bae0bc90a8d31cc7e356203974dec658dcd821e55da646fb6db",
+  "5ada23f8778f4637b60f6125d012cfa3500a83574c5a850d080e16758f6339b3",
+  "5affb38c03b550c954937398ba4943de745f5b5afa32c1d0dfc66c2f43179f5b",
+  "5bd7c41cbb9711c2c52b985123b30bcf7793a396f8c150626b9ad493ecd896a6",
+  "5c0bf476a9dbb03c7cee60f449c5032b561b30bbde8684b175337d0ded302e79",
+  "5d8f659ff712413541c8cf0a2a7648298f7c01960b4e47e0f23833280cbed7b2",
+  "5e085ba366659b471b062c95a1b0bf70de18da00a4b86fb0349550c919ea9a5c",
+  "618ae8cee60ba0d08ef8157b5242f89df4473ffdc1cbda46101101cdaced7283",
+  "62064ba4e9822ae6bac672e04b0e5d94ae38289f29c5921feebc729bd2a997e5",
+  "620b12f8dce5f6cfe78730e23ffdc6a58b417b534c9db7b98e28ddd21635aa13",
+  "62205ff890dc0fe4f21c14645244df55507637560d6a9b1166e7e8b6b883d83a",
+  "652dcf4e86508807dd107d52bed77dad49df2c4b830ae8100b2e10cfb5927740",
+  "67b579287401acf7aed733615848079e1a3c72fa003a45412914270d7c9737f4",
+  "67bb844a0ee6fd37707000f91d0ca86f925cb9d42b4e43cfb1cb10785af28a6d",
+  "67fd133ac85f82f04ed2324935a206dfaa146d24d6a79e6c14404d1b667675c4",
+  "692031dbeecaf76f836e1bc843aa65a5efbb3e88f5483b5fa27ea707504d5ca0",
+  "6939fba768804f745605fa5e71cdd9709a2beb467a2bbe762a9d9ea8c1271194",
+  "6a70e684ecc3b8f45ccdd90e63323efe4a9d95a8797d4581d1eda277e230dca8",
+  "6c13744027d15f517b39e143feb5d347a4cc767da0edde7a88cb7095a99b9570",
+  "6f755134959bf07655cb165358576fdfda52857d0ecce5498bf61e712db373df",
+  "6fb89ef57dac31c9823887bd2c71c0b0e01d67560400550c3fddb4db5a25ef0c",
+  "719ebe7f4b6f120d30f6a729fa6c3d60a81354735bfaff31f478887d0f222710",
+  "720f48b48f353aaef59f7f19404461cf3968965c8a9294bac4b7d0aa39785c21",
+  "73a927d80245bd5b240c445abc7cb54d87662919b7c45b968f80b4a89b60e400",
+  "785e66ee5bd925c552907daed2dee3f1fa06d958608ef35c151a6df84e152de8",
+  "78a7b9824ff99f920822510baccc1943d529163df20b5ffac08199f9a9a2fbf8",
+  "7b6fadce39fc4f1fa960e732459fdf0abf1e3d3fa9c128b8b76063a10d080526",
+  "7c142a2dd903346826d9907bdc0e01a1d0494cdbb5061b1e10261a4387446844",
+  "822d7a1693150c40cf95b687b0d442f439e4e74fa51c72d19dfb22c4b9566831",
+  "8243cd847f9c2f511ec6fd1551901d5d9a4be009e13c0b0670e996aadc8e5039",
+  "8307f2126e478cb3a249ea9a149e4882ced5500475c9f3732464aad787af8ef4",
+  "83619545fe46d7696d2503268f22268a30cf159e81c8f4856a42f588108ab77f",
+  "83c2a2b0bf2f451c77f52993fa76fb8a18b8456635f17e2a596ba60e09047b29",
+  "83f665693818b1a16d57e9dd6a9c1870034ebbcf8b3c29c844feb66daf0bdf16",
+  "871c79ff21ebb038d1d5017e1125fce3072b6ee3fa52c72d1cde47cca49fa4fe",
+  "874973d53f5a3c8e2e56b27db20b7285de535ce98c395d09293a55ee0a395317",
+  "8a76ddc2317fc8dbb5d288c200c5f1b85877d890ac1c6294b0fa6fc6d5149253",
+  "8aa7ec7136567fcd90d1212a5bb0bfdc8633911981b826075340c4171ec67766",
+  "8ad698364018a0f0f66c9273531d01bc4922ab2284eb10b1cd61b78841213834",
+  "8adac793e00711dc0369e137f069e3bab0733f189fcdd1a9db630c6a452fdee4",
+  "8cb8d4412ebf8de3102c246531094c5c0f15e7336a5176e18743ecb8ed6d6fb1",
+  "8fe4d9370636207990403a87bca9f82a210d83c72a249458d71ce272395256c4",
+  "90f06a0982f6cebd4b7a83a3ccbdd15bbbb99361a139e6c42eb6c68543786b99",
+  "93b63b1d4eb06a8ec9add81916bfd32f13fa3cf7f7ec43b0a713fb7f62b68fc1",
+  "958856e4a4b620939c00deab8da0fae2a67a311bfa1a4426f4b0a42e3bca29b3",
+  "95afa9f43210b368584cdf9d421966533648423eeca7395ef279de77ffb920df",
+  "95ff1581c0a68046586e902b588ec95474e9ae7b50399b21989fda37cb141686",
+  "9728c36c6ba33c5b69dfba46ae7d8300d3f5e3d91c239d6f29c9bd4dd8306345",
+  "9aa7ac431bb7cc5aaf9df20816df69556f20c3ec8d2aeb8843bf64677f28644e",
+  "9dc0551211b643b9deccd16505c5d387c3a0bac1302f2ac67728064755809d93",
+  "a2c825aea4b8e97fbfc712582481dc5e7e44a290cbcf104606bf2b09532e1e3e",
+  "a76cebd04a4d3f4ddded16466b205b7dfcde6b18c34611d8672dcf73c145a951",
+  "a9157fa79efa473c79fdabcc063d0250d00546a5ab0619b260db244d1e7ab479",
+  "ab7cbdd7526b115f45a46e9a08adfee5f9cd53f07f2a22810e4de9f722a2d128",
+  "ad643148abd64e1751677287960881b7bc866805ebc6583230e8c47cacf15630",
+  "ae1da64a4b065679917059111a04876c188d2fe5f80508b7304ed25d4fb0a25e",
+  "b2533aca1efd659ade4496a9e99bb917612395959fad55939b65904cd8e59505",
+  "b49cd4ae13761724a8ca32674e81d96d00798143609fe6ae45e1735c72134aac",
+  "b4c9c217a1ead494e3e0c39531fd52da982bfe2679181704a05f43958cd24ffd",
+  "b558a25c04c677cdb9a1b2e2bac75e41eb1873f2660215e5887b150ac96d861b",
+  "b592ab1a2e87ffeefabc5b5ce8134f1deea51cca220297853c513425a297d3e2",
+  "b6a21b847c2c80d55bdb43b6678c87cd7159dd97e72f06988f09aba780f5c48c",
+  "b70f4dc7f595c31ecc6574f65cd3058a20309a79831260a00c9e77b01ca5f5f4",
+  "b72a2bcf2f4a8ed489609301970b03accda6aad67b5c86c3fb3d8f02342ca16e",
+  "b7a36beb2387ad8324f8b80b929377a6dc86bb37d53711c42ebe2714dea377aa",
+  "b83bf31f94b98e05bbbd12bb7bbaed804f3f1afce53f2772309c4668e69bb77b",
+  "b899ca84835fd3e3801b7b3623535371003393eb0ade842803eadae7f1747ac0",
+  "bbe196b7ba3d7af61a9a6cef02cb5c9d7705b2d302acfa06619b08207d30c796",
+  "bcb6ec5b0ada84c4d6ac445cb11365a57f5d20dcd60fb219e3149ecc0fde4e73",
+  "be4b87c59358d7b9b0801254bd1a9a941cd1f3d0f7a9354809b8f4ea0f7f77fa",
+  "c219379c363ba416e2fae6414617914928e0d4327a6cefd123b0c85f7fa1e779",
+  "c22531aafeeecf3ac6887d2a4251448196f471cb5099bf61af89af6525c79a07",
+  "c2a85ba806135d4aacaccd41b8f10a2bc0c3b949a9c9cb8fbba0b2455b32dc38",
+  "c2e2b31c712e5bff2397f4571bacad51528afc02010727bd857e6c8f84064ac9",
+  "c50eb9d3a4d4ea29202dfe0c2f61ea8f5cd041a18f06bc5b774d0fd0c989dc97",
+  "c5763abfae2eea11ab005b48e956f71b06bb87b5be12203cfca5bd4116124c89",
+  "c66bb213ebacaedc09682d03e7ca19a48b160a0a7b54c8f5ab5015303a541ce7",
+  "c693c64c8139ad66ac5016671655fa8090b1583c8d33d5ff3b53864624413632",
+  "c6e7b3cac9d934c169937729463f344dcabb50257fab4eb9c5ce7b0a8805204a",
+  "c6f7c97d97520b6fa08a843b129b2ecb7a79260029f68d1e308cdfb43623928d",
+  "c734d36976e1bef0258e40ffcffdb712ed29f715fc89f2ca8d740c81f0377f48",
+  "c8794f59085393ae6cb00661b8cd1c6172ca6968db6af31c390712f46834fc95",
+  "ca9a3e9b4771cde835cffe1a9fe49e00c66fdf1351f805fea48697bbd9108675",
+  "cb52109625a7107779a37ba85f32a0be448b8bf27e5b8b8469640d249fd59071",
+  "cf1d089a97844394b0fc70f5d495c73a18e2b5d42838c2eb5bfe9fc620ce3721",
+  "d0d70e44c0e39394daf1c52504b26542ac9e97735237e3704a7b835d09c4c5be",
+  "d92664f52aea61785a436826ed8cec3e75cac3de39d25c946bff24850925f515",
+  "da68ca7f5590879eac28b45983841492a7b6867dea9142fae86e3439a76108ac",
+  "e307b4affec2b7f6de67801c3231f8da417e608402bb4fc8a59df641b513a048",
+  "e4f6fafdfcc629e0eb4729f7ca6778d71c103dc79ef9a1f4b113c7e4c4182df8",
+  "e51684d41d770b5a4c7902c95e61e46ee3a67acb26b032afa3dc99a59a6281ae",
+  "e5170ab01755249488c34da697646ae59772b60379ac0f370fc3d01b63ba483f",
+  "e76fac2baf90b011b99655523b11289c0caaa0410df576ad4c934a3bcd1b47ba",
+  "e9ca6656202e6154de102f9e8ab17a0b72b52d03325b15cf7504d4920198246e",
+  "eadb1d3273b12f8cc44238cd004248b2b8e54bad111b02268b53977a9ef713fc",
+  "eb55c69078e75312c33045869901ba0fbc574a2900e636e2e70270ef5ba51c66",
+  "ed68350090390e289c9c48ce87f74f1f348d5a76adca15bcab169d15dbbf7fbd",
+  "ee83c801a7bc8e4d9d17b2a58923ea4412e9919fe2ab0488b282ee5882de0017",
+  "efb11fbb9107188379782d859e914f43d4571ca235c34d077bae0329a61bf08e",
+  "efc0e86985ecf37da82a17d7f1306be90e524cd70f2154465bb5c7e6b8d05086",
+  "f039dfac9f067c8be04fc2f57751de2e3498758caa24961290c375bb2433e1d8",
+  "f27e34a73c4e7c8875aa22c47f334b582b18ceceb1fb891b49cb91f012627c6d",
+  "f2c02e426cf5ae72f3e5173e2679446a4e5ab9d5c669f444cfc83aa0cbcb4221",
+  "f2c1578cca452df3dcd59ff2666a0b7e443dd2d4ea7c2fec9ea1dd5e0acaa93f",
+  "f6f64e292180929e367a192d1c3b383912d288359658061c69afb31ef7e194c4",
+  "f7d0fa18ece45a5f994eb4ff9a94b2980e350fc90a93849dd15c97146574bfd7",
+  "f7e8ada39a7321770eb9220f6597666bd860cbbcfaed446857fcb01a403466e3",
+  "f861024f5ccf449161e8088f0a8fb80d49ba6f77df286bea45f5054c5921955a",
+  "f8d647f0358ed194191fa3324bd94c77549146aad2c3a6941576d9201443969f",
+  "f9313e797d985976477dea8ee26590d9dc33d504eda38a510162e1a9868f29b7",
+  "f94a98bf6c562f01d251a1bf0651caed4999a2c5293e74cf22ea0e813f659bc0",
+  "f9a0fd0cfa8936a61d0485cde18e97fe24390f2523770d3722dc86dc13c64b98",
+  "fb7d14dcaec23f1404a158e5c4a3e889fae18a3338b5db1d772eeb267fb6327c",
+  "fbb2118053fc69c8cd1216c70866bebe73231759553039cc3be3583818d11f02",
+  "fcaeab0891016f58e2d0372ed7858704c2397588993420482a5a596388e01d25",
+  "fd9a0297366f0b4c8534886fe076e703a9d86a498d5942643b79ff24f20749b4",
+  "fdfd460495a0fe4bc5e40e64ac7cc37db8e08988ab4bd5150d84c0e3f9798762",
+  "ff398f882d7bab4a32b9e4f7f3413893a06c89f92c1b56c882e999615302173b",
+  "solana-read.26c69798798f758fbe5232a899f4424c5b294c2881c4f7de",
+  "solana-read.85684b0ce924e7602b3b9fa60920e7120ef1c2f9db4ac572"
+ ]
+}

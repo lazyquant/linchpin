@@ -22,6 +22,18 @@ export const VOCABULARY = Object.freeze({
   "flash-loan-enabled": nearEntry("state", "one", false),
   "holds-component": nearEntry("dependency", "one", true),
   "oracle-fallback": nearEntry("dependency", "one", false),
+  "emode-pool": nearEntry("state", "one", false),
+  "emode-label": nearEntry("state", "one", false),
+  "emode-isolated": nearEntry("state", "one", false),
+  "emode-collateral": nearEntry("state", "many", false),
+  "emode-borrowable": nearEntry("state", "many", false),
+  "emode-ltv-zero": nearEntry("state", "many", false),
+  "callable-by-role": nearEntry("control", "many", false),
+  "aave-config-event": nearEntry("state", "one", false),
+  "aave-config-event-names": nearEntry("state", "many", false),
+  "aave-config-event-payload": nearEntry("state", "one", false),
+  "aave-payload-proposal": nearEntry("state", "one", false),
+  "aave-proposal-created": nearEntry("state", "one", false),
   UPGRADE_AUTHORITY: entry("control", "one"),
   MINT_AUTHORITY: entry("control", "one"),
   FREEZE_AUTHORITY: entry("control", "one"),
@@ -101,6 +113,7 @@ export const VOCABULARY = Object.freeze({
   RESERVE_PROPOSER: entry("control", "one"),
   // Account that sets protocol-wide fee modes across lending markets.
   GLOBAL_ADMIN: entry("control", "one"),
+  KLEND_RESERVE_STATUS: entry("state", "one"),
 });
 export type Predicate = keyof typeof VOCABULARY;
 export function isPredicate(value: string): value is Predicate {

@@ -104,3 +104,15 @@ bun run scripts/load-neo4j.ts --dry-run
 ```
 
 Tests rebuild all four recorded cases, reconcile exact flow totals, check batching and parameterization, and inject a fake driver to verify write order, error propagation, read routing and result normalization. They do not connect to Aura or execute Cypher against a database. Connectivity and server-side Cypher execution must be checked by the load command in an environment with database access.
+
+## Evidence graph
+
+`scripts/load-evidence-graph.ts` builds the shared evidence graph (facts, receipts and snapshots, plus the entity projection) and loads it into Neo4j. Without `--all` it builds the first set: Kamino's Sentora PYUSD vault and the NEAR control surface. With `--all` it adds the Kamino Lend main market (58 reserves, their price sources and the accounts that can change the market) and five more Kamino vaults (RWA USDC, Steakhouse High Yield USDG, Kamino Institutional Commodity Yield, Ethena PYUSD Prime, Allez SOL), one `Protocol` node each.
+
+```sh
+bun run scripts/load-evidence-graph.ts --dry-run          # counts and records hash, first set
+bun run scripts/load-evidence-graph.ts --dry-run --all    # the same for the full set
+NEO4J_URI=bolt://127.0.0.1:7687 NEO4J_PASSWORD=... bun run scripts/load-evidence-graph.ts --all
+```
+
+An entity that several cases name is one node with a `PART_OF` relationship to each protocol; the PYUSD reserve, for example, belongs to both the Sentora vault and the Kamino Lend market. Each protocol's `Coverage` nodes say which mechanics its capture maps and which it does not; an unmapped mechanic is a gap, not evidence of absence. Kamino Lend reserves carry no `:Reserve` kind label unless a vault capture also names them, because the market adapter records facts without the vault adapter's mechanics model.

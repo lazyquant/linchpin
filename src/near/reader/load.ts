@@ -6,7 +6,7 @@ import { openStore, validateSnapshot, type EvidenceSnapshot, type EvidenceStore 
 import { PUBLIC_FRESHNESS_MS } from "../../engine/queries/marinade";
 import { NEAR_REGISTRY, REGISTRY_VERSION, registrySha256, type SubjectEntry } from "../subjects/registry";
 import { receiptFor, recordValue, verifyRecord } from "./client";
-import { factId, mapOwnerUnknown, mapperFor } from "./mappers";
+import { factId, mapFactoryInfoUnknown, mapOwnerUnknown, mapperFor } from "./mappers";
 import type { NearRecord } from "./types";
 export interface NearSnapshotManifest {
   version: 1; snapshotId: string; capturedAt: string; completedAt: string; endpointHost: string; archivalHost: string | null;
@@ -66,7 +66,10 @@ export function snapshotFromRecords(m: NearSnapshotManifest, records: readonly N
       const p = r.request.params, method = "method_name" in p ? p.method_name : undefined;
       const ctx = { snapshotId: m.snapshotId, account: entry.account, entry, constructed: m.constructed };
       const expectedOwner = method === "get_owner" && entry.recipes.some(r => r.kind === "owner") && r.outcome === "call-error" && JSON.stringify(r.response).includes("MethodNotFound");
+      // get_factory_info is optional (snapshots before 2026-11-14 lack it); MethodNotFound is an explicit unknown, never "no factory path".
+      const expectedFactory = method === "get_factory_info" && entry.recipes.some(r => r.kind === "sputnik-policy") && r.outcome === "call-error" && JSON.stringify(r.response).includes("MethodNotFound");
       if (expectedOwner) mapOwnerUnknown(receiptFor(r, m.snapshotId, m.constructed), ctx).forEach(add);
+      else if (expectedFactory) mapFactoryInfoUnknown(receiptFor(r, m.snapshotId, m.constructed), ctx).forEach(add);
       else if (r.outcome !== "result") partial = true;
       else mapperFor(p.request_type, method)?.(recordValue(r), receiptFor(r, m.snapshotId, m.constructed), ctx).forEach(add);
     }

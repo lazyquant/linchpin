@@ -795,7 +795,9 @@ describe("AC4 control section", () => {
 // ---------------------------------------------------------------------------
 describe("AC5 changes", () => {
   test("with one live snapshot the review shows pair null and the reason", () => {
-    expect(liveSnapshotIds()).toEqual(["near-2026-11-09"]);
+    // Amended 2026-11-14: near-2026-11-14 is committed, but a review compares only captures up to the reviewed
+    // one, so the near-2026-11-09 review still has no pair.
+    expect(liveSnapshotIds().filter(id => id < "near-2026-11-09")).toEqual([]);
     const r = reviewIntent({ kind: "asset", assetId: WRAP }, ctx());
     expect(r.changes.pair).toBeNull();
     expect(r.unknowns.some(u => u.code === "missing-history" && u.ref === "live-snapshot-pair")).toBe(true);

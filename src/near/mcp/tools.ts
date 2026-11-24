@@ -1,7 +1,8 @@
+import { parseAction, preflight } from '../preflight/index';
 import { jsonRecord, projectVerdict } from '../../policy/index';
 import { runQuery } from '../../engine/queries/run';
 import type { EvidenceStore } from '../../engine/queries/snapshot';
-import { controlSurface } from '../reader/control';
+import { controlSurface, withFactoryCoverage } from '../reader/control';
 import { parseNearSubject } from '../reader/types';
 import { NEAR_REGISTRY } from '../subjects/registry';
 import { assetId as parseAsset, evaluateNearPolicy, loadNearPolicy, NEAR_TRAVERSAL_RELATIONS, readLibraryReview, readProposals, missingLibrary, type NearLibraries } from '../policy/index';
@@ -20,6 +21,14 @@ export const TOOLS = [
   definition('linchpin_intent_review', 'Read asset route coverage and receipted observations.', { assetId: { ...str, pattern: '^(nep141:|nep245:|1cs_v1:)\\S+$' } }, ['assetId']),
   definition('linchpin_governance_review', 'Read proposal effects and explicit coverage gaps.', { dao: subject, proposalId: { type: 'integer', minimum: 0, maximum: 1000000000 } }, ['dao']),
   definition('linchpin_policy_verdict', 'Evaluate a server policy over recorded public evidence.', { policyId: { type: 'string', pattern: '^[a-z0-9][a-z0-9-]{0,63}$' } }, ['policyId']),
+  definition('linchpin_preflight', 'Check an intended action against a server policy over recorded public evidence.', {
+    action: { type: 'object', additionalProperties: false, required: ['kind'], properties: {
+      kind: { type: 'string', enum: ['intents-swap', 'contract-call'] },
+      originAsset: { ...str, pattern: '^(nep141:|nep245:|1cs_v1:)\\S+$' },
+      destinationAsset: { ...str, pattern: '^(nep141:|nep245:|1cs_v1:)\\S+$' },
+      receiver: { ...str, pattern: '^(near:mainnet:)?[a-z0-9][a-z0-9._-]*$' },
+      method: { type: 'string', maxLength: 128, pattern: '^[A-Za-z_][A-Za-z0-9_]*$' } } },
+    policyId: { type: 'string', pattern: '^[a-z0-9][a-z0-9-]{0,63}$' } }, ['action', 'policyId']),
 ] as const;
 function valid(v: unknown, s: Schema): boolean {
   if (s.type === 'object') return jsonRecord(v) && (s.required ?? []).every(k => Object.hasOwn(v, k)) && Object.keys(v).every(k => s.properties?.[k] !== undefined && valid(v[k], s.properties[k]!));
@@ -68,11 +77,17 @@ export async function callTool(name: string, input: unknown, o: ToolContext): Pr
       case 'linchpin_changes': {
         const before = args.before ?? o.snapshotId, after = args.after ?? o.snapshotId;
         if (!o.store.snapshot(before) || !o.store.snapshot(after)) throw new RpcError(-32602);
-        value = query({ name: 'changes', subject: args.subject, beforeSnapshotId: before, afterSnapshotId: after, maxResults: max }); break;
+        const request = { name: 'changes' as const, subject: args.subject, beforeSnapshotId: before, afterSnapshotId: after, maxResults: max };
+        value = withFactoryCoverage(o.store, request, query(request)); break;
       }
       case 'linchpin_evidence': value = query({ name: 'evidence', evidenceIds: args.evidenceIds, maxResults: max }); break;
       case 'linchpin_intent_review': value = readLibraryReview(o.libs, 'intents', o.snapshotId, args.assetId); break;
       case 'linchpin_governance_review': value = !o.libs.governance ? missingLibrary('near-governance-review') : args.proposalId === undefined ? readProposals(o.libs, 'openProposals', o.snapshotId, args.dao) : readLibraryReview(o.libs, 'governance', o.snapshotId, args.dao, args.proposalId); break;
+      case 'linchpin_preflight': {
+        let action; try { action = parseAction(args.action); } catch { throw new RpcError(-32602); }
+        let policy; try { policy = await loadNearPolicy(args.policyId, o.libs, o.policiesDir); } catch { return { value: { error: 'unknown-policy' }, isError: true }; }
+        check(); value = preflight(action, policy, o); break;
+      }
       case 'linchpin_policy_verdict': {
         let policy; try { policy = await loadNearPolicy(args.policyId, o.libs, o.policiesDir); } catch { return { value: { error: 'unknown-policy' }, isError: true }; }
         check(); value = { snapshotId: o.snapshotId, verdict: projectVerdict(evaluateNearPolicy(policy, o.store, o.snapshotId, o.libs), snapshot.subjects), libraries: o.libs.status }; break;

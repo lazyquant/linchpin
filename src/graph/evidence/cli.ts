@@ -1,13 +1,14 @@
 import { buildEvidenceRecords, recordCounts, recordsSha256 } from './build';
-import { collectSlice1Inputs } from './protocols';
+import { collectEvidenceInputs, collectSlice1Inputs } from './protocols';
 import { validateEvidenceRecords } from './validate';
 import { loadEvidenceGraph, type EvidenceDriverLike } from './neo4j';
 export interface CliDependencies { createDriver(config:{uri:string;username:string;password:string;database:string}): EvidenceDriverLike & {close():Promise<void>}; readText(path:string):string; out(line:string):void; err(line:string):void }
 export async function loadMain(args:string[], env:Record<string,string|undefined>,deps:CliDependencies):Promise<number> {
   try {
-    if(args.some(a=>!['--dry-run','--allow-private','--enforce-graph-type'].includes(a))) {deps.err('Unknown argument');return 2;}
+    if(args.some(a=>!['--dry-run','--allow-private','--enforce-graph-type','--all'].includes(a))) {deps.err('Unknown argument');return 2;}
     const dry=args.includes('--dry-run'),allowPrivate=args.includes('--allow-private');
-    const records=buildEvidenceRecords(collectSlice1Inputs(),{allowPrivate});validateEvidenceRecords(records);
+    const inputs=args.includes('--all') ? collectEvidenceInputs() : collectSlice1Inputs();
+    const records=buildEvidenceRecords(inputs,{allowPrivate});validateEvidenceRecords(records);
     deps.out(JSON.stringify({...recordCounts(records),recordsSha256:recordsSha256(records)}));
     if(dry) return 0;
     const uri=env.NEO4J_URI,password=env.NEO4J_PASSWORD;

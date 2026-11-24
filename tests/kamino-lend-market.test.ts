@@ -147,7 +147,7 @@ const subject = (b58: string) => CHAIN + b58;
 let recorded: ReturnType<typeof load>;
 let recordedSnapshot: ReturnType<typeof validateSnapshot>;
 let recordedRaw: RawCapture;
-const SNAPSHOT_PIN = 'd902fb6f6b4683df43f5ca8abbe29b09a9829b6e153f2450c2723da19e67d88c';
+const SNAPSHOT_PIN = readFileSync(resolve(repoRoot, 'tests/fixtures/kamino-lend-market/snapshot.sha256'), 'utf8').trim();
 
 beforeAll(() => {
   recorded = load(resolve(repoRoot, RECORDED_ROOT, CAPTURE_ID));

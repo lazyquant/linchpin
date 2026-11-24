@@ -1,3 +1,4 @@
+import { validateMechanics, type Entity, type KaminoMechanics } from "../kamino/mechanics";
 import { isConfiguredKey } from "../kamino/constants";
 import { canonical, sha256 } from "../../chain/evidence";
 import type { EvidenceReceipt, Fact } from "../../engine/contracts";
@@ -7,7 +8,7 @@ import { KAMINO_LEND_TARGET as TARGET, KLEND_PROGRAM, SCOPE_PROGRAM, SQUADS_PROG
 import { accountBytes, decodeLendReserve, decodeLendMarket, decodeGlobalConfig, decodeMintHead, decodeProgram, decodeProgramDataHead, decodeSquadsMultisig, isDecodeFailure, globalConfigAddress, squadsVaultPda, type AccountRecord } from "./layout";
 export interface CoverageGap { code: string; source: string; subject: string | null; detail: string }
 export interface CoverageNote { id: string; code: "missing-coverage"; subject: string | null; detail: string }
-export interface KaminoLendResult { snapshot: EvidenceSnapshot; gaps: CoverageGap[]; coverage: CoverageNote[] }
+export interface KaminoLendResult { snapshot: EvidenceSnapshot; gaps: CoverageGap[]; coverage: CoverageNote[]; mechanics: KaminoMechanics }
 const sorted = (a: string[]) => [...new Set(a)].sort();
 export function normalizeKaminoLendCapture(input: KaminoLendCapture): KaminoLendResult {
   const { manifest, records } = verifyKaminoLendCapture(input);
@@ -49,12 +50,13 @@ export function normalizeKaminoLendCapture(input: KaminoLendCapture): KaminoLend
   const mints = new Map<string,{ decimals: number; program: string }[]>(), oracles = new Set<string>();
   for (const e of entries) {
     const k = e.reserve;
-    coverage.push({ id: "reserve-status-not-decoded", code: "missing-coverage", subject: identity(k), detail: "Status (Active, Obsolete or Hidden) is not decoded; IN_MARKET and PRICED_BY do not establish active status." });
+    coverage.push({ id: "reserve-status-not-decoded", code: "missing-coverage", subject: identity(k), detail: "The status code is decoded as KLEND_RESERVE_STATUS; what Active, Obsolete and Hidden permit is not, so IN_MARKET and PRICED_BY do not establish that the reserve is usable." });
     if (typeof e.liquidityToken === "string" && e.liquidityToken.length) names[identity(k)] = e.liquidityToken;
     const r = read(k,decodeLendReserve); if (!r) continue;
     if (r.lendingMarket !== TARGET.market) { gap("membership-mismatch",k,"Reserve belongs to another market"); continue; }
     owner(k); fact(k,"IN_MARKET",r.lendingMarket); fact(k,"ASSET_MINT",r.mintPubkey);
     fact(k,"AVAILABLE_LIQUIDITY_RAW",`amount:${r.totalAvailableAmount}`); fact(k,"BORROWED_RAW",`amount:${r.borrowedAmountSf >> 60n}`);
+    if (r.status <= 2) fact(k,"KLEND_RESERVE_STATUS",`amount:${r.status}`); else gap("malformed-record",k,"Reserve status code out of range");
     mints.set(r.mintPubkey,[...(mints.get(r.mintPubkey) ?? []),{ decimals: r.mintDecimals, program: r.tokenProgram }]);
     for (const o of r.oracleKeys) { fact(k,"PRICED_BY",o); oracles.add(o); }
   }
@@ -64,9 +66,33 @@ export function normalizeKaminoLendCapture(input: KaminoLendCapture): KaminoLend
   const multisigs: string[] = [];
   for (const [k,a] of accounts) { if (!a || sources.get(k) !== "rpc-control.json") continue; if (a.owner === SQUADS_V3_PROGRAM) { owner(k); continue; } if (a.owner !== SQUADS_PROGRAM) continue; const m = read(k,decodeSquadsMultisig); if (!m) continue; multisigs.push(k); owner(k); fact(k,"MULTISIG_THRESHOLD",`amount:${m.threshold}`); for (const member of m.members) fact(k,"MULTISIG_MEMBER",member.key); fact(k,"CONFIG_AUTHORITY",m.configAuthority === SYSTEM_PROGRAM ? "none" : m.configAuthority); }
   for (const [k,ids] of authorities) { const matches = multisigs.filter(ms => squadsVaultPda(ms) === k); if (matches.length === 1) fact(k,"CONTROLLED_BY",matches[0]!,[...ids,evidence.get(matches[0]!)!],"derived"); else { fact(k,"CONTROLLED_BY","unknown",ids,"unknown"); gap("unknown-controller",k,"No pinned controller established"); } }
-  for (const [id,detail] of Object.entries({ "reserve-list-completeness":"Reserve list documented by API; completeness is not proven on chain.", "reserve-status":"Reserve status is not covered.", "scope-chain-indices":"Scope chain indices and their resolved entries are not covered.", "multisig-timelock":"Multisig time locks are not covered.", "pending-owner-admin":"Pending owner and admin are not covered.", "squads-v3-layout":"Squads v3 layout is not covered.", "fee-collector":"Fee collector is not covered.", "switchboard-upgrade-authority":"Switchboard upgrade authority is not covered.", "proposer-initialisation-phase":"Which reserves remain in the proposer's initialisation phase is not evaluated." })) coverage.push({ id,code:"missing-coverage",subject:null,detail });
+  for (const [id,detail] of Object.entries({ "reserve-list-completeness":"Reserve list documented by API; completeness is not proven on chain.", "reserve-status":"The status code is decoded as KLEND_RESERVE_STATUS; what Active, Obsolete and Hidden permit is not, so IN_MARKET and PRICED_BY do not establish that the reserve is usable.", "scope-chain-indices":"Scope chain indices and their resolved entries are not covered.", "multisig-timelock":"Multisig time locks are not covered.", "pending-owner-admin":"Pending owner and admin are not covered.", "squads-v3-layout":"Squads v3 layout is not covered.", "fee-collector":"Fee collector is not covered.", "switchboard-upgrade-authority":"Switchboard upgrade authority is not covered.", "proposer-initialisation-phase":"Which reserves remain in the proposer's initialisation phase is not evaluated." })) coverage.push({ id,code:"missing-coverage",subject:null,detail });
   if (partial.size) readers.push({ id:"kamino-lend-gaps",status:"partial",subjects:sorted([...partial]) });
   const slots = receipts.flatMap(r => r.observation.blockOrSlot === null ? [] : [r.observation.blockOrSlot]).sort((a,b) => BigInt(a)<BigInt(b)?-1:BigInt(a)>BigInt(b)?1:0);
   const snapshot = validateSnapshot({ version:1,id:`solana-mainnet-beta.kamino-lend.${manifest.captureId}`,chain:"solana",network:"mainnet-beta",constructed:manifest.constructed,observedFrom,observedTo,fromBlockOrSlot:slots[0] ?? null,toBlockOrSlot:slots.at(-1) ?? null,freshUntil:new Date(Date.parse(observedTo)+PUBLIC_FRESHNESS_MS).toISOString(),subjects:sorted([...evidence.keys()].map(identity).concat(facts.map(f=>f.subject),[...partial])),readers:readers.sort((a,b)=>a.id.localeCompare(b.id)),names:Object.fromEntries(Object.entries(names).sort()),receipts:receipts.sort((a,b)=>a.id.localeCompare(b.id)),facts:[...new Map(facts.map(f=>[f.id,f])).values()].sort((a,b)=>a.id.localeCompare(b.id)) });
-  return { snapshot,gaps,coverage };
+  const entities: Entity[] = [];
+  const marketId = identity(TARGET.market);
+  const owners = new Map(snapshot.facts.filter(f => f.predicate === "OWNER_PROGRAM").map(f => [f.subject, f]));
+  const pricedBy = new Set(snapshot.facts.filter(f => f.predicate === "PRICED_BY").map(f => f.object));
+  for (const f of snapshot.facts) {
+    if (f.predicate === "MARKET_OWNER" && f.subject === marketId) {
+      const owner = owners.get(marketId);
+      if (owner) entities.push({ id: marketId, kind: "Market", evidenceIds: owner.evidenceIds });
+    }
+    if (f.predicate === "IN_MARKET" && f.object === marketId)
+      entities.push({ id: f.subject, kind: "Reserve", evidenceIds: f.evidenceIds });
+    if (f.predicate === "DECIMALS")
+      entities.push({ id: f.subject, kind: "Mint", evidenceIds: f.evidenceIds });
+    if (f.predicate === "OWNER_PROGRAM" && f.object === identity(SCOPE_PROGRAM) && pricedBy.has(f.subject))
+      entities.push({ id: f.subject, kind: "OracleSource", evidenceIds: f.evidenceIds });
+    if (f.predicate === "PROGRAM_DATA") {
+      entities.push({ id: f.subject, kind: "Program", evidenceIds: f.evidenceIds });
+      entities.push({ id: f.object, kind: "ProgramData", evidenceIds: f.evidenceIds });
+    }
+    if (f.predicate === "MULTISIG_THRESHOLD")
+      entities.push({ id: f.subject, kind: "Authority", controllerType: "squads-v4-multisig", evidenceIds: f.evidenceIds });
+  }
+  entities.sort((a, b) => a.id < b.id ? -1 : a.id > b.id ? 1 : 0);
+  const mechanics = validateMechanics({ entities, relations: [], quantities: [] });
+  return { snapshot,gaps,coverage,mechanics };
 }

@@ -1,0 +1,31 @@
+{
+ "version": 1,
+ "requestSha256": "753026b14a824cc2315491abf1506dab7486a42030d91a9f6ac89dab284cf7cd",
+ "request": {
+  "method": "query",
+  "params": {
+   "account_id": "omni.bridge.near",
+   "request_type": "call_function",
+   "method_name": "pa_all_paused",
+   "args_base64": "e30=",
+   "finality": "final"
+  }
+ },
+ "endpointHost": "archival-rpc.mainnet.fastnear.com",
+ "retrievedAt": "2026-11-14T14:49:07.662Z",
+ "httpStatus": 200,
+ "outcome": "result",
+ "blockHeight": "224528780",
+ "blockHash": "JDVX7QGH78bpKsyJghTVZYuTP5GV85SKYQFJQmWwqFeD",
+ "responseSha256": "8168256935b7c631224bb5b71a2fdbe26ac52e1066517dd5651353d58b25adba",
+ "response": {
+  "jsonrpc": "2.0",
+  "result": {
+   "block_hash": "JDVX7QGH78bpKsyJghTVZYuTP5GV85SKYQFJQmWwqFeD",
+   "block_height": 224528780,
+   "logs": []
+  },
+  "id": "near-reader"
+ },
+ "resultText": "[\"update_transfer_fee\"]"
+}

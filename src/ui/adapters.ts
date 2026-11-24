@@ -1,6 +1,6 @@
 /** Adapters from engine facts and receipts to the kit's results. They copy; they do not interpret. */
 import type { EvidenceReceipt, Fact } from "../engine/contracts";
-import type { BlockOrSlot, Cell, ColumnRole, GraphEdge, GraphNode, GraphResult, ResultRow, ResultSet } from "./types";
+import type { BlockOrSlot, Cell, ColumnRole, GraphEdge, GraphMark, GraphNode, GraphResult, ResultRow, ResultSet } from "./types";
 
 export type FactField = "subject" | "predicate" | "object" | "status" | "validFrom" | "validTo" | "observedAt";
 export interface FactColumn { name: string; role: ColumnRole; field: FactField }
@@ -86,11 +86,12 @@ export function factsToResult(
 
 /**
  * A graph whose every edge is one fact. A fact is a relation when its subject and its object are both given nodes.
- * A node no edge names is kept and marked isolated. With `receipts`, an edge takes its block and time from them and a
- * fact citing a receipt that is not among them is skipped; without, both are `null`.
+ * A node no edge names is kept and marked isolated. A node given with a `mark` keeps it; any other node has no such
+ * key. With `receipts`, an edge takes its block and time from them and a fact citing a receipt that is not among
+ * them is skipped; without, both are `null`.
  */
 export function graphResult(
-  nodes: { id: string; label?: string }[],
+  nodes: { id: string; label?: string; mark?: GraphMark | GraphMark[] }[],
   facts: Fact[],
   opts: { id?: string; receipts?: EvidenceReceipt[] } = {},
 ): { result: GraphResult; skipped: { factId: string; reason: "not-a-relation" | "missing-receipt" }[] } {
@@ -126,7 +127,11 @@ export function graphResult(
       asOf: seen.asOf,
     });
   }
-  const outNodes: GraphNode[] = nodes.map((node) => ({ id: node.id, label: node.label ?? node.id, isolated: !named.has(node.id) }));
+  const outNodes: GraphNode[] = nodes.map((node) => {
+    const out: GraphNode = { id: node.id, label: node.label ?? node.id, isolated: !named.has(node.id) };
+    if (node.mark !== undefined) out.mark = Array.isArray(node.mark) ? [...node.mark] : node.mark;
+    return out;
+  });
   return {
     result: { resultId: opts.id ?? "graph", shape: "graph", coverage: "mapped", coverageNotes: [], nodes: outNodes, edges, truncated: false },
     skipped,

@@ -1,0 +1,390 @@
+{
+  "note": "Reference questions over the committed bundles. Expected keys are not stored here; each entry carries a selector the test resolves against the bundle and graph it built itself, plus the row count the recorded snapshot yields.",
+  "header": { "id": "root", "component": "Column", "children": ["hd"] },
+  "questions": [
+    {
+      "id": "K1",
+      "protocol": "kamino",
+      "question": "Who can change the vault's allocations?",
+      "script": {
+        "turns": [
+          { "tools": [{ "name": "run_template", "input": { "protocol": "kamino", "templateId": "section-control", "params": { "subject": "Vault allocations" } } }] },
+          {
+            "answer": {
+              "components": [
+                { "id": "root", "component": "Column", "children": ["hd", "v1"] },
+                { "id": "hd", "component": "AnswerHeader", "meta": { "path": "/meta" } },
+                { "id": "v1", "component": "ControlChain", "result": { "path": "/results/r1" } }
+              ]
+            }
+          }
+        ]
+      },
+      "expect": { "kind": "keys", "select": { "source": "section", "section": "control", "list": "rows", "idField": "id", "subject": "Vault allocations", "match": ["target"] }, "rows": 1 },
+      "checks": { "instructionNull": true }
+    },
+    {
+      "id": "K2",
+      "protocol": "kamino",
+      "question": "Who can upgrade the lending program?",
+      "script": {
+        "turns": [
+          { "tools": [{ "name": "run_template", "input": { "protocol": "kamino", "templateId": "section-control", "params": { "subject": "Lending program" } } }] },
+          {
+            "answer": {
+              "components": [
+                { "id": "root", "component": "Column", "children": ["hd", "v1"] },
+                { "id": "hd", "component": "AnswerHeader", "meta": { "path": "/meta" } },
+                { "id": "v1", "component": "ControlChain", "result": { "path": "/results/r1" } }
+              ]
+            }
+          }
+        ]
+      },
+      "expect": { "kind": "keys", "select": { "source": "section", "section": "control", "list": "rows", "idField": "id", "subject": "Lending program", "match": ["target"] }, "rows": 1 }
+    },
+    {
+      "id": "K3",
+      "protocol": "kamino",
+      "question": "What fees does the vault charge?",
+      "script": {
+        "turns": [
+          { "tools": [{ "name": "run_template", "input": { "protocol": "kamino", "templateId": "section-parameters", "params": { "subject": "FeeBps" } } }] },
+          {
+            "answer": {
+              "components": [
+                { "id": "root", "component": "Column", "children": ["hd", "v1"] },
+                { "id": "hd", "component": "AnswerHeader", "meta": { "path": "/meta" } },
+                { "id": "v1", "component": "FactTable", "result": { "path": "/results/r1" }, "columns": ["target", "value", "unit"] }
+              ]
+            }
+          }
+        ]
+      },
+      "expect": {
+        "kind": "keys",
+        "select": { "source": "section", "section": "parameters", "list": "rows", "idField": "id", "subject": "FeeBps", "match": ["label", "field", "program"] },
+        "rows": 2
+      }
+    },
+    {
+      "id": "K4",
+      "protocol": "kamino",
+      "question": "What does the vault depend on?",
+      "script": {
+        "turns": [
+          { "tools": [{ "name": "run_template", "input": { "protocol": "kamino", "templateId": "vault-dependencies" } }] },
+          { "answer": { "view": "fact-table", "results": ["r1"] } }
+        ]
+      },
+      "expect": { "kind": "keys", "select": { "source": "graph", "query": "vault-dependencies", "edges": ["ALLOCATES_TO", "IN_MARKET", "PRICED_BY"] }, "rows": 21 }
+    },
+    {
+      "id": "K5",
+      "protocol": "kamino",
+      "question": "Does the documentation's buffer claim match the chain?",
+      "script": {
+        "turns": [
+          { "tools": [{ "name": "run_template", "input": { "protocol": "kamino", "templateId": "section-claims", "params": { "subject": "buffer" } } }] },
+          {
+            "answer": {
+              "components": [
+                { "id": "root", "component": "Column", "children": ["hd", "v1"] },
+                { "id": "hd", "component": "AnswerHeader", "meta": { "path": "/meta" } },
+                { "id": "v1", "component": "FactTable", "result": { "path": "/results/r1" } }
+              ]
+            }
+          }
+        ]
+      },
+      "expect": {
+        "kind": "keys",
+        "select": { "source": "section", "section": "claims", "list": "rows", "idField": "id", "subject": "buffer", "match": ["text", "source"] },
+        "rows": 1
+      },
+      "checks": { "statusEquals": "unresolved" }
+    },
+    {
+      "id": "K6",
+      "protocol": "kamino",
+      "question": "Where do the vault's fees go?",
+      "script": {
+        "turns": [
+          { "tools": [{ "name": "run_template", "input": { "protocol": "kamino", "templateId": "section-path" } }] },
+          {
+            "answer": {
+              "components": [
+                { "id": "root", "component": "Column", "children": ["hd", "v1"] },
+                { "id": "hd", "component": "AnswerHeader", "meta": { "path": "/meta" } },
+                { "id": "v1", "component": "CoverageNote", "result": { "path": "/results/r1" } }
+              ]
+            }
+          }
+        ]
+      },
+      "expect": { "kind": "outcome", "select": { "source": "envelope", "section": "path" }, "noValueComponents": true }
+    },
+    {
+      "id": "K7",
+      "protocol": "kamino",
+      "question": "Who holds KMNO?",
+      "script": {
+        "turns": [
+          { "tools": [{ "name": "run_template", "input": { "protocol": "kamino", "templateId": "section-holders" } }] },
+          { "answer": { "view": "coverage", "results": ["r1"] } }
+        ]
+      },
+      "expect": { "kind": "outcome", "select": { "source": "envelope", "section": "holders" }, "noValueComponents": true }
+    },
+    {
+      "id": "K8",
+      "protocol": "kamino",
+      "question": "What does the treasury hold?",
+      "script": {
+        "turns": [
+          { "tools": [{ "name": "run_template", "input": { "protocol": "kamino", "templateId": "section-offsets" } }] },
+          {
+            "answer": {
+              "components": [
+                { "id": "root", "component": "Column", "children": ["hd", "v1"] },
+                { "id": "hd", "component": "AnswerHeader", "meta": { "path": "/meta" } },
+                { "id": "v1", "component": "CoverageNote", "result": { "path": "/results/r1" } }
+              ]
+            }
+          }
+        ]
+      },
+      "expect": { "kind": "outcome", "select": { "source": "envelope", "section": "offsets" }, "noValueComponents": true }
+    },
+    {
+      "id": "K9",
+      "protocol": "kamino",
+      "question": "How is KMNO governed?",
+      "script": {
+        "turns": [
+          { "tools": [{ "name": "run_template", "input": { "protocol": "kamino", "templateId": "section-participation" } }] },
+          {
+            "answer": {
+              "components": [
+                { "id": "root", "component": "Column", "children": ["hd", "v1"] },
+                { "id": "hd", "component": "AnswerHeader", "meta": { "path": "/meta" } },
+                { "id": "v1", "component": "CoverageNote", "result": { "path": "/results/r1" } }
+              ]
+            }
+          }
+        ]
+      },
+      "expect": { "kind": "outcome", "select": { "source": "envelope", "section": "participation" }, "noValueComponents": true }
+    },
+    {
+      "id": "M1",
+      "protocol": "marinade",
+      "question": "Who controls the reward fee?",
+      "script": {
+        "turns": [
+          { "tools": [{ "name": "run_template", "input": { "protocol": "marinade", "templateId": "section-control", "params": { "subject": "rewardFee" } } }] },
+          {
+            "answer": {
+              "components": [
+                { "id": "root", "component": "Column", "children": ["hd", "v1"] },
+                { "id": "hd", "component": "AnswerHeader", "meta": { "path": "/meta" } },
+                { "id": "v1", "component": "ControlChain", "result": { "path": "/results/r1" } }
+              ]
+            }
+          }
+        ]
+      },
+      "expect": {
+        "kind": "keys",
+        "select": { "source": "section", "section": "control", "list": "rows", "idField": "id", "subject": "rewardFee", "match": ["target"] },
+        "rows": 1
+      },
+      "checks": { "provenanceOfSelected": true }
+    },
+    {
+      "id": "M2",
+      "protocol": "marinade",
+      "question": "Who can change the fees?",
+      "script": {
+        "turns": [
+          { "tools": [{ "name": "run_template", "input": { "protocol": "marinade", "templateId": "section-control", "params": { "subject": "rewardFee" } } }] },
+          {
+            "answer": {
+              "components": [
+                { "id": "root", "component": "Column", "children": ["hd", "v1"] },
+                { "id": "hd", "component": "AnswerHeader", "meta": { "path": "/meta" } },
+                { "id": "v1", "component": "ControlChain", "result": { "path": "/results/r1" } }
+              ]
+            }
+          }
+        ]
+      },
+      "expect": {
+        "kind": "keys",
+        "select": { "source": "section", "section": "control", "list": "rows", "idField": "id", "subject": "rewardFee", "match": ["target"] },
+        "rows": 1
+      }
+    },
+    {
+      "id": "M3",
+      "protocol": "marinade",
+      "question": "Can more MNDE be minted?",
+      "script": {
+        "turns": [
+          { "tools": [{ "name": "run_template", "input": { "protocol": "marinade", "templateId": "section-control", "params": { "subject": "MNDE supply" } } }] },
+          {
+            "answer": {
+              "components": [
+                { "id": "root", "component": "Column", "children": ["hd", "v1"] },
+                { "id": "hd", "component": "AnswerHeader", "meta": { "path": "/meta" } },
+                { "id": "v1", "component": "ControlChain", "result": { "path": "/results/r1" } }
+              ]
+            }
+          }
+        ]
+      },
+      "expect": {
+        "kind": "keys",
+        "select": { "source": "section", "section": "control", "list": "rows", "idField": "id", "subject": "MNDE supply", "match": ["target"] },
+        "rows": 1
+      },
+      "checks": { "authorityNone": true }
+    },
+    {
+      "id": "M4",
+      "protocol": "marinade",
+      "question": "Predict Bitcoin closing price tomorrow",
+      "script": {
+        "turns": [
+          { "tools": [{ "name": "coverage", "input": { "protocol": "marinade" } }] },
+          {
+            "answer": {
+              "components": [
+                { "id": "root", "component": "Column", "children": ["hd", "nt", "v1"] },
+                { "id": "hd", "component": "AnswerHeader", "meta": { "path": "/meta" } },
+                { "id": "nt", "component": "Note", "text": "The recorded snapshot maps protocol mechanics only; a price forecast is outside it." },
+                { "id": "v1", "component": "CoverageNote", "coverage": { "path": "/coverage/mechanics/11" } }
+              ]
+            }
+          }
+        ]
+      },
+      "expect": { "kind": "outcome", "noValueComponents": true, "coverageMechanicBound": 11 }
+    },
+    {
+      "id": "M5",
+      "protocol": "marinade",
+      "question": "What buybacks flowed?",
+      "script": {
+        "turns": [
+          { "tools": [{ "name": "run_template", "input": { "protocol": "marinade", "templateId": "section-flows", "params": { "subject": "buybacks.months" } } }] },
+          {
+            "answer": {
+              "components": [
+                { "id": "root", "component": "Column", "children": ["hd", "v1"] },
+                { "id": "hd", "component": "AnswerHeader", "meta": { "path": "/meta" } },
+                { "id": "v1", "component": "FactTable", "result": { "path": "/results/r1" }, "columns": ["time", "amount", "unit", "sent", "credited"] }
+              ]
+            }
+          }
+        ]
+      },
+      "expect": {
+        "kind": "keys",
+        "select": { "source": "section", "section": "flows", "list": "buybacks.months", "idField": "month", "subject": "buybacks.months", "match": ["group", "program", "instruction", "account"] },
+        "rows": 7
+      },
+      "checks": { "monthAmounts": true }
+    },
+    {
+      "id": "M6",
+      "protocol": "marinade",
+      "question": "Is the value path to MNDE holders enforced?",
+      "script": {
+        "turns": [
+          { "tools": [{ "name": "run_template", "input": { "protocol": "marinade", "templateId": "section-path" } }] },
+          {
+            "answer": {
+              "components": [
+                { "id": "root", "component": "Column", "children": ["hd", "v1"] },
+                { "id": "hd", "component": "AnswerHeader", "meta": { "path": "/meta" } },
+                { "id": "v1", "component": "ValuePath", "result": { "path": "/results/r1" } }
+              ]
+            }
+          }
+        ]
+      },
+      "expect": {
+        "kind": "keys",
+        "select": { "source": "section", "section": "path", "list": "links", "idField": "id" },
+        "rows": 20
+      },
+      "checks": { "claimedOnlyRow": "revenue-buyback" }
+    },
+    {
+      "id": "M7",
+      "protocol": "marinade",
+      "question": "Show external outflows",
+      "script": {
+        "turns": [
+          { "tools": [{ "name": "run_template", "input": { "protocol": "marinade", "templateId": "section-offsets", "params": { "subject": "external" } } }] },
+          {
+            "answer": {
+              "components": [
+                { "id": "root", "component": "Column", "children": ["hd", "v1"] },
+                { "id": "hd", "component": "AnswerHeader", "meta": { "path": "/meta" } },
+                { "id": "v1", "component": "FactTable", "result": { "path": "/results/r1" } }
+              ]
+            }
+          }
+        ]
+      },
+      "expect": {
+        "kind": "keys",
+        "select": { "source": "section", "section": "offsets", "list": "rows", "idField": "id", "subject": "external", "match": ["label"] },
+        "rows": 1
+      },
+      "checks": { "amountEquals": "203,378,500.27" }
+    },
+    {
+      "id": "M8",
+      "protocol": "marinade",
+      "question": "Show graph program dependencies",
+      "script": {
+        "turns": [
+          { "tools": [{ "name": "run_template", "input": { "protocol": "marinade", "templateId": "upgrade-control" } }] },
+          {
+            "answer": {
+              "components": [
+                { "id": "root", "component": "Column", "children": ["hd", "v1"] },
+                { "id": "hd", "component": "AnswerHeader", "meta": { "path": "/meta" } },
+                { "id": "v1", "component": "FactTable", "result": { "path": "/results/r1" } }
+              ]
+            }
+          }
+        ]
+      },
+      "expect": { "kind": "keys", "select": { "source": "graph-pairs", "query": "upgrade-control", "steps": ["UPGRADE_AUTHORITY", "CONTROLLED_BY"] }, "rows": 13 }
+    },
+    {
+      "id": "M9",
+      "protocol": "marinade",
+      "question": "What remains unresolved?",
+      "script": {
+        "turns": [
+          { "tools": [{ "name": "run_template", "input": { "protocol": "marinade", "templateId": "unknowns" } }] },
+          {
+            "answer": {
+              "components": [
+                { "id": "root", "component": "Column", "children": ["hd", "v1"] },
+                { "id": "hd", "component": "AnswerHeader", "meta": { "path": "/meta" } },
+                { "id": "v1", "component": "UnknownList", "result": { "path": "/results/r1" } }
+              ]
+            }
+          }
+        ]
+      },
+      "expect": { "kind": "keys", "select": { "source": "unknowns" }, "rows": 13 }
+    }
+  ]
+}

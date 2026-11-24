@@ -8,7 +8,7 @@ trust = "third_party"
 [mcp]
 server = "https://<host>/mcp"
 namespace = "linchpin"
-max_tools = 8
+max_tools = 9
 default_permission = "ask"
 effects = ["network", "use_secret"]
 
@@ -118,6 +118,18 @@ description = "Evaluate a server policy over recorded public evidence."
 id = "linchpin.linchpin_policy_verdict"
 input_schema_ref = "schemas/linchpin/linchpin_policy_verdict.input.v1.json"
 prompt_doc_ref = "prompts/linchpin/linchpin_policy_verdict.md"
+
+[tools.origin_gate_matrix]
+automation = "forbidden"
+loop_run = "gated_unless_granted"
+product = "forbidden"
+
+[[tools]]
+default_permission = "ask"
+description = "Check an intended action against a server policy over recorded public evidence."
+id = "linchpin.linchpin_preflight"
+input_schema_ref = "schemas/linchpin/linchpin_preflight.input.v1.json"
+prompt_doc_ref = "prompts/linchpin/linchpin_preflight.md"
 
 [tools.origin_gate_matrix]
 automation = "forbidden"

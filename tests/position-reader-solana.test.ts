@@ -265,8 +265,8 @@ describe("AC1 the readPositions interface and its quantities", () => {
 
   test("a chain other than solana makes no request and returns chain-not-supported", async () => {
     const log: FetchLog[] = [];
-    const r = await readPositions({ chain: "ethereum", address: HOLDER, snapshotId: "tst-chain", client: client(stubFetch(() => "splEmpty", log)) });
-    expect(r).toEqual({ positions: [], receipts: [], notRead: [{ subject: `ethereum:${HOLDER}`, reason: "chain-not-supported" }] });
+    const r = await readPositions({ chain: "bitcoin", address: HOLDER, snapshotId: "tst-chain", client: client(stubFetch(() => "splEmpty", log)) });
+    expect(r).toEqual({ positions: [], receipts: [], notRead: [{ subject: `bitcoin:${HOLDER}`, reason: "chain-not-supported" }] });
     expect(log).toEqual([]);
   });
 

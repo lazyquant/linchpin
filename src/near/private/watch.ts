@@ -1,6 +1,7 @@
 import { canonical } from '../../chain/evidence';
 import type { PrivatePosition, QueryReason } from '../../engine/contracts';
 import { runQuery } from '../../engine/queries/run';
+import { withFactoryCoverage } from '../reader/control';
 import type { EvidenceStore } from '../../engine/queries/snapshot';
 import type { Outcome, Policy, RuleSpec } from '../../policy/types';
 import { evaluateNearPolicy, readProposals, type NearLibraries } from '../policy/index';
@@ -26,7 +27,7 @@ export function watchPolicy(i: { policy: Policy; store: EvidenceStore; before: s
   const events: WatchEvent[] = [], unknowns: QueryReason[] = [];
   const event = (subject: string, cause: 'facts' | 'proposal' | 'verdict'): Extract<WatchEvent, { kind: 'dependency-changed' }> => ({ kind: 'dependency-changed', subject, cause, constructed: a.constructed || b.constructed, changes: [], proposals: [], flippedRules: [], receiptIds: [] });
   for (const subject of closure) {
-    const r = query(store, { name: 'changes', subject, beforeSnapshotId: before, afterSnapshotId: after, maxResults: 500 }); unknowns.push(...r.reasons);
+    const request = { name: 'changes' as const, subject, beforeSnapshotId: before, afterSnapshotId: after, maxResults: 500 }, r = withFactoryCoverage(store, request, query(store, request)); unknowns.push(...r.reasons);
     if (r.changes.length) events.push({ ...event(subject, 'facts'), changes: r.changes.map(c => ({ kind: c.kind, key: c.key, beforeFactId: c.before?.id ?? null, afterFactId: c.after?.id ?? null })).sort((a, b) => a.key.localeCompare(b.key)), receiptIds: ordered(r.receipts.map(r => r.id)) });
   }
   const av = evaluateNearPolicy(policy, store, before, libs), bv = evaluateNearPolicy(policy, store, after, libs);

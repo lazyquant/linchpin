@@ -792,6 +792,78 @@ span.lk-unknown {
   font-size: 12px;
 }
 
+/* Node marks. A mark is a word and a line pattern; the surface that sets it says what it stands for.
+   Each differs from the others, and from an isolated node, by line weight, dash pattern or a second ring. */
+.lk-graph-node.lk-mark-attention rect {
+  stroke: var(--lk-contra);
+  stroke-width: 3;
+}
+
+.lk-graph-node.lk-mark-undetermined rect {
+  stroke-width: 1.75;
+  stroke-dasharray: 9 3 2 3;
+}
+
+.lk-graph-node.lk-mark-clear rect {
+  stroke: var(--lk-accent);
+  stroke-width: 1.75;
+}
+
+.lk-graph-node.lk-mark-unmarked rect {
+  stroke: var(--lk-ink-muted);
+  stroke-dasharray: 1.5 3.5;
+  stroke-linecap: round;
+}
+
+.lk-graph-node rect.lk-mark-ring {
+  fill: none;
+  stroke: var(--lk-ink);
+  stroke-width: 1;
+  stroke-dasharray: none;
+}
+
+.lk-graph-node .lk-mark-word {
+  font-family: var(--lk-font-sans);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+}
+
+.lk-graph-nodes .lk-mark {
+  padding: 0 7px;
+  border: 1px solid var(--lk-ink);
+  border-radius: 2px;
+  color: var(--lk-ink);
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.lk-graph-nodes .lk-mark-attention {
+  border: 2px solid var(--lk-contra);
+  color: var(--lk-contra);
+}
+
+.lk-graph-nodes .lk-mark-undetermined {
+  border-style: dashed;
+  background-image: repeating-linear-gradient(135deg, var(--lk-hatch) 0, var(--lk-hatch) 2px, transparent 2px, transparent 7px);
+}
+
+.lk-graph-nodes .lk-mark-clear {
+  border-color: var(--lk-accent);
+  color: var(--lk-accent);
+}
+
+.lk-graph-nodes .lk-mark-unmarked {
+  border: 1px dotted var(--lk-ink-muted);
+  color: var(--lk-ink-muted);
+  font-weight: 400;
+}
+
+.lk-graph-nodes .lk-mark-changed {
+  border: 3px double var(--lk-ink);
+}
+
 .lk-edge {
   display: flex;
   flex-wrap: wrap;
@@ -1145,4 +1217,811 @@ span.lk-unknown {
   .lk-gallery-panel .lk-specimen {
     padding: 16px;
   }
+}
+
+/* ==========================================================================
+   Second catalog. Everything below is additive: no rule above is changed.
+   ========================================================================== */
+
+/* A surface inside a page shell: the shell owns the padding and the width. */
+.lk-embedded .lk-surface,
+.lk-surface.lk-embedded {
+  max-width: none;
+  margin: 0;
+  padding: 0;
+}
+
+/* A role or an instruction is a word and is not broken inside it. Identities still wrap at any character. */
+.lk-chain .lk-steps {
+  grid-auto-columns: minmax(min-content, 1fr);
+}
+
+.lk-chain .lk-steps > .lk-pair > .lk-value:not(.lk-mono):not(.lk-gap) {
+  overflow-wrap: normal;
+  word-break: normal;
+}
+
+/* ---------- counts, cut lists, constructed marks ---------- */
+
+.lk-cut {
+  margin-top: 10px;
+  color: var(--lk-ink-muted);
+  font-family: var(--lk-font-mono);
+  font-size: 12px;
+  letter-spacing: 0;
+}
+
+.lk-chip-cut {
+  margin-top: 6px;
+  color: var(--lk-ink-muted);
+  font-size: 12px;
+  font-style: italic;
+}
+
+.lk-result-mark {
+  margin-top: 8px;
+}
+
+.lk-basis-unstated {
+  color: var(--lk-ink-muted);
+  text-transform: none;
+  letter-spacing: 0;
+  font-size: 12.5px;
+  font-style: italic;
+  font-weight: 400;
+  white-space: normal;
+}
+
+.lk-basis-unstated::before {
+  background: none;
+  border: 1.5px dashed currentColor;
+}
+
+/* A status is a mark and a word, never a mark alone. */
+.lk-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--lk-ink);
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 1.5;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.lk-status::before {
+  content: "";
+  width: 7px;
+  height: 7px;
+  background: var(--lk-accent);
+}
+
+.lk-status.lk-status-operated-by-accounts::before,
+.lk-status.lk-status-partly::before {
+  background: none;
+  border: 1.5px solid var(--lk-ink);
+}
+
+.lk-status.lk-status-claimed-only::before,
+.lk-status.lk-status-claimed::before,
+.lk-status.lk-status-not-observed::before {
+  background: none;
+  border: 1.5px dotted var(--lk-ink-muted);
+}
+
+.lk-status.lk-status-pending,
+.lk-status.lk-status-unresolved,
+.lk-status.lk-status-unverified {
+  padding: 0 6px;
+  background-image: repeating-linear-gradient(135deg, var(--lk-hatch) 0, var(--lk-hatch) 2px, transparent 2px, transparent 7px);
+}
+
+.lk-status.lk-status-pending::before,
+.lk-status.lk-status-unresolved::before,
+.lk-status.lk-status-unverified::before {
+  background: none;
+  border: 1.5px dashed var(--lk-ink);
+}
+
+.lk-status.lk-status-contradiction,
+.lk-status.lk-status-contradicted {
+  color: var(--lk-contra);
+}
+
+.lk-status.lk-status-contradiction::before,
+.lk-status.lk-status-contradicted::before {
+  background: var(--lk-contra);
+}
+
+/* ---------- disclosure ---------- */
+
+.lk-disclosure {
+  border-top: 1px solid var(--lk-rule);
+}
+
+.lk-disclosure:last-of-type {
+  border-bottom: 1px solid var(--lk-rule);
+}
+
+.lk-disclosure-summary {
+  display: flex;
+  align-items: baseline;
+  gap: 14px;
+  padding: 13px 0;
+  cursor: pointer;
+  list-style: none;
+  user-select: none;
+}
+
+.lk-disclosure-summary::-webkit-details-marker {
+  display: none;
+}
+
+.lk-disclosure-summary::before {
+  content: "+";
+  width: 12px;
+  color: var(--lk-accent);
+  font-family: var(--lk-font-mono);
+  font-size: 15px;
+}
+
+.lk-disclosure[open] > .lk-disclosure-summary::before {
+  content: "\2212";
+}
+
+.lk-disclosure-title {
+  font-size: 15px;
+  font-weight: 500;
+}
+
+.lk-disclosure-summary:hover .lk-disclosure-title {
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
+.lk-disclosure-summary > .lk-count {
+  margin-left: auto;
+  font-size: 12px;
+  white-space: nowrap;
+}
+
+.lk-disclosure-body {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  min-width: 0;
+  padding: 6px 0 28px 26px;
+}
+
+/* ---------- lists of the second catalog ---------- */
+
+.lk-findings,
+.lk-claims,
+.lk-changes,
+.lk-captures {
+  border-top: 1px solid var(--lk-ink);
+}
+
+.lk-findings > .lk-row,
+.lk-claims > .lk-row,
+.lk-changes > .lk-row,
+.lk-captures > .lk-row {
+  padding: 14px 0;
+  border-bottom: 1px solid var(--lk-rule);
+}
+
+.lk-findings > .lk-row.lk-unknown,
+.lk-claims > .lk-row.lk-unknown {
+  padding-left: 12px;
+  padding-right: 12px;
+}
+
+.lk-finding-text {
+  max-width: 96ch;
+  font-size: 14.5px;
+}
+
+.lk-findings .lk-pairs {
+  margin-top: 6px;
+}
+
+.lk-claim-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(0, 1.2fr) minmax(0, 0.5fr);
+  gap: 8px 32px;
+  font-size: 14px;
+}
+
+.lk-claim-part,
+.lk-claim-source {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  min-width: 0;
+}
+
+.lk-claim-source {
+  margin-top: 8px;
+  font-size: 13px;
+}
+
+.lk-claim-part .lk-value,
+.lk-finding-text .lk-value {
+  font-family: var(--lk-font-sans);
+  font-size: 1em;
+  letter-spacing: 0;
+  overflow-wrap: break-word;
+}
+
+.lk-change-captures {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 4px 10px;
+  margin-bottom: 12px;
+  font-size: 13.5px;
+}
+
+.lk-change-key {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 2px 12px;
+  font-size: 14px;
+}
+
+.lk-change-kind {
+  color: var(--lk-ink-muted);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+}
+
+.lk-change-pair {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 4px 40px;
+  align-items: start;
+  margin-top: 8px;
+}
+
+.lk-change-side {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  font-size: 15px;
+}
+
+.lk-change-side + .lk-change-side {
+  position: relative;
+}
+
+.lk-change-side + .lk-change-side::before {
+  content: "\2192";
+  position: absolute;
+  left: -28px;
+  top: 16px;
+  color: var(--lk-accent);
+}
+
+.lk-change-side .lk-prov {
+  margin-top: 4px;
+}
+
+.lk-change-side.lk-gap {
+  padding: 6px 10px;
+  border: 1px dashed var(--lk-ink-muted);
+  border-radius: 2px;
+}
+
+.lk-absent {
+  color: var(--lk-ink);
+  font-style: normal;
+  font-weight: 500;
+}
+
+.lk-capture-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 4px 14px;
+}
+
+.lk-shown,
+.lk-recorded-word {
+  color: var(--lk-ink-muted);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+}
+
+.lk-shown {
+  padding: 0 6px;
+  border: 1px solid var(--lk-ink);
+  border-radius: 2px;
+  color: var(--lk-ink);
+}
+
+.lk-captures .lk-meta {
+  margin-top: 8px;
+  padding-top: 0;
+  border-top: 0;
+}
+
+.lk-gaps {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.lk-gaps > .lk-row {
+  padding: 10px 14px;
+  border-left: 2px solid var(--lk-ink);
+}
+
+.lk-gap-reason {
+  align-self: center;
+  padding: 0 7px;
+  border: 1px dashed var(--lk-ink);
+  border-radius: 2px;
+  background: var(--lk-paper);
+  color: var(--lk-ink);
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 1.7;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+/* ---------- fact card, receipt, trace ---------- */
+
+.lk-fact-card {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-width: 0;
+  padding: 14px 16px;
+  border: 1px solid var(--lk-rule);
+  border-radius: 2px;
+}
+
+.lk-fact-end {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  min-width: 0;
+  font-size: 14.5px;
+}
+
+.lk-fact-relation {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 4px 20px;
+  padding: 7px 0 7px 12px;
+  border-left: 2px solid var(--lk-accent);
+}
+
+.lk-fact-relation > .lk-relation {
+  color: var(--lk-accent);
+  font-family: var(--lk-font-mono);
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.lk-receipt,
+.lk-trace {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  padding: 10px 14px 4px;
+  border: 1px solid var(--lk-rule);
+  border-left: 2px solid var(--lk-accent);
+  border-radius: 2px;
+}
+
+.lk-receipt > .lk-meta-item,
+.lk-trace > .lk-meta-item {
+  display: grid;
+  grid-template-columns: 132px minmax(0, 1fr);
+  gap: 14px;
+  align-items: baseline;
+  padding: 6px 0;
+  border-bottom: 1px solid var(--lk-rule);
+  font-size: 13px;
+}
+
+.lk-receipt > .lk-meta-item:last-child,
+.lk-trace > .lk-meta-item:last-child {
+  border-bottom: 0;
+}
+
+.lk-receipt dt,
+.lk-trace dt {
+  color: var(--lk-ink-muted);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+}
+
+.lk-receipt dd,
+.lk-trace dd {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 12px;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+/* ---------- explorer ---------- */
+
+.lk-explorer {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-width: 0;
+}
+
+/* The plate scrolls inside itself; the page never scrolls sideways for it. */
+.lk-explorer-frame {
+  max-height: 680px;
+  overflow: auto;
+  border: 1px solid var(--lk-rule);
+  border-radius: 2px;
+  background-color: var(--lk-paper-deep);
+  background-image: radial-gradient(var(--lk-rule) 1px, transparent 1.2px);
+  background-size: 18px 18px;
+}
+
+.lk-explorer-svg {
+  display: block;
+}
+
+.lk-explorer-lane {
+  fill: var(--lk-ink);
+  font-family: var(--lk-font-sans);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.lk-explorer-box {
+  fill: var(--lk-paper);
+  stroke: var(--lk-ink);
+  stroke-width: 1;
+}
+
+.lk-explorer-kind {
+  fill: var(--lk-ink-muted);
+  font-family: var(--lk-font-sans);
+  font-size: 9.5px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.lk-kind-gap .lk-explorer-kind {
+  font-style: italic;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  text-transform: none;
+}
+
+.lk-explorer-label {
+  fill: var(--lk-ink);
+  font-family: var(--lk-font-mono);
+  font-size: 11.5px;
+  letter-spacing: -0.01em;
+}
+
+.lk-explorer-node.lk-focus .lk-explorer-box {
+  fill: var(--lk-ink);
+}
+
+.lk-explorer-node.lk-focus .lk-explorer-kind,
+.lk-explorer-node.lk-focus .lk-explorer-label {
+  fill: var(--lk-paper);
+}
+
+.lk-explorer-group .lk-explorer-box {
+  stroke-dasharray: 1.5 3;
+}
+
+.lk-explorer-group .lk-explorer-label {
+  fill: var(--lk-accent);
+  font-family: var(--lk-font-sans);
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.lk-explorer-gap .lk-explorer-box {
+  stroke: var(--lk-ink-muted);
+  stroke-dasharray: 4 3;
+}
+
+.lk-explorer-gap .lk-explorer-label {
+  font-family: var(--lk-font-sans);
+  font-size: 12.5px;
+  font-weight: 600;
+}
+
+.lk-explorer-hatch {
+  stroke: var(--lk-hatch);
+  stroke-width: 2;
+}
+
+.lk-explorer-ring {
+  fill: none;
+  stroke: var(--lk-ink-muted);
+  stroke-width: 1.5;
+}
+
+.lk-explorer-gap.lk-unknown,
+.lk-explorer-gap.lk-none {
+  background-image: none;
+}
+
+.lk-explorer-hit {
+  fill: none;
+  stroke: transparent;
+  stroke-width: 14;
+}
+
+.lk-explorer-line {
+  fill: none;
+  stroke: var(--lk-accent);
+  stroke-width: 1.4;
+}
+
+.lk-explorer-line-inner {
+  display: none;
+  fill: none;
+}
+
+.lk-explorer-arrow {
+  fill: var(--lk-accent);
+}
+
+/* Four layers, four lines: a double rule, a solid line, a dotted line, a thin line. */
+.lk-layer-structure .lk-explorer-line {
+  stroke: var(--lk-accent);
+  stroke-width: 1.4;
+}
+
+.lk-layer-control .lk-explorer-line {
+  stroke: var(--lk-ink);
+  stroke-width: 3.6;
+}
+
+.lk-layer-control .lk-explorer-line-inner {
+  display: inline;
+  stroke: var(--lk-paper-deep);
+  stroke-width: 1.5;
+}
+
+.lk-layer-control .lk-explorer-arrow {
+  fill: var(--lk-ink);
+}
+
+.lk-layer-pricing .lk-explorer-line,
+.lk-layer-claimedonly .lk-explorer-line,
+.lk-layer-notobserved .lk-explorer-line {
+  stroke-width: 2;
+  stroke-dasharray: 0.1 5;
+  stroke-linecap: round;
+}
+
+.lk-layer-code .lk-explorer-line {
+  stroke: var(--lk-ink-muted);
+  stroke-width: 1;
+}
+
+.lk-layer-code .lk-explorer-arrow,
+.lk-layer-claimedonly .lk-explorer-arrow,
+.lk-layer-notobserved .lk-explorer-arrow,
+.lk-layer-pending .lk-explorer-arrow {
+  fill: var(--lk-ink-muted);
+}
+
+.lk-layer-claimedonly .lk-explorer-line,
+.lk-layer-notobserved .lk-explorer-line,
+.lk-layer-pending .lk-explorer-line {
+  stroke: var(--lk-ink-muted);
+}
+
+.lk-layer-operatedbyaccounts .lk-explorer-line {
+  stroke: var(--lk-ink);
+  stroke-dasharray: 8 4;
+}
+
+.lk-layer-operatedbyaccounts .lk-explorer-arrow {
+  fill: var(--lk-ink);
+}
+
+.lk-layer-pending .lk-explorer-line {
+  stroke-dasharray: 3 3;
+}
+
+.lk-layer-contradicted .lk-explorer-line {
+  stroke: var(--lk-contra);
+  stroke-width: 1.6;
+}
+
+.lk-layer-contradicted .lk-explorer-arrow {
+  fill: var(--lk-contra);
+}
+
+.lk-explorer-edge.lk-edge-unknown .lk-explorer-line {
+  stroke: var(--lk-ink);
+  stroke-width: 1.3;
+  stroke-dasharray: 4 3;
+}
+
+.lk-explorer-edge.lk-edge-unknown .lk-explorer-line-inner {
+  display: none;
+}
+
+.lk-explorer-edge.lk-edge-bundle .lk-explorer-line {
+  stroke-width: 4;
+  opacity: 0.45;
+}
+
+.lk-explorer-edge.lk-edge-bundle .lk-explorer-line-inner {
+  display: none;
+}
+
+/* What a reader can select says so with the pointer and with the focus ring. */
+.lk-surface [role="button"] {
+  cursor: pointer;
+}
+
+.lk-explorer-svg [role="button"]:focus {
+  outline: none;
+}
+
+.lk-explorer-node[role="button"]:hover .lk-explorer-box,
+.lk-explorer-group[role="button"]:hover .lk-explorer-box {
+  stroke-width: 2;
+}
+
+.lk-explorer-node:focus-visible .lk-explorer-box,
+.lk-explorer-group:focus-visible .lk-explorer-box {
+  stroke: var(--lk-accent);
+  stroke-width: 3;
+}
+
+.lk-explorer-edge[role="button"]:hover .lk-explorer-line,
+.lk-explorer-edge:focus-visible .lk-explorer-line {
+  stroke-width: 3.2;
+}
+
+.lk-layer-control[role="button"]:hover .lk-explorer-line,
+.lk-layer-control:focus-visible .lk-explorer-line {
+  stroke-width: 5.4;
+}
+
+.lk-surface .lk-evidence-id[role="button"]:hover {
+  border-left: 2px solid var(--lk-ink);
+  background: var(--lk-paper-deep);
+}
+
+.lk-explorer-nodes,
+.lk-explorer-groups {
+  display: flex;
+  flex-direction: column;
+}
+
+.lk-explorer-nodes > li,
+.lk-explorer-groups > li {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 2px 14px;
+  padding: 7px 0;
+  border-bottom: 1px solid var(--lk-rule);
+  font-size: 13.5px;
+}
+
+.lk-explorer-nodes > li.lk-focus {
+  padding-left: 10px;
+  border-left: 2px solid var(--lk-ink);
+}
+
+.lk-explorer-nodes .lk-pair,
+.lk-explorer-groups .lk-pair,
+.lk-edge > .lk-pair {
+  flex-direction: row;
+  align-items: baseline;
+  gap: 6px;
+}
+
+.lk-group-members {
+  display: flex;
+  flex-direction: column;
+  flex-basis: 100%;
+  color: var(--lk-ink-muted);
+}
+
+.lk-explorer-edges > .lk-row {
+  padding: 12px 0;
+  border-bottom: 1px solid var(--lk-rule);
+}
+
+.lk-explorer-edges > .lk-row.lk-unknown {
+  padding-left: 12px;
+  padding-right: 12px;
+}
+
+.lk-answer-path {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  min-width: 0;
+}
+
+.lk-answer-path .lk-explorer-label {
+  font-family: var(--lk-font-sans);
+  font-size: 12.5px;
+  font-weight: 500;
+  letter-spacing: 0;
+}
+
+.lk-answer-path .lk-steps {
+  grid-auto-columns: minmax(0, max-content);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .lk-explorer-line,
+  .lk-explorer-box {
+    transition: stroke-width 180ms ease;
+  }
+}
+
+@media (max-width: 760px) {
+  .lk-claim-grid,
+  .lk-change-pair {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .lk-change-side + .lk-change-side::before {
+    content: "\2193";
+    left: 0;
+    top: -22px;
+  }
+
+  .lk-change-side + .lk-change-side {
+    margin-top: 22px;
+  }
+
+  .lk-disclosure-body {
+    padding-left: 0;
+  }
+
+  .lk-receipt > .lk-meta-item,
+  .lk-trace > .lk-meta-item {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 1px;
+  }
+
+  .lk-explorer-frame {
+    max-height: 520px;
+  }
+}
+
+.lk-fact-card .lk-meta {
+  margin-top: 0;
+  padding: 8px 0 0;
+  border-top: 1px solid var(--lk-rule);
+  border-bottom: 0;
+}
+
+.lk-fact-card .lk-meta dd {
+  font-size: 13px;
 }

@@ -1,0 +1,36 @@
+{
+ "version": 1,
+ "requestSha256": "04108c6cd377703d68fd04a78f608cdfe78e7bc882e591d7554ad33067d6b084",
+ "request": {
+  "method": "query",
+  "params": {
+   "account_id": "bridge-mng.near",
+   "request_type": "view_access_key_list",
+   "finality": "final"
+  }
+ },
+ "endpointHost": "archival-rpc.mainnet.fastnear.com",
+ "retrievedAt": "2026-11-14T14:48:23.645Z",
+ "httpStatus": 200,
+ "outcome": "result",
+ "blockHeight": "224528702",
+ "blockHash": "G4wBXKHLt7egWWAdyKkrnZDri9KV6B4xvoBQV1tTwVmv",
+ "responseSha256": "5957ff1873a1391f2aebc41e9cdd30894d1e1a1a0e0453757e0b85b471470a05",
+ "response": {
+  "jsonrpc": "2.0",
+  "result": {
+   "block_hash": "G4wBXKHLt7egWWAdyKkrnZDri9KV6B4xvoBQV1tTwVmv",
+   "block_height": 224528702,
+   "keys": [
+    {
+     "access_key": {
+      "nonce": 132033443496780,
+      "permission": "FullAccess"
+     },
+     "public_key": "ed25519:22Rh9RxeqhJ63KxKD4EJ5AgyMZ5xMcb5iqNEPFpR86S6"
+    }
+   ]
+  },
+  "id": "near-reader"
+ }
+}

@@ -1,0 +1,483 @@
+{
+  "UPGRADE_AUTHORITY": {
+    "class": "control",
+    "direction": "From the subject entity to its object entity; control points from the controlled entity to its controller.",
+    "endpoints": {
+      "from": [
+        "Entity"
+      ],
+      "to": [
+        "Entity"
+      ]
+    },
+    "mappedFrom": [
+      {
+        "predicate": "UPGRADE_AUTHORITY",
+        "reversed": false
+      },
+      {
+        "predicate": "upgraded-by",
+        "reversed": false
+      }
+    ]
+  },
+  "MINT_AUTHORITY": {
+    "class": "control",
+    "direction": "From the subject entity to its object entity; control points from the controlled entity to its controller.",
+    "endpoints": {
+      "from": [
+        "Entity"
+      ],
+      "to": [
+        "Entity"
+      ]
+    },
+    "mappedFrom": [
+      {
+        "predicate": "MINT_AUTHORITY",
+        "reversed": false
+      }
+    ]
+  },
+  "FREEZE_AUTHORITY": {
+    "class": "control",
+    "direction": "From the subject entity to its object entity; control points from the controlled entity to its controller.",
+    "endpoints": {
+      "from": [
+        "Entity"
+      ],
+      "to": [
+        "Entity"
+      ]
+    },
+    "mappedFrom": [
+      {
+        "predicate": "FREEZE_AUTHORITY",
+        "reversed": false
+      }
+    ]
+  },
+  "PAUSE_AUTHORITY": {
+    "class": "control",
+    "direction": "From the subject entity to its object entity; control points from the controlled entity to its controller.",
+    "endpoints": {
+      "from": [
+        "Entity"
+      ],
+      "to": [
+        "Entity"
+      ]
+    },
+    "mappedFrom": [
+      {
+        "predicate": "pause-operator",
+        "reversed": false
+      },
+      {
+        "predicate": "EMERGENCY_AUTHORITY",
+        "reversed": false
+      }
+    ]
+  },
+  "ADMIN": {
+    "class": "control",
+    "direction": "From the subject entity to its object entity; control points from the controlled entity to its controller.",
+    "endpoints": {
+      "from": [
+        "Entity"
+      ],
+      "to": [
+        "Entity"
+      ]
+    },
+    "mappedFrom": [
+      {
+        "predicate": "VAULT_ADMIN",
+        "role": "vault-admin",
+        "reversed": false
+      },
+      {
+        "predicate": "ALLOCATION_ADMIN",
+        "role": "allocation-admin",
+        "reversed": false
+      },
+      {
+        "predicate": "MARKET_OWNER",
+        "role": "market-owner",
+        "reversed": false
+      },
+      {
+        "predicate": "CONFIG_AUTHORITY",
+        "role": "config-authority",
+        "reversed": false
+      },
+      {
+        "predicate": "super-admin-of",
+        "role": "super-admin",
+        "reversed": false
+      },
+      {
+        "predicate": "token-depositer",
+        "role": "token-depositer",
+        "reversed": false
+      },
+      {
+        "predicate": "RESERVE_PROPOSER",
+        "role": "reserve-proposer",
+        "reversed": false
+      },
+      {
+        "predicate": "GLOBAL_ADMIN",
+        "role": "global-admin",
+        "reversed": false
+      }
+    ]
+  },
+  "OWNED_BY": {
+    "class": "control",
+    "direction": "From the subject entity to its object entity; control points from the controlled entity to its controller.",
+    "endpoints": {
+      "from": [
+        "Entity"
+      ],
+      "to": [
+        "Entity"
+      ]
+    },
+    "mappedFrom": [
+      {
+        "predicate": "owned-by",
+        "reversed": false
+      }
+    ]
+  },
+  "CONTROLLED_BY": {
+    "class": "control",
+    "direction": "From the subject entity to its object entity; control points from the controlled entity to its controller.",
+    "endpoints": {
+      "from": [
+        "Entity"
+      ],
+      "to": [
+        "Entity"
+      ]
+    },
+    "mappedFrom": [
+      {
+        "predicate": "CONTROLLED_BY",
+        "reversed": false
+      }
+    ]
+  },
+  "HAS_MEMBER": {
+    "class": "control",
+    "direction": "From the subject entity to its object entity; control points from the controlled entity to its controller.",
+    "endpoints": {
+      "from": [
+        "Entity"
+      ],
+      "to": [
+        "Entity"
+      ]
+    },
+    "mappedFrom": [
+      {
+        "predicate": "MULTISIG_MEMBER",
+        "reversed": false
+      },
+      {
+        "predicate": "council-member",
+        "reversed": false
+      },
+      {
+        "predicate": "mpc-participant",
+        "role": "mpc-participant",
+        "reversed": false
+      },
+      {
+        "predicate": "holds-role",
+        "reversed": false
+      }
+    ]
+  },
+  "HAS_ROLE": {
+    "class": "control",
+    "direction": "From the subject entity to its object entity; control points from the controlled entity to its controller.",
+    "endpoints": {
+      "from": [
+        "Entity"
+      ],
+      "to": [
+        "Entity"
+      ]
+    },
+    "mappedFrom": []
+  },
+  "HAS_KEY": {
+    "class": "control",
+    "direction": "From the subject entity to its object entity; control points from the controlled entity to its controller.",
+    "endpoints": {
+      "from": [
+        "Entity"
+      ],
+      "to": [
+        "Entity"
+      ]
+    },
+    "mappedFrom": [
+      {
+        "predicate": "has-full-access-key",
+        "role": "full-access",
+        "reversed": false
+      },
+      {
+        "predicate": "has-function-call-key",
+        "role": "function-call",
+        "reversed": false
+      }
+    ]
+  },
+  "OWNER_PROGRAM": {
+    "class": "dependency",
+    "direction": "From the subject entity to its object entity; control points from the controlled entity to its controller.",
+    "endpoints": {
+      "from": [
+        "Entity"
+      ],
+      "to": [
+        "Entity"
+      ]
+    },
+    "mappedFrom": [
+      {
+        "predicate": "OWNER_PROGRAM",
+        "reversed": false
+      }
+    ]
+  },
+  "PROGRAM_DATA": {
+    "class": "dependency",
+    "direction": "From the subject entity to its object entity; control points from the controlled entity to its controller.",
+    "endpoints": {
+      "from": [
+        "Entity"
+      ],
+      "to": [
+        "Entity"
+      ]
+    },
+    "mappedFrom": [
+      {
+        "predicate": "PROGRAM_DATA",
+        "reversed": false
+      }
+    ]
+  },
+  "ISSUED_BY_PROGRAM": {
+    "class": "dependency",
+    "direction": "From the subject entity to its object entity; control points from the controlled entity to its controller.",
+    "endpoints": {
+      "from": [
+        "Entity"
+      ],
+      "to": [
+        "Entity"
+      ]
+    },
+    "mappedFrom": [
+      {
+        "predicate": "ISSUED_BY_PROGRAM",
+        "reversed": false
+      }
+    ]
+  },
+  "ASSET": {
+    "class": "dependency",
+    "direction": "From the subject entity to its object entity; control points from the controlled entity to its controller.",
+    "endpoints": {
+      "from": [
+        "Entity"
+      ],
+      "to": [
+        "Entity"
+      ]
+    },
+    "mappedFrom": [
+      {
+        "predicate": "ASSET_MINT",
+        "reversed": false
+      }
+    ]
+  },
+  "ALLOCATES_TO": {
+    "class": "dependency",
+    "direction": "From the subject entity to its object entity; control points from the controlled entity to its controller.",
+    "endpoints": {
+      "from": [
+        "Entity"
+      ],
+      "to": [
+        "Entity"
+      ]
+    },
+    "mappedFrom": [
+      {
+        "predicate": "ALLOCATES_TO",
+        "reversed": false
+      }
+    ]
+  },
+  "IN_MARKET": {
+    "class": "dependency",
+    "direction": "From the subject entity to its object entity; control points from the controlled entity to its controller.",
+    "endpoints": {
+      "from": [
+        "Entity"
+      ],
+      "to": [
+        "Entity"
+      ]
+    },
+    "mappedFrom": [
+      {
+        "predicate": "IN_MARKET",
+        "reversed": false
+      }
+    ]
+  },
+  "PRICED_BY": {
+    "class": "dependency",
+    "direction": "From the subject entity to its object entity; control points from the controlled entity to its controller.",
+    "endpoints": {
+      "from": [
+        "Entity"
+      ],
+      "to": [
+        "Entity"
+      ]
+    },
+    "mappedFrom": [
+      {
+        "predicate": "PRICED_BY",
+        "reversed": false
+      },
+      {
+        "predicate": "priced-by",
+        "reversed": false
+      },
+      {
+        "predicate": "legacy-oracle",
+        "role": "legacy",
+        "reversed": false
+      }
+    ]
+  },
+  "ROUTES_THROUGH": {
+    "class": "dependency",
+    "direction": "From the subject entity to its object entity; control points from the controlled entity to its controller.",
+    "endpoints": {
+      "from": [
+        "Entity"
+      ],
+      "to": [
+        "Entity"
+      ]
+    },
+    "mappedFrom": [
+      {
+        "predicate": "routes-through",
+        "reversed": false
+      }
+    ]
+  },
+  "DEPLOYED_BY": {
+    "class": "dependency",
+    "direction": "From the subject entity to its object entity; control points from the controlled entity to its controller.",
+    "endpoints": {
+      "from": [
+        "Entity"
+      ],
+      "to": [
+        "Entity"
+      ]
+    },
+    "mappedFrom": [
+      {
+        "predicate": "deployed-by",
+        "reversed": false
+      }
+    ]
+  },
+  "FUNDED_BY": {
+    "class": "dependency",
+    "direction": "From the subject entity to its object entity; control points from the controlled entity to its controller.",
+    "endpoints": {
+      "from": [
+        "Entity"
+      ],
+      "to": [
+        "Entity"
+      ]
+    },
+    "mappedFrom": [
+      {
+        "predicate": "FUNDED_BY",
+        "reversed": false
+      }
+    ]
+  },
+  "DEPENDS_ON": {
+    "class": "dependency",
+    "direction": "From the subject entity to its object entity; control points from the controlled entity to its controller.",
+    "endpoints": {
+      "from": [
+        "Entity"
+      ],
+      "to": [
+        "Entity"
+      ]
+    },
+    "mappedFrom": [
+      {
+        "predicate": "DEPENDS_ON",
+        "reversed": false
+      }
+    ]
+  },
+  "BACKED_BY": {
+    "class": "backing",
+    "direction": "From the subject entity to its object entity; control points from the controlled entity to its controller.",
+    "endpoints": {
+      "from": [
+        "Entity"
+      ],
+      "to": [
+        "Entity"
+      ]
+    },
+    "mappedFrom": [
+      {
+        "predicate": "BACKED_BY",
+        "reversed": false
+      }
+    ]
+  },
+  "ORIGINATES_FROM": {
+    "class": "origin",
+    "direction": "From the subject entity to its object entity; control points from the controlled entity to its controller.",
+    "endpoints": {
+      "from": [
+        "Entity"
+      ],
+      "to": [
+        "Entity"
+      ]
+    },
+    "mappedFrom": [
+      {
+        "predicate": "ORIGINATES_FROM",
+        "reversed": false
+      }
+    ]
+  }
+}

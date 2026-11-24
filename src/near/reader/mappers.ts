@@ -132,6 +132,13 @@ export const mapSputnikPolicy: NearMapper = (v, r, c) => {
   }
   facts.push(...[...council].map(a => f("council-member", nearSubject(a)))); return facts;
 };
+/** Sputnik v2 update(): the factory may replace the DAO's code without a proposal while auto_update is true. false yields no edge. */
+export const mapFactoryInfo: NearMapper = (v, r, c) => {
+  const o = obj(v); if (typeof o.auto_update !== "boolean") throw new Error("Expected auto_update boolean");
+  const factory = account(o.factory_id); return o.auto_update ? [make(r, c)("upgraded-by", nearSubject(factory))] : [];
+};
+/** get_factory_info is absent on older Sputnik versions: whether the factory can update the code is unknown. */
+export function mapFactoryInfoUnknown(r: EvidenceReceipt, c: MapperContext): Fact[] { return [make(r, c)("upgraded-by", "unknown", nearSubject(c.account), "unknown")]; }
 export const mapSputnikProposals: NearMapper = (v, r, c) => (Array.isArray(v) ? v : [v]).map(raw => {
   const p = parseSputnikProposal(raw); return make(r, c)("proposal", canonical({ ...p, submittedAt: nsToIso(p.submission_time) }), nearSubject(c.account, "proposal", String(p.id)));
 });
@@ -163,6 +170,6 @@ export function mapperFor(requestType: string, method?: string): NearMapper | nu
   if (requestType === "view_account") return mapAccount;
   if (requestType === "view_access_key_list") return mapAccessKeys;
   if (requestType === "view_code") return mapCodeHash;
-  const methods: Record<string, NearMapper> = { acl_get_permissioned_accounts: mapAcl, pa_is_paused: mapPause, pa_all_paused: mapAllPaused, get_owner: mapOwner, get_guardians: mapGuardians, get_config: mapBurrowConfig, get_policy: mapSputnikPolicy, get_proposals: mapSputnikProposals, get_proposal: mapSputnikProposals, get_deployments: mapDeployments, state: mapMpcState, allowed_docker_image_hashes: mapMpcImages, ft_metadata: mapFtMetadata };
+  const methods: Record<string, NearMapper> = { acl_get_permissioned_accounts: mapAcl, pa_is_paused: mapPause, pa_all_paused: mapAllPaused, get_owner: mapOwner, get_guardians: mapGuardians, get_config: mapBurrowConfig, get_policy: mapSputnikPolicy, get_factory_info: mapFactoryInfo, get_proposals: mapSputnikProposals, get_proposal: mapSputnikProposals, get_deployments: mapDeployments, state: mapMpcState, allowed_docker_image_hashes: mapMpcImages, ft_metadata: mapFtMetadata };
   return methods[method ?? ""] ?? null;
 }

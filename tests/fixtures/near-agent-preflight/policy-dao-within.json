@@ -1,0 +1,19 @@
+{
+  "policyId": "preflight-dao-within",
+  "subjects": ["near:mainnet:sputnik-dao.near"],
+  "rules": [
+    {
+      "id": "dao-controller",
+      "kind": "controller-resolved",
+      "params": { "account": "near:mainnet:sputnik-dao.near" }
+    },
+    {
+      "id": "dao-unchanged",
+      "kind": "unchanged-since",
+      "params": {
+        "snapshotId": "near-2026-11-09",
+        "factKeys": ["near:mainnet:sputnik-dao.near|owned-by"]
+      }
+    }
+  ]
+}

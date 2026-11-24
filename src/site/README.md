@@ -13,3 +13,9 @@ committed. Missing files do not fall back to another directory.
 using the configured filenames and excerpt prefixes. `--strict` fails on a missing
 file or unusable excerpt; otherwise that card shows the pending message. The run
 instructions always show the report's first line, independently of the excerpt start.
+
+## Captured panels
+
+The normal build also writes `panels/<account>.html`, `.json` and `.chart.html` for each registered subject in the selected evidence snapshot, plus `panels/index.html` and `panels/index.json`. The JSON index records account, subject, kind, relative file paths and the sha256 of the exact JSON file. All panel rows and styling are drawn by the shared evidence kit; the two file links and extra inert data block are the bounded document additions.
+
+Adding panels leaves existing landing assets unchanged. Legacy unversioned constructed landing-only inputs have no evidence store: their builds retain the landing output and warn explicitly instead of substituting panel data. See [the panel guide](../near/panel/README.md).

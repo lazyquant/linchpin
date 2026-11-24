@@ -1,0 +1,36 @@
+{
+ "version": 1,
+ "requestSha256": "cc06b30394b3d12303b4454318a163905409651649b3a19736c4d581982fff1c",
+ "request": {
+  "method": "query",
+  "params": {
+   "account_id": "17208628f84f5d6ad33f0da3bbbeb27ffcb398eac501a31bd6ad2011e36133a1",
+   "request_type": "view_access_key_list",
+   "finality": "final"
+  }
+ },
+ "endpointHost": "archival-rpc.mainnet.fastnear.com",
+ "retrievedAt": "2026-11-14T14:50:42.061Z",
+ "httpStatus": 200,
+ "outcome": "result",
+ "blockHeight": "224528945",
+ "blockHash": "LkAhaoHbCZmxWgop8eVq36cjWNVhAGNu3BwwcXbz3tZ",
+ "responseSha256": "2361e11cace58330d08e016a36d31ffa33b7b40f86b7fda57ec3a4153cd11134",
+ "response": {
+  "jsonrpc": "2.0",
+  "result": {
+   "block_hash": "LkAhaoHbCZmxWgop8eVq36cjWNVhAGNu3BwwcXbz3tZ",
+   "block_height": 224528945,
+   "keys": [
+    {
+     "access_key": {
+      "nonce": 79039276000031,
+      "permission": "FullAccess"
+     },
+     "public_key": "ed25519:2ZH9CzFkmTVSKM9rQ14b8D4myiuFZv17jvdfZmYjTcak"
+    }
+   ]
+  },
+  "id": "near-reader"
+ }
+}

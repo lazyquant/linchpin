@@ -1,0 +1,17 @@
+export { ask, MAX_MODEL_CALLS, ASK_DEADLINE_MS } from "./planner";
+export { createNearContext, warmContext } from "./context";
+export type { ContextOptions } from "./context";
+export { parseAsk, questionFor } from "./input";
+export { createNearAgentHandler } from "./handler";
+export { NearAiModel, NEARAI_BASE, NEARAI_MODEL } from "./nearai";
+export { ScriptedModel } from "./model";
+export type { Script } from "./model";
+export { ToolSession, MAX_TOOL_CALLS } from "./tools";
+export { projectionEnvelope, forwardTool, MAX_TOOL_BYTES, MAX_FORWARDED_FACTS } from "./projection";
+export { captureAttestation, freshNonce } from "./attestation";
+export { checkResponseSignature, verifyResponseBinding, aggregateBindings } from "./signature";
+export { composeSurface } from "./surface";
+export { buildSurfaceInput } from "./rows";
+export { prepareAnswer, preparedAnswers, PREPARED_INPUTS, preparedModel } from "./prepared";
+export { NearAgentError } from "./errors";
+export type * from "./types";

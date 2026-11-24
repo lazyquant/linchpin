@@ -1,0 +1,50 @@
+{
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "action": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "kind"
+      ],
+      "properties": {
+        "kind": {
+          "type": "string",
+          "enum": [
+            "intents-swap",
+            "contract-call"
+          ]
+        },
+        "originAsset": {
+          "type": "string",
+          "maxLength": 256,
+          "pattern": "^(nep141:|nep245:|1cs_v1:)\\S+$"
+        },
+        "destinationAsset": {
+          "type": "string",
+          "maxLength": 256,
+          "pattern": "^(nep141:|nep245:|1cs_v1:)\\S+$"
+        },
+        "receiver": {
+          "type": "string",
+          "maxLength": 256,
+          "pattern": "^(near:mainnet:)?[a-z0-9][a-z0-9._-]*$"
+        },
+        "method": {
+          "type": "string",
+          "maxLength": 128,
+          "pattern": "^[A-Za-z_][A-Za-z0-9_]*$"
+        }
+      }
+    },
+    "policyId": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9-]{0,63}$"
+    }
+  },
+  "required": [
+    "action",
+    "policyId"
+  ]
+}

@@ -1,11 +1,12 @@
 import type { Fact } from "../../engine/contracts";
 import { runQuery } from "../../engine/queries/run";
 import { openStore, type EvidenceSnapshot, type EvidenceStore } from "../../engine/queries/snapshot";
-import { buildNearSnapshot, extendSnapshot } from "../reader/load";
+import { extendSnapshot } from "../reader/load";
 import { factId } from "../reader/mappers";
 import { isNearAccountId, nearSubject } from "../reader/types";
 import { NEAR_REGISTRY, type SubjectEntry } from "../subjects/registry";
 import { classify } from "./effect";
+import { contextSnapshot, contextStore } from "./snapshots";
 import { FOR_RELATIONS, type DecodedProposal, type ForIntersection, type GovernanceContext, type ReachPredicate } from "./types";
 export const governanceSnapshotId = (id: string): string => `${id}.governance`;
 export function reach(p: DecodedProposal, store: EvidenceStore, snapshotId: string, registry: readonly SubjectEntry[] = NEAR_REGISTRY): Fact[] {
@@ -34,16 +35,33 @@ export function reach(p: DecodedProposal, store: EvidenceStore, snapshotId: stri
   else if (d.kind === "Transfer") { add("moves-funds-from",p.dao); add("moves-funds-to",d.receiver_id); }
   return [...result.values()].sort((a,b) => a.id.localeCompare(b.id));
 }
+/** The derived store, built fresh: the caller may change what it gets. */
 export function governanceStore(ctx: GovernanceContext, proposals: DecodedProposal[]): { store: EvidenceStore; snapshotId: string; base: EvidenceSnapshot; reach: Map<string, Fact[]> } {
-  const base = buildNearSnapshot(ctx.snapshotId,{root:ctx.root}), baseStore = openStore([base]), byProposal = new Map(proposals.map(p => [p.proposalSubject,reach(p,baseStore,base.id,ctx.registry)]));
+  return buildGovernanceStore({ ...ctx }, proposals);
+}
+function buildGovernanceStore(ctx: GovernanceContext, proposals: DecodedProposal[]): { store: EvidenceStore; snapshotId: string; base: EvidenceSnapshot; reach: Map<string, Fact[]> } {
+  const base = contextSnapshot(ctx), baseStore = contextStore(ctx,[base.id]), byProposal = new Map(proposals.map(p => [p.proposalSubject,reach(p,baseStore,base.id,ctx.registry)]));
   const snapshotId = governanceSnapshotId(base.id);
   return { store: openStore([extendSnapshot(base,{id:snapshotId,facts:[...byProposal.values()].flat()})]), snapshotId, base, reach: byProposal };
 }
 export function intersectFor(store: EvidenceStore, snapshotId: string, facts: Fact[], forSubject: string): ForIntersection {
-  const snapshot = store.snapshot(snapshotId); if (!snapshot) throw new Error("Unknown snapshot");
-  const q = runQuery(store,{name:"dependencies",subject:forSubject,relations:[...FOR_RELATIONS],scope:{asOf:snapshot.observedTo,snapshotId,maxHops:8,maxResults:500}});
+  const q = forDependencies(store, snapshotId, forSubject);
   const chain = new Map<string,{hop:number; chainFactIds:string[]}>([[forSubject,{hop:0,chainFactIds:[]}]]);
   for (const f of q.facts) { const hop = Math.max(1,f.path.length), old = chain.get(f.object); if (!old || old.hop > hop) chain.set(f.object,{hop,chainFactIds:hop === 1 ? [f.id] : [...f.path]}); }
-  return {forSubject,snapshotId,reachable:chain.size,truncated:q.truncated,hops:facts.flatMap(f => { const h=chain.get(f.object); return h ? [{...h,subject:f.object,predicate:f.predicate as ReachPredicate,reachFactId:f.id}] : []; }).sort((a,b) => a.hop-b.hop || a.subject.localeCompare(b.subject) || a.predicate.localeCompare(b.predicate)),reasons:q.reasons};
+  return {forSubject,snapshotId,reachable:chain.size,truncated:q.truncated,hops:facts.flatMap(f => { const h=chain.get(f.object); return h ? [{...h,subject:f.object,predicate:f.predicate as ReachPredicate,reachFactId:f.id}] : []; }).sort((a,b) => a.hop-b.hop || a.subject.localeCompare(b.subject) || a.predicate.localeCompare(b.predicate)),reasons:structuredClone(q.reasons)};
+}
+// One store answers the same dependency query for every proposal of a sweep: ask it once per store and subject.
+const dependencyAnswers = new WeakMap<EvidenceStore, Map<string, ReturnType<typeof runQuery>>>();
+function forDependencies(store: EvidenceStore, snapshotId: string, forSubject: string): ReturnType<typeof runQuery> {
+  let answers = dependencyAnswers.get(store);
+  if (!answers) { answers = new Map(); dependencyAnswers.set(store, answers); }
+  const key = JSON.stringify([snapshotId, forSubject]);
+  let q = answers.get(key);
+  if (!q) {
+    const snapshot = store.snapshot(snapshotId); if (!snapshot) throw new Error("Unknown snapshot");
+    q = runQuery(store,{name:"dependencies",subject:forSubject,relations:[...FOR_RELATIONS],scope:{asOf:snapshot.observedTo,snapshotId,maxHops:8,maxResults:500}});
+    answers.set(key, q);
+  }
+  return q;
 }
 export function daoControls(snapshot: EvidenceSnapshot, daoSubject: string): Fact[] { return snapshot.facts.filter(f => f.object === daoSubject && ["owned-by","super-admin-of","upgraded-by","holds-role","pause-operator"].includes(f.predicate)).sort((a,b) => a.subject.localeCompare(b.subject) || a.predicate.localeCompare(b.predicate) || a.id.localeCompare(b.id)); }

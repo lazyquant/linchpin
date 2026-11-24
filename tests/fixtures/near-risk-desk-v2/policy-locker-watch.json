@@ -1,0 +1,7 @@
+{
+  "policyId": "locker-watch",
+  "subjects": ["near:mainnet:intents.near"],
+  "rules": [
+    { "id": "locker-max-2", "kind": "role-grantee-count-max", "params": { "contract": "near:mainnet:intents.near", "role": "UnrestrictedAccountLocker", "n": 2 } }
+  ]
+}

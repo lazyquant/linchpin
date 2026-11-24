@@ -1,0 +1,31 @@
+{
+ "version": 1,
+ "requestSha256": "00f06ea146f410a71f29e945b070f7c4356ead5373c16f2da9117faec54af255",
+ "request": {
+  "method": "query",
+  "params": {
+   "account_id": "rainbowbridge.sputnik-dao.near",
+   "request_type": "call_function",
+   "method_name": "get_factory_info",
+   "args_base64": "e30=",
+   "finality": "final"
+  }
+ },
+ "endpointHost": "archival-rpc.mainnet.fastnear.com",
+ "retrievedAt": "2026-11-14T14:49:15.685Z",
+ "httpStatus": 200,
+ "outcome": "call-error",
+ "blockHeight": "224528795",
+ "blockHash": "HwZ5evW2uSzq7d6T7wusEb7FSaKd17MpGK3hQJhQCoRM",
+ "responseSha256": "13593e5e087a74185ef2851afae662375ce73931998e21f912a9cdc875f30633",
+ "response": {
+  "jsonrpc": "2.0",
+  "result": {
+   "block_hash": "HwZ5evW2uSzq7d6T7wusEb7FSaKd17MpGK3hQJhQCoRM",
+   "block_height": 224528795,
+   "error": "wasm execution failed with error: MethodResolveError(MethodNotFound)",
+   "logs": []
+  },
+  "id": "near-reader"
+ }
+}

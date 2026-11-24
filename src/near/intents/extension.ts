@@ -140,7 +140,8 @@ export function buildIntentSnapshot(baseId: string, opts: { root?: string } = {}
 export function loadIntentContext(opts: { snapshotId?: string; before?: string; after?: string; root?: string } = {}): IntentContext {
   if (!!opts.before !== !!opts.after) throw new Error("Both change snapshots required");
   const baseSnapshotId = opts.snapshotId ?? CURRENT_NEAR_SNAPSHOT, base = buildNearSnapshot(baseSnapshotId, opts), extension = buildIntentSnapshot(baseSnapshotId, opts), ext = loadExtension(baseSnapshotId, opts.root);
-  const ids = liveSnapshotIds(opts.root), before = opts.before ?? (ids.length > 1 ? ids[0] : undefined), after = opts.after ?? (ids.length > 1 ? ids.at(-1) : undefined);
+  // Default pair: the earliest live capture and the reviewed one. A later capture never changes an earlier review.
+  const ids = liveSnapshotIds(opts.root).filter(id => id <= baseSnapshotId), before = opts.before ?? (ids.length > 1 ? ids[0] : undefined), after = opts.after ?? (ids.length > 1 ? ids.at(-1) : undefined);
   const snapshots = new Map([[base.id, base], [extension.id, extension]]);
   for (const id of [before, after]) if (id && !snapshots.has(id)) snapshots.set(id, buildNearSnapshot(id, opts));
   const offchain = ext.documents.map(d => ({ id: d.id, subject: `near:mainnet:intents.near#offchain:${d.id}`, title: d.title, url: d.url, sha256: d.sha256, retrievedAt: d.retrievedAt, summary: OFFCHAIN_DOCUMENTS.find(x => x.id === d.id)?.summary ?? "Postmortem of the 2026-09-29 ghost-balance incident, as published", factId: documentFact(d, extension.id).id, receiptId: documentReceipt(d).id }));

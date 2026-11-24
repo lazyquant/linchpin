@@ -1,0 +1,18 @@
+{
+  "id": "within",
+  "policy": "policy-demo.json",
+  "turns": [
+    {
+      "role": "user",
+      "text": "Check this contract call against my policy."
+    },
+    {
+      "role": "agent",
+      "proposal": {
+        "kind": "contract-call",
+        "receiver": "sol-0xaad74c68eecfc9f8c5bdcea614f6167048c795ef.omdep.near",
+        "method": "ft_transfer_call"
+      }
+    }
+  ]
+}

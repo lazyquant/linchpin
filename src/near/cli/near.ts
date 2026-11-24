@@ -1,8 +1,8 @@
 import type { EvidenceReceipt, Fact } from "../../engine/contracts";
-import { runQuery } from "../../engine/queries/run";
 import { NEAR_REGISTRY, CURRENT_NEAR_SNAPSHOT } from "../subjects/registry";
 import { captureSnapshot } from "../reader/capture";
 import { loadNearSnapshot, loadNearSnapshots, readNearManifest } from "../reader/load";
+import { nearChanges } from "../reader/control";
 import { parseNearSubject } from "../reader/types";
 const usage = "usage: linchpin near subjects [--json] | facts <account|subject> [--snapshot <id>] [--offline] | snapshot <id> [--record] [--dry-run] | diff <subject> <before> <after> [--max <n>] [--offline]";
 function subject(value: string): string {
@@ -42,7 +42,7 @@ export async function runNearCommand(args: string[]): Promise<number> {
       case "diff": {
         const s = subject(args[1]), before = args[2], after = args[3];
         if (!before || !after) throw new Error("Two snapshot ids required");
-        const result = runQuery(loadNearSnapshots([before, after]), { name: "changes", subject: s, beforeSnapshotId: before, afterSnapshotId: after, maxResults: Number(option("--max", "500")) });
+        const result = nearChanges(loadNearSnapshots([before, after]), { name: "changes", subject: s, beforeSnapshotId: before, afterSnapshotId: after, maxResults: Number(option("--max", "500")) });
         console.log(`${result.outcome}: ${result.changes.length} changes`);
         for (const change of result.changes) { console.log(change.kind); if (change.before) { console.log("before"); printFact(change.before, result.receipts); } if (change.after) { console.log("after"); printFact(change.after, result.receipts); } }
         for (const r of result.reasons) console.log(`${r.code} ${r.subject ?? ""} ${r.ref ?? ""}`); return 0;

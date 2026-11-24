@@ -1,6 +1,7 @@
 import type { EvidenceReceipt, QueryReason } from '../../engine/contracts';
 import type { EvidenceStore } from '../../engine/queries/snapshot';
 import { runQuery } from '../../engine/queries/run';
+import { withFactoryCoverage } from '../reader/control';
 import { projectVerdict, type Policy } from '../../policy/index';
 import { evaluateNearPolicy, referencedSnapshots, type NearLibraries, readProposals, readLibraryReview } from '../policy/index';
 import { historyFacts } from '../reader/history';
@@ -19,7 +20,7 @@ export function buildNearReview(policy: Policy, store: EvidenceStore, snapshotId
   const intents = ordered(policy.rules.filter(r => r.kind === 'route-family-in').map(r => String(r.params.assetId))).map(assetId => ({ assetId, review: readLibraryReview(libs, 'intents', snapshotId, assetId) }));
   const verdict = evaluateNearPolicy(policy, store, snapshotId, libs), publicVerdict = projectVerdict(verdict, s.subjects);
   const query = deps.query ?? runQuery;
-  const changes = deps.before ? chains.map(c => query(store, { name: 'changes', subject: c.root, beforeSnapshotId: deps.before!, afterSnapshotId: snapshotId, maxResults: 500 })) : [];
+  const changes = deps.before ? chains.map(c => { const request = { name: 'changes' as const, subject: c.root, beforeSnapshotId: deps.before!, afterSnapshotId: snapshotId, maxResults: 500 }; return withFactoryCoverage(store, request, query(store, request)); }) : [];
   const unknowns = unique([
     ...chains.flatMap(c => c.reasons), ...history.flatMap(h => h.reasons), ...changes.flatMap(c => c.reasons),
     ...governance.filter(g => g.coverageGap).map(g => ({ code: 'missing-coverage', subject: g.root, ref: 'library:near-governance-review' })),

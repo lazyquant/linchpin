@@ -1,0 +1,36 @@
+{
+  "policyId": "preflight-demo",
+  "subjects": [
+    "near:mainnet:intents.near",
+    "near:mainnet:omdep.near",
+    "near:mainnet:sol-0xaad74c68eecfc9f8c5bdcea614f6167048c795ef.omdep.near"
+  ],
+  "rules": [
+    {
+      "id": "intents-locker-max",
+      "kind": "role-grantee-count-max",
+      "params": {
+        "contract": "near:mainnet:intents.near",
+        "role": "UnrestrictedAccountLocker",
+        "n": 1
+      }
+    },
+    {
+      "id": "token-keys",
+      "kind": "no-full-access-keys",
+      "params": {
+        "accounts": [
+          "near:mainnet:sol-0xaad74c68eecfc9f8c5bdcea614f6167048c795ef.omdep.near",
+          "near:mainnet:omdep.near"
+        ]
+      }
+    },
+    {
+      "id": "token-controller",
+      "kind": "controller-resolved",
+      "params": {
+        "account": "near:mainnet:sol-0xaad74c68eecfc9f8c5bdcea614f6167048c795ef.omdep.near"
+      }
+    }
+  ]
+}

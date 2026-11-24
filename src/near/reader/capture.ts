@@ -18,7 +18,8 @@ async function recipeReads(client: NearClient, account: string, recipe: Recipe):
     case "owner": return [await call(recipe.method)];
     case "guardians": return [await call("get_guardians")];
     case "burrow-config": return [await call("get_config")];
-    case "sputnik-policy": return [await call("get_policy")];
+    // get_factory_info is read beside the policy: Sputnik v2 update() lets the factory replace the code while auto_update is true.
+    case "sputnik-policy": return [await call("get_policy"), await call("get_factory_info")];
     case "controller-deployments": return [await call("get_deployments")];
     case "mpc-state": return [await call("state")];
     case "mpc-images": return [await call("allowed_docker_image_hashes")];
@@ -56,6 +57,9 @@ function reserve(finalDir: string, staging: string): void {
   if (existsSync(finalDir) || existsSync(staging)) throw new Error("NEAR capture refuses to overwrite an existing directory");
   mkdirSync(dirname(staging), { recursive: true }); mkdirSync(staging);
 }
+function isFactoryInfoRead(record: NearRecord | null): boolean {
+  return record?.request.method === "query" && "method_name" in record.request.params && record.request.params.method_name === "get_factory_info";
+}
 export async function captureSnapshot(o: CaptureOptions): Promise<NearSnapshotManifest> {
   if (!/^near-\d{4}-\d{2}-\d{2}$/.test(o.snapshotId)) throw new Error("Capture requires a live snapshot id");
   const root = o.root ?? "fixtures/near", finalDir = nearSnapshotDir(o.snapshotId, root), staging = join(root, `.${o.snapshotId}.partial`);
@@ -73,7 +77,7 @@ export async function captureSnapshot(o: CaptureOptions): Promise<NearSnapshotMa
         const reads = await recipeReads(client, entry.account, recipe); let methodMissing = false;
         for (const read of reads) {
           if (!read.ok) {
-            if (recipe.kind === "owner" && read.error.kind === "call-error" && read.error.name === "MethodNotFound") { methodMissing = true; continue; }
+            if (read.error.kind === "call-error" && read.error.name === "MethodNotFound" && (recipe.kind === "owner" || recipe.kind === "sputnik-policy" && isFactoryInfoRead(read.record))) { methodMissing = true; continue; }
             throw new Error(`${read.error.kind}${read.error.name ? ` ${read.error.name}` : ""}`);
           }
           const req = read.record.request;

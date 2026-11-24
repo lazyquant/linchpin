@@ -7,6 +7,10 @@ export function parseAddressArg(value: string): {chain:string; address:string} {
   if(typeof value!=="string" || !/^[a-z][a-z0-9-]*:[^\s:]+$/.test(value)) throw new PositionsRejected("malformed-address");
   const split=value.indexOf(":"), chain=value.slice(0,split), address=value.slice(split+1);
   if(chain==="solana") validateSolanaAddress(address);
+  if(chain==="ethereum") {
+    if(!/^0x[0-9a-f]{40}$/i.test(address)) throw new PositionsRejected("malformed-address");
+    return {chain,address:address.toLowerCase()};
+  }
   return {chain,address};
 }
 export async function loadAddressesFile(home: string): Promise<{chain:string; address:string}[]> {

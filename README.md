@@ -1,10 +1,68 @@
 # Linchpin
 
-**The dependency engine for protocol economics.**
+**Understand what your DeFi capital depends on.**
 
-Linchpin reads a protocol's programs, live state and transactions straight from Solana mainnet and links them into one evidence graph. Every value carries its basis: what the protocol *claims*, what the code *allows*, and what *happened* on chain. Funds, DAOs and protocol teams use it to see who controls what, what a proposal moves, and which claims hold, before they allocate, vote or ship a change.
+Linchpin's mission is to make DeFi understandable and its risks independently verifiable, across protocols and chains. We are building an evidence-backed risk analyst for portfolios, treasuries and vaults: what does the capital depend on, how could access or value be affected, and what supports the answer?
 
-> Follow the money. Find the control. Verify the claim.
+The current prototype reviews selected NEAR dependencies and Solana governance and protocol economics. It links recorded chain reads and attributed documents into an evidence graph, preserving what is claimed, decoded, simulated and observed. It does not yet provide comprehensive portfolio risk modelling.
+
+## First finding: who can change NEAR Intents?
+
+Linchpin shows what a DeFi contract depends on and who can change it. Read on NEAR mainnet on 14 November 2026, blocks 224528509–224529178:
+
+- The Sputnik DAO `intents.sputnik-dao.near` holds super-admin and role-granting powers over `intents.near`, the contract that settles NEAR Intents.
+- That DAO's `get_factory_info` reads `auto_update: true`. Its code version (Sputnik v3.1) lets the factory `sputnik-dao.near` replace the DAO's code through `update()`, with no proposal and no vote.
+- The factory owns itself, so its authority is three full-access keys.
+
+Replay it from the recorded snapshot, then compare with the committed report:
+
+```sh
+bun install --frozen-lockfile
+bun --no-env-file run linchpin near intent \
+  --asset nep141:sol-5ce3bf3a31af18be40ba30f721101b4341690186.omft.near \
+  --snapshot near-2026-11-14 --offline --out out/near-usdc-1114
+cmp out/near-usdc-1114/intent-review.md fixtures/near/samples/intent-review-usdc-2026-11-14.md
+```
+
+**Expected result:** `cmp` exits 0. In the [report](fixtures/near/samples/intent-review-usdc-2026-11-14.md), the row `intents.sputnik-dao.near | upgrade | sputnik-dao.near / 1` cites the `get_factory_info` receipt, and the row `sputnik-dao.near | upgrade` lists the three keys. This is a path of control recorded at those blocks. It is not evidence that anyone has used it or intends to. The 9 November snapshot did not read `get_factory_info`, so a comparison with it reports this edge as `missing-coverage`, not as a change.
+
+The factory `update()` path across Sputnik DAOs was also published during the hackathon by the Docket project; Linchpin's contribution is the chain from those keys to the contract behind NEAR Intents.
+
+## Start with a cross-chain asset
+
+**What does holding this USDC representation through NEAR Intents make me depend on, and what remains unknown about getting it back out?**
+
+Read the [worked case](fixtures/near/samples/usdc-case.md): a specific NEAR token representation, its recorded Omni bridge mapping and control dependencies, and the limits of the available origin-chain evidence. The case explains why the observations matter and links to their receipts. A dependency path is not a probability of loss or proof that withdrawal will succeed.
+
+Requires [Bun](https://bun.sh) 1.4 or later. From a clone of this repository:
+
+```sh
+bun install --frozen-lockfile
+bun run linchpin near intent \
+  --asset nep141:sol-5ce3bf3a31af18be40ba30f721101b4341690186.omft.near \
+  --snapshot near-2026-11-09 --offline --out out/near-usdc
+```
+
+**Expected result:** the terminal prints an intent review and the command writes `out/near-usdc/intent-review.md` and `out/near-usdc/intent-review.json`. The recorded route is `omni_bridge`; the review outcome is `partial`. The snapshot's latest observation is 9 November 2026 at 21:43:57 UTC. The report contains dated observations, evidence receipts and explicit unknowns. It is a replay, not a current-state check. No wallet, RPC credential, model service or Neo4j instance is required for this command after dependencies are installed.
+
+To inspect the existing local risk desk:
+
+```sh
+bun run linchpin desk quantrin-near-v1 \
+  --snapshot near-2026-11-09 --positions fixtures/desk/book-synthetic.json
+```
+
+Open the loopback address printed by the command. The supplied book is **synthetic**, including its quantities and holders. Find the position whose asset starts `nep141:sol-5ce3...`; explore its dependency map, evidence and unknowns. The desk shows the position subject's control graph; use the asset report above for the bridge mapping and origin-side limits. Desk marks describe the sample policy's rules, not an overall asset risk rating. The optional agent panel is not required and its availability is not a claim of a demonstrated model integration. [Desk usage and limits](src/desk/README.md).
+
+The [NEAR reader](src/near/README.md), [preflight](src/near/preflight/README.md) and [recorded full report](fixtures/near/samples/intent-review-usdc.md) provide additional detail. Preflight checks claimed actions against recorded evidence; Linchpin does not sign or execute them.
+
+Captured [NEAR subject panels](src/near/panel/README.md) show public facts, gaps and receipts for registered accounts in a recorded snapshot. Build one account offline:
+
+```sh
+bun --no-env-file run src/cli.ts near panel intents.near --snapshot near-2026-11-09 --out out/near-panels --offline
+```
+
+The command writes the account’s HTML panel, exact JSON twin and validated relation chart. `bun run site:build` includes all captured registry panels under `dist/site/panels/`. These files describe dated observations; they are not a live feed.
 
 ## Use cases
 
@@ -28,14 +86,14 @@ The same graph answers who can change fees, pause a program or upgrade it, which
 
 ## How it works
 
-1. **Read.** Programs' published Anchor interfaces (IDLs), account state and transactions through any Solana RPC endpoint. Every read is recorded with its slot, retrieval time and response hash.
+1. **Read.** NEAR account state and view calls, and Solana programs' published Anchor interfaces (IDLs), account state and transactions. Recorded reads carry their block or slot, retrieval time and response hash.
 2. **Decode.** Instructions, authorities, fee parameters, governance configuration, votes and receipts, with an IDL-driven Borsh decoder and the SPL Governance SDK.
 3. **Link.** One evidence graph with typed relationships, in Neo4j or in memory. Every value is labelled `declared`, `decoded`, `observed`, `derived`, `claimed`, `reported` or `inferred`.
 4. **Answer.** Review packets, research bundles, a local research workspace and canned graph queries. Every number opens its evidence records.
 
 Recorded evidence replays offline and deterministically; live refresh reads current state through your endpoint and shows what changed.
 
-## Quick start
+## Solana research workspace
 
 Requires [Bun](https://bun.sh) 1.4 or later.
 
@@ -121,14 +179,17 @@ Linchpin checks economics and control against chain state. It is not a code audi
 
 ## Roadmap
 
-- **Alerts on control changes:** notify when fees, authorities, upgrade rights or governance configuration change, or when a proposal that touches them is created.
-- **Pre-vote exposure:** dated pre-execution balances and policies, so a review states how much of a treasury a payload moves before the vote.
-- **Live tokenomics refresh:** the research view refreshed from chain like the governance cases, with a diff against the last capture.
-- **More Solana protocols:** registries and fee-route maps for further Anchor and Realms protocols; the readers for interfaces, authorities and governance are protocol-independent.
-- **Deeper governance analysis:** treasury exchanges, voter concentration and delegation, veto paths.
-- **Hosted workspace and API** for funds, DAOs and protocol teams.
-- **Claim extraction:** documentation and forum claims captured with an agent layer, always checked against chain evidence.
-- **EVM readers** on the same evidence model.
+The longer-term analyst will connect look-through exposures, yield sources, exit constraints and shared dependencies across chains. Each expansion needs its own evidence coverage and explicit model assumptions. The current dependency reviews are a foundation for that work, not a complete assessment of a portfolio's possible losses.
+
+## NEAR integration
+
+Linchpin existed as a Solana research project before the NEAR integration. The NEAR work adds recorded NEAR account and view-call evidence, Intents asset dependency reviews, governance reviews, policy checks, a read-only preflight and the local risk desk. The worked USDC case is the place to start. Existing Solana cases and later Solana work are separate from it.
+
+The public [`pre-hackathon` baseline](https://github.com/lazyquant/linchpin/tree/pre-hackathon) and the [diff from that baseline to the current public branch](https://github.com/lazyquant/linchpin/compare/pre-hackathon...HEAD) show what the NEAR work changed. The diff also contains shared and Solana changes.
+
+Reused foundations include this repository's evidence/receipt model, graph queries and Solana readers. Third-party libraries are listed in [package.json](package.json), with exact dependency versions in [bun.lock](bun.lock); the implementation uses Bun, TypeScript, Neo4j's driver and Solana SDKs. AI coding assistance was used. The route classification records the NEAR Intents SDK rule version alongside the result. There is no live 1Click quote in this demonstration and no transaction execution.
+
+To reproduce the demonstration, follow **Start with a cross-chain asset** above. Bring a difficult DeFi position, inspect a receipt, or challenge a relationship in the graph.
 
 ## License
 

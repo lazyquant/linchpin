@@ -1,0 +1,11 @@
+{
+  "policyId": "preflight-intents-paused",
+  "subjects": ["near:mainnet:intents.near"],
+  "rules": [
+    {
+      "id": "intents-paused-false",
+      "kind": "pause-state-is",
+      "params": { "contract": "near:mainnet:intents.near", "paused": false }
+    }
+  ]
+}

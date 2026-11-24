@@ -1,0 +1,964 @@
+{
+  "note": "One adversarial recipe per kit rule. A scripted model answers with the bad surface, is refused with exactly that rule code, repairs with the good surface, and a second refusal ends in the fixed refusal surface that holds neither recipe's marker id, marker text nor a binding to any model result.",
+  "recipes": [
+    {
+      "code": "schema",
+      "rule": "V1",
+      "tool": {
+        "name": "run_template",
+        "input": {
+          "protocol": "kamino",
+          "templateId": "section-claims",
+          "params": {
+            "subject": "buffer"
+          }
+        }
+      },
+      "bad": {
+        "components": [
+          {
+            "component": "Note",
+            "text": "Marker one text"
+          }
+        ]
+      },
+      "good": {
+        "components": [
+          {
+            "id": "root",
+            "component": "Column",
+            "children": [
+              "hd",
+              "nt"
+            ]
+          },
+          {
+            "id": "hd",
+            "component": "AnswerHeader",
+            "meta": {
+              "path": "/meta"
+            }
+          },
+          {
+            "id": "nt",
+            "component": "Note",
+            "text": "Fixed sentence one"
+          }
+        ]
+      },
+      "markerId": "mkschema",
+      "markerText": "Marker one"
+    },
+    {
+      "code": "unknown-component",
+      "rule": "V2",
+      "tool": {
+        "name": "run_template",
+        "input": {
+          "protocol": "kamino",
+          "templateId": "section-claims",
+          "params": {
+            "subject": "buffer"
+          }
+        }
+      },
+      "bad": {
+        "components": [
+          {
+            "id": "root",
+            "component": "Column",
+            "children": [
+              "hd",
+              "hx"
+            ]
+          },
+          {
+            "id": "hd",
+            "component": "AnswerHeader",
+            "meta": {
+              "path": "/meta"
+            }
+          },
+          {
+            "id": "hx",
+            "component": "Html"
+          }
+        ]
+      },
+      "good": {
+        "components": [
+          {
+            "id": "root",
+            "component": "Column",
+            "children": [
+              "hd",
+              "nt"
+            ]
+          },
+          {
+            "id": "hd",
+            "component": "AnswerHeader",
+            "meta": {
+              "path": "/meta"
+            }
+          },
+          {
+            "id": "nt",
+            "component": "Note",
+            "text": "Fixed sentence two"
+          }
+        ]
+      },
+      "markerId": "mkhtml",
+      "markerText": "Marker two"
+    },
+    {
+      "code": "literal-value",
+      "rule": "V3",
+      "tool": {
+        "name": "run_template",
+        "input": {
+          "protocol": "kamino",
+          "templateId": "section-claims",
+          "params": {
+            "subject": "buffer"
+          }
+        }
+      },
+      "bad": {
+        "components": [
+          {
+            "id": "root",
+            "component": "Column",
+            "children": [
+              "hd",
+              "v1"
+            ]
+          },
+          {
+            "id": "hd",
+            "component": "AnswerHeader",
+            "meta": {
+              "path": "/meta"
+            }
+          },
+          {
+            "id": "v1",
+            "component": "FactTable",
+            "result": {
+              "rows": 1
+            }
+          }
+        ]
+      },
+      "good": {
+        "components": [
+          {
+            "id": "root",
+            "component": "Column",
+            "children": [
+              "hd",
+              "v1"
+            ]
+          },
+          {
+            "id": "hd",
+            "component": "AnswerHeader",
+            "meta": {
+              "path": "/meta"
+            }
+          },
+          {
+            "id": "v1",
+            "component": "FactTable",
+            "result": {
+              "path": "/results/r1"
+            }
+          }
+        ]
+      },
+      "markerId": "mkliteral",
+      "markerText": "Marker three"
+    },
+    {
+      "code": "dangling-binding",
+      "rule": "V4",
+      "tool": {
+        "name": "run_template",
+        "input": {
+          "protocol": "kamino",
+          "templateId": "section-claims",
+          "params": {
+            "subject": "buffer"
+          }
+        }
+      },
+      "bad": {
+        "components": [
+          {
+            "id": "root",
+            "component": "Column",
+            "children": [
+              "hd",
+              "v1"
+            ]
+          },
+          {
+            "id": "hd",
+            "component": "AnswerHeader",
+            "meta": {
+              "path": "/meta"
+            }
+          },
+          {
+            "id": "v1",
+            "component": "FactTable",
+            "result": {
+              "path": "/results/r9"
+            }
+          }
+        ]
+      },
+      "good": {
+        "components": [
+          {
+            "id": "root",
+            "component": "Column",
+            "children": [
+              "hd",
+              "v1"
+            ]
+          },
+          {
+            "id": "hd",
+            "component": "AnswerHeader",
+            "meta": {
+              "path": "/meta"
+            }
+          },
+          {
+            "id": "v1",
+            "component": "FactTable",
+            "result": {
+              "path": "/results/r1"
+            }
+          }
+        ]
+      },
+      "markerId": "mkdangling",
+      "markerText": "Marker four"
+    },
+    {
+      "code": "uncited-row",
+      "rule": "V5",
+      "backend": "row-without-evidence",
+      "bad": {
+        "components": [
+          {
+            "id": "root",
+            "component": "Column",
+            "children": [
+              "hd",
+              "v1"
+            ]
+          },
+          {
+            "id": "hd",
+            "component": "AnswerHeader",
+            "meta": {
+              "path": "/meta"
+            }
+          },
+          {
+            "id": "v1",
+            "component": "FactTable",
+            "result": {
+              "path": "/results/r1"
+            }
+          }
+        ]
+      },
+      "good": {
+        "components": [
+          {
+            "id": "root",
+            "component": "Column",
+            "children": [
+              "hd"
+            ]
+          },
+          {
+            "id": "hd",
+            "component": "AnswerHeader",
+            "meta": {
+              "path": "/meta"
+            }
+          }
+        ]
+      },
+      "markerId": "mkuncited",
+      "markerText": "Marker five"
+    },
+    {
+      "code": "unresolved-evidence",
+      "rule": "V6",
+      "backend": "evidence-missing",
+      "bad": {
+        "components": [
+          {
+            "id": "root",
+            "component": "Column",
+            "children": [
+              "hd",
+              "v1"
+            ]
+          },
+          {
+            "id": "hd",
+            "component": "AnswerHeader",
+            "meta": {
+              "path": "/meta"
+            }
+          },
+          {
+            "id": "v1",
+            "component": "FactTable",
+            "result": {
+              "path": "/results/r1"
+            }
+          }
+        ]
+      },
+      "good": {
+        "components": [
+          {
+            "id": "root",
+            "component": "Column",
+            "children": [
+              "hd"
+            ]
+          },
+          {
+            "id": "hd",
+            "component": "AnswerHeader",
+            "meta": {
+              "path": "/meta"
+            }
+          }
+        ]
+      },
+      "markerId": "mkunresolved",
+      "markerText": "Marker six"
+    },
+    {
+      "code": "advice-word",
+      "rule": "V7",
+      "tool": {
+        "name": "run_template",
+        "input": {
+          "protocol": "kamino",
+          "templateId": "section-claims",
+          "params": {
+            "subject": "buffer"
+          }
+        }
+      },
+      "bad": {
+        "components": [
+          {
+            "id": "root",
+            "component": "Column",
+            "children": [
+              "hd",
+              "nt"
+            ]
+          },
+          {
+            "id": "hd",
+            "component": "AnswerHeader",
+            "meta": {
+              "path": "/meta"
+            }
+          },
+          {
+            "id": "nt",
+            "component": "Note",
+            "text": "This vault is safe"
+          }
+        ]
+      },
+      "good": {
+        "components": [
+          {
+            "id": "root",
+            "component": "Column",
+            "children": [
+              "hd",
+              "nt"
+            ]
+          },
+          {
+            "id": "hd",
+            "component": "AnswerHeader",
+            "meta": {
+              "path": "/meta"
+            }
+          },
+          {
+            "id": "nt",
+            "component": "Note",
+            "text": "Fixed sentence seven"
+          }
+        ]
+      },
+      "markerId": "mkadvice",
+      "markerText": "Marker seven"
+    },
+    {
+      "code": "number-in-text",
+      "rule": "V8",
+      "tool": {
+        "name": "run_template",
+        "input": {
+          "protocol": "kamino",
+          "templateId": "section-claims",
+          "params": {
+            "subject": "buffer"
+          }
+        }
+      },
+      "bad": {
+        "components": [
+          {
+            "id": "root",
+            "component": "Column",
+            "children": [
+              "hd",
+              "nt"
+            ]
+          },
+          {
+            "id": "hd",
+            "component": "AnswerHeader",
+            "meta": {
+              "path": "/meta"
+            }
+          },
+          {
+            "id": "nt",
+            "component": "Note",
+            "text": "Fees are 10 percent"
+          }
+        ]
+      },
+      "good": {
+        "components": [
+          {
+            "id": "root",
+            "component": "Column",
+            "children": [
+              "hd",
+              "nt"
+            ]
+          },
+          {
+            "id": "hd",
+            "component": "AnswerHeader",
+            "meta": {
+              "path": "/meta"
+            }
+          },
+          {
+            "id": "nt",
+            "component": "Note",
+            "text": "Fixed sentence eight"
+          }
+        ]
+      },
+      "markerId": "mknumber",
+      "markerText": "Marker eight"
+    },
+    {
+      "code": "text-too-long",
+      "rule": "V9",
+      "tool": {
+        "name": "run_template",
+        "input": {
+          "protocol": "kamino",
+          "templateId": "section-claims",
+          "params": {
+            "subject": "buffer"
+          }
+        }
+      },
+      "bad": {
+        "components": [
+          {
+            "id": "root",
+            "component": "Column",
+            "children": [
+              "hd",
+              "nt"
+            ]
+          },
+          {
+            "id": "hd",
+            "component": "AnswerHeader",
+            "meta": {
+              "path": "/meta"
+            }
+          },
+          {
+            "id": "nt",
+            "component": "Note",
+            "text": "ppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppp"
+          }
+        ]
+      },
+      "good": {
+        "components": [
+          {
+            "id": "root",
+            "component": "Column",
+            "children": [
+              "hd",
+              "nt"
+            ]
+          },
+          {
+            "id": "hd",
+            "component": "AnswerHeader",
+            "meta": {
+              "path": "/meta"
+            }
+          },
+          {
+            "id": "nt",
+            "component": "Note",
+            "text": "Fixed sentence nine"
+          }
+        ]
+      },
+      "markerId": "mklong",
+      "markerText": "Marker nine"
+    },
+    {
+      "code": "missing-coverage-note",
+      "rule": "V10",
+      "backend": "not-mapped-unbound",
+      "bad": {
+        "components": [
+          {
+            "id": "root",
+            "component": "Column",
+            "children": [
+              "hd"
+            ]
+          },
+          {
+            "id": "hd",
+            "component": "AnswerHeader",
+            "meta": {
+              "path": "/meta"
+            }
+          }
+        ]
+      },
+      "good": {
+        "components": [
+          {
+            "id": "root",
+            "component": "Column",
+            "children": [
+              "hd",
+              "v1"
+            ]
+          },
+          {
+            "id": "hd",
+            "component": "AnswerHeader",
+            "meta": {
+              "path": "/meta"
+            }
+          },
+          {
+            "id": "v1",
+            "component": "CoverageNote",
+            "result": {
+              "path": "/results/r1"
+            }
+          }
+        ]
+      },
+      "markerId": "mkcovmiss",
+      "markerText": "Marker ten"
+    },
+    {
+      "code": "not-mapped-as-fact",
+      "rule": "V11",
+      "backend": "not-mapped-drawn",
+      "bad": {
+        "components": [
+          {
+            "id": "root",
+            "component": "Column",
+            "children": [
+              "hd",
+              "v1",
+              "nt"
+            ]
+          },
+          {
+            "id": "hd",
+            "component": "AnswerHeader",
+            "meta": {
+              "path": "/meta"
+            }
+          },
+          {
+            "id": "v1",
+            "component": "FactTable",
+            "result": {
+              "path": "/results/r1"
+            }
+          },
+          {
+            "id": "nt",
+            "component": "CoverageNote",
+            "result": {
+              "path": "/results/r1"
+            }
+          }
+        ]
+      },
+      "good": {
+        "components": [
+          {
+            "id": "root",
+            "component": "Column",
+            "children": [
+              "hd",
+              "nt"
+            ]
+          },
+          {
+            "id": "hd",
+            "component": "AnswerHeader",
+            "meta": {
+              "path": "/meta"
+            }
+          },
+          {
+            "id": "nt",
+            "component": "CoverageNote",
+            "result": {
+              "path": "/results/r1"
+            }
+          }
+        ]
+      },
+      "markerId": "mknotmapped",
+      "markerText": "Marker eleven"
+    },
+    {
+      "code": "structure",
+      "rule": "V12",
+      "tool": {
+        "name": "run_template",
+        "input": {
+          "protocol": "kamino",
+          "templateId": "section-claims",
+          "params": {
+            "subject": "buffer"
+          }
+        }
+      },
+      "bad": {
+        "components": [
+          {
+            "id": "onlycolumn",
+            "component": "Column",
+            "children": []
+          }
+        ]
+      },
+      "good": {
+        "components": [
+          {
+            "id": "root",
+            "component": "Column",
+            "children": [
+              "hd",
+              "nt"
+            ]
+          },
+          {
+            "id": "hd",
+            "component": "AnswerHeader",
+            "meta": {
+              "path": "/meta"
+            }
+          },
+          {
+            "id": "nt",
+            "component": "Note",
+            "text": "Fixed sentence twelve"
+          }
+        ]
+      },
+      "markerId": "mkstructure",
+      "markerText": "Marker twelve"
+    },
+    {
+      "code": "forbidden-action",
+      "rule": "V13",
+      "tool": {
+        "name": "run_template",
+        "input": {
+          "protocol": "kamino",
+          "templateId": "section-claims",
+          "params": {
+            "subject": "buffer"
+          }
+        }
+      },
+      "bad": {
+        "components": [
+          {
+            "id": "root",
+            "component": "Column",
+            "children": [
+              "hd",
+              "nt"
+            ]
+          },
+          {
+            "id": "hd",
+            "component": "AnswerHeader",
+            "meta": {
+              "path": "/meta"
+            }
+          },
+          {
+            "id": "nt",
+            "component": "Note",
+            "text": "Marker thirteen",
+            "action": {
+              "type": "open"
+            }
+          }
+        ]
+      },
+      "good": {
+        "components": [
+          {
+            "id": "root",
+            "component": "Column",
+            "children": [
+              "hd",
+              "nt"
+            ]
+          },
+          {
+            "id": "hd",
+            "component": "AnswerHeader",
+            "meta": {
+              "path": "/meta"
+            }
+          },
+          {
+            "id": "nt",
+            "component": "Note",
+            "text": "Fixed sentence thirteen"
+          }
+        ]
+      },
+      "markerId": "mkaction",
+      "markerText": "Marker thirteen"
+    },
+    {
+      "code": "edge-without-fact",
+      "rule": "V14",
+      "backend": "graph-edge-uncited",
+      "bad": {
+        "components": [
+          {
+            "id": "root",
+            "component": "Column",
+            "children": [
+              "hd",
+              "v1"
+            ]
+          },
+          {
+            "id": "hd",
+            "component": "AnswerHeader",
+            "meta": {
+              "path": "/meta"
+            }
+          },
+          {
+            "id": "v1",
+            "component": "DependencyGraph",
+            "result": {
+              "path": "/results/r1"
+            }
+          }
+        ]
+      },
+      "good": {
+        "components": [
+          {
+            "id": "root",
+            "component": "Column",
+            "children": [
+              "hd"
+            ]
+          },
+          {
+            "id": "hd",
+            "component": "AnswerHeader",
+            "meta": {
+              "path": "/meta"
+            }
+          }
+        ]
+      },
+      "markerId": "mkedge",
+      "markerText": "Marker fourteen"
+    },
+    {
+      "code": "section-title",
+      "rule": "V15",
+      "tool": {
+        "name": "run_template",
+        "input": {
+          "protocol": "kamino",
+          "templateId": "section-claims",
+          "params": {
+            "subject": "buffer"
+          }
+        }
+      },
+      "bad": {
+        "components": [
+          {
+            "id": "root",
+            "component": "Column",
+            "children": [
+              "hd",
+              "sc"
+            ]
+          },
+          {
+            "id": "hd",
+            "component": "AnswerHeader",
+            "meta": {
+              "path": "/meta"
+            }
+          },
+          {
+            "id": "sc",
+            "component": "Section",
+            "title": "Overview 2",
+            "children": []
+          }
+        ]
+      },
+      "good": {
+        "components": [
+          {
+            "id": "root",
+            "component": "Column",
+            "children": [
+              "hd",
+              "sc"
+            ]
+          },
+          {
+            "id": "hd",
+            "component": "AnswerHeader",
+            "meta": {
+              "path": "/meta"
+            }
+          },
+          {
+            "id": "sc",
+            "component": "Section",
+            "title": "Overview",
+            "children": []
+          }
+        ]
+      },
+      "markerId": "mksectitle",
+      "markerText": "Marker fifteen"
+    }
+  ],
+  "refusalCase": {
+    "code": "advice-word",
+    "tool": {
+      "name": "run_template",
+      "input": {
+        "protocol": "kamino",
+        "templateId": "section-claims",
+        "params": {
+          "subject": "buffer"
+        }
+      }
+    },
+    "badA": {
+      "components": [
+        {
+          "id": "root",
+          "component": "Column",
+          "children": [
+            "hd",
+            "mkA"
+          ]
+        },
+        {
+          "id": "hd",
+          "component": "AnswerHeader",
+          "meta": {
+            "path": "/meta"
+          }
+        },
+        {
+          "id": "mkA",
+          "component": "Note",
+          "text": "First marker sentence is safe"
+        }
+      ]
+    },
+    "badB": {
+      "components": [
+        {
+          "id": "root",
+          "component": "Column",
+          "children": [
+            "hd",
+            "mkB"
+          ]
+        },
+        {
+          "id": "hd",
+          "component": "AnswerHeader",
+          "meta": {
+            "path": "/meta"
+          }
+        },
+        {
+          "id": "mkB",
+          "component": "Note",
+          "text": "Second marker sentence is unsafe"
+        }
+      ]
+    },
+    "markers": [
+      "mkA",
+      "mkB",
+      "First marker sentence",
+      "Second marker sentence"
+    ]
+  }
+}

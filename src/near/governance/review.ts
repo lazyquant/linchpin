@@ -1,16 +1,16 @@
 import type { EvidenceReceipt, Fact, QueryReason } from "../../engine/contracts";
-import { buildNearSnapshot, nearReads, readNearManifest } from "../reader/load";
 import { parseSputnikPolicy } from "../reader/mappers";
 import { isNearAccountId, nearSubject, parseNearSubject, type SputnikPolicy } from "../reader/types";
 import { NEAR_REGISTRY } from "../subjects/registry";
 import { decodeProposal } from "./decode";
+import { contextManifest, contextMemo, contextReads, contextSnapshot } from "./snapshots";
 import { classify } from "./effect";
 import { governanceChanges } from "./history";
 import { emptyMath, executionMath, proposalExpiry } from "./math";
 import { daoControls, governanceStore, intersectFor } from "./reach";
 import { GOVERNANCE_VERSION, type GovernanceContext, type GovernanceReport, type ProposalSummary, type ReviewSentence, type TouchingProposal } from "./types";
 export function loadPolicy(ctx: GovernanceContext, dao: string): { policy: SputnikPolicy; receipt: EvidenceReceipt } | null {
-  const read = nearReads(ctx.snapshotId,{root:ctx.root}).find(dao,"call_function","get_policy");
+  const read = contextReads(ctx).find(dao,"call_function","get_policy");
   if (!read) return null; try { return {policy:parseSputnikPolicy(read.value),receipt:read.receipt}; } catch { return null; }
 }
 export const SENTENCE_TEMPLATES = {
@@ -28,14 +28,18 @@ function sentences(facts: Fact[]): ReviewSentence[] {
 }
 function account(dao:string): string { const p=dao.startsWith("near:") ? parseNearSubject(dao) : null; const a=p?.kind === null ? p.account : dao; if (!isNearAccountId(a)) throw new TypeError("Invalid DAO account"); return a; }
 type Options = { forSubject?: string; compareSnapshotId?: string };
+// The derived store kept on the context for this module's sweeps, which only read it and copy their report out.
+// Keyed by the decoded proposals themselves. Not exported: a caller gets a fresh one from `governanceStore`.
+const sweepStore = (ctx: GovernanceContext, proposals: Parameters<typeof governanceStore>[1]) =>
+  contextMemo(ctx, `governance-store:${JSON.stringify(proposals)}`, () => governanceStore(ctx, proposals));
 function review(ctx: GovernanceContext, input: string, id: number | null, opts: Options): GovernanceReport {
   const dao=account(input), subject=nearSubject(dao);
   if (opts.forSubject && !parseNearSubject(opts.forSubject)) throw new TypeError("Invalid intersection subject");
-  readNearManifest(ctx.snapshotId,{root:ctx.root});
-  const base=buildNearSnapshot(ctx.snapshotId,{root:ctx.root}), policy=loadPolicy(ctx,dao);
+  contextManifest(ctx);
+  const base=contextSnapshot(ctx), policy=loadPolicy(ctx,dao);
   const all=base.facts.filter(f=>f.predicate === "proposal" && parseNearSubject(f.subject)?.account === dao).map(f=>decodeProposal(f,policy?.policy,policy?.receipt,ctx.registry)).sort((a,b)=>a.id-b.id);
   const selected=all.filter(p=>id === null ? p.status === "InProgress" : p.id === id);
-  const derived=governanceStore(ctx,policy ? selected : []), snapshot=derived.store.snapshot(derived.snapshotId)!, governance=governanceChanges(ctx,dao,opts.compareSnapshotId);
+  const derived=sweepStore(ctx,policy ? selected : []), snapshot=derived.store.snapshot(derived.snapshotId)!, governance=governanceChanges(ctx,dao,opts.compareSnapshotId);
   const reasons: QueryReason[]=[];
   if (!base.subjects.includes(subject)) reasons.push({code:"missing-subject",subject,ref:ctx.snapshotId});
   else if (id !== null && !selected.length) { const first=all[0]?.id, last=all.at(-1)?.id; reasons.push(first !== undefined && id < first ? {code:"missing-coverage",subject,ref:`${dao}#proposals:${first}-${last}`} : {code:"missing-subject",subject:nearSubject(dao,"proposal",String(id)),ref:ctx.snapshotId}); }
@@ -58,7 +62,7 @@ function review(ctx: GovernanceContext, input: string, id: number | null, opts: 
   const supporting=new Map<string,Fact>();
   const summaryPredicates=["council-member","vote-threshold","proposal-period","bond"];
   for(const f of base.facts) if(parseNearSubject(f.subject)?.account === dao && summaryPredicates.includes(f.predicate)) supporting.set(f.id,f);
-  for (const comparison of [governance.beforeSnapshotId,governance.afterSnapshotId]) if (comparison && comparison !== ctx.snapshotId) { const compared=buildNearSnapshot(comparison,{root:ctx.root}); for (const r of compared.receipts) receipts.set(r.id,r); for(const f of compared.facts) if(parseNearSubject(f.subject)?.account === dao && summaryPredicates.includes(f.predicate)) supporting.set(f.id,f); }
+  for (const comparison of [governance.beforeSnapshotId,governance.afterSnapshotId]) if (comparison && comparison !== ctx.snapshotId) { const compared=contextSnapshot(ctx,comparison); for (const r of compared.receipts) receipts.set(r.id,r); for(const f of compared.facts) if(parseNearSubject(f.subject)?.account === dao && summaryPredicates.includes(f.predicate)) supporting.set(f.id,f); }
   const used=new Set<string>();
   for (const p of proposals) { p.decoded.evidenceIds.forEach(id=>used.add(id)); for (const f of [...p.reach,...p.daoControls]) f.evidenceIds.forEach(id=>used.add(id)); if (policy) used.add(policy.receipt.id); for (const hop of p.intersection?.hops ?? []) for (const id of hop.chainFactIds) {const f=base.facts.find(f=>f.id===id);if(f) supporting.set(f.id,f);} }
   for (const e of governance.history) for (const f of [e.source,e.fact]) f.evidenceIds.forEach(id=>used.add(id));
@@ -69,7 +73,8 @@ function review(ctx: GovernanceContext, input: string, id: number | null, opts: 
   for(const reason of allReasons) {const f=base.facts.find(f=>f.id === reason.ref);if(f) supporting.set(f.id,f);}
   for(const f of supporting.values()) f.evidenceIds.forEach(id=>used.add(id));
   const {chain,network,constructed,observedFrom,observedTo,fromBlockOrSlot,toBlockOrSlot,freshUntil}=snapshot;
-  return {version:GOVERNANCE_VERSION,mode:id === null ? "open":"proposal",dao,snapshotId:ctx.snapshotId,governanceSnapshotId:derived.snapshotId,constructed,observation:{snapshotId:ctx.snapshotId,chain,network,constructed,observedFrom,observedTo,fromBlockOrSlot,toBlockOrSlot,freshUntil,asOf:observedTo},forSubject:opts.forSubject ?? null,proposals,governance,receipts:[...receipts.values()].filter(r=>used.has(r.id)).sort((a,b)=>a.id.localeCompare(b.id)),supportingFacts:[...supporting.values()].sort((a,b)=>a.id.localeCompare(b.id)),reasons:allReasons};
+  // The report holds facts and receipts of the context's cached snapshots: the caller gets its own copy.
+  return structuredClone({version:GOVERNANCE_VERSION,mode:id === null ? "open":"proposal",dao,snapshotId:ctx.snapshotId,governanceSnapshotId:derived.snapshotId,constructed,observation:{snapshotId:ctx.snapshotId,chain,network,constructed,observedFrom,observedTo,fromBlockOrSlot,toBlockOrSlot,freshUntil,asOf:observedTo},forSubject:opts.forSubject ?? null,proposals,governance,receipts:[...receipts.values()].filter(r=>used.has(r.id)).sort((a,b)=>a.id.localeCompare(b.id)),supportingFacts:[...supporting.values()].sort((a,b)=>a.id.localeCompare(b.id)),reasons:allReasons});
 }
 export function reviewProposal(ctx:GovernanceContext,dao:string,id:number,opts:Options={}):GovernanceReport { if (!Number.isSafeInteger(id)||id<0) throw new TypeError("Invalid proposal id"); return review(ctx,dao,id,opts); }
 export function sweepOpen(ctx:GovernanceContext,dao:string,opts:Options={}):GovernanceReport { return review(ctx,dao,null,opts); }

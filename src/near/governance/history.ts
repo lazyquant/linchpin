@@ -1,15 +1,17 @@
 import { runQuery } from "../../engine/queries/run";
 import type { EvidenceSnapshot } from "../../engine/queries/snapshot";
 import { historyFacts } from "../reader/history";
-import { liveSnapshotIds, loadNearSnapshot, loadNearSnapshots } from "../reader/load";
+import { liveSnapshotIds } from "../reader/load";
+import { contextStore } from "./snapshots";
 import { nearSubject, parseNearSubject } from "../reader/types";
 import type { GovernanceChanges, GovernanceContext } from "./types";
 export function governanceChanges(ctx: GovernanceContext, dao: string, compareSnapshotId?: string | null): GovernanceChanges {
-  const subject = nearSubject(dao), history = historyFacts(loadNearSnapshot(ctx.snapshotId,{root:ctx.root}),subject,ctx.snapshotId);
+  const subject = nearSubject(dao), history = historyFacts(contextStore(ctx,[ctx.snapshotId]),subject,ctx.snapshotId);
   const result: GovernanceChanges = {dao,beforeSnapshotId:null,afterSnapshotId:null,changes:[],summary:[],history:history.events.filter(e => e.kind === "membership" || e.kind === "policy"),reasons:[...history.reasons]};
-  const live = liveSnapshotIds(ctx.root), pair = compareSnapshotId ? [ctx.snapshotId,compareSnapshotId] : live.length >= 2 ? live.slice(-2) : null;
+  // Only captures up to the reviewed one: a later capture never changes an earlier review.
+  const live = liveSnapshotIds(ctx.root).filter(id => id <= ctx.snapshotId), pair = compareSnapshotId ? [ctx.snapshotId,compareSnapshotId] : live.length >= 2 ? live.slice(-2) : null;
   if (!pair) { result.reasons.push({code:"missing-coverage",subject,ref:`one-live-snapshot:${ctx.snapshotId}`}); return result; }
-  const [before,after] = pair, store = loadNearSnapshots([...new Set(pair)],{root:ctx.root}), a = store.snapshot(before)!, b = store.snapshot(after)!;
+  const [before,after] = pair, store = contextStore(ctx,[...new Set(pair)]), a = store.snapshot(before)!, b = store.snapshot(after)!;
   result.beforeSnapshotId=before; result.afterSnapshotId=after;
   const isRole = (s: string) => { const p=parseNearSubject(s); return p?.account === dao && p.kind === "role"; };
   const subjects = [...new Set([subject,...a.subjects.filter(isRole),...b.subjects.filter(isRole)])].sort();

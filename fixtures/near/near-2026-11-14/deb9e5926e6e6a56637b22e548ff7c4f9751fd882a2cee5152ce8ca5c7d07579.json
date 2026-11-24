@@ -1,0 +1,31 @@
+{
+ "version": 1,
+ "requestSha256": "deb9e5926e6e6a56637b22e548ff7c4f9751fd882a2cee5152ce8ca5c7d07579",
+ "request": {
+  "method": "query",
+  "params": {
+   "account_id": "burrow.sputnik-dao.near",
+   "request_type": "call_function",
+   "method_name": "get_factory_info",
+   "args_base64": "e30=",
+   "finality": "final"
+  }
+ },
+ "endpointHost": "archival-rpc.mainnet.fastnear.com",
+ "retrievedAt": "2026-11-14T14:46:47.514Z",
+ "httpStatus": 200,
+ "outcome": "result",
+ "blockHeight": "224528529",
+ "blockHash": "9AgL7JVYVwJ7hVhaLwNNyyKgXC8BG3NGpqtHR4rtDcc7",
+ "responseSha256": "f9c2ee17c41e0416d4d0ceecda400eff068433223e687bd7c0c4198ffea2953e",
+ "response": {
+  "jsonrpc": "2.0",
+  "result": {
+   "block_hash": "9AgL7JVYVwJ7hVhaLwNNyyKgXC8BG3NGpqtHR4rtDcc7",
+   "block_height": 224528529,
+   "logs": []
+  },
+  "id": "near-reader"
+ },
+ "resultText": "{\"factory_id\":\"sputnik-dao.near\",\"auto_update\":false}"
+}

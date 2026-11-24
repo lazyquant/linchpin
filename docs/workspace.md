@@ -109,6 +109,46 @@ NEO4J_DATABASE=neo4j
 
 `NEO4J_URI` and `NEO4J_PASSWORD` enable the connection; username and database default to `neo4j`. Credentials and the full URI never reach the browser. Queries use read routing and bounded deadlines; results are cached briefly. **Load into Neo4j** (governance cases) and **Load latest graph into Neo4j** (tokenomics) appear only when the server is configured; loads run one at a time with a 120-second cap, report their counts in Activity, and invalidate the caches. The tokenomics loader replaces only its own namespace and checks that the governance-case queries return the same rows before and after the write. See [Neo4j: governance cases](neo4j.md) and [Neo4j: tokenomics graph](neo4j-tokenomics.md).
 
+## Cited answers (stand-alone page)
+
+A second loopback page answers a question about the recorded Marinade and Kamino evidence with a surface drawn by the UI kit. Every value on it is bound to a cited row; the kit's validator refuses anything else before the page draws it.
+
+```sh
+bun run src/answers/serve.ts            # http://127.0.0.1:<port>/ ; --port <n> chooses the port
+bun run src/answers/eval.ts --dry-run   # lists the eighteen reference questions, no network
+```
+
+The page lists eighteen **prepared answers**, labelled "Composed by a fixed script over recorded evidence, not by a model". They work offline with no key. A typed question needs a model: `LINCHPIN_AGENT_MODEL` names the Anthropic model id (there is no default) and the key is read from the environment at call time; without them the page says "No model is configured on this machine" and offers the prepared answers. Questions that hold a Solana address the recorded evidence does not name, or a token quantity, are refused (422) before any tool or model call. Routes: `POST /api/answers/ask` (NDJSON, three A2UI messages) and `GET /api/answers/pinned`; the Solana app's Ask view mounts the same handler once both are merged. The first start builds the Marinade bundle (about 30 seconds on a cache miss).
+
+## Risk desk (separate command)
+
+The risk desk is a separate loopback page for a book of positions under one NEAR policy, drawn by the UI kit. It shows:
+- the verdict rule by rule;
+- one dependency map per NEAR position, each node marked by what the policy says about it;
+- a template sentence for each rule that is not within policy;
+- what changed since an earlier snapshot;
+- every unknown;
+- a panel that forwards a question to a local IronClaw agent, after a guard that stops any question holding a private value.
+
+```sh
+bun src/cli.ts desk <policy> [--snapshot <id>] [--before <snapshot>] [--address <chain>:<account>]... [--positions <file>] [--port <n>]
+# e.g. bun src/cli.ts desk quantrin-near-v1 --snapshot near-constructed-intents-locker-added --before near-2026-11-09
+```
+
+The command prints one line, `desk http://127.0.0.1:<port>/#token=<token>`. Open that address. The default port is 7430.
+
+Loading takes about 5 seconds. Without `--positions` or `--address` the desk shows the synthetic book in `fixtures/desk/book-synthetic.json`.
+
+The agent panel needs `LINCHPIN_IRONCLAW_TOKEN` and a running IronClaw. Without them it shows "IronClaw panel: not demonstrated".
+
+Routes, flags, the guard and its limits are in `src/desk/README.md`. Validation: `docs/validation/2026-11-12-risk-desk-v2.md`.
+
+## NEAR agent page
+
+The separate [NEAR agent](near.md) page serves three structured public tasks: control of a registered subject, preflight of a recorded action under a server policy, and a policy verdict. Start it with `bun run src/near/agent/serve.ts --port 8792` and open `http://127.0.0.1:8792`. Its three prepared examples work offline with an explicit scripted label. Live requests use the operator's `NEARAI_API_KEY` and the pinned NEAR AI Cloud model `z-ai/glm-5.3-flash`.
+
+The deterministic tools retain the authoritative result. The unchanged evidence kit draws facts, unknowns and receipts beside the captured model report. Hardware attestation is `not-checked`; a matching response signature is `valid-under-unverified-key`. No transaction, real swap or private-book request is accepted. This page is available in this checkout with its own loopback handler (`POST /api/near-agent/ask`, `GET /api/near-agent/prepared`) and leaves the existing IronClaw desk panel in place.
+
 ## API
 
 | Route | Purpose |

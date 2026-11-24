@@ -4,6 +4,7 @@ import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
 import { buildSite } from "../src/site/site";
 import { loadFacts, type SiteFact } from "../src/site/facts";
+import * as siteContent from "../src/site/content";
 
 // Some checks below read inputs that only the development repository carries (the publish list, private
 // fixtures, capture scripts, earlier commits). The published tree leaves those out on purpose, so there
@@ -772,6 +773,16 @@ describe("T10 headline, sub-line and banned words", () => {
 
   test("no banned word or advice term outside quoted facts, code and pre", async () => {
     expect(await bannedHits(main.html)).toEqual([]);
+  });
+
+  test("no site content string or template line names a hackathon", () => {
+    const strings = (value: unknown, path: string): [string, string][] =>
+      typeof value === "string" ? [[path, value]]
+        : value && typeof value === "object" ? Object.entries(value).flatMap(([key, inner]) => strings(inner, `${path}.${key}`))
+        : [];
+    const hits = strings({ ...siteContent }, "content").filter(([, value]) => /hackathon/i.test(value)).map(([path]) => path);
+    readFileSync(join(SRC, "index.html"), "utf8").split("\n").forEach((line, i) => { if (/hackathon/i.test(line)) hits.push(`index.html:${i + 1}`); });
+    expect(hits).toEqual([]);
   });
 
   test("the scanner is falsifiable", async () => {

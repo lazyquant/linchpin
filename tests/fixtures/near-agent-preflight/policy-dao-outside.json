@@ -1,0 +1,29 @@
+{
+  "policyId": "preflight-dao-outside",
+  "subjects": ["near:mainnet:sputnik-dao.near"],
+  "rules": [
+    {
+      "id": "dao-controller",
+      "kind": "controller-resolved",
+      "params": { "account": "near:mainnet:sputnik-dao.near" }
+    },
+    {
+      "id": "dao-unchanged",
+      "kind": "unchanged-since",
+      "params": {
+        "snapshotId": "near-2026-11-09",
+        "factKeys": ["near:mainnet:sputnik-dao.near|owned-by"]
+      }
+    },
+    {
+      "id": "dao-pause-operator",
+      "kind": "pause-operator-set",
+      "params": { "contract": "near:mainnet:sputnik-dao.near" }
+    },
+    {
+      "id": "dao-keys",
+      "kind": "no-full-access-keys",
+      "params": { "accounts": ["near:mainnet:sputnik-dao.near"] }
+    }
+  ]
+}

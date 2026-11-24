@@ -1,7 +1,7 @@
 import { canonical } from "../../chain/evidence";
 import type { EvidenceReceipt, Fact, QueryReason, QueryRequest, QueryResult } from "../../engine/contracts";
 import { resultSha256, runQuery } from "../../engine/queries/run";
-import { controlSurface, historyFacts, parseNearSubject } from "../reader";
+import { controlSurface, factoryCoverageSplit, historyFacts, parseNearSubject } from "../reader";
 import { OFFCHAIN_DOCUMENTS, OMNI_PROGRAM, REPORTED_MINTS, TREASURY } from "./extension";
 import { classifyAsset } from "./rules";
 import { FAMILY_RECIPES, recipeHops, RECIPE_RELATIONS } from "./recipes";
@@ -15,8 +15,8 @@ export function reviewIntent(input: IntentInput, ctx: IntentContext): IntentRevi
   const scope = { asOf: ctx.asOf, snapshotId: ctx.snapshotId, maxHops: 3, maxResults: 500 };
   const facts = new Map<string, Fact>(), receipts = new Map<string, EvidenceReceipt>(), reasons: QueryReason[] = [], queries: IntentReview["queries"] = [], observations = new Map<string, IntentReview["observations"][number]>(), snapshotIds = new Set<string>();
   const cite = (f: Fact) => { if (!facts.has(f.id)) facts.set(f.id, f); for (const id of f.evidenceIds) { const r = ctx.store.receipt(id); if (r) receipts.set(id, r); else reasons.push({ code: "missing-evidence", subject: f.subject, ref: id }); } };
-  const accept = (request: QueryRequest, result: QueryResult) => {
-    queries.push({ request, outcome: result.outcome, resultSha256: resultSha256(result) }); result.facts.forEach(cite); result.receipts.forEach(r => receipts.set(r.id, r)); reasons.push(...result.reasons); result.observations.forEach(o => observations.set(canonical(o), o)); result.snapshotIds.forEach(id => snapshotIds.add(id)); return result;
+  const accept = (request: QueryRequest, result: QueryResult, cited: Fact[] = result.facts) => {
+    queries.push({ request, outcome: result.outcome, resultSha256: resultSha256(result) }); cited.forEach(cite); result.receipts.forEach(r => receipts.set(r.id, r)); reasons.push(...result.reasons); result.observations.forEach(o => observations.set(canonical(o), o)); result.snapshotIds.forEach(id => snapshotIds.add(id)); return result;
   };
   const query = (request: QueryRequest) => accept(request, runQuery(ctx.store, request));
   const legs: IntentLeg[] = (input.kind === "asset" ? [{ side: "asset" as const, asset: input.assetId }] : [{ side: "origin" as const, asset: input.quote.record.request.originAsset }, { side: "destination" as const, asset: input.quote.record.request.destinationAsset }]).map(l => ({ side: l.side, classification: classifyAsset(l.asset, ctx.rules, ctx.routeEvidence), token: ctx.tokens.find(t => t.assetId === l.asset) ?? null }));
@@ -68,7 +68,11 @@ export function reviewIntent(input: IntentInput, ctx: IntentContext): IntentRevi
     const s = surfaces.get(subject); if (!s) continue;
     const own = get(subject), roles = (name: string) => get(`${subject}#role:${name}`, "holds-role"), holders = (name: string) => s.roles[name] ?? [];
     const upgrades = own.filter(f => ["upgraded-by", "owned-by", "has-full-access-key"].includes(f.predicate));
-    if (upgrades.length) row(subject, "upgrade", unique([...s.upgradedBy, ...own.filter(f => ["owned-by", "has-full-access-key"].includes(f.predicate) && !["none", "unknown"].includes(f.object)).map(f => f.object)]), subject === n("intents.near") ? `${current ?? "unknown"} since ${latest?.at ?? "unknown"}` : "Code control: role grantees, owner and full-access keys where observed", [...upgrades, ...(subject === n("intents.near") ? deployments : [])], s.reasons.filter(r => r.code === "unknown-controller"));
+    if (upgrades.length) {
+      const factory = subject.endsWith(".sputnik-dao.near") ? factoryUpdate(subject, ctx, own) : null;
+      row(subject, "upgrade", unique([...s.upgradedBy.filter(h => h !== "unknown"), ...own.filter(f => ["owned-by", "has-full-access-key"].includes(f.predicate) && !["none", "unknown"].includes(f.object)).map(f => f.object)]), subject === n("intents.near") ? `${current ?? "unknown"} since ${latest?.at ?? "unknown"}` : factory?.detail ?? "Code control: role grantees, owner and full-access keys where observed", [...upgrades, ...(subject === n("intents.near") ? deployments : [])], s.reasons.filter(r => r.code === "unknown-controller"));
+      if (factory?.receipt && !control.at(-1)!.receiptIds.includes(factory.receipt.id)) { receipts.set(factory.receipt.id, factory.receipt); control.at(-1)!.receiptIds = unique([...control.at(-1)!.receiptIds, factory.receipt.id]); }
+    }
     if (roles("PauseManager").length || s.paused.length) row(subject, "pause", holders("PauseManager"), `PauseManager ${holders("PauseManager").length}; paused ${s.paused.join(", ") || "unknown"}; UnpauseManager ${roles("UnpauseManager").length ? holders("UnpauseManager").length : "unknown"}`, [...roles("PauseManager"), ...roles("UnpauseManager"), ...own.filter(f => f.predicate === "paused")]);
     if (subject === n("intents.near") && roles("UnpauseManager").some(f => f.object === "none") && own.some(f => f.predicate === "has-full-access-key" && f.object === "none")) row(subject, "pause", s.superAdmins, `No account holds UnpauseManager; resuming needs a super admin: ${s.superAdmins.join(", ")}. intents.near has no full-access key.`, [...roles("UnpauseManager"), ...own.filter(f => f.predicate === "super-admin-of" || f.predicate === "has-full-access-key" && f.object === "none")], [], "interpretation");
     for (const name of ["UnrestrictedAccountLocker", "UnrestrictedAccountUnlocker"]) if (roles(name).length) row(subject, "freeze", holders(name), `${name}: ${holders(name).length} accounts`, roles(name));
@@ -98,7 +102,15 @@ export function reviewIntent(input: IntentInput, ctx: IntentContext): IntentRevi
   const changeRoots = valid ? ["intents.near", "ctl-intents.near", "intents.sputnik-dao.near", "omni.bridge.near", "v1.signer"].map(n) : [];
   const changeSubjects = unique([...changeRoots, ...(base?.subjects ?? []).filter(s => changeRoots.some(root => s.startsWith(`${root}#role:`)))]);
   const changes: ChangeSection = { pair: ctx.change, subjects: changeSubjects, changes: [], history: [], versions, mpc: { participants: participants.length, threshold, ...evidence(mpcFacts) } };
-  if (ctx.change) for (const subject of changeSubjects) { const q = query({ name: "changes", subject, beforeSnapshotId: ctx.change.before, afterSnapshotId: ctx.change.after, maxResults: 500 }); changes.changes.push(...q.changes.map(c => ({ ...c, subject }))); }
+  if (ctx.change) for (const subject of changeSubjects) {
+    // Cite only the facts that changed: the other snapshot's unchanged facts would be counted twice in the review.
+    const { before, after } = ctx.change, request: QueryRequest = { name: "changes", subject, beforeSnapshotId: before, afterSnapshotId: after, maxResults: 500 }, raw = runQuery(ctx.store, request);
+    const q = accept(request, raw, raw.changes.flatMap(c => [c.before, c.after].filter((f): f is Fact => f !== null)));
+    // A get_factory_info edge against a capture that never read it is missing coverage, not an addition (the shared NEAR rule).
+    const split = factoryCoverageSplit(ctx.store, { subject, beforeSnapshotId: before, afterSnapshotId: after }, q.changes);
+    reasons.push(...split.reasons);
+    for (const c of split.changes) changes.changes.push({ ...c, subject });
+  }
   else if (valid) reasons.push({ code: "missing-history", subject: null, ref: "live-snapshot-pair" });
   for (const subject of changeRoots) {
     const h = historyFacts(ctx.store, subject, ctx.baseSnapshotId); reasons.push(...h.reasons);
@@ -124,6 +136,16 @@ export function reviewIntent(input: IntentInput, ctx: IntentContext): IntentRevi
   const unknowns = reasonsSorted(reasons), verifier = chain.find(h => h.role === "verifier");
   return { version: 1, reviewer: "near-intent-review/1", input: input.kind === "asset" ? { kind: "asset", assetId: input.assetId } : { kind: "quote", originAsset: input.quote.record.request.originAsset, destinationAsset: input.quote.record.request.destinationAsset, amount: input.quote.record.request.amount, requestSha256: input.quote.record.requestSha256 }, legs, families, quote, quoteNotRecorded, chain, control, changes, origin, offchain: structuredClone(ctx.offchain), unknowns,
     outcome: !verifier?.factIds.length ? "unknown" : unknowns.length || chain.some(h => h.reasons.length) ? "partial" : "complete", asOf: ctx.asOf, snapshotIds: [...snapshotIds].sort(), observations: [...observations.values()].sort((a,b) => canonical(a).localeCompare(canonical(b))), queries, facts: [...facts.values()].sort((a,b) => a.id.localeCompare(b.id)), receipts: [...receipts.values()].sort((a,b) => a.id.localeCompare(b.id)) };
+}
+
+const BASE_UPGRADE_DETAIL = "role grantees, owner and full-access keys where observed";
+/** Row text for a Sputnik DAO whose capture read get_factory_info; null when it was not read (snapshots before 2026-11-14). */
+function factoryUpdate(subject: string, ctx: IntentContext, own: Fact[]): { detail: string; receipt: EvidenceReceipt | null } | null {
+  const read = ctx.reads.find(subject.slice("near:mainnet:".length), "call_function", "get_factory_info"), info = read?.value as { factory_id?: unknown; auto_update?: unknown } | undefined;
+  if (read && info?.auto_update === true && typeof info.factory_id === "string") return { detail: `${info.factory_id} can replace this DAO's code by calling its update() method, with no proposal or vote: get_factory_info reads auto_update: true. Also counted: ${BASE_UPGRADE_DETAIL}`, receipt: read.receipt };
+  if (read && info?.auto_update === false) return { detail: `Factory update() is switched off: get_factory_info reads auto_update: false. Counted: ${BASE_UPGRADE_DETAIL}`, receipt: read.receipt };
+  if (own.some(f => f.predicate === "upgraded-by" && f.object === "unknown")) return { detail: `Unknown whether the factory can replace this DAO's code through update(): this contract version has no get_factory_info. Counted: ${BASE_UPGRADE_DETAIL}`, receipt: null };
+  return null;
 }
 
 /** Reader format: threshold|proposal kind|weight kind|quorum:n. Ratios require strictly more than n/d. */

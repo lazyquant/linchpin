@@ -13,7 +13,7 @@ export function renderIntentMarkdown(r: IntentReview): string {
   const holders = (role: string) => fs(`intents.near#role:${role}`, "holds-role").filter(f => f.object !== "none");
   const upgrade = r.control.find(c => c.subject === "near:mainnet:intents.near" && c.power === "upgrade");
   const roles = r.control.find(c => c.subject === "near:mainnet:intents.near" && c.power === "grant-roles");
-  const obs = r.observations.find(o => o.snapshotId.endsWith(".intents")) ?? r.observations[0];
+  const reviewed = r.observations.find(o => o.snapshotId.endsWith(".intents")), obs = reviewed ?? r.observations[0];
   const title = r.input.kind === "asset" ? r.input.assetId : `${r.input.originAsset} → ${r.input.destinationAsset}`;
   const lines = [
     `# Intent review · ${title}`,
@@ -25,7 +25,7 @@ export function renderIntentMarkdown(r: IntentReview): string {
     `roles          ${roles?.detail.replaceAll("near:mainnet:", "") ?? "unknown"} · no execution delay field`,
     `off-chain      ${r.offchain.map(d => d.id).join(", ") || "missing documents"} (claimed documents)`,
     `unknowns       ${r.unknowns.length} reasons · outcome ${r.outcome}`,
-    `snapshot       ${r.snapshotIds.find(id => /^near-\d{4}-\d{2}-\d{2}$/.test(id)) ?? obs?.snapshotId.replace(/\.intents$/, "") ?? "unknown"} · blocks ${obs?.fromBlockOrSlot ?? "unknown"}–${obs?.toBlockOrSlot ?? "unknown"} · asOf ${r.asOf}`,
+    `snapshot       ${reviewed?.snapshotId.replace(/\.intents$/, "") ?? r.snapshotIds.find(id => /^near-\d{4}-\d{2}-\d{2}$/.test(id)) ?? obs?.snapshotId ?? "unknown"} · blocks ${obs?.fromBlockOrSlot ?? "unknown"}–${obs?.toBlockOrSlot ?? "unknown"} · asOf ${r.asOf}`,
     "", "## Quote (claimed by 1Click)", "",
   ];
   const factLine = (f: Fact) => `${cell(short(f.subject))} · ${cell(f.predicate)} · ${cell(f.object)} [${f.basis}; ${f.status}] ${notes(f.evidenceIds)}`;

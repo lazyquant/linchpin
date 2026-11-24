@@ -1,0 +1,31 @@
+{
+ "version": 1,
+ "requestSha256": "1650e0c6ec434e78c493d2c58c874ae27f135c4ac6f3f6583905dce750f5cb84",
+ "request": {
+  "method": "query",
+  "params": {
+   "account_id": "burrow.sputnik-dao.near",
+   "request_type": "call_function",
+   "method_name": "get_policy",
+   "args_base64": "e30=",
+   "finality": "final"
+  }
+ },
+ "endpointHost": "archival-rpc.mainnet.fastnear.com",
+ "retrievedAt": "2026-11-14T14:46:45.470Z",
+ "httpStatus": 200,
+ "outcome": "result",
+ "blockHeight": "224528526",
+ "blockHash": "zn7AFG6hhLNYuMEVXhN77C73gTc5dcPNAUA4rKW3THz",
+ "responseSha256": "652ca0c90bc7fbf0c942a02b6fde1f6059db42ffaf4e51ba39fd1fcdb6382a5e",
+ "response": {
+  "jsonrpc": "2.0",
+  "result": {
+   "block_hash": "zn7AFG6hhLNYuMEVXhN77C73gTc5dcPNAUA4rKW3THz",
+   "block_height": 224528526,
+   "logs": []
+  },
+  "id": "near-reader"
+ },
+ "resultText": "{\"roles\":[{\"name\":\"council\",\"kind\":{\"Group\":[\"farbread8025.near\",\"nicktrust.near\",\"brrrb.near\",\"brhost.near\",\"wannamakeit.near\"]},\"permissions\":[\"*:VoteReject\",\"*:VoteRemove\",\"*:VoteApprove\",\"*:AddProposal\",\"*:Finalize\"],\"vote_policy\":{}}],\"default_vote_policy\":{\"weight_kind\":\"RoleWeight\",\"quorum\":\"0\",\"threshold\":[1,2]},\"proposal_bond\":\"1000000000000000000000000\",\"proposal_period\":\"604800000000000\",\"bounty_bond\":\"1000000000000000000000000\",\"bounty_forgiveness_period\":\"86400000000000\"}"
+}

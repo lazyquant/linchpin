@@ -1,0 +1,31 @@
+{
+ "version": 1,
+ "requestSha256": "c213a4a6ca2c8b818fc955f131d38dc84d0a0f549c9771229b78ed19effdacae",
+ "request": {
+  "method": "query",
+  "params": {
+   "account_id": "v1.signer",
+   "request_type": "call_function",
+   "method_name": "allowed_docker_image_hashes",
+   "args_base64": "e30=",
+   "finality": "final"
+  }
+ },
+ "endpointHost": "archival-rpc.mainnet.fastnear.com",
+ "retrievedAt": "2026-11-14T14:49:45.674Z",
+ "httpStatus": 200,
+ "outcome": "result",
+ "blockHeight": "224528845",
+ "blockHash": "BcenjGWHGrrUkvSZ2aAdEGSAayQnNo6txMwmByx2BG3Y",
+ "responseSha256": "b15f99a57ca84157ab92a96e46825b0b2cec88919a2f7cd5a1c85ce375c70107",
+ "response": {
+  "jsonrpc": "2.0",
+  "result": {
+   "block_hash": "BcenjGWHGrrUkvSZ2aAdEGSAayQnNo6txMwmByx2BG3Y",
+   "block_height": 224528845,
+   "logs": []
+  },
+  "id": "near-reader"
+ },
+ "resultText": "[{\"image_hash\":\"bf0a9e53baf08b4bca0dbced66f41c18eef75f7ea7f26c73b0066ebd5b78611d\",\"expiry_timestamp_seconds\":null},{\"image_hash\":\"536d528f19cff6a45f384fb225e8a331e5554b9da45196d0fae148d191e8b36d\",\"expiry_timestamp_seconds\":1795100923}]"
+}

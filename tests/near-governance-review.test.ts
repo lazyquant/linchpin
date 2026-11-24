@@ -779,6 +779,8 @@ describe("AC7 governance changes", () => {
     expect(g.history.map((h) => h.kind)).not.toContain("acl");
   });
 
+  // Amended 2026-11-14 (factory update path): a review compares captures up to the reviewed one, so a later
+  // capture never changes an earlier review (the committed near-2026-11-09 samples replay unchanged).
   test("with a second live snapshot in a temp root the pair is picked up automatically", () => {
     const root = mkdtempSync(join(tmpdir(), "gov-pair-"));
     try {
@@ -798,10 +800,13 @@ describe("AC7 governance changes", () => {
       manifest.storeSha256 = nearStoreSha256(rebuilt);
       writeFileSync(join(dir, "manifest.json"), JSON.stringify(manifest, null, 1) + "\n");
       expect(liveSnapshotIds(root)).toContain(SECOND);
-      const g = governanceChanges({ snapshotId: LIVE, root }, BURROW);
+      const g = governanceChanges({ snapshotId: SECOND, root }, BURROW);
       expect(g.beforeSnapshotId).toBe(LIVE);
       expect(g.afterSnapshotId).toBe(SECOND);
       expect(g.reasons.map((r) => r.ref).some((ref) => typeof ref === "string" && ref.startsWith("one-live-snapshot"))).toBe(false);
+      const earlier = governanceChanges({ snapshotId: LIVE, root }, BURROW);
+      expect(earlier.beforeSnapshotId).toBeNull();
+      expect(earlier.reasons.map((r) => r.ref)).toContain(`one-live-snapshot:${LIVE}`);
     } finally {
       rmSync(root, { recursive: true, force: true });
     }

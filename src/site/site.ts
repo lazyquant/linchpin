@@ -3,6 +3,7 @@ import { basename, dirname, isAbsolute, join, relative, resolve, sep } from "nod
 import { tmpdir } from "node:os";
 import { loadFacts, SiteFactError, type SiteFact, type SiteFacts } from "./facts";
 import * as content from "./content";
+import { prepareSitePanels, writePanelFiles } from "../near/panel";
 
 const root = resolve(import.meta.dir, "../..");
 const defaultOut = join(root, "dist/site");
@@ -134,6 +135,8 @@ export async function buildSite(opts: BuildSiteOptions = {}): Promise<BuildSiteR
     .on("[data-fact-link]", { element(e) { lookup(e.getAttribute("data-fact-link")!); } }));
   for (const key of Object.keys(copy)) if (!slots.has(key)) throw new Error(`copy key has no slot: ${key}`);
   const outDir = await checkedOutDir(opts.outDir ?? defaultOut, [import.meta.dir, nearSnapshotDir, solanaFixturesDir, ...Object.values(content.excerpts).map(sampleDirectory)]);
+  const panels = await prepareSitePanels(nearSnapshotDir, opts.allowConstructed);
+  warnings.push(...panels.warnings);
   await rm(outDir, { recursive: true, force: true });
   await mkdir(outDir, { recursive: true });
   const result = await Bun.build({
@@ -203,7 +206,9 @@ export async function buildSite(opts: BuildSiteOptions = {}): Promise<BuildSiteR
     }, text(t) { if (currentSlot) currentSlot.text += t.text; },
   }));
   await Bun.write(join(outDir, "index.html"), html);
-  return { outDir, files: (await readdir(outDir)).sort(), factsUsed: [...factsUsed].sort(), warnings };
+  if (panels.files.size) await writePanelFiles(join(outDir, "panels"), panels.files);
+  const files = (await readdir(outDir)).filter(name => name !== "panels").concat([...panels.files.keys()].map(name => "panels/" + name)).sort();
+  return { outDir, files, factsUsed: [...factsUsed].sort(), warnings };
 }
 
 async function main() {

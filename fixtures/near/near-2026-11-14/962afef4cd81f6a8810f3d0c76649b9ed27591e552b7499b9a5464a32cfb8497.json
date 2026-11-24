@@ -1,0 +1,31 @@
+{
+ "version": 1,
+ "requestSha256": "962afef4cd81f6a8810f3d0c76649b9ed27591e552b7499b9a5464a32cfb8497",
+ "request": {
+  "method": "query",
+  "params": {
+   "account_id": "wrap.near",
+   "request_type": "call_function",
+   "method_name": "ft_metadata",
+   "args_base64": "e30=",
+   "finality": "final"
+  }
+ },
+ "endpointHost": "archival-rpc.mainnet.fastnear.com",
+ "retrievedAt": "2026-11-14T14:48:33.647Z",
+ "httpStatus": 200,
+ "outcome": "result",
+ "blockHeight": "224528719",
+ "blockHash": "3Qq8vSbJFammR8b3RYswFfQv24ojcsQqc6rqkTMXc9i3",
+ "responseSha256": "7cfabe8cbc53fbdd5d5c58c2024e1c893d8095cec10f0f778edfaa36b4408311",
+ "response": {
+  "jsonrpc": "2.0",
+  "result": {
+   "block_hash": "3Qq8vSbJFammR8b3RYswFfQv24ojcsQqc6rqkTMXc9i3",
+   "block_height": 224528719,
+   "logs": []
+  },
+  "id": "near-reader"
+ },
+ "resultText": "{\"spec\":\"ft-1.0.0\",\"name\":\"Wrapped NEAR fungible token\",\"symbol\":\"wNEAR\",\"icon\":null,\"reference\":null,\"reference_hash\":null,\"decimals\":24}"
+}
